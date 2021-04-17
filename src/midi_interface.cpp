@@ -21,7 +21,16 @@
 
 inline void Midi_NoteOn(uint8_t note)
 {
-    Synth_NoteOn(note);
+    if(note)
+        Synth_NoteOn(note);
+    else
+    {
+        Serial.printf("------- DUMP --------\n");
+        for (int i = 0; i < MAX_POLY_VOICE ; i++)
+        {
+            Serial.printf("Actif %d Midi %03d voc: %02d, osc: %02d rank: %02d Grank : %02d\n",voicePlayer[i].active,voicePlayer[i].midiNote, voc_act, osc_act,voicePlayer[i].active,globalrank);
+        }
+    }
 }
 
 inline void Midi_NoteOff(uint8_t note)

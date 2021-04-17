@@ -321,6 +321,27 @@ void Voice_Off(uint32_t i)
     voc_act -= 1;
 }
 
+void Voice_Retrig(uint32_t i)
+{
+static uint8_t cpt;
+
+    notePlayerT *voice = &voicePlayer[i];
+    
+    for (int f = 0; f < MAX_POLY_OSC; f++)
+    {
+        oscillatorT *osc = &oscPlayer[f];
+        if (osc->dest == voice->lastSample)
+        {
+            osc->dest = voiceSink;
+            osc_act -= 1;
+        }
+    }
+    Serial.printf("tr %d rank %d v %d m %d\n",cpt,voicePlayer[i].active,i,voicePlayer[i].midiNote);
+    cpt++;
+    voc_act -= 1;
+}
+
+
 static float out_l, out_r;
 static uint32_t count = 0;
 
@@ -593,8 +614,8 @@ struct oscillatorT *getFreeOsc()
 
 struct notePlayerT *getFreeVoice(uint8_t note)
 {
-uint8_t keysteal=0;    
-static uint8_t cpt=0;
+uint8_t keysteal=99;    
+
     // MS2000
     //          C1 - C2 - E2 - G2
     // Rank     0    1    2    3          
@@ -617,18 +638,16 @@ static uint8_t cpt=0;
 
     }
     */
-    /*
     for (int i = 0; i < MAX_POLY_VOICE ; i++)
     {
         if (voicePlayer[i].active && voicePlayer[i].midiNote == note)
         {
-            Voice_Off(i);
-            Serial.printf("tr %d\n",cpt);
+            Voice_Retrig(i);
+            voicePlayer[i].active = 1;
             return &voicePlayer[i];
         }
     }
-    */
-
+    Serial.printf("????\n");
     for (int i = 0; i < MAX_POLY_VOICE ; i++)
     {
         if (voicePlayer[i].active == 0)
@@ -641,8 +660,9 @@ static uint8_t cpt=0;
     // Steal a voice here
     for (int i = 0; i < MAX_POLY_VOICE ; i++)
     {
-        if(voicePlayer[i].active==1)
+        if(voicePlayer[i].active && voicePlayer[i].phase==release && keysteal==99)
         {
+            Serial.printf("STEAL\n");
             Voice_Off(i);
             voicePlayer[i].active = globalrank;
             keysteal =i;
