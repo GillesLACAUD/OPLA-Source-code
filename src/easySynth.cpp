@@ -499,10 +499,11 @@ static uint8_t cptvoice=0;
                         if(voicePlayer[j].active>voice->active)
                             voicePlayer[j].active--;
                     }
-
+                    voice->midiNote=0;
                     voice->active=0;
                     globalrank--;
                     Voice_Off(i);
+                    //Serial.printf("voc: %02d, osc: %02d\n",voc_act, osc_act);
                     /*
                     for (int j = 0; j < MAX_POLY_VOICE ; j++)
                     {
@@ -590,9 +591,10 @@ struct oscillatorT *getFreeOsc()
     return NULL;
 }
 
-struct notePlayerT *getFreeVoice()
+struct notePlayerT *getFreeVoice(uint8_t note)
 {
 uint8_t keysteal=0;    
+static uint8_t cpt=0;
     // MS2000
     //          C1 - C2 - E2 - G2
     // Rank     0    1    2    3          
@@ -615,7 +617,17 @@ uint8_t keysteal=0;
 
     }
     */
-
+    /*
+    for (int i = 0; i < MAX_POLY_VOICE ; i++)
+    {
+        if (voicePlayer[i].active && voicePlayer[i].midiNote == note)
+        {
+            Voice_Off(i);
+            Serial.printf("tr %d\n",cpt);
+            return &voicePlayer[i];
+        }
+    }
+    */
 
     for (int i = 0; i < MAX_POLY_VOICE ; i++)
     {
@@ -655,7 +667,7 @@ inline void Filter_Reset(struct filterProcT *filter)
 
 void Synth_NoteOn(uint8_t note)
 {
-    struct notePlayerT *voice = getFreeVoice();
+    struct notePlayerT *voice = getFreeVoice(note);
     struct oscillatorT *osc = getFreeOsc();
    
     /*

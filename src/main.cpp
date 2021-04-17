@@ -98,7 +98,7 @@ union sampleTUNT
 
 union sampleTUNT32
 {
-    uint32_t sample32;
+    int32_t sample32;
     int16_t sample[2];
 }sampleData32;
 
@@ -120,36 +120,36 @@ void onTimer1()
 {
 static uint8_t scaler=0;
 
-    portENTER_CRITICAL_ISR(&timer1Mux_xms);
+    //portENTER_CRITICAL_ISR(&timer1Mux_xms);
     scaler++;
     if(scaler==1)
     {
         scaler=0;
         Lfo_cnt1+=1;
     }
-    portEXIT_CRITICAL_ISR(&timer1Mux_xms);
+    //portEXIT_CRITICAL_ISR(&timer1Mux_xms);
 }
 
 void onTimer2()
 {
 static uint8_t scaler=0;
 
-    portENTER_CRITICAL_ISR(&timer2Mux_xms);
+    //portENTER_CRITICAL_ISR(&timer2Mux_xms);
     scaler++;
     if(scaler==1)
     {
         scaler=0;
         Lfo_cnt2+=1;
     }
-    portEXIT_CRITICAL_ISR(&timer2Mux_xms);    
+    //portEXIT_CRITICAL_ISR(&timer2Mux_xms);    
 
 }
 
 void onTimer1ms()
 {
-    portENTER_CRITICAL_ISR(&timerMux_1ms);
+    //portENTER_CRITICAL_ISR(&timerMux_1ms);
     Timer1ms_cnt++;
-    portEXIT_CRITICAL_ISR(&timerMux_1ms);    
+    //portEXIT_CRITICAL_ISR(&timerMux_1ms);    
 }
 
 void CoreTask0( void *parameter )
@@ -380,8 +380,8 @@ static uint16_t cpttimer2;
         {
             float fl_sample, fr_sample;
             Synth_Process(&fl_sample, &fr_sample);
-            sampleData32.sample[0] = (int16_t)(fl_sample*32000.0f);
-            sampleData32.sample[1] = (int16_t)(fr_sample*32000.0f);
+            sampleData32.sample[0] = (int16_t)(fl_sample*32768.0f);
+            sampleData32.sample[1] = (int16_t)(fr_sample*32768.0f);
         }
     }
 
@@ -389,7 +389,7 @@ static uint16_t cpttimer2;
      * Midi does not required to be checked after every processed sample
      * - we divide our operation by 8
      */
-    if (loop_count_u8 % 8 == 0)
+    if (loop_count_u8 % 24 == 0)
     {
         Midi_Process();
         //Nextion_Process(); // in the task0
