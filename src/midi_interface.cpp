@@ -19,17 +19,24 @@
 /* constant to normalize midi value to 0.0 - 1.0f */
 #define NORM127MUL	0.007874f
 
+void Midi_Dump()
+{
+        Serial.printf("------- DUMP --------\n");
+        for (int i = 0; i < MAX_POLY_VOICE ; i++)
+        {
+            Serial.printf("Actif %d Midi %03d Phase %d voc: %02d, osc: %02d Grank : %02d\n",voicePlayer[i].active,voicePlayer[i].midiNote,voicePlayer[i].phase,voc_act, osc_act,globalrank);
+        }
+
+}
+
+
 inline void Midi_NoteOn(uint8_t note)
 {
     if(note)
         Synth_NoteOn(note);
     else
     {
-        Serial.printf("------- DUMP --------\n");
-        for (int i = 0; i < MAX_POLY_VOICE ; i++)
-        {
-            Serial.printf("Actif %d Midi %03d voc: %02d, osc: %02d rank: %02d Grank : %02d\n",voicePlayer[i].active,voicePlayer[i].midiNote, voc_act, osc_act,voicePlayer[i].active,globalrank);
-        }
+        Midi_Dump();
     }
 }
 

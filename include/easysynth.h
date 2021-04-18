@@ -90,7 +90,7 @@ float **selectedWaveForm =  &sine;
 float **selectedWaveForm2 =  &sine;
 uint32_t osc_act = 0;
 uint32_t voc_act = 0;
-struct adsrT adsr_vol = {0.25f, 0.25f, 1.0f, 0.8f};
+struct adsrT adsr_vol = {0.04f, 0.03f, 1.0f, 0.04f};
 struct adsrT adsr_fil = {1.0f, 0.25f, 1.0f, 0.01f};
 struct adsrT adsr_pit = {0.0f, 0.0f, 0.0f, 0.0f};
 

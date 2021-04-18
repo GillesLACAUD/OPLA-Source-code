@@ -321,26 +321,6 @@ void Voice_Off(uint32_t i)
     voc_act -= 1;
 }
 
-void Voice_Retrig(uint32_t i)
-{
-static uint8_t cpt;
-
-    notePlayerT *voice = &voicePlayer[i];
-    
-    for (int f = 0; f < MAX_POLY_OSC; f++)
-    {
-        oscillatorT *osc = &oscPlayer[f];
-        if (osc->dest == voice->lastSample)
-        {
-            osc->dest = voiceSink;
-            osc_act -= 1;
-        }
-    }
-    Serial.printf("tr %d rank %d v %d m %d\n",cpt,voicePlayer[i].active,i,voicePlayer[i].midiNote);
-    cpt++;
-    voc_act -= 1;
-}
-
 
 static float out_l, out_r;
 static uint32_t count = 0;
@@ -604,39 +584,18 @@ struct oscillatorT *getFreeOsc()
     return NULL;
 }
 
-struct notePlayerT *getFreeVoice(uint8_t note)
+struct notePlayerT *getFreeVoice(uint8_t note,uint8_t* retrig)
 {
 uint8_t keysteal=99;    
 
-    // MS2000
-    //          C1 - C2 - E2 - G2
-    // Rank     0    1    2    3          
-    
-    // KEF OFF  E2 dec all key with a rank > 
-    //          C1 - C2 - G2 
-    // Rank     0    1    2
-
-    // New key A2 steal the first note C1 Rank 0 (dec -1 all the previous rank)
-    //          C2 - E2 - G2 - A2 
-    // Rank     3    0    1    2 
-    // New Key B3 steal the C2
-    //          C2 -G2 -A2 - B3
-    // Rank     2   0   1    3
-
-    /*
-    for (int i = 0; i < MAX_POLY_VOICE ; i++)
-    {
-        Serial.printf("----- rank: %02d\n",voicePlayer[i].active);
-
-    }
-    */
-
+    *retrig=0;
     for (int i = 0; i < MAX_POLY_VOICE ; i++)
     {
            if (voicePlayer[i].active && voicePlayer[i].midiNote==note)
            {
                 Voice_Off(i);
                 voicePlayer[i].active = globalrank;
+                *retrig=1;
                 return &voicePlayer[i];
            }
     }
@@ -653,23 +612,29 @@ uint8_t keysteal=99;
     // Steal a voice here
     // Search first the lower rank release note
     keysteal =99;
+    uint8_t keytab;
     for (int i = 0; i < MAX_POLY_VOICE ; i++)
     {
         if(voicePlayer[i].phase==release)
         {
             if(voicePlayer[i].active<keysteal)
-                keysteal = i;
+            {
+                keysteal = voicePlayer[i].active;
+                keytab=i;
+            }
         }
     }
     if(keysteal!=99)
     {
-        Voice_Off(keysteal);   
+        Serial.printf("RELEASE Steal %d Active %d\n",keytab,voicePlayer[keytab].active);
+        Voice_Off(keytab);   
         for (int i = 0; i < MAX_POLY_VOICE ; i++)
         {
-            voicePlayer[keysteal].active--;
-        }        
-        voicePlayer[keysteal].active = globalrank;
-        return &voicePlayer[keysteal];
+            if(voicePlayer[i].active)
+                voicePlayer[i].active--;
+        }
+        voicePlayer[keytab].active = globalrank;
+        return &voicePlayer[keytab];
     }
     // No release note
     else
@@ -677,23 +642,23 @@ uint8_t keysteal=99;
         for(int i = 0; i < MAX_POLY_VOICE ; i++)
         {
             if(voicePlayer[i].active<keysteal)
-                keysteal = i;
-        }
-        for (int i = 0; i < MAX_POLY_VOICE ; i++)
-        {
-            voicePlayer[keysteal].active--;
-        }
-        voicePlayer[keysteal].active = globalrank;
-        for (int i = 0; i < MAX_POLY_VOICE ; i++)
-        {
-            if(i!=keysteal)
             {
-                if(i!=1)
-                    voicePlayer[keysteal].active--;
+                keysteal = voicePlayer[i].active;
+                keytab=i;
             }
         }
-        Voice_Off(keysteal);   
-        return &voicePlayer[keysteal];
+        if(keysteal!=99)
+        {   
+            Serial.printf("SUSTAIN Steal %d Active %d\n",keytab,voicePlayer[keytab].active);
+            Voice_Off(keytab);   
+            for (int i = 0; i < MAX_POLY_VOICE ; i++)
+            {
+            if(voicePlayer[i].active)
+                voicePlayer[i].active--;
+            }
+            voicePlayer[keytab].active = globalrank;
+            return &voicePlayer[keytab];
+        }
     }
 
     Serial.printf("PAS NORLAK.............\n");
@@ -728,7 +693,9 @@ inline void Filter_Reset(struct filterProcT *filter)
 
 void Synth_NoteOn(uint8_t note)
 {
-    struct notePlayerT *voice = getFreeVoice(note);
+uint8_t retrig;
+
+    struct notePlayerT *voice = getFreeVoice(note,&retrig);
     struct oscillatorT *osc = getFreeOsc();
    
     /*
@@ -742,9 +709,12 @@ void Synth_NoteOn(uint8_t note)
 
     voice->midiNote = note;
     voice->velocity = 0.25; /* just something to test */
-    voice->lastSample[0] = 0.0f;
-    voice->lastSample[1] = 0.0f;
-    //voice->control_sign = 0.0f;
+    if(!retrig)
+    {
+        voice->lastSample[0] = 0.0f;
+        voice->lastSample[1] = 0.0f;
+        voice->control_sign = 0.0f;
+    }
     voice->phase = attack;
 
     voice->f_control_sign = 0;
@@ -764,7 +734,10 @@ void Synth_NoteOn(uint8_t note)
     {
         tmp = midi_note_to_add[note]*(1.0+oscdetune);
         osc->addVal = tmp;
-        osc->samplePos = 0;
+        if(!retrig)
+        {
+            osc->samplePos = 0;
+        }
         osc->waveForm = *selectedWaveForm;
         osc->dest = voice->lastSample;
         osc->pan_l = 1;
@@ -778,7 +751,10 @@ void Synth_NoteOn(uint8_t note)
     {
         tmp= midi_note_to_add[note]*(1.0-oscdetune);
         osc->addVal = tmp;
-        osc->samplePos = 0;
+        if(!retrig)
+        {
+            osc->samplePos = 0;
+        }
         osc->waveForm = *selectedWaveForm;
         osc->dest = voice->lastSample;
         osc->pan_l = 1;
@@ -794,7 +770,10 @@ void Synth_NoteOn(uint8_t note)
         if (note + SubTranspose < 128)
         {
             osc->addVal = midi_note_to_add[note+SubTranspose];
-            osc->samplePos = 0; /* we could add some offset maybe */
+            if(!retrig)
+            {
+                osc->samplePos = 0; /* we could add some offset maybe */
+            }
             osc->waveForm = *selectedWaveForm2;
             osc->dest = voice->lastSample;
             osc->pan_l = 1;
@@ -803,8 +782,7 @@ void Synth_NoteOn(uint8_t note)
             osc_act += 1;
         }
     }
-    //Serial.printf("Midi %03d voc: %02d, osc: %02d rank: %02d Grank : %02d\n", voice->midiNote, voc_act, osc_act,voice->active,globalrank);
-
+    //Midi_Dump();
 }
 
 void Synth_NoteOff(uint8_t note)

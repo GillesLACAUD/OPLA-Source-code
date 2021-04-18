@@ -7,7 +7,7 @@
 #include "Lfo.h"
 #include "simple_delay.h"
 
-uint8_t serialdebug=0;
+uint8_t serialdebug=1;
 
 //--------------------------------------------------
 // OSC
@@ -325,7 +325,7 @@ int Fct_Ch_AmAttack(int val)
 {
 float value;    
 
-    value = val * NORM127MUL;
+    value = (val+20) * NORM127MUL;
     adsr_vol.a = (0.00005 * pow(5000, 1.0f - value))/2;      
     if(serialdebug) 
         Serial.printf("Amp Attack: %f\n",adsr_vol.a);
@@ -341,7 +341,7 @@ int Fct_Ch_AmDecay(int val)
 {
 float value;    
 
-    value = val * NORM127MUL;
+    value = (val+20) * NORM127MUL;
     adsr_vol.d = (0.00005 * pow(5000, 1.0f - value))/2;     
     if(serialdebug)   
         Serial.printf("Amp Decay: %f\n",adsr_vol.d);
@@ -373,7 +373,7 @@ int Fct_Ch_AmRelease(int val)
 {
 float value;    
 
-    value = val * NORM127MUL;
+    value = (val+20) * NORM127MUL;
     adsr_vol.r = (0.0020 * pow(100, 1.0f - value*2));    
     if(serialdebug)    
         Serial.printf("Amp Release: %f\n",adsr_vol.r);
