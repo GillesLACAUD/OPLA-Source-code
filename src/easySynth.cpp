@@ -524,14 +524,6 @@ static uint8_t cptvoice=0;
                     voice->active=0;
                     globalrank--;
                     Voice_Off(i);
-                    //Serial.printf("voc: %02d, osc: %02d\n",voc_act, osc_act);
-                    /*
-                    for (int j = 0; j < MAX_POLY_VOICE ; j++)
-                    {
-                        Serial.printf("----- rank: %02d\n",voicePlayer[j].active);
-                    }
-                    */
-                    
                 }
                 /*
                  * make is slow to avoid bad things .. or crying ears
@@ -638,16 +630,17 @@ uint8_t keysteal=99;
 
     }
     */
+
     for (int i = 0; i < MAX_POLY_VOICE ; i++)
     {
-        if (voicePlayer[i].active && voicePlayer[i].midiNote == note)
-        {
-            Voice_Retrig(i);
-            voicePlayer[i].active = 1;
-            return &voicePlayer[i];
-        }
+           if (voicePlayer[i].active && voicePlayer[i].midiNote==note)
+           {
+                Voice_Off(i);
+                voicePlayer[i].active = globalrank;
+                return &voicePlayer[i];
+           }
     }
-    Serial.printf("????\n");
+
     for (int i = 0; i < MAX_POLY_VOICE ; i++)
     {
         if (voicePlayer[i].active == 0)
@@ -658,8 +651,56 @@ uint8_t keysteal=99;
         }
     }
     // Steal a voice here
+    // Search first the lower rank release note
+    keysteal =99;
     for (int i = 0; i < MAX_POLY_VOICE ; i++)
     {
+        if(voicePlayer[i].phase==release)
+        {
+            if(voicePlayer[i].active<keysteal)
+                keysteal = i;
+        }
+    }
+    if(keysteal!=99)
+    {
+        Voice_Off(keysteal);   
+        for (int i = 0; i < MAX_POLY_VOICE ; i++)
+        {
+            voicePlayer[keysteal].active--;
+        }        
+        voicePlayer[keysteal].active = globalrank;
+        return &voicePlayer[keysteal];
+    }
+    // No release note
+    else
+    {
+        for(int i = 0; i < MAX_POLY_VOICE ; i++)
+        {
+            if(voicePlayer[i].active<keysteal)
+                keysteal = i;
+        }
+        for (int i = 0; i < MAX_POLY_VOICE ; i++)
+        {
+            voicePlayer[keysteal].active--;
+        }
+        voicePlayer[keysteal].active = globalrank;
+        for (int i = 0; i < MAX_POLY_VOICE ; i++)
+        {
+            if(i!=keysteal)
+            {
+                if(i!=1)
+                    voicePlayer[keysteal].active--;
+            }
+        }
+        Voice_Off(keysteal);   
+        return &voicePlayer[keysteal];
+    }
+
+    Serial.printf("PAS NORLAK.............\n");
+
+    for (int i = 0; i < MAX_POLY_VOICE ; i++)
+    {
+
         if(voicePlayer[i].active && voicePlayer[i].phase==release && keysteal==99)
         {
             Serial.printf("STEAL\n");
@@ -703,7 +744,7 @@ void Synth_NoteOn(uint8_t note)
     voice->velocity = 0.25; /* just something to test */
     voice->lastSample[0] = 0.0f;
     voice->lastSample[1] = 0.0f;
-    voice->control_sign = 0.0f;
+    //voice->control_sign = 0.0f;
     voice->phase = attack;
 
     voice->f_control_sign = 0;
