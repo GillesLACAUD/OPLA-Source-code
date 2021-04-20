@@ -336,6 +336,7 @@ float finc,fdec;
 int i;
 int cmp;
 static uint8_t cptvoice=0;
+int indx=0;
 
     nz = ((random(1024) / 512.0f) - 1.0f)*NoiseLevel*(1+NoiseMod);
     /*
@@ -421,11 +422,22 @@ static uint8_t cptvoice=0;
                 break;
             
                 case WAVE_SINE:
+                /*
                 cmp = ((int)(float)WAVEFORM_CNT*tmp);
                 for (i = 0; i < WAVEFORM_CNT; i++)
                 {
                     wavework[i] = (i > cmp) ? sine[i] : 0;
                 }
+                */
+                cmp = 1+tmp*20;
+                for (i = 0; i < WAVEFORM_CNT; i++)
+                {
+                    wavework[i] = sine[indx];
+                    indx+=cmp;
+                    if(indx>WAVEFORM_CNT)
+                        indx=0;
+                }
+
                 break;
 
                 // SAW To TRI
@@ -594,7 +606,7 @@ uint8_t keysteal=99;
            if (voicePlayer[i].active && voicePlayer[i].midiNote==note)
            {
                 Voice_Off(i);
-                voicePlayer[i].active = globalrank;
+                //voicePlayer[i].active = globalrank;
                 *retrig=1;
                 return &voicePlayer[i];
            }
@@ -630,7 +642,7 @@ uint8_t keysteal=99;
         Voice_Off(keytab);   
         for (int i = 0; i < MAX_POLY_VOICE ; i++)
         {
-            if(voicePlayer[i].active)
+            if(voicePlayer[i].active>1)
                 voicePlayer[i].active--;
         }
         voicePlayer[keytab].active = globalrank;
@@ -653,7 +665,7 @@ uint8_t keysteal=99;
             Voice_Off(keytab);   
             for (int i = 0; i < MAX_POLY_VOICE ; i++)
             {
-            if(voicePlayer[i].active)
+            if(voicePlayer[i].active>1)
                 voicePlayer[i].active--;
             }
             voicePlayer[keytab].active = globalrank;
@@ -782,7 +794,7 @@ uint8_t retrig;
             osc_act += 1;
         }
     }
-    //Midi_Dump();
+    Midi_Dump();
 }
 
 void Synth_NoteOff(uint8_t note)

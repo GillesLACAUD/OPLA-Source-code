@@ -7,7 +7,7 @@
 #include "Lfo.h"
 #include "simple_delay.h"
 
-uint8_t serialdebug=1;
+uint8_t serialdebug=0;
 
 //--------------------------------------------------
 // OSC

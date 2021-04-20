@@ -27,6 +27,12 @@ void Midi_Dump()
             Serial.printf("Actif %d Midi %03d Phase %d voc: %02d, osc: %02d Grank : %02d\n",voicePlayer[i].active,voicePlayer[i].midiNote,voicePlayer[i].phase,voc_act, osc_act,globalrank);
         }
 
+        if(globalrank>4)
+        {
+            Serial.printf("ERROR\n");
+            while(1);
+        }
+
 }
 
 
