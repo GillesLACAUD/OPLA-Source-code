@@ -57,7 +57,7 @@ void Synth_Init()
         sine[i] = val;
         saw[i] = (2.0f * ((float)i) / ((float)WAVEFORM_CNT)) - 1.0f;
         square[i] = (i > (WAVEFORM_CNT / 2)) ? 1 : -1;
-        wavework[i] = (i > (WAVEFORM_CNT / 2)) ? 1 : -1;
+        wavework[i] = ((i > (WAVEFORM_CNT / 2)) ? (((4.0f * (float)i) / ((float)WAVEFORM_CNT)) - 1.0f) : (3.0f - ((4.0f * (float)i) / ((float)WAVEFORM_CNT)))) - 2.0f;
         pulse[i] = (i > (WAVEFORM_CNT / 4)) ? 1 : -1;
         tri[i] = ((i > (WAVEFORM_CNT / 2)) ? (((4.0f * (float)i) / ((float)WAVEFORM_CNT)) - 1.0f) : (3.0f - ((4.0f * (float)i) / ((float)WAVEFORM_CNT)))) - 2.0f;
         noise[i] = (random(1024) / 512.0f) - 1.0f;
@@ -97,8 +97,8 @@ void Synth_Init()
         midi_note_to_add[i] = add;
     }
 
-    Lfo1.waveForm =sine;
-    Lfo2.waveForm =sine;
+    Lfo1.waveForm =tri;
+    Lfo2.waveForm =tri;
     
     /*
      * assign main filter
@@ -113,6 +113,11 @@ void Synth_Init()
     Lfo1.ui8_Dest = LFO_CUTOFF;
     Lfo1.ui8_Wave = WLFO_SH;
     Lfo1.f_Amount = 0.0;
+
+    // long release
+    float value;    
+    value = (95+20) * NORM127MUL;
+    adsr_vol.r = (0.0020 * pow(100, 1.0f - value*2));    
 
 
 }
@@ -138,8 +143,12 @@ struct filterCoeffT mainFilt;
 #define FILTER_1
 #define MVF     10
 
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
 #ifdef FILTER_1
-
 float KarlsenLPF(float signal, float freq, float res, uint8_t m)
 {
 	static float b_inSH[MVF], b_in[MVF], b_f[MVF], b_q[MVF], b_fp[MVF], pole1[MVF], pole2[MVF], pole3[MVF], pole4[MVF];
@@ -251,7 +260,11 @@ static float buf1[6],buf2[6],buf3[6],buf4[6];
 #endif
 
 
-
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
 /*
  * very bad and simple implementation of ADSR
  * - but it works for the start
@@ -304,7 +317,11 @@ inline bool ADSR_Process(const struct adsrT *ctrl, float *ctrlSig, adsr_phaseT *
     }
     return true;
 }
-
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
 void Voice_Off(uint32_t i)
 {
     notePlayerT *voice = &voicePlayer[i];
@@ -321,19 +338,43 @@ void Voice_Off(uint32_t i)
     voc_act -= 1;
 }
 
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+void Voice_Off2(uint32_t i)
+{
+    notePlayerT *voice = &voicePlayer[i];
+    
+    for (int f = 0; f < MAX_POLY_OSC; f++)
+    {
+        oscillatorT *osc = &oscPlayer[f];
+        osc->dest = voiceSink;
+        osc_act -= 1;
+    }
+    voc_act -= 1;
+}
+
+
 
 static float out_l, out_r;
 static uint32_t count = 0;
-
+float tmp=0;
+int i;
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
 //[[gnu::noinline, gnu::optimize ("fast-math")]]
 void Synth_Process(float *left, float *right)
 {
 bool voice_off;
 float nz=0;
-float tmp=0;
 uint16_t Triinc,Tridec;
 float finc,fdec;
-int i;
+
 int cmp;
 static uint8_t cptvoice=0;
 int indx=0;
@@ -366,7 +407,32 @@ int indx=0;
     Lfo_Process(&Lfo1);
     Lfo_Process(&Lfo2);
 
+    /*    
+    if(selectedWaveForm == &wavework)
+    {
+        
+        if(WaveShapping1Mod > (OldWaveShapping1Mod +0.02) || WaveShapping1Mod <(OldWaveShapping1Mod-0.02))
+        {
+            //OldWaveShapping1Mod = WaveShapping1Mod;
+            //tmp = 5.6; ok
+            //tmp = WaveShapping1;
+            //tmp = WaveShapping1+WaveShapping1Mod;
+            
+            for (i = 0; i < WAVEFORM_CNT; i++)
+            {
+                wavework[i] = sine[i];
+            }
+            
+        }
+        
+    }
+    */
+    
+           
+
+
     // Wave shapping process
+    /*
     if(selectedWaveForm == &wavework)
     {
         if(WaveShapping1Mod > (OldWaveShapping1Mod +0.02) || WaveShapping1Mod <(OldWaveShapping1Mod-0.02))
@@ -422,13 +488,13 @@ int indx=0;
                 break;
             
                 case WAVE_SINE:
-                /*
-                cmp = ((int)(float)WAVEFORM_CNT*tmp);
-                for (i = 0; i < WAVEFORM_CNT; i++)
-                {
-                    wavework[i] = (i > cmp) ? sine[i] : 0;
-                }
-                */
+                
+                //cmp = ((int)(float)WAVEFORM_CNT*tmp);
+                //for (i = 0; i < WAVEFORM_CNT; i++)
+                //{
+                    //wavework[i] = (i > cmp) ? sine[i] : 0;
+                //}
+                
                 cmp = 1+tmp*20;
                 for (i = 0; i < WAVEFORM_CNT; i++)
                 {
@@ -466,7 +532,10 @@ int indx=0;
                 break;
             }
         }
+
     }
+    */
+
   
     /*
      * oscillator processing -> mix to voice
@@ -583,7 +652,11 @@ int indx=0;
     *left = out_l;
     *right = out_r;
 }
-
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
 struct oscillatorT *getFreeOsc()
 {
     for (int i = 0; i < MAX_POLY_OSC ; i++)
@@ -596,22 +669,38 @@ struct oscillatorT *getFreeOsc()
     return NULL;
 }
 
+// voicePlayer[0].active = 2
+// voicePlayer[1].active = 1   -> first voice to steal if no release 
+// voicePlayer[2].active = 3
+// voicePlayer[3].active = 0   -> this voice is free 
+
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
 struct notePlayerT *getFreeVoice(uint8_t note,uint8_t* retrig)
 {
 uint8_t keysteal=99;    
 
     *retrig=0;
+    //--------------------------------------------
+    // Retrig the same note - Simple case
+    //--------------------------------------------
     for (int i = 0; i < MAX_POLY_VOICE ; i++)
     {
-           if (voicePlayer[i].active && voicePlayer[i].midiNote==note)
-           {
-                Voice_Off(i);
-                //voicePlayer[i].active = globalrank;
-                *retrig=1;
-                return &voicePlayer[i];
-           }
+        if (voicePlayer[i].active && voicePlayer[i].midiNote==note)
+        {
+            Voice_Off(i);
+            //voicePlayer[i].active = globalrank;
+            *retrig=1;
+            return &voicePlayer[i];
+        }
     }
 
+    //--------------------------------------------
+    // A voice is free - Simple case
+    //--------------------------------------------
     for (int i = 0; i < MAX_POLY_VOICE ; i++)
     {
         if (voicePlayer[i].active == 0)
@@ -625,6 +714,9 @@ uint8_t keysteal=99;
     // Search first the lower rank release note
     keysteal =99;
     uint8_t keytab;
+    //--------------------------------------------
+    // Search a note on release phase
+    //--------------------------------------------
     for (int i = 0; i < MAX_POLY_VOICE ; i++)
     {
         if(voicePlayer[i].phase==release)
@@ -636,10 +728,14 @@ uint8_t keysteal=99;
             }
         }
     }
+    //--------------------------------------------
+    // A note is on release phase
+    //--------------------------------------------
     if(keysteal!=99)
     {
-        Serial.printf("RELEASE Steal %d Active %d\n",keytab,voicePlayer[keytab].active);
-        Voice_Off(keytab);   
+        //Serial.printf("R ELEASE Steal %d Active %d\n",keytab,voicePlayer[keytab].active);
+        Voice_Off(keytab);  
+        *retrig=1;   
         for (int i = 0; i < MAX_POLY_VOICE ; i++)
         {
             if(voicePlayer[i].active>1)
@@ -648,7 +744,9 @@ uint8_t keysteal=99;
         voicePlayer[keytab].active = globalrank;
         return &voicePlayer[keytab];
     }
-    // No release note
+    //--------------------------------------------
+    // No Release note -Steal the first note
+    //--------------------------------------------
     else
     {
         for(int i = 0; i < MAX_POLY_VOICE ; i++)
@@ -695,14 +793,22 @@ uint8_t keysteal=99;
     }
     return &voicePlayer[keysteal];
 }
-
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
 inline void Filter_Reset(struct filterProcT *filter)
 {
     filter->w[0] = 0.0f;
     filter->w[1] = 0.0f;
     filter->w[2] = 0.0f;
 }
-
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
 void Synth_NoteOn(uint8_t note)
 {
 uint8_t retrig;
@@ -748,7 +854,7 @@ uint8_t retrig;
         osc->addVal = tmp;
         if(!retrig)
         {
-            osc->samplePos = 0;
+            //osc->samplePos = 0;
         }
         osc->waveForm = *selectedWaveForm;
         osc->dest = voice->lastSample;
@@ -765,7 +871,7 @@ uint8_t retrig;
         osc->addVal = tmp;
         if(!retrig)
         {
-            osc->samplePos = 0;
+            //osc->samplePos = 0;
         }
         osc->waveForm = *selectedWaveForm;
         osc->dest = voice->lastSample;
@@ -784,7 +890,7 @@ uint8_t retrig;
             osc->addVal = midi_note_to_add[note+SubTranspose];
             if(!retrig)
             {
-                osc->samplePos = 0; /* we could add some offset maybe */
+                //osc->samplePos = 0; /* we could add some offset maybe */
             }
             osc->waveForm = *selectedWaveForm2;
             osc->dest = voice->lastSample;
@@ -794,9 +900,13 @@ uint8_t retrig;
             osc_act += 1;
         }
     }
-    Midi_Dump();
+    //Midi_Dump();
 }
-
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
 void Synth_NoteOff(uint8_t note)
 {
     for (int i = 0; i < MAX_POLY_VOICE ; i++)
@@ -808,7 +918,11 @@ void Synth_NoteOff(uint8_t note)
         }
     }
 }
-
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
 int Synth_SetRotary(uint8_t rotary, int val)
 {
 uint8_t s=0,e=0;

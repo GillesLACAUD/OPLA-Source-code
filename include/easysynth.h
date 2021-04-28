@@ -10,8 +10,9 @@
 /*
  * Following defines can be changed for different puprposes
  */
-#define MAX_POLY_VOICE	4                   /* max single voices, can use multiple osc */
-#define MAX_POLY_OSC	MAX_POLY_VOICE*3    /* osc polyphony, always active reduces single voices max poly */
+#define MAX_POLY_VOICE	4                               /* max single voices, can use multiple osc */
+#define OSC_PER_VOICE	3                               /* max single voices, can use multiple osc */
+#define MAX_POLY_OSC	MAX_POLY_VOICE*OSC_PER_VOICE    /* osc polyphony, always active reduces single voices max poly */
 
 
 

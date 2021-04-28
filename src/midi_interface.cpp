@@ -18,7 +18,11 @@
 
 /* constant to normalize midi value to 0.0 - 1.0f */
 #define NORM127MUL	0.007874f
-
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
 void Midi_Dump()
 {
         Serial.printf("------- DUMP --------\n");
@@ -35,7 +39,11 @@ void Midi_Dump()
 
 }
 
-
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
 inline void Midi_NoteOn(uint8_t note)
 {
     if(note)
@@ -45,15 +53,21 @@ inline void Midi_NoteOn(uint8_t note)
         Midi_Dump();
     }
 }
-
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
 inline void Midi_NoteOff(uint8_t note)
 {
     Synth_NoteOff(note);
 }
 
-/*
- * this function will be called when a control change message has been received
- */
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
 inline void Midi_ControlChange(uint8_t channel, uint8_t data1, uint8_t data2)
 {
     if(!overon)
@@ -117,9 +131,11 @@ inline void Midi_ControlChange(uint8_t channel, uint8_t data1, uint8_t data2)
 
 }
 
-/*
- * function will be called when a short message has been received over midi
- */
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
 inline void HandleShortMsg(uint8_t *data)
 {
     uint8_t ch = data[0] & 0x0F;
@@ -140,14 +156,22 @@ inline void HandleShortMsg(uint8_t *data)
     }
 }
 
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
 void Midi_Setup()
 {
     Serial2.begin(31250, SERIAL_8N1, RXD2, TXD2);
     pinMode(RXD2, INPUT_PULLUP);  /* 25: GPIO 16, u2_RXD */
 }
-/*
- * this function should be called continuously to ensure that incoming messages can be processed
- */
+
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
 void Midi_Process()
 {
     /*
