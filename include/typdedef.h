@@ -10,7 +10,7 @@ struct adsrT
 
 typedef enum
 {
-    attack, decay, sustain, release
+    attack, decay, sustain, release,standby
 } adsr_phaseT;
 
 

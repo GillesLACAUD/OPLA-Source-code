@@ -389,7 +389,7 @@ static uint16_t cpttimer2;
      * Midi does not required to be checked after every processed sample
      * - we divide our operation by 8
      */
-    if (loop_count_u8 % 24 == 0)
+    if (loop_count_u8 % 4 == 0)
     {
         Midi_Process();
         //Nextion_Process(); // in the task0

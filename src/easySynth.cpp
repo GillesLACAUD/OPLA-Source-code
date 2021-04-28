@@ -116,7 +116,7 @@ void Synth_Init()
 
     // long release
     float value;    
-    value = (95+20) * NORM127MUL;
+    value = (75+20) * NORM127MUL;
     adsr_vol.r = (0.0020 * pow(100, 1.0f - value*2));    
 
 
@@ -328,7 +328,7 @@ void Voice_Off(uint32_t i)
     
     for (int f = 0; f < MAX_POLY_OSC; f++)
     {
-        oscillatorT *osc = &oscPlayer[f];
+        oscillatorT *osc = &oscPlayer[i*OSC_PER_VOICE+f];
         if (osc->dest == voice->lastSample)
         {
             osc->dest = voiceSink;
@@ -583,6 +583,7 @@ int indx=0;
                     }
                     voice->midiNote=0;
                     voice->active=0;
+                    voice->phase = standby;
                     globalrank--;
                     Voice_Off(i);
                 }
@@ -687,6 +688,7 @@ uint8_t keysteal=99;
     //--------------------------------------------
     // Retrig the same note - Simple case
     //--------------------------------------------
+    /*
     for (int i = 0; i < MAX_POLY_VOICE ; i++)
     {
         if (voicePlayer[i].active && voicePlayer[i].midiNote==note)
@@ -697,6 +699,7 @@ uint8_t keysteal=99;
             return &voicePlayer[i];
         }
     }
+    */
 
     //--------------------------------------------
     // A voice is free - Simple case
@@ -714,6 +717,7 @@ uint8_t keysteal=99;
     // Search first the lower rank release note
     keysteal =99;
     uint8_t keytab;
+    *retrig=1;  
     //--------------------------------------------
     // Search a note on release phase
     //--------------------------------------------
@@ -733,15 +737,17 @@ uint8_t keysteal=99;
     //--------------------------------------------
     if(keysteal!=99)
     {
-        //Serial.printf("R ELEASE Steal %d Active %d\n",keytab,voicePlayer[keytab].active);
+        //Serial.printf("R S %d Act %d\n",keytab,voicePlayer[keytab].active);
+        //Midi_Dump();        
         Voice_Off(keytab);  
-        *retrig=1;   
+        //*retrig=1;   
         for (int i = 0; i < MAX_POLY_VOICE ; i++)
         {
             if(voicePlayer[i].active>1)
                 voicePlayer[i].active--;
         }
         voicePlayer[keytab].active = globalrank;
+        //Midi_Dump();        
         return &voicePlayer[keytab];
     }
     //--------------------------------------------
@@ -759,8 +765,9 @@ uint8_t keysteal=99;
         }
         if(keysteal!=99)
         {   
-            Serial.printf("SUSTAIN Steal %d Active %d\n",keytab,voicePlayer[keytab].active);
+            //Serial.printf("S S %d Act %d\n",keytab,voicePlayer[keytab].active);
             Voice_Off(keytab);   
+            //*retrig=1;
             for (int i = 0; i < MAX_POLY_VOICE ; i++)
             {
             if(voicePlayer[i].active>1)
@@ -770,28 +777,6 @@ uint8_t keysteal=99;
             return &voicePlayer[keytab];
         }
     }
-
-    Serial.printf("PAS NORLAK.............\n");
-
-    for (int i = 0; i < MAX_POLY_VOICE ; i++)
-    {
-
-        if(voicePlayer[i].active && voicePlayer[i].phase==release && keysteal==99)
-        {
-            Serial.printf("STEAL\n");
-            Voice_Off(i);
-            voicePlayer[i].active = globalrank;
-            keysteal =i;
-        }
-        else
-        {
-            if(voicePlayer[i].active>1)
-            {
-                voicePlayer[i].active--;
-            }
-        }
-    }
-    return &voicePlayer[keysteal];
 }
 /***************************************************/
 /*                                                 */

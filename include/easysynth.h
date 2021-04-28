@@ -87,7 +87,7 @@ char Dest_Name[DEST_TYPE_COUNT][MAX_LABEL] =
  * do not forget to enter the waveform pointer addresses here
  */
 float **waveFormLookUp[WAVEFORM_TYPE_COUNT] = {&sine, &saw, &square, &pulse, &tri, &noise, &silence};
-float **selectedWaveForm =  &sine;
+float **selectedWaveForm =  &tri;
 float **selectedWaveForm2 =  &sine;
 uint32_t osc_act = 0;
 uint32_t voc_act = 0;
