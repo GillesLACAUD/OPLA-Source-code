@@ -33,6 +33,7 @@ void Synth_Init()
      * we do not check if malloc was successful
      * if there is not enough memory left the application will crash
      */
+    /*
     sine = (float *)malloc(sizeof(float) * WAVEFORM_CNT);
     saw = (float *)malloc(sizeof(float) * WAVEFORM_CNT);
     square = (float *)malloc(sizeof(float) * WAVEFORM_CNT);
@@ -41,6 +42,7 @@ void Synth_Init()
     noise = (float *)malloc(sizeof(float) * WAVEFORM_CNT);
     silence = (float *)malloc(sizeof(float) * WAVEFORM_CNT);
     wavework = (float *)malloc(sizeof(float) * WAVEFORM_CNT);
+    */
 
     
 
@@ -116,7 +118,7 @@ void Synth_Init()
 
     // long release
     float value;    
-    value = (75+20) * NORM127MUL;
+    value = (85+20) * NORM127MUL;
     adsr_vol.r = (0.0020 * pow(100, 1.0f - value*2));    
 
 
@@ -360,7 +362,6 @@ void Voice_Off2(uint32_t i)
 
 static float out_l, out_r;
 static uint32_t count = 0;
-float tmp=0;
 int i;
 /***************************************************/
 /*                                                 */
@@ -407,28 +408,115 @@ int indx=0;
     Lfo_Process(&Lfo1);
     Lfo_Process(&Lfo2);
 
-    /*    
-    if(selectedWaveForm == &wavework)
-    {
-        
-        if(WaveShapping1Mod > (OldWaveShapping1Mod +0.02) || WaveShapping1Mod <(OldWaveShapping1Mod-0.02))
-        {
-            //OldWaveShapping1Mod = WaveShapping1Mod;
-            //tmp = 5.6; ok
-            //tmp = WaveShapping1;
-            //tmp = WaveShapping1+WaveShapping1Mod;
-            
-            for (i = 0; i < WAVEFORM_CNT; i++)
-            {
-                wavework[i] = sine[i];
-            }
-            
-        }
-        
-    }
-    */
+    float sup;
+    float inf;
+    float tmp;
     
-           
+    
+    if(selectedWaveForm == wavework)
+    {
+        sup = OldWaveShapping1Mod+0.02;
+        inf = OldWaveShapping1Mod-0.02;    
+        if(WaveShapping1Mod > sup || WaveShapping1Mod < inf)
+        {
+            OldWaveShapping1Mod = WaveShapping1Mod;
+            tmp = WaveShapping1+WaveShapping1Mod;
+
+            switch(selWaveForm1)
+            {
+                // PWM
+                case WAVE_SQUARE:
+                if(tmp<0.01)
+                    tmp = 0.01;
+                if(tmp>0.99)
+                    tmp = 0.99;
+                cmp = ((int)(float)WAVEFORM_CNT*tmp);
+                for (i = 0; i < WAVEFORM_CNT; i++)
+                {
+                    wavework[i] = (i > cmp) ? 1 : -1;
+                }
+                break;
+
+                case WAVE_PULSE:
+                break;
+
+                case WAVE_TRI:
+                // from -1 to +1
+                // gate1 = -0.8 gate2 = 0.8
+                // tmp from 0 to 1
+                // gate1 = 1-tmp/2
+                // gate2 = -gate1
+                float gate1,gate2;
+                gate1 = 1 -tmp/2;
+                gate2 = 0-gate1;
+                for (i = 0; i < WAVEFORM_CNT; i++)
+                {
+                    if(tri[i]>gate1)
+                    {
+                        wavework[i] = gate1;
+                    }
+                    else if(tri[i]<gate2)
+                    {
+                        wavework[i] = gate2;
+                    }
+                    else
+                    {
+                        wavework[i] = tri[i];
+                    }
+                }
+                break;
+
+                case WAVE_NOISE:
+                break;
+            
+                case WAVE_SINE:
+                
+                //cmp = ((int)(float)WAVEFORM_CNT*tmp);
+                //for (i = 0; i < WAVEFORM_CNT; i++)
+                //{
+                    //wavework[i] = (i > cmp) ? sine[i] : 0;
+                //}
+                
+                cmp = 1+tmp*20;
+                for (i = 0; i < WAVEFORM_CNT; i++)
+                {
+                    wavework[i] = sine[indx];
+                    indx+=cmp;
+                    if(indx>WAVEFORM_CNT)
+                        indx=0;
+                }
+
+                break;
+
+                // SAW To TRI
+                case WAVE_SAW:
+                if(tmp<0.05)
+                    tmp = 0.0;
+                if(tmp>0.95)
+                    tmp = 1;
+                        
+                Triinc = (WAVEFORM_CNT/2)*(1+tmp);
+                Tridec = (WAVEFORM_CNT/2)*(1-tmp);
+
+                finc = 2.0/Triinc;
+                fdec = 2.0/Tridec;
+                
+                for(i = 0;i<Triinc;i++)
+                {
+                    wavework[i] = -1 + i*finc;
+                    //wavework[i] = sine[i];
+                }
+                for(i=0;i<Tridec;i++)
+                {
+                    //wavework[i]=0;
+                    wavework[i] = 1 - i*fdec;
+                }
+                break;
+            }
+        }
+    }
+    
+         
 
 
     // Wave shapping process
@@ -841,7 +929,7 @@ uint8_t retrig;
         {
             //osc->samplePos = 0;
         }
-        osc->waveForm = *selectedWaveForm;
+        osc->waveForm = selectedWaveForm;
         osc->dest = voice->lastSample;
         osc->pan_l = 1;
         osc->pan_r = 1;
@@ -858,7 +946,7 @@ uint8_t retrig;
         {
             //osc->samplePos = 0;
         }
-        osc->waveForm = *selectedWaveForm;
+        osc->waveForm = selectedWaveForm;
         osc->dest = voice->lastSample;
         osc->pan_l = 1;
         osc->pan_r = 1;
@@ -877,7 +965,7 @@ uint8_t retrig;
             {
                 //osc->samplePos = 0; /* we could add some offset maybe */
             }
-            osc->waveForm = *selectedWaveForm2;
+            osc->waveForm = selectedWaveForm2;
             osc->dest = voice->lastSample;
             osc->pan_l = 1;
             osc->pan_r = 1;

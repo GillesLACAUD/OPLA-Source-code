@@ -59,15 +59,15 @@ SYNTH_EXTRN uint32_t midi_note_to_add[MIDI_NOTE_CNT]; /* lookup to playback wave
  * add here your waveforms
  */
 #ifdef __SYNTH__
-float *sine = NULL;
-float *saw = NULL;
-float *square = NULL;
-float *pulse = NULL;
-float *tri = NULL;
-float *noise = NULL;
-float *silence = NULL;
-
-float *wavework = NULL;
+float sine[WAVEFORM_CNT];
+float saw[WAVEFORM_CNT];
+float square[WAVEFORM_CNT];
+float pulse[WAVEFORM_CNT];
+float tri[WAVEFORM_CNT];
+float noise[WAVEFORM_CNT];
+float silence[WAVEFORM_CNT];
+float wavework[WAVEFORM_CNT];
+float wavetrash[WAVEFORM_CNT];
 
 
 uint8_t selWaveForm1=0;
@@ -86,9 +86,9 @@ char Dest_Name[DEST_TYPE_COUNT][MAX_LABEL] =
 /*
  * do not forget to enter the waveform pointer addresses here
  */
-float **waveFormLookUp[WAVEFORM_TYPE_COUNT] = {&sine, &saw, &square, &pulse, &tri, &noise, &silence};
-float **selectedWaveForm =  &tri;
-float **selectedWaveForm2 =  &sine;
+float *waveFormLookUp[WAVEFORM_TYPE_COUNT] = {&sine[0], &saw[0], &square[0], &pulse[0], &tri[0], &noise[0], &silence[0]};
+float *selectedWaveForm =  &tri[0];
+float *selectedWaveForm2 = &sine[0];
 uint32_t osc_act = 0;
 uint32_t voc_act = 0;
 struct adsrT adsr_vol = {0.04f, 0.03f, 1.0f, 0.04f};
@@ -112,40 +112,41 @@ float Lfo1AmtMod=0;
 float Lfo2SpeedMod=0;
 float Lfo2AmtMod=0;
 float WaveShapping1Mod=0;
-float OldWaveShapping1Mod;
+float OldWaveShapping1Mod=0;
 
-int8_t SubTranspose = -12;
 
 float MixOsc = 1;
 float MixSub = 1;
+int8_t SubTranspose = -12;
 
 #else
 
 extern char Wave_Name[WAVEFORM_TYPE_COUNT][MAX_LABEL];
 extern char Dest_Name[DEST_TYPE_COUNT][MAX_LABEL];
 
-extern float *sine;
-extern float *saw;
-extern float *square;
-extern float *pulse;
-extern float *tri;
-extern float *noise;
-extern float *silence;
-extern float *wavework;
-
-extern float oscdetune;
+extern float sine[WAVEFORM_CNT];
+extern float saw[WAVEFORM_CNT];
+extern float square[WAVEFORM_CNT];
+extern float pulse[WAVEFORM_CNT];
+extern float tri[WAVEFORM_CNT];
+extern float noise[WAVEFORM_CNT];
+extern float silence[WAVEFORM_CNT];
+extern float wavework[WAVEFORM_CNT];
+extern float wavetrash[WAVEFORM_CNT];
 
 extern uint8_t selWaveForm1;
 extern uint8_t selWaveForm2;
 
 extern uint8_t globalrank;
 
+extern float oscdetune;
+
 /*
  * do not forget to enter the waveform pointer addresses here
  */
-extern float **waveFormLookUp[WAVEFORM_TYPE_COUNT];
-extern float **selectedWaveForm;
-extern float **selectedWaveForm2;
+extern float *waveFormLookUp[WAVEFORM_TYPE_COUNT];
+extern float *selectedWaveForm;
+extern float *selectedWaveForm2;
 extern uint32_t osc_act;
 extern uint32_t voc_act;
 extern struct adsrT adsr_vol;

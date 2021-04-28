@@ -35,10 +35,10 @@ hw_timer_t * Lfo_timer1=NULL;
 hw_timer_t * Lfo_timer2=NULL;
 hw_timer_t * timer_1ms=NULL;
 
-extern float *sine;
+extern float sine[1024];
 
-float **selectedWaveLfo1 =  &sine;
-float **selectedWaveLfo2 =  &sine;
+float *selectedWaveLfo1 =  &sine[0];
+float *selectedWaveLfo2 =  &sine[0];
 #else
 extern char Wave_LfoName[WAVE_LFO_COUNT][5];
 extern volatile uint32_t Lfo_cnt1;
@@ -48,8 +48,8 @@ extern hw_timer_t * Lfo_timer1;
 extern hw_timer_t * Lfo_timer2;
 extern hw_timer_t * timer_1ms;
 
-extern float **selectedWaveLfo1;
-extern float **selectedWaveLfo2;
+extern float *selectedWaveLfo1;
+extern float *selectedWaveLfo2;
 #endif
 
 LFO_EXTRN void Lfo_Process(stLfo* prlfo);

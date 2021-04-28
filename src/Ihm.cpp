@@ -30,10 +30,10 @@ struct oscillatorT *osc;
     for(uint8_t o=0;o<=osc_act;o+=3)
     {
         osc = &oscPlayer[o+0];
-        osc->waveForm = *selectedWaveForm;
+        osc->waveForm = selectedWaveForm;
 
         osc = &oscPlayer[o+1];
-        osc->waveForm = *selectedWaveForm;
+        osc->waveForm = selectedWaveForm;
     }
     if(serialdebug)
         Serial.printf("selWaveForm1: %d\n", selWaveForm1);      
@@ -56,7 +56,7 @@ struct oscillatorT *osc;
     for(uint8_t o=0;o<=osc_act;o+=3)
     {
         osc = &oscPlayer[o+2];
-        osc->waveForm = *selectedWaveForm2;
+        osc->waveForm = selectedWaveForm2;
     } 
     if(serialdebug)
         Serial.printf("selWaveForm2: %d\n", selWaveForm2);
@@ -137,14 +137,15 @@ struct oscillatorT *osc;
         wavework[i] = (i > cmp) ? 1 : -1;
     }
     */
-    selectedWaveForm = &wavework;
+
+    selectedWaveForm = &wavework[0];
     for(uint8_t o=0;o<=osc_act;o+=3)
     {
         osc = &oscPlayer[o+0];
-        osc->waveForm = *selectedWaveForm;
+        osc->waveForm = selectedWaveForm;
 
         osc = &oscPlayer[o+1];
-        osc->waveForm = *selectedWaveForm;
+        osc->waveForm = selectedWaveForm;
     }
     return(0);
 }
