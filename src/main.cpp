@@ -116,7 +116,7 @@ portMUX_TYPE timerMux_1ms = portMUX_INITIALIZER_UNLOCKED;
     //Lfo1.ui16_Cpt = Lfo_cnt1;
     //Serial.printf("CPT %04d sine %f CUT LFO %f\n",Lfo1.ui16_Cpt,sine[Lfo1.ui16_Cpt],filtCutoffLfo);
 
-void onTimer1()
+void IRAM_ATTR onTimer1()
 {
 static uint8_t scaler=0;
 
@@ -132,7 +132,7 @@ static uint8_t scaler=0;
     Lfo1_Mutex=0;
 }
 
-void onTimer2()
+void IRAM_ATTR onTimer2()
 {
 static uint8_t scaler=0;
 
@@ -149,7 +149,7 @@ static uint8_t scaler=0;
 
 }
 
-void onTimer1ms()
+void IRAM_ATTR onTimer1ms()
 {
     //portENTER_CRITICAL_ISR(&timerMux_1ms);
     Timer1ms_cnt++;
