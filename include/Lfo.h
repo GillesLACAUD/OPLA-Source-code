@@ -27,6 +27,9 @@ LFO_EXTRN struct stLfo Lfo2;
 char Wave_LfoName[WAVE_LFO_COUNT][5] = 
 {"SIN","TRI","SAW","ISA","SQU","S&H","NOI","MUT"};
 
+uint8_t Lfo1_Mutex=0;
+uint8_t Lfo2_Mutex=0;
+
 volatile uint32_t Lfo_cnt1=0;
 volatile uint32_t Lfo_cnt2=0;
 volatile uint32_t Timer1ms_cnt=0;
@@ -41,6 +44,10 @@ float *selectedWaveLfo1 =  &sine[0];
 float *selectedWaveLfo2 =  &sine[0];
 #else
 extern char Wave_LfoName[WAVE_LFO_COUNT][5];
+
+extern uint8_t Lfo1_Mutex;
+extern uint8_t Lfo2_Mutex;
+
 extern volatile uint32_t Lfo_cnt1;
 extern volatile uint32_t Lfo_cnt2;
 extern volatile uint32_t Timer1ms_cnt;

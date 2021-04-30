@@ -7,7 +7,6 @@
 #endif
 
 #include "midi_interface.h"
-#include "easysynth.h"
 #include "Lfo.h"
 
 #define TYPE_DATA	0

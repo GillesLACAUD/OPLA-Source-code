@@ -13,25 +13,24 @@
 /***************************************************/
 void Lfo_Process(stLfo* prlfo)
 {
-float lfoamt;    
+float lfoamt=0;    
 uint16_t freq=9999;    
 
     if(prlfo == &Lfo1)
     {
         prlfo->ui16_Cpt = Lfo_cnt1;
         lfoamt = prlfo->f_Amount + Lfo1AmtMod;
-        freq = prlfo->ui16_Freq*(1+Lfo1SpeedMod);
-        freq +=LFO_MIN_CPT;
-        timerAlarmWrite(Lfo_timer1,freq,true);       
+        //freq = prlfo->ui16_Freq*(1+Lfo1SpeedMod);
+        //freq +=LFO_MIN_CPT;
+        //timerAlarmWrite(Lfo_timer1,freq,true);       
     }
     if(prlfo == &Lfo2)
     {
         prlfo->ui16_Cpt = Lfo_cnt2;        
         lfoamt = prlfo->f_Amount + Lfo2AmtMod;
-        freq = prlfo->ui16_Freq*(1+Lfo2SpeedMod);
-        freq +=LFO_MIN_CPT;
-        timerAlarmWrite(Lfo_timer2,freq,true);       
-        //Serial.printf("lfoamt2 %f Lfo1AmtMod %f Lfo2AmtMod %f\n",lfoamt,Lfo1AmtMod,Lfo2AmtMod);
+        //freq = prlfo->ui16_Freq*(1+Lfo2SpeedMod);
+        //freq +=LFO_MIN_CPT;
+        //timerAlarmWrite(Lfo_timer2,freq,true);       
     }
 
     switch(prlfo->ui8_Wave)        

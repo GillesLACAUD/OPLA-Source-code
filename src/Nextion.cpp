@@ -17,7 +17,7 @@
 /***************************************************/
 unsigned char Nextion_Send(char *ptmess)
 {
-uint8_t m;
+uint8_t m=0;
     
     if(1)
     {

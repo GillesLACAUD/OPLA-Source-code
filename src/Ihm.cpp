@@ -1,6 +1,8 @@
 #include "Arduino.h"
 #include "typdedef.h"
 
+#include "easysynth.h"
+
 #define __IHM__
 #include "Ihm.h"
 
@@ -243,9 +245,11 @@ float value;
 /***************************************************/
 int Fct_Ch_KbTrack(int val) 
 {
-float value;    
+/*
+float value=0;    
 
     value = val * NORM127MUL;
+    */
     return(0);
 }
 
@@ -391,7 +395,10 @@ int Fct_Ch_PiAttack(int val)
 {
 float value;    
 
-    value = val * NORM127MUL;
+    value = (val+20) * NORM127MUL;
+    adsr_pit.a = (0.00005 * pow(5000, 1.0f - value))/2;      
+    if(serialdebug) 
+        Serial.printf("Pitch Attack: %f\n",adsr_pit.a);
     return(0);
 }
 
@@ -404,7 +411,10 @@ int Fct_Ch_PiDecay(int val)
 {
 float value;    
 
-    value = val * NORM127MUL;
+    value = (val+20) * NORM127MUL;
+    adsr_pit.d = (0.00005 * pow(5000, 1.0f - value))/2;     
+    if(serialdebug)   
+        Serial.printf("Pitch Decay: %f\n",adsr_pit.d);
     return(0);
 }
 
@@ -417,7 +427,10 @@ int Fct_Ch_PiRelease(int val)
 {
 float value;    
 
-    value = val * NORM127MUL;
+    value = (val+20) * NORM127MUL;
+    adsr_pit.r = (0.0020 * pow(100, 1.0f - value*2));    
+    if(serialdebug)    
+        Serial.printf("Pitch Release: %f\n",adsr_pit.r);
     return(0);
 }
 
@@ -428,9 +441,11 @@ float value;
 /***************************************************/
 int Fct_Ch_PiAmount(int val)
 {
-float value;    
+/*
+float value=0;    
 
     value = val * NORM127MUL;
+    */
     return(0);
 }
 

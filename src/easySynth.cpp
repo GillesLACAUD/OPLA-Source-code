@@ -18,7 +18,6 @@
 #include "midi_interface.h"
 #include "Lfo.h"
 #include "AC101.h"
-#undef __SYNTH__
 #include "Ihm.h"
 
 #include "esp_attr.h"
@@ -99,8 +98,7 @@ void Synth_Init()
         midi_note_to_add[i] = add;
     }
 
-    Lfo1.waveForm =tri;
-    Lfo2.waveForm =tri;
+    
     
     /*
      * assign main filter
@@ -111,14 +109,24 @@ void Synth_Init()
     filtCutoff = 0.8/1.2;
     adsr_fil.s = filtCutoff;      
 
+   
     Lfo1.ui16_Freq = 50;
     Lfo1.ui8_Dest = LFO_CUTOFF;
-    Lfo1.ui8_Wave = WLFO_SH;
+    Lfo1.ui8_Wave = WLFO_SINE;
+    Lfo1.waveForm =sine;
     Lfo1.f_Amount = 0.0;
+    Lfo1.f_modlfo = 0.0;
+    
+    Lfo2.ui16_Freq = 50;
+    Lfo2.ui8_Dest = LFO_CUTOFF;
+    Lfo2.ui8_Wave = WLFO_SINE;
+    Lfo2.waveForm =sine;
+    Lfo2.f_Amount = 0.0;
+
 
     // long release
     float value;    
-    value = (85+20) * NORM127MUL;
+    value = (92+20) * NORM127MUL;
     adsr_vol.r = (0.0020 * pow(100, 1.0f - value*2));    
 
 
@@ -300,6 +308,7 @@ inline bool ADSR_Process(const struct adsrT *ctrl, float *ctrlSig, adsr_phaseT *
         }
         break;
     case sustain:
+    case standby:
         break;
     case release:
     if(*ctrlSig <0.1)
@@ -340,29 +349,13 @@ void Voice_Off(uint32_t i)
     voc_act -= 1;
 }
 
-/***************************************************/
-/*                                                 */
-/*                                                 */
-/*                                                 */
-/***************************************************/
-void Voice_Off2(uint32_t i)
-{
-    notePlayerT *voice = &voicePlayer[i];
-    
-    for (int f = 0; f < MAX_POLY_OSC; f++)
-    {
-        oscillatorT *osc = &oscPlayer[f];
-        osc->dest = voiceSink;
-        osc_act -= 1;
-    }
-    voc_act -= 1;
-}
-
-
-
 static float out_l, out_r;
 static uint32_t count = 0;
 int i;
+
+extern portMUX_TYPE timer1Mux_xms;
+extern portMUX_TYPE timer2Mux_xms;
+
 /***************************************************/
 /*                                                 */
 /*                                                 */
@@ -404,9 +397,19 @@ int indx=0;
     NoiseMod=0;
     WaveShapping1Mod=0;
     
+    if(!Lfo1_Mutex)
+    {
+        Lfo1_Mutex=1;
+        Lfo_Process(&Lfo1);
+        Lfo1_Mutex=0;
+    }
+    if(!Lfo2_Mutex)
+    {
+        Lfo2_Mutex=1;
+        Lfo_Process(&Lfo2);
+        Lfo2_Mutex=0;
+    }
     
-    Lfo_Process(&Lfo1);
-    Lfo_Process(&Lfo2);
 
     float sup;
     float inf;
@@ -419,8 +422,8 @@ int indx=0;
         inf = OldWaveShapping1Mod-0.02;    
         if(WaveShapping1Mod > sup || WaveShapping1Mod < inf)
         {
-            OldWaveShapping1Mod = WaveShapping1Mod;
             tmp = WaveShapping1+WaveShapping1Mod;
+            OldWaveShapping1Mod = WaveShapping1Mod;
 
             switch(selWaveForm1)
             {

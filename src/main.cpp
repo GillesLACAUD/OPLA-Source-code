@@ -120,28 +120,32 @@ void onTimer1()
 {
 static uint8_t scaler=0;
 
-    //portENTER_CRITICAL_ISR(&timer1Mux_xms);
+    if(Lfo1_Mutex)
+        return;
+    Lfo1_Mutex=1;
     scaler++;
     if(scaler==1)
     {
         scaler=0;
         Lfo_cnt1+=1;
     }
-    //portEXIT_CRITICAL_ISR(&timer1Mux_xms);
+    Lfo1_Mutex=0;
 }
 
 void onTimer2()
 {
 static uint8_t scaler=0;
 
-    //portENTER_CRITICAL_ISR(&timer2Mux_xms);
+    if(Lfo2_Mutex)
+        return;
+    Lfo2_Mutex=1;
     scaler++;
     if(scaler==1)
     {
         scaler=0;
         Lfo_cnt2+=1;
     }
-    //portEXIT_CRITICAL_ISR(&timer2Mux_xms);    
+    Lfo2_Mutex=0;
 
 }
 

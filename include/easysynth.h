@@ -114,7 +114,6 @@ float Lfo2AmtMod=0;
 float WaveShapping1Mod=0;
 float OldWaveShapping1Mod=0;
 
-
 float MixOsc = 1;
 float MixSub = 1;
 int8_t SubTranspose = -12;
