@@ -118,33 +118,19 @@ portMUX_TYPE timerMux_1ms = portMUX_INITIALIZER_UNLOCKED;
 
 void IRAM_ATTR onTimer1()
 {
-static uint8_t scaler=0;
-
     if(Lfo1_Mutex)
         return;
     Lfo1_Mutex=1;
-    scaler++;
-    if(scaler==1)
-    {
-        scaler=0;
-        Lfo_cnt1+=1;
-    }
+    Lfo_cnt1+=1;
     Lfo1_Mutex=0;
 }
 
 void IRAM_ATTR onTimer2()
 {
-static uint8_t scaler=0;
-
     if(Lfo2_Mutex)
         return;
     Lfo2_Mutex=1;
-    scaler++;
-    if(scaler==1)
-    {
-        scaler=0;
-        Lfo_cnt2+=1;
-    }
+    Lfo_cnt2+=1;
     Lfo2_Mutex=0;
 
 }
