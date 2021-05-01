@@ -95,20 +95,25 @@ float tmp;
 uint8_t note;
 
     value = val * NORM127MUL;
-    oscdetune =  value/30;    
+    //oscdetune =  value/30;   
+    oscdetune =(0.0001*pow(500,value)); 
     for(uint8_t v=0;v<=voc_act;v++)
     {
-        voice = &voicePlayer[v];
-        note = voice->midiNote;
-
-        osc = &oscPlayer[v*3+0];
-        tmp= midi_note_to_add[note]*(1.0+oscdetune);
-        osc->addVal = tmp;
-        
-        osc = &oscPlayer[v*3+1];
-        tmp= midi_note_to_add[note]*(1.0-oscdetune);
-        osc->addVal = tmp;
-        
+        if (voicePlayer[v].active)
+        {
+            note = voicePlayer[v].midiNote;
+            // Detune OSC1
+            osc = &oscPlayer[v*3+0];
+            tmp= midi_note_to_add[note]*(1.0+oscdetune);
+            osc->addVal = tmp;
+            // Detune OSC2
+            osc = &oscPlayer[v*3+1];
+            tmp= midi_note_to_add[note]*(1.0-oscdetune);
+            osc->addVal = tmp;
+            // Detune OSC3 SUB
+            osc = &oscPlayer[v*3+2];
+            osc->addVal = midi_note_to_add[note+SubTranspose]*(0.5-oscdetune);
+        }
     }
 
     return(0);

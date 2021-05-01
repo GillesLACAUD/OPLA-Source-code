@@ -518,114 +518,6 @@ int indx=0;
             }
         }
     }
-    
-         
-
-
-    // Wave shapping process
-    /*
-    if(selectedWaveForm == &wavework)
-    {
-        if(WaveShapping1Mod > (OldWaveShapping1Mod +0.02) || WaveShapping1Mod <(OldWaveShapping1Mod-0.02))
-        {
-            OldWaveShapping1Mod = WaveShapping1Mod;
-            tmp = WaveShapping1+WaveShapping1Mod;
-           
-            switch(selWaveForm1)
-            {
-                // PWM
-                case WAVE_SQUARE:
-                if(tmp<0.01)
-                    tmp = 0.01;
-                if(tmp>0.99)
-                    tmp = 0.99;
-                cmp = ((int)(float)WAVEFORM_CNT*tmp);
-                for (i = 0; i < WAVEFORM_CNT; i++)
-                {
-                    wavework[i] = (i > cmp) ? 1 : -1;
-                }
-                break;
-
-                case WAVE_PULSE:
-                break;
-
-                case WAVE_TRI:
-                // from -1 to +1
-                // gate1 = -0.8 gate2 = 0.8
-                // tmp from 0 to 1
-                // gate1 = 1-tmp/2
-                // gate2 = -gate1
-                float gate1,gate2;
-                gate1 = 1 -tmp/2;
-                gate2 = 0-gate1;
-                for (i = 0; i < WAVEFORM_CNT; i++)
-                {
-                    if(tri[i]>gate1)
-                    {
-                        wavework[i] = gate1;
-                    }
-                    else if(tri[i]<gate2)
-                    {
-                        wavework[i] = gate2;
-                    }
-                    else
-                    {
-                        wavework[i] = tri[i];
-                    }
-                }
-                break;
-
-                case WAVE_NOISE:
-                break;
-            
-                case WAVE_SINE:
-                
-                //cmp = ((int)(float)WAVEFORM_CNT*tmp);
-                //for (i = 0; i < WAVEFORM_CNT; i++)
-                //{
-                    //wavework[i] = (i > cmp) ? sine[i] : 0;
-                //}
-                
-                cmp = 1+tmp*20;
-                for (i = 0; i < WAVEFORM_CNT; i++)
-                {
-                    wavework[i] = sine[indx];
-                    indx+=cmp;
-                    if(indx>WAVEFORM_CNT)
-                        indx=0;
-                }
-
-                break;
-
-                // SAW To TRI
-                case WAVE_SAW:
-                if(tmp<0.05)
-                    tmp = 0.0;
-                if(tmp>0.95)
-                    tmp = 1;
-                        
-                Triinc = (WAVEFORM_CNT/2)*(1+tmp);
-                Tridec = (WAVEFORM_CNT/2)*(1-tmp);
-
-                finc = 2.0/Triinc;
-                fdec = 2.0/Tridec;
-                
-                for(i = 0;i<Triinc;i++)
-                {
-                    wavework[i] = -1 + i*finc;
-                    //wavework[i] = sine[i];
-                }
-                for(i=0;i<Tridec;i++)
-                {
-                    //wavework[i]=0;
-                    wavework[i] = 1 - i*fdec;
-                }
-                break;
-            }
-        }
-
-    }
-    */
 
   
     /*
@@ -641,6 +533,7 @@ int indx=0;
             {
                 oscillatorT *osc = &oscPlayer[o+v*3];
                 osc->samplePos += (uint32_t)((float)osc->addVal*(1+PitchMod));
+                float detp = 1.0+oscdetune;
                 switch(o)
                 {
                     case 0: sig = osc->waveForm[WAVEFORM_I(osc->samplePos)]*MixOsc;break;
@@ -930,6 +823,7 @@ uint8_t retrig;
     if (osc != NULL)
     {
         tmp = midi_note_to_add[note]*(1.0+oscdetune);
+        //tmp = midi_note_to_add[note];     // No Detune
         osc->addVal = tmp;
         if(!retrig)
         {
@@ -947,6 +841,7 @@ uint8_t retrig;
     if (osc != NULL)
     {
         tmp= midi_note_to_add[note]*(1.0-oscdetune);
+        //tmp= midi_note_to_add[note];      // No Detune
         osc->addVal = tmp;
         if(!retrig)
         {
@@ -966,7 +861,7 @@ uint8_t retrig;
     {
         if (note + SubTranspose < 128)
         {
-            osc->addVal = midi_note_to_add[note+SubTranspose];
+            osc->addVal = midi_note_to_add[note+SubTranspose]*(0.5-oscdetune);
             if(!retrig)
             {
                 //osc->samplePos = 0; /* we could add some offset maybe */
