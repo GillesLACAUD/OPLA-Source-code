@@ -126,7 +126,7 @@ void Synth_Init()
 
     // long release
     float value;    
-    value = (92+20) * NORM127MUL;
+    value = (10+20) * NORM127MUL;
     adsr_vol.r = (0.0020 * pow(100, 1.0f - value*2));    
 
 

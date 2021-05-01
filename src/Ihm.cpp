@@ -215,7 +215,8 @@ int Fct_Ch_Cutoff(int val)
 float value;    
 
     value = val * NORM127MUL;
-    filtCutoff = value/1.2;
+    //filtCutoff = value/1.2;
+    filtCutoff = 0.001+(0.0005*pow(1000,value));         // ok for KarlsenLPF
     adsr_fil.s = filtCutoff;   
     if(serialdebug)   
         Serial.printf("main filter cutoff: %f\n", filtCutoff);
@@ -232,7 +233,8 @@ int Fct_Ch_Resonance(int val)
 float value;    
 
     value = val * NORM127MUL;
-    filtReso =  0.5f + 5 * value * value * value; /* min q is 0.5 here */
+    //filtReso =  0.5f + 5 * value * value * value; /* min q is 0.5 here */
+    filtReso =  0.8f + 4 * value * value * value; /* min q is 0.5 here */
     if(serialdebug)
         Serial.printf("main filter reso: %0.3f\n", filtReso);
     return(0);
