@@ -159,7 +159,7 @@ struct filterCoeffT mainFilt;
 /*                                                 */
 /***************************************************/
 #ifdef FILTER_1
-float KarlsenLPF(float signal, float freq, float res, uint8_t m)
+float IRAM_ATTR KarlsenLPF(float signal, float freq, float res, uint8_t m)
 {
 	static float b_inSH[MVF], b_in[MVF], b_f[MVF], b_q[MVF], b_fp[MVF], pole1[MVF], pole2[MVF], pole3[MVF], pole4[MVF];
 
@@ -675,6 +675,8 @@ int indx=0;
                     voice->midiNote=0;
                     voice->active=0;
                     voice->phase = standby;
+                    voice->f_phase = standby;
+                    voice->p_phase = standby;
                     globalrank--;
                     Voice_Off(i);
                 }
@@ -910,10 +912,11 @@ uint8_t retrig;
         voice->control_sign = 0.0f;
     }
     voice->phase = attack;
+    voice->f_phase = attack;
+    voice->p_phase = attack;
 
     voice->f_control_sign = 0;
     voice->f_control_sign_slow = adsr_fil.a;
-    voice->f_phase = attack;
 
     voc_act += 1;
   
@@ -991,6 +994,8 @@ void Synth_NoteOff(uint8_t note)
         {
             voicePlayer[i].phase = release;
             voicePlayer[i].f_phase = release;
+            voicePlayer[i].p_phase = release;
+            
         }
     }
 }
