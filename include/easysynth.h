@@ -98,6 +98,7 @@ struct adsrT adsr_pit = {0.0f, 0.0f, 0.0f, 0.0f};
 float filtCutoff = 1.0f;
 float filtReso = 0.5f;
 float filterEG=0;
+float filterKBtrack=0;
 float NoiseLevel = 0.0f;
 float WaveShapping1 = 0.0f;
 
@@ -158,6 +159,7 @@ extern struct stLfo Lfo2;
 extern float filtCutoff;
 extern float filtReso;
 extern float filterEG;
+extern float filterKBtrack;
 
 extern float NoiseLevel;
 extern float WaveShapping1;

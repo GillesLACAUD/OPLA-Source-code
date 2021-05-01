@@ -533,7 +533,6 @@ int indx=0;
             {
                 oscillatorT *osc = &oscPlayer[o+v*3];
                 osc->samplePos += (uint32_t)((float)osc->addVal*(1+PitchMod));
-                float detp = 1.0+oscdetune;
                 switch(o)
                 {
                     case 0: sig = osc->waveForm[WAVEFORM_I(osc->samplePos)]*MixOsc;break;
@@ -599,6 +598,7 @@ int indx=0;
                     FiltCutoffMod = 0.0;
 
                 float cf = FiltCutoffMod+voice->f_control_sign*filterEG;
+                cf *= 1+(voice->midiNote-64)*filterKBtrack;
                 voice->lastSample[0] = KarlsenLPF(voice->lastSample[0],cf, filtReso,i);
                 voice->lastSample[1] = voice->lastSample[0];
 

@@ -252,11 +252,17 @@ float value;
 /***************************************************/
 int Fct_Ch_KbTrack(int val) 
 {
-/*
 float value=0;    
 
-    value = val * NORM127MUL;
-    */
+    value = val * NORM127MUL;       // 0 to 1
+    // 0.5 to 2
+    filterKBtrack = (value-0.5)/10;
+    float cf;
+    cf=filtCutoff;
+    cf *= 1+(76-64)*filterKBtrack;
+
+    if(serialdebug)
+        Serial.printf("Filter KBtrack: %0.3f Cut %0.3f ModCut %0.3f\n",filterKBtrack,filtCutoff,cf);
     return(0);
 }
 
