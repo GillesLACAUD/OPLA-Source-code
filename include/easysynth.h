@@ -119,6 +119,9 @@ float MixOsc = 1;
 float MixSub = 1;
 int8_t SubTranspose = -12;
 
+float pitchBendValue = 0.0f;
+float pitchMultiplier = 1.0f;
+
 #else
 
 extern char Wave_Name[WAVEFORM_TYPE_COUNT][MAX_LABEL];
@@ -180,6 +183,9 @@ extern int8_t SubTranspose;
 
 extern float MixOsc;
 extern float MixSub;
+
+extern float pitchBendValue;
+extern float pitchMultiplier;
 
 #endif
 

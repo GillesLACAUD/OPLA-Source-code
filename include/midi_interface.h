@@ -14,6 +14,40 @@
 #define RXD2 22 /* U2RRXD */
 #define TXD2 19
 
+
+#define MIDI_CONTROL_CHANGE                  0xB0
+#define MIDI_SYSTEM_EXCLUSIVE                0xF0
+#define MIDI_END_OF_EXCLUSIVE                0xF7
+#define MIDI_NOTE_OFF                        0x80 // Aussi Note on avec velocity a zero
+#define MIDI_NOTE_ON                         0x90
+
+#define MIDI_PROGRAM_CHANGE                  0xC0
+#define MIDI_AFTERTOUCH		                 0xD0
+#define MIDI_PITCH_BEND                      0xE0
+
+#define MIDI_MOD_WHEEL	                     0xD0
+
+#define MIDI_SYSTEM_RESET                    0xFF
+#define MIDI_ALLNOTE_OFF                     0xB0
+
+#define MIDI_CLOCK			                 0xF8
+#define MIDI_START			                 0xFA
+#define MIDI_CONTINUE			             0xFB
+#define MIDI_STOP  							 0xFC
+
+#define MIDI_SONGPOS						 0xF2
+#define MIDI_SONGSELECT						 0xF3
+
+#define MIDI_ACTIVESENS						 0xFE
+#define MIDI_TUNEREQUEST					 0xF6
+#define MIDI_SONGSELECT						 0xF3
+#define MIDI_AFTERTOUCHPOLY					 0xA0
+
+#define MIDI_TIMECODE						 0xF1
+
+
+
+
 #define MIDI_CC_WAVE1           10
 #define MIDI_CC_SUBOSC          11
 #define MIDI_CC_NOISE           12
@@ -99,6 +133,7 @@ Def_Section Tab_Section[SECTION_MAX] =
 MIDI_EXTRN void Midi_Dump();
 MIDI_EXTRN inline void Midi_NoteOn(uint8_t note);
 MIDI_EXTRN inline void Midi_NoteOff(uint8_t note);
+MIDI_EXTRN inline void Midi_PitchBend(uint8_t channel,uint8_t data1, uint8_t data2);
 MIDI_EXTRN inline void Midi_ControlChange(uint8_t channel, uint8_t data1, uint8_t data2);
 MIDI_EXTRN inline void HandleShortMsg(uint8_t *data);
 MIDI_EXTRN void Midi_Setup();

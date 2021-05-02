@@ -411,6 +411,16 @@ int indx=0;
     }
     
 
+    /*
+     * update pitch bending / modulation
+     */
+    /*
+    if (count % 64 == 0)
+    {
+        pitchMultiplier = pow(2.0f, pitchVar / 12.0f);
+    }
+    */
+
     float sup;
     float inf;
     float tmp;
@@ -532,7 +542,8 @@ int indx=0;
             for (int o = 0; o < 3; o++)
             {
                 oscillatorT *osc = &oscPlayer[o+v*3];
-                osc->samplePos += (uint32_t)((float)osc->addVal*(1+PitchMod));
+                osc->samplePos += (uint32_t)((float)osc->addVal*(1+PitchMod)*pitchMultiplier);
+
                 switch(o)
                 {
                     case 0: sig = osc->waveForm[WAVEFORM_I(osc->samplePos)]*MixOsc;break;
@@ -894,6 +905,7 @@ void Synth_NoteOff(uint8_t note)
         }
     }
 }
+
 /***************************************************/
 /*                                                 */
 /*                                                 */

@@ -68,6 +68,45 @@ inline void Midi_NoteOff(uint8_t note)
 /*                                                 */
 /*                                                 */
 /***************************************************/
+inline void Midi_PitchBend(uint8_t channel,uint8_t data1, uint8_t data2)
+{
+int16_t bend;
+
+    // 14 bits
+    // 0x3FFF 
+    // https://www.pgmusic.com/forums/ubbthreads.php?ubb=showflat&Number=490405 
+
+    pitchMultiplier = 1.0;
+    bend = (uint16_t)data2<<7;
+    bend +=(uint16_t)data1;
+    bend -=8192;
+
+    uint8_t deltasemitone;
+    float semitone;
+    deltasemitone = 12;
+    semitone = 1-pow(2.0f,deltasemitone/12.0f);
+
+    pitchMultiplier =  (float) 1.0f - (semitone*bend)/8192;
+
+   
+    /*
+    float test;
+    for(int i=0;i<=24;i++)
+    {
+        test = 1-pow(2.0f, i/12.0f);        
+        Serial.printf("%d %f\n",i,test);
+    }
+    */
+
+    Serial.printf("Lsb %02x Msb %02x Bend %d Pitch mul %3.2f\n",data1,data2,bend,pitchMultiplier);
+
+}
+
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
 inline void Midi_ControlChange(uint8_t channel, uint8_t data1, uint8_t data2)
 {
     if(!overon)
@@ -90,45 +129,7 @@ inline void Midi_ControlChange(uint8_t channel, uint8_t data1, uint8_t data2)
     int ret=Synth_SetRotary(data1,data2);
     Nextion_PotValue(data2);
     Nextion_PrintCC(data1,ret,0);
-    /*
-    switch(data1)
-    {
-
-        case MIDI_CC_WAVE1: 
-        case MIDI_CC_DETUNE:   
-        case MIDI_CC_SUBOSC:                        
-        case MIDI_CC_NOISE:                        
-        
-        case MIDI_CC_CUTOFF:  
-        case MIDI_CC_RES:   
-        case MIDI_CC_FOLLOW:        
-        case MIDI_CC_AMP_A:         
-        case MIDI_CC_AMP_D:         
-        case MIDI_CC_AMP_S:         
-        case MIDI_CC_AMP_R:         
-        case MIDI_CC_FLT_A:         
-        case MIDI_CC_FLT_D:         
-        case MIDI_CC_FLT_R:         
-        case MIDI_CC_FLT_Q:         
-        case MIDI_CC_DEL_LENGHT:    
-        case MIDI_CC_DEL_LEVEL:     
-        case MIDI_CC_DEL_FEEDBACK:  
-        case MIDI_CC_LFO1_SPEED:      
-        case MIDI_CC_LFO1_SHAPE:      
-        case MIDI_CC_LFO1_DEST:       
-        case MIDI_CC_LFO1_AMT:         
-        case MIDI_CC_LFO2_SPEED:      
-        case MIDI_CC_LFO2_SHAPE:      
-        case MIDI_CC_LFO2_DEST:       
-        case MIDI_CC_LFO2_AMT:         
-        case MIDI_CC_WS1:         
-        case MIDI_CC_PAGE1_5:         
-        Synth_SetRotary(data1,data2);
-        Nextion_PrintCC(data1,data2,0);
-        break;
-    }
-    */
-
+    
 }
 
 /***************************************************/
@@ -142,17 +143,27 @@ inline void HandleShortMsg(uint8_t *data)
 
     switch (data[0] & 0xF0)
     {
-    /* note on */
-    case 0x90:
-        Midi_NoteOn(data[1]);
-        break;
-    /* note off */
-    case 0x80:
-        Midi_NoteOff(data[1]);
-        break;
-    case 0xb0:
-        Midi_ControlChange(ch, data[1], data[2]);
-        break;
+        case 0x90:
+            if (data[2] > 0)
+            {
+                Midi_NoteOn(data[1]);
+            }
+            else
+            {
+                Midi_NoteOff(data[1]);
+            }
+            break;
+        /* note off */
+        case 0x80:
+            Midi_NoteOff(data[1]);
+            break;
+        case 0xb0:
+            Midi_ControlChange(ch, data[1], data[2]);
+            break;        
+        case MIDI_PITCH_BEND:
+            Midi_PitchBend(ch,data[1], data[2]);
+            break;
+
     }
 }
 
