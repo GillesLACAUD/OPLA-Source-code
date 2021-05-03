@@ -77,16 +77,35 @@ int16_t bend;
     // https://www.pgmusic.com/forums/ubbthreads.php?ubb=showflat&Number=490405 
 
     pitchMultiplier = 1.0;
-    bend = (uint16_t)data2<<7;
+    bend = (uint16_t)data2<<8;
     bend +=(uint16_t)data1;
-    bend -=8192;
 
-    uint8_t deltasemitone;
-    float semitone;
-    deltasemitone = 12;
-    semitone = 1-pow(2.0f,deltasemitone/12.0f);
+    // value from -2 to +2 semitones
+    float value = ((float)bend - 8192.0f) * (0.5f / 8192.0f) - 0.5f;
+    value *=5;
+    pitchMultiplier = pow(2.0f, value / 12.0f);
 
-    pitchMultiplier =  (float) 1.0f - (semitone*bend)/8192;
+                  
+    /*                  
+    uint8_t semitone=2;
+
+    pitchMultiplier = pow(2,(float)semitone/12.0f);
+
+    
+    pitchMultiplier=1.0;
+    
+    if(bend>0)
+    {
+        pitchMultiplier = pow(2,(float)semitone/12.0f);
+        pitchMultiplier =  pitchMultiplier*(float)bend/8192;
+    }
+    if(bend<0)
+    {
+        pitchMultiplier = pow(2,(float)semitone/12.0f);
+        pitchMultiplier = ((-1.0f/pitchMultiplier)*bend)/8192;
+    }
+    */
+
 
    
     /*
@@ -98,7 +117,7 @@ int16_t bend;
     }
     */
 
-    Serial.printf("Lsb %02x Msb %02x Bend %d Pitch mul %3.2f\n",data1,data2,bend,pitchMultiplier);
+    Serial.printf("Lsb %02x Msb %02x Bend %d Value %3.2f Pitch mul %3.2f\n",data1,data2,bend,value,pitchMultiplier);
 
 }
 
