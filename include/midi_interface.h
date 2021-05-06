@@ -131,8 +131,8 @@ Def_Section Tab_Section[SECTION_MAX] =
 #define NORM127MUL	0.007874f
 
 MIDI_EXTRN void Midi_Dump();
-MIDI_EXTRN inline void Midi_NoteOn(uint8_t note);
-MIDI_EXTRN inline void Midi_NoteOff(uint8_t note);
+MIDI_EXTRN inline void Midi_NoteOn(uint8_t note,uint8_t vel);
+MIDI_EXTRN inline void Midi_NoteOff(uint8_t note,uint8_t vel);
 MIDI_EXTRN inline void Midi_PitchBend(uint8_t channel,uint8_t data1, uint8_t data2);
 MIDI_EXTRN inline void Midi_ControlChange(uint8_t channel, uint8_t data1, uint8_t data2);
 MIDI_EXTRN inline void HandleShortMsg(uint8_t *data);

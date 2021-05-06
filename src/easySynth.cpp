@@ -482,12 +482,12 @@ int indx=0;
                 break;
 
                 case WAVE_NOISE:
-                for (i = 0; i < WAVEFORM_CNT; i+=2)
+                for (i = 0; i < WAVEFORM_CNT/2; i++)
                 {
-                    tmp16 = VoiceData[j+1]<<8;
-                    tmp16 +=VoiceData[j];
+                    tmp16 = EpData[j+1]<<8;
+                    tmp16 +=EpData[j];
                     wavework[i] = (float)(tmp16)/32768.0f;
-                    wavework[i+1] = wavework[i];
+                    wavework[i+WAVEFORM_CNT/2] = wavework[i];
                     //Serial.printf("%04d %02x %02x %04x %3.2f\n",i,VoiceData[j],VoiceData[j+1],tmp16,wavework[i]);
                     j+=2;
                 }
@@ -609,8 +609,8 @@ int indx=0;
                 voice->lastSample[0] += nz*(1+NoiseMod);
                 voice->lastSample[1] += nz*(1+NoiseMod);
 
-                voice->lastSample[0] *= voice->control_sign * voice->velocity;
-                voice->lastSample[1] *= voice->control_sign * voice->velocity;
+                voice->lastSample[0] *= voice->control_sign * voice->avelocity;
+                voice->lastSample[1] *= voice->control_sign * voice->avelocity;
 
                 //channel[i] = channel[i] * (vcacutoff[i] * vcavellvl[i]);
                 //summer = summer + KarlsenLPF(channel[i], (vcfval * vcfenvlvl) * ((vcfcutoff[i] * vcfkeyfollow[i]) * vcfvellvl[i]), resonance, i);
@@ -624,6 +624,7 @@ int indx=0;
 
                 // Apply the filter EG
                 float cf = FiltCutoffMod+voice->f_control_sign*filterEG;
+                cf *=1+voice->fvelocity;
                 // Apply the kbtrack
                 cf *= 1+(voice->midiNote-64)*filterKBtrack;
                 voice->lastSample[0] = KarlsenLPF(voice->lastSample[0],cf, filtReso,i);
@@ -807,9 +808,10 @@ inline void Filter_Reset(struct filterProcT *filter)
 /*                                                 */
 /*                                                 */
 /***************************************************/
-void Synth_NoteOn(uint8_t note)
+void Synth_NoteOn(uint8_t note,uint8_t vel)
 {
 uint8_t retrig;
+float setvel;
 
     struct notePlayerT *voice = getFreeVoice(note,&retrig);
     struct oscillatorT *osc = getFreeOsc();
@@ -824,7 +826,14 @@ uint8_t retrig;
     }
 
     voice->midiNote = note;
-    voice->velocity = 0.25; /* just something to test */
+    setvel = (float)vel/127;        // Real velocity
+    //setvel *= AmpVel;               // Apply setting curve
+    //setvel *=0.75;                  // Apply global amp
+
+    voice->avelocity = setvel*AmpVel*0.75; 
+    voice->avelocity = 0.5;
+
+    voice->fvelocity = setvel*FilterVel*1.0; 
     if(!retrig)
     {
         voice->lastSample[0] = 0.0f;

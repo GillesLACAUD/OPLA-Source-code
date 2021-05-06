@@ -30,7 +30,8 @@ struct notePlayerT
 {
     float lastSample[2];
 
-    float velocity;
+    float avelocity;        // For amplitude
+    float fvelocity;        // For Filter
     uint8_t active;
     adsr_phaseT phase;
     uint8_t midiNote;

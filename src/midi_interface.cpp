@@ -44,10 +44,10 @@ void Midi_Dump()
 /*                                                 */
 /*                                                 */
 /***************************************************/
-inline void Midi_NoteOn(uint8_t note)
+inline void Midi_NoteOn(uint8_t note,uint8_t vel)
 {
     if(note)
-        Synth_NoteOn(note);
+        Synth_NoteOn(note,vel);
     else
     {
         Midi_Dump();
@@ -58,7 +58,7 @@ inline void Midi_NoteOn(uint8_t note)
 /*                                                 */
 /*                                                 */
 /***************************************************/
-inline void Midi_NoteOff(uint8_t note)
+inline void Midi_NoteOff(uint8_t note,uint8_t vel)
 {
     Synth_NoteOff(note);
 }
@@ -133,16 +133,16 @@ inline void HandleShortMsg(uint8_t *data)
         case 0x90:
             if (data[2] > 0)
             {
-                Midi_NoteOn(data[1]);
+                Midi_NoteOn(data[1],data[2]);
             }
             else
             {
-                Midi_NoteOff(data[1]);
+                Midi_NoteOff(data[1],data[2]);
             }
             break;
         /* note off */
         case 0x80:
-            Midi_NoteOff(data[1]);
+            Midi_NoteOff(data[1],data[2]);
             break;
         case 0xb0:
             Midi_ControlChange(ch, data[1], data[2]);
