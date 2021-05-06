@@ -364,6 +364,8 @@ extern portMUX_TYPE timer2Mux_xms;
 //[[gnu::noinline, gnu::optimize ("fast-math")]]
 void Synth_Process(float *left, float *right)
 {
+uint16_t j=0;    
+int16_t tmp16;
 bool voice_off;
 float nz=0;
 uint16_t Triinc,Tridec;
@@ -480,13 +482,15 @@ int indx=0;
                 break;
 
                 case WAVE_NOISE:
-                /*
-                uint16_t j=0;
-                for (i = 0; i < WAVEFORM_CNT/2; i++)
+                for (i = 0; i < WAVEFORM_CNT; i+=2)
                 {
-                    wavework[i] = (float)((uint16_t)VoiceData[j]<<8 + VoiceData[j+1])/16384;
+                    tmp16 = VoiceData[j+1]<<8;
+                    tmp16 +=VoiceData[j];
+                    wavework[i] = (float)(tmp16)/32768.0f;
+                    wavework[i+1] = wavework[i];
+                    //Serial.printf("%04d %02x %02x %04x %3.2f\n",i,VoiceData[j],VoiceData[j+1],tmp16,wavework[i]);
+                    j+=2;
                 }
-                */
                 break;
             
                 case WAVE_SINE:
