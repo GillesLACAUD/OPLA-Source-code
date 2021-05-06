@@ -82,42 +82,10 @@ int16_t bend;
 
     // value from -2 to +2 semitones
     float value = ((float)bend - 8192.0f) * (0.5f / 8192.0f) - 0.5f;
-    value *=5;
+    value *=2;      // 5 semitones to tes
     pitchMultiplier = pow(2.0f, value / 12.0f);
 
-                  
-    /*                  
-    uint8_t semitone=2;
-
-    pitchMultiplier = pow(2,(float)semitone/12.0f);
-
-    
-    pitchMultiplier=1.0;
-    
-    if(bend>0)
-    {
-        pitchMultiplier = pow(2,(float)semitone/12.0f);
-        pitchMultiplier =  pitchMultiplier*(float)bend/8192;
-    }
-    if(bend<0)
-    {
-        pitchMultiplier = pow(2,(float)semitone/12.0f);
-        pitchMultiplier = ((-1.0f/pitchMultiplier)*bend)/8192;
-    }
-    */
-
-
-   
-    /*
-    float test;
-    for(int i=0;i<=24;i++)
-    {
-        test = 1-pow(2.0f, i/12.0f);        
-        Serial.printf("%d %f\n",i,test);
-    }
-    */
-
-    Serial.printf("Lsb %02x Msb %02x Bend %d Value %3.2f Pitch mul %3.2f\n",data1,data2,bend,value,pitchMultiplier);
+    //Serial.printf("Lsb %02x Msb %02x Bend %d Value %3.2f Pitch mul %3.2f\n",data1,data2,bend,value,pitchMultiplier);
 
 }
 

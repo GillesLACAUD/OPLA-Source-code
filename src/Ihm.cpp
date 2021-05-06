@@ -454,11 +454,12 @@ float value;
 /***************************************************/
 int Fct_Ch_PiAmount(int val)
 {
-/*
-float value=0;    
+float value;    
 
     value = val * NORM127MUL;
-    */
+    pitchEG = (value-0.5)*2;      // +/- 1
+    if(serialdebug)
+        Serial.printf("Pitch EG: %f\n",pitchEG);
     return(0);
 }
 

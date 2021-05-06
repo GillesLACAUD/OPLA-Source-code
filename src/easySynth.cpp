@@ -480,6 +480,13 @@ int indx=0;
                 break;
 
                 case WAVE_NOISE:
+                /*
+                uint16_t j=0;
+                for (i = 0; i < WAVEFORM_CNT/2; i++)
+                {
+                    wavework[i] = (float)((uint16_t)VoiceData[j]<<8 + VoiceData[j+1])/16384;
+                }
+                */
                 break;
             
                 case WAVE_SINE:
@@ -542,8 +549,10 @@ int indx=0;
             for (int o = 0; o < 3; o++)
             {
                 oscillatorT *osc = &oscPlayer[o+v*3];
-                osc->samplePos += (uint32_t)((float)osc->addVal*(1+PitchMod)*pitchMultiplier);
+                // Apply the pitch modulation and the pitch bend + yhe pitch EG
+                osc->samplePos += (uint32_t)((float)osc->addVal*(1+PitchMod)*pitchMultiplier*(1+voice->p_control_sign*pitchEG));
 
+                
                 switch(o)
                 {
                     case 0: sig = osc->waveForm[WAVEFORM_I(osc->samplePos)]*MixOsc;break;
@@ -602,13 +611,16 @@ int indx=0;
                 //channel[i] = channel[i] * (vcacutoff[i] * vcavellvl[i]);
                 //summer = summer + KarlsenLPF(channel[i], (vcfval * vcfenvlvl) * ((vcfcutoff[i] * vcfkeyfollow[i]) * vcfvellvl[i]), resonance, i);
 
+                // Apply the filter Modulation
                 FiltCutoffMod +=filtCutoff;
                 if(FiltCutoffMod>1.0)
                     FiltCutoffMod = 1.0;
                 if(FiltCutoffMod<0.0)
                     FiltCutoffMod = 0.0;
 
+                // Apply the filter EG
                 float cf = FiltCutoffMod+voice->f_control_sign*filterEG;
+                // Apply the kbtrack
                 cf *= 1+(voice->midiNote-64)*filterKBtrack;
                 voice->lastSample[0] = KarlsenLPF(voice->lastSample[0],cf, filtReso,i);
                 voice->lastSample[1] = voice->lastSample[0];
@@ -864,7 +876,7 @@ uint8_t retrig;
         osc->pan_r = 1;
 
         osc_act += 1;
-    }
+    }  
       
 
     osc = getFreeOsc();
