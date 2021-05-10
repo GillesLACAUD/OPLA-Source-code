@@ -259,6 +259,8 @@ void Nextion_Parse()
 {
 int val;
 int cas;
+int ret;
+uint8_t cc;
 
 
     // NEXTION SIDE
@@ -304,10 +306,30 @@ int cas;
         Nextion_PrintValues();
 		break;
 
+        // P Value of a parameter
+        case 0x50:
+        gui_Value = Nextion_Mess[3];
+        //Serial.printf("VALUE Pot number %d value %03d\n",gui_Param,gui_Value);
+        cc = Tab_Encoder[gui_Section][gui_Param].MidiCC;
+        ret=Synth_SetRotary(cc,gui_Value);
+        Nextion_PotValue(gui_Value);
+        Nextion_PrintCC(cc,ret,0);
+        break;
+
+        // Q Quit
+        case 0x51:
+        Nextion_PrintLabel();
+        Nextion_PrintValues();
+        // Change page
+        sprintf(messnex,"page 0");
+        Nextion_Send(messnex);
+        break;
+
         // L Select a parameter
 		case 0x4C:
         gui_Param = Nextion_Mess[2];
-        uint8_t cc = Tab_Encoder[gui_Section][gui_Param].MidiCC;
+        //Serial.printf("NUMBER Pot number %d value %03d\n",gui_Param,gui_Value);
+        cc = Tab_Encoder[gui_Section][gui_Param].MidiCC;
         if(cc !=0xFF)
         {
             Nextion_PrintCC(cc,0,1);

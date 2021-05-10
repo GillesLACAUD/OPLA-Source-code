@@ -14,6 +14,7 @@
 
 IHM_EXTRN   uint8_t gui_Section;
 IHM_EXTRN   uint8_t gui_Param;
+IHM_EXTRN   uint8_t gui_Value;
 
 IHM_EXTRN   char TabListNull[0][0];
 IHM_EXTRN   int           IntNull;
