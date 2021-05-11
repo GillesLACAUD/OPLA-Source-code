@@ -9,7 +9,7 @@
 #include "Lfo.h"
 #include "simple_delay.h"
 
-uint8_t serialdebug=0;
+uint8_t serialdebug=1;
 
 //--------------------------------------------------
 // OSC
@@ -112,7 +112,7 @@ uint8_t note;
             osc->addVal = tmp;
             // Detune OSC3 SUB
             osc = &oscPlayer[v*3+2];
-            osc->addVal = midi_note_to_add[note+SubTranspose]*(0.5-oscdetune);
+            osc->addVal = midi_note_to_add[note+(int8_t)SubTranspose]*(0.5-oscdetune);
         }
     }
 
@@ -191,7 +191,7 @@ int Fct_Ch_SubOct(int val)
 {
 uint8_t note;
 
-    SubTranspose = val;
+    SubTranspose = (float)val;
     oscillatorT *osc;
 
     for (int i = 0; i < MAX_POLY_VOICE ; i++)
@@ -200,7 +200,7 @@ uint8_t note;
         {
             osc = &oscPlayer[2+i*3];                // 2 -> The thirth OSC is the sub
             note = voicePlayer[i].midiNote;
-            osc->addVal = midi_note_to_add[note+SubTranspose];
+            osc->addVal = midi_note_to_add[note+(int8_t)SubTranspose];
         }
     }
     return(0);
@@ -263,6 +263,19 @@ float value=0;
 
     if(serialdebug)
         Serial.printf("Filter KBtrack: %0.3f Cut %0.3f ModCut %0.3f\n",filterKBtrack,filtCutoff,cf);
+    return(0);
+}
+
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+int Fct_Ch_FVelo(int val) 
+{
+    FilterVel = val * NORM127MUL*10;
+    if(serialdebug)
+        Serial.printf("Filter Velo: %0.3f\n",FilterVel);
     return(0);
 }
 

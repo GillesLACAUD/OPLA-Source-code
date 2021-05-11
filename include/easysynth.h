@@ -55,6 +55,8 @@ SYNTH_EXTRN uint32_t midi_note_to_add[MIDI_NOTE_CNT]; /* lookup to playback wave
 #define WAVE_NOISE      5
 #define WAVE_SILENCE    6
 
+SYNTH_EXTRN WorkSound	WS;
+
 /*
  * add here your waveforms
  */
@@ -385,7 +387,7 @@ float OldWaveShapping1Mod=0;
 
 float MixOsc = 1;
 float MixSub = 1;
-int8_t SubTranspose = -12;
+float SubTranspose = -12.0;
 
 float pitchBendValue = 0.0f;
 float pitchMultiplier = 1.0f;
@@ -456,7 +458,7 @@ extern float Lfo2SpeedMod;
 extern float Lfo2AmtMod;
 extern float WaveShapping1Mod;
 
-extern int8_t SubTranspose;
+extern float SubTranspose;
 
 extern float MixOsc;
 extern float MixSub;

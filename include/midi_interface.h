@@ -61,13 +61,12 @@
 #define MIDI_CC_CUTOFF          20
 #define MIDI_CC_RES             21
 #define MIDI_CC_FOLLOW          22
+#define MIDI_CC_FVELO           23
 
 #define MIDI_CC_FLT_A           25
 #define MIDI_CC_FLT_D           26
 #define MIDI_CC_FLT_R           27
 #define MIDI_CC_FLT_Q           28
-
-
 
 #define MIDI_CC_AMP_A           30
 #define MIDI_CC_AMP_D           31

@@ -1,5 +1,51 @@
 #include "Arduino.h"
 
+struct WorkSound
+{
+    int16_t OscWave;
+    int16_t SubWave;
+    int16_t NoiseLevel;
+    int16_t OscDetune;
+    int16_t WaveShapping1;
+    int16_t OscVolume;
+    int16_t SubVolume;
+    int16_t SubTranspose;
+
+    int16_t Cutoff;
+    int16_t Resonance;
+    int16_t KbTrack;
+    int16_t FVelo;
+    int16_t FEgAttack;
+    int16_t FEgDecay;
+    int16_t FEgRelease;
+    int16_t FEgAmount;
+
+    int16_t AEgAttack;
+    int16_t AEgDecay;
+    int16_t AEgSustain;
+    int16_t AEgRelease;
+
+    int16_t PEgAttack;
+    int16_t PEgDecay;
+    int16_t PEgRelease;
+    int16_t PEgAmount;
+
+    int16_t LFO1Speed;
+    int16_t LFO1Shape;
+    int16_t LFO1Dest;
+    int16_t LFO1Amount;
+
+    int16_t LFO2Speed;
+    int16_t LFO2Shape;
+    int16_t LFO2Dest;
+    int16_t LFO2Amount;
+
+    int16_t DelayLen;
+    int16_t DelayAmount;
+    int16_t DelayFeedback;
+};
+
+
 struct adsrT
 {
     float a;

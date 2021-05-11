@@ -690,9 +690,11 @@ int indx=0;
 
                 // Apply the filter EG
                 float cf = FiltCutoffMod+voice->f_control_sign*filterEG;
-                cf *=1+voice->fvelocity;
+                //cf *=1+voice->fvelocity;
+                cf *=voice->fvelocity;
                 // Apply the kbtrack
                 cf *= 1+(voice->midiNote-64)*filterKBtrack;
+                //Serial.printf("Filtercf = %0.3f\n",cf);
 
                 #ifdef FILTER_5
                  if (count % 32 == 0)
@@ -915,8 +917,8 @@ float setvel;
     //setvel *=0.75;                  // Apply global amp
 
     voice->avelocity = setvel*AmpVel*0.75; 
-    voice->fvelocity = setvel*FilterVel*1.0; 
-    voice->fvelocity =1.0;
+    voice->fvelocity = setvel*FilterVel; 
+    Serial.printf("vocfvelo: %0.3f\n",voice->fvelocity);
     if(!retrig)
     {
         voice->lastSample[0] = 0.0f;
@@ -980,7 +982,7 @@ float setvel;
     {
         if (note + SubTranspose < 128)
         {
-            osc->addVal = midi_note_to_add[note+SubTranspose]*(0.5-oscdetune);
+            osc->addVal = midi_note_to_add[note+(int8_t)SubTranspose]*(0.5-oscdetune);
             if(!retrig)
             {
                 //osc->samplePos = 0; /* we could add some offset maybe */
@@ -1051,7 +1053,7 @@ float factor;
                     val = Tab_Encoder[s][e].MinData + (int)((float)val*factor);
                     
                 }
-                Tab_EncoderVal[s][e]=val;   // Keep the value
+                *Tab_Encoder[s][e].Data=(int16_t)val;   // Keep the value
                 Tab_Encoder[s][e].ptrfunctValueChange(val);
                 e=0x55;
                 s=0x55;

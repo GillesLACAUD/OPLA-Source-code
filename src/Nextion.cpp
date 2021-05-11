@@ -217,7 +217,7 @@ char msec[30];
     {
         if(Tab_Encoder[gui_Section][l].Type==TYPE_DATA)
         {
-            sprintf(msec,"%03d",Tab_EncoderVal[gui_Section][l]);   
+            sprintf(msec,"%03d",*Tab_Encoder[gui_Section][l].Data);   
             Nextion_PotTxt(l,msec);
         }
         else
@@ -308,6 +308,11 @@ uint8_t cc;
 
         // P Value of a parameter
         case 0x50:
+        if(!overon)
+        {
+            overon = true;
+        }
+        overcpt=0;
         gui_Value = Nextion_Mess[3];
         //Serial.printf("VALUE Pot number %d value %03d\n",gui_Param,gui_Value);
         cc = Tab_Encoder[gui_Section][gui_Param].MidiCC;
@@ -327,12 +332,19 @@ uint8_t cc;
 
         // L Select a parameter
 		case 0x4C:
+        if(!overon)
+        {
+            overon = true;
+        }
+        overcpt=0;
+
         gui_Param = Nextion_Mess[2];
         //Serial.printf("NUMBER Pot number %d value %03d\n",gui_Param,gui_Value);
         cc = Tab_Encoder[gui_Section][gui_Param].MidiCC;
         if(cc !=0xFF)
         {
-            Nextion_PrintCC(cc,0,1);
+            Nextion_PrintCC(cc,*Tab_Encoder[gui_Section][gui_Param].Data,1);
+            Nextion_PotValue(*Tab_Encoder[gui_Section][gui_Param].Data);
             sprintf(messnex,"page 1");
             Nextion_Send(messnex);
             //delay(2);
