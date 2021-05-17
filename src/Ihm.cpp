@@ -220,8 +220,8 @@ int Fct_Ch_Cutoff(int val)
 float value;    
 
     value = val * NORM127MUL;
-    //filtCutoff = value/1.2;
-    filtCutoff = 0.001+(0.0005*pow(1000,value));         // ok for KarlsenLPF
+    filtCutoff = 0.005+value/1.2;
+    //filtCutoff = 0.001+(0.0005*pow(1000,value));         // ok for KarlsenLPF
     adsr_fil.s = filtCutoff;   
     if(serialdebug)   
         Serial.printf("main filter cutoff: %f\n", filtCutoff);
@@ -273,7 +273,7 @@ float value=0;
 /***************************************************/
 int Fct_Ch_FVelo(int val) 
 {
-    FilterVel = val * NORM127MUL*10;
+    FilterVel = val * NORM127MUL*5;
     if(serialdebug)
         Serial.printf("Filter Velo: %0.3f\n",FilterVel);
     return(0);

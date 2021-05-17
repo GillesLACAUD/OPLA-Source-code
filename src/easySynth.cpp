@@ -690,8 +690,7 @@ int indx=0;
 
                 // Apply the filter EG
                 float cf = FiltCutoffMod+voice->f_control_sign*filterEG;
-                //cf *=1+voice->fvelocity;
-                cf *=voice->fvelocity;
+                cf *=1+voice->fvelocity;
                 // Apply the kbtrack
                 cf *= 1+(voice->midiNote-64)*filterKBtrack;
                 //Serial.printf("Filtercf = %0.3f\n",cf);
@@ -917,7 +916,8 @@ float setvel;
     //setvel *=0.75;                  // Apply global amp
 
     voice->avelocity = setvel*AmpVel*0.75; 
-    voice->fvelocity = setvel*FilterVel; 
+    voice->avelocity =0.75;
+    voice->fvelocity = (setvel-0.5)*FilterVel; 
     Serial.printf("vocfvelo: %0.3f\n",voice->fvelocity);
     if(!retrig)
     {
