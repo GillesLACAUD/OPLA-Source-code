@@ -286,6 +286,12 @@ int Fct_Ch_FVelo(int val)
 /***************************************************/
 int Fct_Ch_FType(int val) 
 {
+float value=0; 
+
+    value = val * NORM127MUL;
+    WS.FType = (value) * (MAX_FLT_TYPE);
+    if(serialdebug)       
+        Serial.printf("Filter type: %d\n",WS.FType);
     return(0);
 }
 
@@ -703,8 +709,11 @@ float value;
 int Fct_Ch_SoundMode(int val)
 {
 float value;    
-
+  
     value = val * NORM127MUL;
+    WS.SoundMode = (value) * (MAX_SND_MODE);
+    if(serialdebug)       
+        Serial.printf("Filter type: %d\n",WS.SoundMode);
     return(0);
 }
 
@@ -718,6 +727,8 @@ int Fct_Ch_PBRange(int val)
 float value;    
 
     value = val * NORM127MUL;
+    if(serialdebug)       
+        Serial.printf("PB Range: %d\n",WS.PBRange);
     return(0);
 }
 
@@ -731,6 +742,10 @@ int Fct_Ch_MDDest(int val)
 float value;    
 
     value = val * NORM127MUL;
+    WS.MWDest = (value) * (DEST_TYPE_COUNT);  
+    if(serialdebug)       
+        Serial.printf("MW Destination: %d\n",WS.MWDest);
+
     return(0);
 }
 /***************************************************/
@@ -743,6 +758,8 @@ int Fct_Ch_MDAmt(int val)
 float value;    
 
     value = val * NORM127MUL;
+    if(serialdebug)       
+        Serial.printf("MW Amount: %d\n",WS.MWAmt);
     return(0);
 }
 /***************************************************/
@@ -755,6 +772,10 @@ int Fct_Ch_ATDest(int val)
 float value;    
 
     value = val * NORM127MUL;
+    WS.ATDest = (value) * (DEST_TYPE_COUNT);  
+    if(serialdebug)       
+        Serial.printf("MW Destination: %d\n",WS.ATDest);
+
     return(0);
 }
 /***************************************************/
@@ -767,6 +788,8 @@ int Fct_Ch_ATAmt(int val)
 float value;    
 
     value = val * NORM127MUL;
+    if(serialdebug)       
+        Serial.printf("MW Amount: %d\n",WS.ATAmt);
     return(0);
 }
 /***************************************************/

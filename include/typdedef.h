@@ -51,6 +51,8 @@ struct WorkSound
     int16_t DelayAmount;
     int16_t DelayFeedback;
 
+    int16_t MWDest;
+    int16_t MWAmt;
     int16_t ATDest;
     int16_t ATAmt;
 };

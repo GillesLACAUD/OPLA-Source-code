@@ -192,7 +192,21 @@ float IRAM_ATTR KarlsenLPF(float signal, float freq, float res, uint8_t m)
 
 		b_oversample++;
 	}
-    return pole4[m];
+    /*
+    LPF:=fPole[4];
+    BPF:=fPole[4]-fPole[1];
+    NPF:=I-fPole[1];
+    HPF:=I-fPole[4]-fPole[1];
+    */
+    switch(WS.FType)
+    {
+
+        case FILTER_LPF: return pole4[m];
+        case FILTER_HPF: return (pole4[m]-pole1[m]);
+        case FILTER_BPF: return (signal-pole1[m]);
+        case FILTER_NPF: return (signal-pole4[m]-pole1[m]);
+    }
+    
 }
 #endif
 
