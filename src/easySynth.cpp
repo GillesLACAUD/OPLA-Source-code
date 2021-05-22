@@ -915,10 +915,8 @@ float setvel;
     //setvel *= AmpVel;               // Apply setting curve
     //setvel *=0.75;                  // Apply global amp
 
-    voice->avelocity = setvel*AmpVel*0.75; 
-    voice->avelocity =0.75;
+    voice->avelocity = 1.0+(setvel-0.5)*AmpVel*0.75; 
     voice->fvelocity = (setvel-0.5)*FilterVel; 
-    Serial.printf("vocfvelo: %0.3f\n",voice->fvelocity);
     if(!retrig)
     {
         voice->lastSample[0] = 0.0f;

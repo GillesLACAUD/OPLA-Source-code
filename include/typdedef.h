@@ -2,6 +2,9 @@
 
 struct WorkSound
 {
+
+    int16_t SoundMode;
+
     int16_t OscWave;
     int16_t SubWave;
     int16_t NoiseLevel;
@@ -24,11 +27,14 @@ struct WorkSound
     int16_t AEgDecay;
     int16_t AEgSustain;
     int16_t AEgRelease;
+    int16_t AmpVelo;
 
     int16_t PEgAttack;
     int16_t PEgDecay;
     int16_t PEgRelease;
     int16_t PEgAmount;
+    int16_t Portamento;
+    int16_t PBRange;
 
     int16_t LFO1Speed;
     int16_t LFO1Shape;
@@ -43,6 +49,9 @@ struct WorkSound
     int16_t DelayLen;
     int16_t DelayAmount;
     int16_t DelayFeedback;
+
+    int16_t ATDest;
+    int16_t ATAmt;
 };
 
 

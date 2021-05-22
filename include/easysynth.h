@@ -347,6 +347,10 @@ uint8_t globalrank=0;
 
 float oscdetune=0;
 
+
+char Sound_Mode[3][MAX_LABEL] = 
+{"POL","PAR","MON"};
+
 char Wave_Name[WAVEFORM_TYPE_COUNT][MAX_LABEL] = 
 {"SIN","SAW","SQU","PUL","TRI","NOI","NOT"};
 
@@ -399,6 +403,7 @@ float FilterVel=1.0;
 
 extern char Wave_Name[WAVEFORM_TYPE_COUNT][MAX_LABEL];
 extern char Dest_Name[DEST_TYPE_COUNT][MAX_LABEL];
+extern char Sound_Mode[3][MAX_LABEL];
 
 extern float sine[WAVEFORM_CNT];
 extern float saw[WAVEFORM_CNT];

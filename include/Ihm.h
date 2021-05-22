@@ -47,7 +47,7 @@ typedef struct
   int 		    (*ptrfunctBPDoubleClick) (int);
 } Encoder_Data;
 
-#define MAX_SECTION     5
+#define MAX_SECTION     6
 #define MAX_ENCODER     10
 
 #define SECTION_OSC     0
@@ -55,6 +55,7 @@ typedef struct
 #define SECTION_EG      2
 #define SECTION_LFO     3
 #define SECTION_FX      4
+#define SECTION_SYSTEM  5
 
 #ifdef __IHM__
 char Tab_Section_Name[MAX_SECTION][15]=
@@ -64,6 +65,7 @@ char Tab_Section_Name[MAX_SECTION][15]=
     "ENV GENERATOR",
     "LFO",
     "FX",
+    "SYSTEM",
 };
 
 int Fct_Ch_OscWave(int val);
@@ -88,11 +90,13 @@ int Fct_Ch_AmAttack(int val);
 int Fct_Ch_AmDecay(int val);
 int Fct_Ch_AmSustain(int val);
 int Fct_Ch_AmRelease(int val);
+int Fct_Ch_AmVelo(int val);
 
 int Fct_Ch_PiAttack(int val);
 int Fct_Ch_PiDecay(int val);
 int Fct_Ch_PiRelease(int val);
 int Fct_Ch_PiAmount(int val);
+int Fct_Ch_Portamento(int val);
 
 int Fct_Ch_L1Speed(int val);
 int Fct_Ch_L1Shape(int val);
@@ -106,6 +110,14 @@ int Fct_Ch_L2Amount(int val);
 int Fct_Ch_DlLen(int val);
 int Fct_Ch_DlAmount(int val);
 int Fct_Ch_DlFeed(int val);
+
+int Fct_Ch_SoundMode(int val);
+int Fct_Ch_PBRange(int val);
+int Fct_Ch_MDDest(int val);
+int Fct_Ch_MDAmt(int val);
+int Fct_Ch_ATDest(int val);
+int Fct_Ch_ATAmt(int val);
+int Fct_Ch_MidiRx(int val);
 
 
 Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
@@ -122,14 +134,14 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
     "MIX",  "SUB VOLUME",   MIDI_CC_SUBVOL, TYPE_DATA,  &TabListNull[0][0], 0,      &WS.SubVolume,   1,  0,      127,    1,      Fct_Ch_SubMix,    FctNull,    FctNull,    FctNull,    FctNull,
     "TRA",  "TRANSPOSE",    MIDI_CC_SUBTR,  TYPE_DATA,  &TabListNull[0][0], 0,      &WS.SubTranspose,   1,  -24,    12,     1,      Fct_Ch_SubOct,    FctNull,    FctNull,    FctNull,    FctNull,
     "WS1",  "WAVE SHAPE1",  MIDI_CC_WS1,    TYPE_DATA,  &TabListNull[0][0], 0,      &WS.WaveShapping1,   1,  0,      127,    1,      Fct_Ch_WS1,       FctNull,    FctNull,    FctNull,    FctNull,
-    "---",  "---",          0xFF,           TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,          FctNull,    FctNull,    FctNull,    FctNull,
+    "WS2",  "WAVE SHAPE2",  MIDI_CC_WS2,    TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,          FctNull,    FctNull,    FctNull,    FctNull,
 
     // SECTION FILTER
     /* Name                 MIDICC          TYPE        LIST                INDEX   VALUE      SIZE MIN     MAX     STEP    CHANGE      ON          OFF         HOLD        DCLK  */
     "FC ",  "CUTOFF",       MIDI_CC_CUTOFF, TYPE_DATA,  &TabListNull[0][0], 0,      &WS.Cutoff,   1,  0,      127,    1,      Fct_Ch_Cutoff,    FctNull,    FctNull,    FctNull,    FctNull,
     "RES",  "RESONANCE",    MIDI_CC_RES,    TYPE_DATA,  &TabListNull[0][0], 0,      &WS.Resonance,   1,  0,      127,    1,      Fct_Ch_Resonance, FctNull,    FctNull,    FctNull,    FctNull,
     "KBT",  "KB TRACK",     MIDI_CC_FOLLOW, TYPE_DATA,  &TabListNull[0][0], 0,      &WS.KbTrack,   1,  0,      127,    1,      Fct_Ch_KbTrack,   FctNull,    FctNull,    FctNull,    FctNull,
-    "VEL",  "VEL AMT",      MIDI_CC_FVELO,  TYPE_DATA,  &TabListNull[0][0], 0,      &WS.FVelo,   1,  0,      127,    1,      Fct_Ch_FVelo,          FctNull,    FctNull,    FctNull,    FctNull,
+    "VEL",  "VEL FILTER",   MIDI_CC_FVELO,  TYPE_DATA,  &TabListNull[0][0], 0,      &WS.FVelo,   1,  0,      127,    1,      Fct_Ch_FVelo,          FctNull,    FctNull,    FctNull,    FctNull,
     "---",  "---",          0xFF,           TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,          FctNull,    FctNull,    FctNull,    FctNull,
 
     "ATT",  "FL ATTACK",    MIDI_CC_FLT_A,  TYPE_DATA,  &TabListNull[0][0], 0,      &WS.FEgAttack,   1,  0,      127,    1,      Fct_Ch_FlAttack,  FctNull,    FctNull,    FctNull,    FctNull,
@@ -144,13 +156,13 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
     "DEC",  "AM DECAY",     MIDI_CC_AMP_D,  TYPE_DATA,  &TabListNull[0][0], 0,      &WS.AEgDecay,   1,  0,      127,    1,      Fct_Ch_AmDecay,    FctNull,    FctNull,    FctNull,    FctNull,
     "SUS",  "AM SUSTAIN",   MIDI_CC_AMP_S,  TYPE_DATA,  &TabListNull[0][0], 0,      &WS.AEgSustain,   1,  0,      127,    1,      Fct_Ch_AmSustain,  FctNull,    FctNull,    FctNull,    FctNull,
     "REL",  "AM RELEASE",   MIDI_CC_AMP_R,  TYPE_DATA,  &TabListNull[0][0], 0,      &WS.AEgRelease,   1,  0,      127,    1,      Fct_Ch_AmRelease,  FctNull,    FctNull,    FctNull,    FctNull,
-    "---",  "---",          0xFF,           TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,           FctNull,    FctNull,    FctNull,    FctNull,
+    "VEL",  "VEL VOLUME",   MIDI_CC_AMPVEL, TYPE_DATA,  &TabListNull[0][0], 0,      &WS.AmpVelo,   1,  0,      127,    1,      Fct_Ch_AmVelo,           FctNull,    FctNull,    FctNull,    FctNull,
 
     "ATT",  "PI ATTACK",    MIDI_CC_PITC_A,  TYPE_DATA,  &TabListNull[0][0], 0,      &WS.PEgAttack,   1,  0,      127,    1,      Fct_Ch_PiAttack,  FctNull,    FctNull,    FctNull,    FctNull,
     "DEC",  "PI DECAY",     MIDI_CC_PITC_D,  TYPE_DATA,  &TabListNull[0][0], 0,      &WS.PEgDecay,   1,  0,      127,    1,      Fct_Ch_PiDecay,   FctNull,    FctNull,    FctNull,    FctNull,
     "REL",  "PI RELEASE",   MIDI_CC_PITC_R,  TYPE_DATA,  &TabListNull[0][0], 0,      &WS.PEgRelease,   1,  0,      127,    1,      Fct_Ch_PiRelease, FctNull,    FctNull,    FctNull,    FctNull,
     "AMT",  "PI AMOUNT",    MIDI_CC_PITC_Q,  TYPE_DATA,  &TabListNull[0][0], 0,      &WS.PEgAmount,   1,  0,      127,    1,      Fct_Ch_PiAmount,  FctNull,    FctNull,    FctNull,    FctNull,
-    "---",  "---",          0xFF,            TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,          FctNull,    FctNull,    FctNull,    FctNull,
+    "POR",  "PORTAMENTO",   MIDI_CC_PORTA,   TYPE_DATA,  &TabListNull[0][0], 0,      &WS.Portamento,   1,  0,      127,    1,      Fct_Ch_Portamento,          FctNull,    FctNull,    FctNull,    FctNull,
 
     // SECTION LFO
     /* Name                 MIDICC               TYPE        LIST                INDEX   VALUE      SIZE MIN     MAX     STEP    CHANGE             ON          OFF         HOLD        DCLK  */
@@ -166,7 +178,7 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
     "AMT",  "LFO2 AMOUNT",  MIDI_CC_LFO2_AMT,    TYPE_DATA,  &TabListNull[0][0], 0,      &WS.LFO2Amount,   1,  0,      127,    1,      Fct_Ch_L2Amount,   FctNull,    FctNull,    FctNull,    FctNull,
     "---",  "---",          0xFF,                TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,           FctNull,    FctNull,    FctNull,    FctNull,
 
-    // SECTION FG 
+    // SECTION FX 
     /* Name                 MIDICC                 TYPE        LIST                INDEX   VALUE      SIZE MIN     MAX     STEP    CHANGE           ON          OFF         HOLD        DCLK  */
     "LEN",  "DELAY LEN",    MIDI_CC_DEL_LENGHT,    TYPE_DATA,  &TabListNull[0][0], 0,      &WS.DelayLen,   1,  0,      127,    1,      Fct_Ch_DlLen,    FctNull,    FctNull,    FctNull,    FctNull,
     "AMT",  "DELAY AMOUNT", MIDI_CC_DEL_LEVEL,     TYPE_DATA,  &TabListNull[0][0], 0,      &WS.DelayAmount,   1,  0,      127,    1,      Fct_Ch_DlAmount, FctNull,    FctNull,    FctNull,    FctNull,
@@ -179,6 +191,21 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
     "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
     "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
     "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
+
+    // SECTION SYSTEM
+    /* Name                 MIDICC                 TYPE        LIST                INDEX   VALUE      SIZE MIN     MAX     STEP    CHANGE           ON          OFF         HOLD        DCLK  */
+    "MOD",  "SOUND MODE",   MIDI_CC_SOUND_MODE,    TYPE_LIST,  &Sound_Mode[0][0], 0,       &WS.SoundMode,   1,  0,      3,    1,     Fct_Ch_SoundMode,         FctNull,    FctNull,    FctNull,    FctNull,
+    "PBR",  "PB RANGE",     MIDI_CC_PB_RANGE,      TYPE_DATA,  &TabListNull[0][0], 0,      &WS.PBRange,   1,  0,      24,    1,      Fct_Ch_PBRange,         FctNull,    FctNull,    FctNull,    FctNull,
+    "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
+    "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
+    "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
+
+    "MDD",  "MD DEST",      MIDI_CC_MD_DEST,       TYPE_DATA,  &Dest_Name[0][0], 0,        &WS.ATDest,   1,  0,      127,    1,      Fct_Ch_MDDest,         FctNull,    FctNull,    FctNull,    FctNull,
+    "MDA",  "MD AMT",       MIDI_CC_MD_AMT,        TYPE_DATA,  &TabListNull[0][0], 0,      &WS.ATAmt,   1,  0,      127,    1,      Fct_Ch_MDAmt,         FctNull,    FctNull,    FctNull,    FctNull,
+    "AFD",  "AT DEST",      MIDI_CC_AT_DEST,       TYPE_DATA,  &Dest_Name[0][0], 0,        &WS.ATDest,   1,  0,      127,    1,      Fct_Ch_ATDest,         FctNull,    FctNull,    FctNull,    FctNull,
+    "AFA",  "AT AMT",       MIDI_CC_AT_AMT,        TYPE_DATA,  &TabListNull[0][0], 0,      &WS.ATAmt,   1,  0,      127,    1,      Fct_Ch_ATAmt,         FctNull,    FctNull,    FctNull,    FctNull,
+    "MRX",  "MIDI RX",      0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      15,     1,      Fct_Ch_MidiRx,         FctNull,    FctNull,    FctNull,    FctNull,
+
 
 };
 #else

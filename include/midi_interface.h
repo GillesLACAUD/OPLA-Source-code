@@ -57,6 +57,7 @@
 #define MIDI_CC_SUBVOL          16
 #define MIDI_CC_SUBTR           17
 #define MIDI_CC_WS1             18
+#define MIDI_CC_WS2             19
 
 #define MIDI_CC_CUTOFF          20
 #define MIDI_CC_RES             21
@@ -72,12 +73,24 @@
 #define MIDI_CC_AMP_D           31
 #define MIDI_CC_AMP_S           32
 #define MIDI_CC_AMP_R           33
+#define MIDI_CC_AMPVEL          34
 
 #define MIDI_CC_PITC_A          35
 #define MIDI_CC_PITC_D          36
 #define MIDI_CC_PITC_R          37
 #define MIDI_CC_PITC_Q          38
+#define MIDI_CC_PORTA           39
 
+#define MIDI_CC_DEL_LENGHT      50
+#define MIDI_CC_DEL_LEVEL       51
+#define MIDI_CC_DEL_FEEDBACK    52
+
+#define MIDI_CC_SOUND_MODE      60
+#define MIDI_CC_PB_RANGE        61
+#define MIDI_CC_MD_DEST         62
+#define MIDI_CC_MD_AMT          63
+#define MIDI_CC_AT_DEST         64
+#define MIDI_CC_AT_AMT          65
 
 
 #define MIDI_CC_LFO1_SPEED      70
@@ -91,9 +104,9 @@
 #define MIDI_CC_LFO2_AMT        78
 
 
-#define MIDI_CC_DEL_LENGHT      50
-#define MIDI_CC_DEL_LEVEL       51
-#define MIDI_CC_DEL_FEEDBACK    52
+
+
+
 
 
 /*
