@@ -81,6 +81,7 @@ int Fct_Ch_Cutoff(int val);
 int Fct_Ch_Resonance(int val);
 int Fct_Ch_KbTrack(int val); 
 int Fct_Ch_FVelo(int val); 
+int Fct_Ch_FType(int val); 
 int Fct_Ch_FlAttack(int val);
 int Fct_Ch_FlDecay(int val);
 int Fct_Ch_FlRelease(int val);
@@ -118,6 +119,7 @@ int Fct_Ch_MDAmt(int val);
 int Fct_Ch_ATDest(int val);
 int Fct_Ch_ATAmt(int val);
 int Fct_Ch_MidiRx(int val);
+int Fct_Ch_Spread(int val);
 
 
 Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
@@ -142,7 +144,7 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
     "RES",  "RESONANCE",    MIDI_CC_RES,    TYPE_DATA,  &TabListNull[0][0], 0,      &WS.Resonance,   1,  0,      127,    1,      Fct_Ch_Resonance, FctNull,    FctNull,    FctNull,    FctNull,
     "KBT",  "KB TRACK",     MIDI_CC_FOLLOW, TYPE_DATA,  &TabListNull[0][0], 0,      &WS.KbTrack,   1,  0,      127,    1,      Fct_Ch_KbTrack,   FctNull,    FctNull,    FctNull,    FctNull,
     "VEL",  "VEL FILTER",   MIDI_CC_FVELO,  TYPE_DATA,  &TabListNull[0][0], 0,      &WS.FVelo,   1,  0,      127,    1,      Fct_Ch_FVelo,          FctNull,    FctNull,    FctNull,    FctNull,
-    "---",  "---",          0xFF,           TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,          FctNull,    FctNull,    FctNull,    FctNull,
+    "TYP",  "FILTER TYPE",  MIDI_CC_FTYPE,  TYPE_LIST,  &Filter_Type[0][0], 0,      &WS.FType,   1,  0,      MAX_FLT_TYPE,    1,      Fct_Ch_FType,          FctNull,    FctNull,    FctNull,    FctNull,
 
     "ATT",  "FL ATTACK",    MIDI_CC_FLT_A,  TYPE_DATA,  &TabListNull[0][0], 0,      &WS.FEgAttack,   1,  0,      127,    1,      Fct_Ch_FlAttack,  FctNull,    FctNull,    FctNull,    FctNull,
     "DEC",  "FL DECAY",     MIDI_CC_FLT_D,  TYPE_DATA,  &TabListNull[0][0], 0,      &WS.FEgDecay,   1,  0,      127,    1,      Fct_Ch_FlDecay,   FctNull,    FctNull,    FctNull,    FctNull,
@@ -196,7 +198,7 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
     /* Name                 MIDICC                 TYPE        LIST                INDEX   VALUE      SIZE MIN     MAX     STEP    CHANGE           ON          OFF         HOLD        DCLK  */
     "MOD",  "SOUND MODE",   MIDI_CC_SOUND_MODE,    TYPE_LIST,  &Sound_Mode[0][0], 0,       &WS.SoundMode,   1,  0,      3,    1,     Fct_Ch_SoundMode,         FctNull,    FctNull,    FctNull,    FctNull,
     "PBR",  "PB RANGE",     MIDI_CC_PB_RANGE,      TYPE_DATA,  &TabListNull[0][0], 0,      &WS.PBRange,   1,  0,      24,    1,      Fct_Ch_PBRange,         FctNull,    FctNull,    FctNull,    FctNull,
-    "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
+    "SPE",  "SPREAD",       MIDI_CC_SPREAD,        TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      Fct_Ch_Spread,         FctNull,    FctNull,    FctNull,    FctNull,
     "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
     "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
 

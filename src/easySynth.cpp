@@ -646,6 +646,8 @@ int indx=0;
     if(FiltCutoffMod<0.0)
         FiltCutoffMod = 0.0;
 
+    // WS.SoundMode  different mode for the filter Poly/Para/Monp       
+
     for (int i = 0; i < MAX_POLY_VOICE; i++) /* one loop is faster than two loops */
     {
         notePlayerT *voice = &voicePlayer[i];

@@ -18,6 +18,7 @@ struct WorkSound
     int16_t Resonance;
     int16_t KbTrack;
     int16_t FVelo;
+    int16_t FType;
     int16_t FEgAttack;
     int16_t FEgDecay;
     int16_t FEgRelease;

@@ -46,6 +46,7 @@ SYNTH_EXTRN uint32_t midi_note_to_add[MIDI_NOTE_CNT]; /* lookup to playback wave
 #define MAX_LABEL           5
 #define WAVEFORM_TYPE_COUNT	7
 #define DEST_TYPE_COUNT	    8
+#define MAX_FLT_TYPE		2
 
 #define WAVE_SINE       0
 #define WAVE_SAW        1
@@ -347,6 +348,8 @@ uint8_t globalrank=0;
 
 float oscdetune=0;
 
+char Filter_Type[MAX_FLT_TYPE][MAX_LABEL] =
+{"LPF","HPF"};
 
 char Sound_Mode[3][MAX_LABEL] = 
 {"POL","PAR","MON"};
@@ -401,6 +404,7 @@ float FilterVel=1.0;
 
 #else
 
+extern char Filter_Type[MAX_FLT_TYPE][MAX_LABEL];
 extern char Wave_Name[WAVEFORM_TYPE_COUNT][MAX_LABEL];
 extern char Dest_Name[DEST_TYPE_COUNT][MAX_LABEL];
 extern char Sound_Mode[3][MAX_LABEL];

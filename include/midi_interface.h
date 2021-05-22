@@ -63,6 +63,7 @@
 #define MIDI_CC_RES             21
 #define MIDI_CC_FOLLOW          22
 #define MIDI_CC_FVELO           23
+#define MIDI_CC_FTYPE           24
 
 #define MIDI_CC_FLT_A           25
 #define MIDI_CC_FLT_D           26
@@ -91,6 +92,7 @@
 #define MIDI_CC_MD_AMT          63
 #define MIDI_CC_AT_DEST         64
 #define MIDI_CC_AT_AMT          65
+#define MIDI_CC_SPREAD          66
 
 
 #define MIDI_CC_LFO1_SPEED      70
