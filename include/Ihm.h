@@ -213,6 +213,60 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
 #else
 IHM_EXTRN char Tab_Section_Name[MAX_SECTION][15];
 IHM_EXTRN Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER];
+
+IHM_EXTRN int Fct_Ch_OscWave(int val);
+IHM_EXTRN int Fct_Ch_SubWave(int val);
+IHM_EXTRN int Fct_Ch_Noise(int val); 
+IHM_EXTRN int Fct_Ch_Detune(int val);
+IHM_EXTRN int Fct_Ch_WS1(int val);   
+IHM_EXTRN int Fct_Ch_OscMix(int val);
+IHM_EXTRN int Fct_Ch_SubMix(int val);
+IHM_EXTRN int Fct_Ch_SubOct(int val);
+
+IHM_EXTRN int Fct_Ch_Cutoff(int val);  
+IHM_EXTRN int Fct_Ch_Resonance(int val);
+IHM_EXTRN int Fct_Ch_KbTrack(int val); 
+IHM_EXTRN int Fct_Ch_FVelo(int val); 
+IHM_EXTRN int Fct_Ch_FType(int val); 
+IHM_EXTRN int Fct_Ch_FlAttack(int val);
+IHM_EXTRN int Fct_Ch_FlDecay(int val);
+IHM_EXTRN int Fct_Ch_FlRelease(int val);
+IHM_EXTRN int Fct_Ch_FlAmount(int val);
+
+IHM_EXTRN int Fct_Ch_AmAttack(int val);
+IHM_EXTRN int Fct_Ch_AmDecay(int val);
+IHM_EXTRN int Fct_Ch_AmSustain(int val);
+IHM_EXTRN int Fct_Ch_AmRelease(int val);
+IHM_EXTRN int Fct_Ch_AmVelo(int val);
+
+IHM_EXTRN int Fct_Ch_PiAttack(int val);
+IHM_EXTRN int Fct_Ch_PiDecay(int val);
+IHM_EXTRN int Fct_Ch_PiRelease(int val);
+IHM_EXTRN int Fct_Ch_PiAmount(int val);
+IHM_EXTRN int Fct_Ch_Portamento(int val);
+
+IHM_EXTRN int Fct_Ch_L1Speed(int val);
+IHM_EXTRN int Fct_Ch_L1Shape(int val);
+IHM_EXTRN int Fct_Ch_L1Dest(int val);
+IHM_EXTRN int Fct_Ch_L1Amount(int val);
+IHM_EXTRN int Fct_Ch_L2Speed(int val);
+IHM_EXTRN int Fct_Ch_L2Shape(int val);
+IHM_EXTRN int Fct_Ch_L2Dest(int val);  
+IHM_EXTRN int Fct_Ch_L2Amount(int val);
+
+IHM_EXTRN int Fct_Ch_DlLen(int val);
+IHM_EXTRN int Fct_Ch_DlAmount(int val);
+IHM_EXTRN int Fct_Ch_DlFeed(int val);
+
+IHM_EXTRN int Fct_Ch_SoundMode(int val);
+IHM_EXTRN int Fct_Ch_PBRange(int val);
+IHM_EXTRN int Fct_Ch_MDDest(int val);
+IHM_EXTRN int Fct_Ch_MDAmt(int val);
+IHM_EXTRN int Fct_Ch_ATDest(int val);
+IHM_EXTRN int Fct_Ch_ATAmt(int val);
+IHM_EXTRN int Fct_Ch_MidiRx(int val);
+IHM_EXTRN int Fct_Ch_Spread(int val);
+
 #endif
 
 

@@ -9,6 +9,7 @@
 #include "midi_interface.h"
 #include "easysynth.h"
 #include "Lfo.h"
+#include "SDCard.h"
 
 /***************************************************/
 /*                                                 */
@@ -262,7 +263,6 @@ int cas;
 int ret;
 uint8_t cc;
 
-
     // NEXTION SIDE
     //  prints 0xF3,1
     //  print "T"
@@ -289,7 +289,17 @@ uint8_t cc;
 
         // X Select Sound
 		case 0x58:
-        //CurrentSound=Nextion_Mess[2];
+        CurrentSound=Nextion_Mess[2];
+        sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
+        Nextion_Send(messnex);
+        sprintf(messnex,"page2.b%d.pco=0",CurrentSound);
+        Nextion_Send(messnex);
+
+        sprintf(messnex,"page2.b%d.bco=0",oldCurrentSound);
+        Nextion_Send(messnex);
+        sprintf(messnex,"page2.b%d.pco=2024",oldCurrentSound);
+        Nextion_Send(messnex);
+        oldCurrentSound=CurrentSound;
         break;
 
         // S Section Sound save load
@@ -297,9 +307,14 @@ uint8_t cc;
         // Load save page
         if(Nextion_Mess[2]==1)
         {
+            sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
+            Nextion_Send(messnex);
+            sprintf(messnex,"page2.b%d.pco=0",CurrentSound);
+            Nextion_Send(messnex);
             // Change page
             sprintf(messnex,"page 2");
             Nextion_Send(messnex);
+
         }
         // Escape
         if(Nextion_Mess[2]==4)
@@ -311,12 +326,25 @@ uint8_t cc;
         // Save
         if(Nextion_Mess[2]==2)
         {
-            
+            sprintf(messnex,"page2.b%d.bco=32000",CurrentSound);
+            Nextion_Send(messnex);
+            delay(250);
+            Serial.printf("Save sound %d\n",CurrentSound);
+            SDCard_SaveSound(CurrentSound);
+            sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
+            Nextion_Send(messnex);
         }
         // Load
         if(Nextion_Mess[2]==3)
         {
-            
+            sprintf(messnex,"page2.b%d.bco=32000",CurrentSound);
+            Nextion_Send(messnex);
+            delay(250);
+            Nextion_Send(messnex);
+            Serial.printf("Load sound %d\n",CurrentSound);
+            SDCard_LoadSound(CurrentSound);
+            sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
+            Nextion_Send(messnex);
         }
         break;
 

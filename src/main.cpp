@@ -22,6 +22,7 @@
 #include "i2s_interface.h"
 #include "Nextion.h"
 #include "Lfo.h"
+#include "SDCard.h"
 
 TaskHandle_t  Core0TaskHnd;
 
@@ -217,30 +218,9 @@ void setup()
 
     Serial.printf("Firmware started successfully\n");
 
-    // 1 bit mode OK
-    /*
-    pinMode(2, INPUT_PULLUP);
-    if(!SD_MMC.begin("/sdcard",true)) 
-    {
-        Serial.println("Card Mount 1 Bit Failed");
-    }
-    else
-    {
-        Serial.println("Card Mount 1 Bit OK");
-    }
-    */
-    // 4 bit mode 
-    
-    pinMode(2, INPUT_PULLUP);
-    if(!SD_MMC.begin()) 
-    {
-        Serial.println("Card Mount 4 Bits Failed");
-    }
-    else
-    {
-        Serial.println("Card Mount 4 Bits OK");
-    }
-   
+    SDCard_Init();
+
+  
 
     Lfo_timer1 = timerBegin(LFO_ID1, 80, true);             // 80 Prescaler = 1MHertz 800 100KHertz
     timerAlarmWrite(Lfo_timer1,LFO_MAX_TIME,true);          // 1024 -> T=1s 2048 T=2s 16=2048/127 T=16ms = 32 Hertz

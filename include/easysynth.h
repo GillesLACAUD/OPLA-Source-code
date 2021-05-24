@@ -65,6 +65,9 @@ SYNTH_EXTRN uint32_t midi_note_to_add[MIDI_NOTE_CNT]; /* lookup to playback wave
 
 SYNTH_EXTRN WorkSound	WS;
 
+SYNTH_EXTRN uint8_t oldCurrentSound;
+SYNTH_EXTRN uint8_t CurrentSound;
+
 /*
  * add here your waveforms
  */
