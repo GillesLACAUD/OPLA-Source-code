@@ -286,6 +286,40 @@ uint8_t cc;
 	cas = (int)Nextion_Mess[1];
   	switch(cas)
 	{
+
+        // X Select Sound
+		case 0x58:
+        //CurrentSound=Nextion_Mess[2];
+        break;
+
+        // S Section Sound save load
+		case 0x53:
+        // Load save page
+        if(Nextion_Mess[2]==1)
+        {
+            // Change page
+            sprintf(messnex,"page 2");
+            Nextion_Send(messnex);
+        }
+        // Escape
+        if(Nextion_Mess[2]==4)
+        {
+            // Change page
+            sprintf(messnex,"page 0");
+            Nextion_Send(messnex);
+        }
+        // Save
+        if(Nextion_Mess[2]==2)
+        {
+            
+        }
+        // Load
+        if(Nextion_Mess[2]==3)
+        {
+            
+        }
+        break;
+
         // V Section inc or dec
 		case 0x56:
         if(Nextion_Mess[2]==0)

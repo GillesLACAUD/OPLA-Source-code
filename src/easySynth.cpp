@@ -206,6 +206,7 @@ float IRAM_ATTR KarlsenLPF(float signal, float freq, float res, uint8_t m)
         case FILTER_BPF: return (signal-pole1[m]);
         case FILTER_NPF: return (signal-pole4[m]-pole1[m]);
     }
+    //return pole4[m];
     
 }
 #endif
@@ -360,6 +361,7 @@ inline void Filter_Process(float *const signal, struct filterProcT *const filter
  */
 inline bool ADSR_Process(const struct adsrT *ctrl, float *ctrlSig, adsr_phaseT *phase)
 {
+    //Serial.printf("Ph %d val %8.6f\n",*phase,*ctrlSig);
     switch (*phase)
     {
     case attack:
@@ -379,7 +381,7 @@ inline bool ADSR_Process(const struct adsrT *ctrl, float *ctrlSig, adsr_phaseT *
         }
         break;
     case decay:
-        *ctrlSig -= ctrl->d;
+        *ctrlSig -= ctrl->d/4;
         if (*ctrlSig < ctrl->s+ctrl->d)
         {
             //*ctrlSig = ctrl->s;
@@ -387,6 +389,7 @@ inline bool ADSR_Process(const struct adsrT *ctrl, float *ctrlSig, adsr_phaseT *
         }
         break;
     case sustain:
+        break;
     case standby:
         break;
     case release:
@@ -670,6 +673,12 @@ int indx=0;
             if (count % 4 == 0)
             {
                 voice_off = ADSR_Process(&adsr_vol, &voice->control_sign, &voice->phase);
+                /*
+                if(i==0)
+                {
+                    Serial.printf("Ph %d val %3.2f\n",voice->phase,voice->control_sign);
+                }
+                */
                 if (!voice_off && voice->active)
                 {
                     for (int j = 0; j < MAX_POLY_VOICE ; j++)
@@ -698,8 +707,9 @@ int indx=0;
                 voice->lastSample[0] += nz*(1+NoiseMod);
                 voice->lastSample[1] += nz*(1+NoiseMod);
 
-                voice->lastSample[0] *= voice->control_sign * voice->avelocity;
-                voice->lastSample[1] *= voice->control_sign * voice->avelocity;
+                voice->lastSample[0] *= voice->control_sign*voice->avelocity;
+                voice->lastSample[1] *= voice->control_sign*voice->avelocity;
+                
 
                 //channel[i] = channel[i] * (vcacutoff[i] * vcavellvl[i]);
                 //summer = summer + KarlsenLPF(channel[i], (vcfval * vcfenvlvl) * ((vcfcutoff[i] * vcfkeyfollow[i]) * vcfvellvl[i]), resonance, i);
@@ -928,10 +938,7 @@ float setvel;
 
     voice->midiNote = note;
     setvel = (float)vel/127;        // Real velocity
-    //setvel *= AmpVel;               // Apply setting curve
-    //setvel *=0.75;                  // Apply global amp
-
-    voice->avelocity = 1.0+(setvel-0.5)*AmpVel*0.75; 
+    voice->avelocity =1-(1-setvel)*AmpVel;
     voice->fvelocity = (setvel-0.5)*FilterVel; 
     if(!retrig)
     {

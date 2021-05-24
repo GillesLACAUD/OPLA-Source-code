@@ -407,6 +407,7 @@ float value;
 
     value = val * NORM127MUL;
     adsr_vol.s = (0.01 * pow(100, value)); 
+    adsr_vol.s = value;
     if(serialdebug)       
         Serial.printf("Amp Sustain: %f\n",adsr_vol.s);
     return(0);
