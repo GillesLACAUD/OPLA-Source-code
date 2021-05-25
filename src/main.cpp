@@ -23,6 +23,7 @@
 #include "Nextion.h"
 #include "Lfo.h"
 #include "SDCard.h"
+#include "Simple_Delay.h"
 
 TaskHandle_t  Core0TaskHnd;
 
@@ -350,6 +351,7 @@ static uint16_t cpttimer2;
         {
             float fl_sample, fr_sample;
             Synth_Process(&fl_sample, &fr_sample);
+            Delay_Process(&fl_sample, &fr_sample);
             sampleData32.sample[0] = (int16_t)(fl_sample*32768.0f);
             sampleData32.sample[1] = (int16_t)(fr_sample*32768.0f);
         }

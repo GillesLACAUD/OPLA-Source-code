@@ -345,6 +345,9 @@ uint8_t cc;
             SDCard_LoadSound(CurrentSound);
             sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
             Nextion_Send(messnex);
+
+            Nextion_PrintValues();
+
         }
         break;
 

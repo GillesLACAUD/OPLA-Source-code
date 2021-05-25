@@ -37,6 +37,8 @@ struct oscillatorT *osc;
         osc = &oscPlayer[o+1];
         osc->waveForm = selectedWaveForm;
     }
+    // Force update
+    OldWaveShapping1Mod += 0.03;
     if(serialdebug)
         Serial.printf("selWaveForm1: %d\n", selWaveForm1);      
     return(0);
@@ -95,8 +97,14 @@ float tmp;
 uint8_t note;
 
     value = val * NORM127MUL;
-    //oscdetune =  value/30;   
-    oscdetune =(0.0001*pow(500,value)); 
+    if(val==0)
+    {
+        oscdetune = 0;
+    }
+    else
+    {
+        oscdetune =(0.0001*pow(500,value)); 
+    }
     for(uint8_t v=0;v<=voc_act;v++)
     {
         if (voicePlayer[v].active)
@@ -115,6 +123,8 @@ uint8_t note;
             osc->addVal = midi_note_to_add[note+(int8_t)SubTranspose]*(0.5-oscdetune);
         }
     }
+    if(serialdebug)
+        Serial.printf("Osc Detune: %f\n", oscdetune);
 
     return(0);
 }
@@ -167,6 +177,8 @@ float value;
 
     value = val * NORM127MUL;
     MixOsc = value;
+    if(serialdebug)
+        Serial.printf("Osc vol: %f\n",MixOsc);
     return(0);
 }
 /***************************************************/
@@ -180,6 +192,8 @@ float value;
 
     value = val * NORM127MUL;
     MixSub = value;
+    if(serialdebug)
+        Serial.printf("Sub vol: %f\n",MixSub);
     return(0);
 }
 /***************************************************/
