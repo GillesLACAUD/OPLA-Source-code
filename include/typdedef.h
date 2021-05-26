@@ -5,6 +5,7 @@ struct WorkSound
 
     int16_t SoundMode;
 
+    int16_t OscBank;
     int16_t OscWave;
     int16_t SubWave;
     int16_t NoiseLevel;

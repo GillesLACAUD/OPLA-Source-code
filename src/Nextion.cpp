@@ -213,6 +213,7 @@ void Nextion_PrintLabel()
 void Nextion_PrintValues()
 {
 char msec[30];
+int tmp;
   
     for(uint8_t l=0;l<NEXTION_MAX_LABEL;l++)
     {
@@ -223,7 +224,11 @@ char msec[30];
         }
         else
         {
+            tmp = (*Tab_Encoder[gui_Section][l].Data)*Tab_Encoder[gui_Section][l].MaxData*NORM127MUL;
+            Tab_Encoder[gui_Section][l].Index = tmp;
             sprintf(msec,"%s",Tab_Encoder[gui_Section][l].ptTabList+MAX_LABEL*Tab_Encoder[gui_Section][l].Index);
+            //Serial.printf("Index %d tmp %d\n",Tab_Encoder[gui_Section][l].Index,tmp);
+            //sprintf(msec,"%s",Tab_Encoder[gui_Section][l].ptTabList+MAX_LABEL*(*Tab_Encoder[gui_Section][l].Data));
             Nextion_PotTxt(l,msec);
         }
     }
@@ -304,6 +309,8 @@ uint8_t cc;
 
         // S Section Sound save load
 		case 0x53:
+        overon = false;
+        overcpt=0;
         // Load save page
         if(Nextion_Mess[2]==1)
         {
@@ -393,6 +400,8 @@ uint8_t cc;
         // Change page
         sprintf(messnex,"page 0");
         Nextion_Send(messnex);
+        overon = false;
+        overcpt=0;
         break;
 
         // L Select a parameter

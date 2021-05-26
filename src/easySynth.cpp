@@ -158,6 +158,36 @@ struct filterCoeffT mainFilt;
 /*                                                 */
 /*                                                 */
 /***************************************************/
+// Good filter but only for mono
+// https://www.musicdsp.org/en/latest/Filters/26-moog-vcf-variation-2.html
+#ifdef FILTER_6
+float in1,in2,in3,in4;
+float out1,out2,out3,out4;
+
+float IRAM_ATTR KarlsenLPF(float input, float fc, float res, uint8_t m)
+{
+ float up2;
+ float invf;
+  
+  res /=2;      
+  float f = fc * 1.16;
+  up2= f*f;
+  invf = 1-f;
+  float fb = res * (1.0 - 0.15*up2);
+  input -= out4 * fb;
+  input *= 0.35013 * (up2*up2);
+  out1 = input + 0.3 * in1 + invf * out1; // Pole 1
+  in1  = input;
+  out2 = out1 + 0.3 * in2 + invf * out2;  // Pole 2
+  in2  = out1;
+  out3 = out2 + 0.3 * in3 + invf * out3;  // Pole 3
+  in3  = out2;
+  out4 = out3 + 0.3 * in4 + invf * out4;  // Pole 4
+  in4  = out3;
+  return out4;
+}
+#endif
+
 #ifdef FILTER_1
 float IRAM_ATTR KarlsenLPF(float signal, float freq, float res, uint8_t m)
 {
@@ -182,7 +212,7 @@ float IRAM_ATTR KarlsenLPF(float signal, float freq, float res, uint8_t m)
 		b_fp[m] = (b_fp[m] * 0.418f) + ((b_q[m] * pole4[m]) * 0.582f);	// dynamic feedback
 		float intfp;
 		intfp = (b_fp[m] * 0.36f) + (prevfp * 0.64f);	// feedback phase
-		b_in[m] =	b_inSH[m] - intfp;	// inverted feedback	
+		b_in[m] =	b_inSH[m] - intfp;	                // inverted feedback	
 
 		pole1[m] = (b_in[m] * b_f[m]) + (pole1[m] * (1.0f - b_f[m]));	// pole 1
 		if (pole1[m] > 1.0f) {pole1[m] = 1.0f;} else if (pole1[m] < -1.0f) {pole1[m] = -1.0f;} // pole 1 clipping
@@ -731,6 +761,7 @@ int indx=0;
                 //Filter_Process(&voice->lastSample[1], &voice->filterR);
                 #else
                 voice->lastSample[0] = KarlsenLPF(voice->lastSample[0],cf, filtReso,i);
+                //voice->lastSample[0] /=4; //for para mode
                 #endif
                 voice->lastSample[1] = voice->lastSample[0];
 
@@ -741,6 +772,9 @@ int indx=0;
             }
         }
     }
+    // Try para mode - ok good
+    //out_l = KarlsenLPF(out_l,FiltCutoffMod+voicePlayer[0].f_control_sign*filterEG, filtReso,0);
+    //out_r = out_l;
 
     cptvoice++;
     if(cptvoice==MAX_POLY_VOICE)
@@ -1060,7 +1094,6 @@ float factor;
                 {
                     float value = val * NORM127MUL;
                     Tab_Encoder[s][e].Index= (value) * (Tab_Encoder[s][e].MaxData);
-                    *Tab_Encoder[s][e].Data= (value) * (Tab_Encoder[s][e].MaxData);
                 }
                 // 0-127 to min max data -> 0 = Min data 127 = Max data
                 // -24 to +12   range = 36
@@ -1073,9 +1106,8 @@ float factor;
                     range = Tab_Encoder[s][e].MaxData-Tab_Encoder[s][e].MinData;
                     factor = (float)range/127;
                     val = Tab_Encoder[s][e].MinData + (int)((float)val*factor);
-                    
                 }
-                *Tab_Encoder[s][e].Data=(int16_t)val;   // Keep the value
+                *Tab_Encoder[s][e].Data=(int16_t)val;   // Keep the value    
                 Tab_Encoder[s][e].ptrfunctValueChange(val);
                 e=0x55;
                 s=0x55;

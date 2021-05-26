@@ -56,7 +56,6 @@ struct oscillatorT *osc;
     value = val * NORM127MUL;
     selWaveForm2 = (value) * (WAVEFORM_TYPE_COUNT);
     selectedWaveForm2 = waveFormLookUp[selWaveForm2];
-    // bug here ????    
     for(uint8_t o=0;o<=osc_act;o+=3)
     {
         osc = &oscPlayer[o+2];

@@ -52,6 +52,7 @@
 #define MIDI_CC_SUBOSC          11
 #define MIDI_CC_NOISE           12
 #define MIDI_CC_DETUNE          13
+#define MIDI_CC_BANQUE          14
 
 #define MIDI_CC_OSCVOL          15
 #define MIDI_CC_SUBVOL          16

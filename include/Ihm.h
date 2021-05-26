@@ -130,8 +130,8 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
     "SUB",  "SUB WAVEFORM", MIDI_CC_SUBOSC, TYPE_LIST,  &Wave_Name[0][0],   0,      &WS.SubWave,   1,  0,      WAVEFORM_TYPE_COUNT,    1,        Fct_Ch_SubWave,   FctNull,    FctNull,    FctNull,    FctNull,
     "NOIS", "NOISE VOLUME", MIDI_CC_NOISE,  TYPE_DATA,  &TabListNull[0][0], 0,      &WS.NoiseLevel,   1,  0,      127,    1,      Fct_Ch_Noise,     FctNull,    FctNull,    FctNull,    FctNull,
     "DET",  "DETUNE",       MIDI_CC_DETUNE, TYPE_DATA,  &TabListNull[0][0], 0,      &WS.OscDetune,   1,  0,      127,    1,      Fct_Ch_Detune,    FctNull,    FctNull,    FctNull,    FctNull,
-    "---",  "---",          0xFF,           TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,          FctNull,    FctNull,    FctNull,    FctNull,
-
+    "BNK",  "OSC BANQUE",   MIDI_CC_BANQUE, TYPE_DATA,  &Wave_Name[0][0],   0,      &WS.OscBank,   1,  0,      50,    1,        FctNull,   FctNull,    FctNull,    FctNull,    FctNull,
+    
     "MIX",  "OSC VOLUME",   MIDI_CC_OSCVOL, TYPE_DATA,  &TabListNull[0][0], 0,      &WS.OscVolume,   1,  0,      127,    1,      Fct_Ch_OscMix,    FctNull,    FctNull,    FctNull,    FctNull,
     "MIX",  "SUB VOLUME",   MIDI_CC_SUBVOL, TYPE_DATA,  &TabListNull[0][0], 0,      &WS.SubVolume,   1,  0,      127,    1,      Fct_Ch_SubMix,    FctNull,    FctNull,    FctNull,    FctNull,
     "TRA",  "TRANSPOSE",    MIDI_CC_SUBTR,  TYPE_DATA,  &TabListNull[0][0], 0,      &WS.SubTranspose,   1,  -24,    12,     1,      Fct_Ch_SubOct,    FctNull,    FctNull,    FctNull,    FctNull,
