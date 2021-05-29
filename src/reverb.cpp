@@ -167,9 +167,9 @@ void Reverb_Process(float *signal_l, float *signal_r, int buffLen)
 
         /* apply reverb level */
         newsample *= rev_level;
-
-        signal_l[n] += newsample;
-        signal_r[n] += newsample;
+        
+        signal_l[n] += newsample*(1-reverbPan);
+        signal_r[n] += newsample*reverbPan;
     }
 }
 

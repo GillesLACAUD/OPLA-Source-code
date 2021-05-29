@@ -726,6 +726,7 @@ int Fct_Ch_DlPP(int val)
 float value;    
 
     value = val * NORM127MUL;
+    delayPan = value;
 }
 
 /***************************************************/
@@ -751,6 +752,7 @@ int Fct_Ch_RevPan(int val)
 float value;    
 
     value = val * NORM127MUL;
+    reverbPan = value;
 }
 
 

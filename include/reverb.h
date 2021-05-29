@@ -18,6 +18,8 @@
 
 #define SAMPLE_BUFFER_SIZE  1
 
+REVERB_EXTRN    float reverbPan;
+
 REVERB_EXTRN void Reverb_Process(float *signal_l, float *signal_r, int buffLen);
 REVERB_EXTRN void Reverb_Setup(void);
 REVERB_EXTRN void Reverb_SetLevel(uint8_t not_used, float value);
