@@ -1,5 +1,6 @@
 /* max delay can be changed but changes also the memory consumption */
-#define MAX_DELAY	11100
+//#define MAX_DELAY	11100
+#define MAX_DELAY	9000
 
 #include <Arduino.h>
 
@@ -18,7 +19,7 @@ DELAY_EXTRN float *delayLine_r;
 #ifdef __DELAY__
 float delayToMix = 0.0;
 float delayFeedback = 0.0;
-uint32_t delayLen = 11098;
+uint32_t delayLen = MAX_DELAY-2;
 uint32_t delayIn = 0;
 uint32_t delayOut = 0;
 uint8_t pingpong = 0;

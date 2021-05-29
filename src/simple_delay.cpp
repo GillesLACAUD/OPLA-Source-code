@@ -15,11 +15,13 @@ void Delay_Init(void)
     if (delayLine_l == NULL)
     {
         Serial.printf("No more heap memory!\n");
+        while(1);
     }
     delayLine_r = (float *)malloc(sizeof(float) * MAX_DELAY);
     if (delayLine_r == NULL)
     {
         Serial.printf("No more heap memory!\n");
+        while(1);
     }
     Delay_Reset();
     Serial.printf("Delay Init Done\n");

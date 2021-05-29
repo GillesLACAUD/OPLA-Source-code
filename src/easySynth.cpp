@@ -44,10 +44,6 @@ void Synth_Init()
     wavework = (float *)malloc(sizeof(float) * WAVEFORM_CNT);
     */
     
-    Delay_Init();
-    Serial.printf("Initialize Reverb Module\n");
-    Reverb_Setup();
-
     /*
      * let us calculate some waveforms
      * - using lookup tables can save a lot of processing power later
