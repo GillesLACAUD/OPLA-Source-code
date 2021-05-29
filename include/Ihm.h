@@ -190,7 +190,7 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
     "LEN",  "DELAY LEN",    MIDI_CC_DEL_LENGHT,    TYPE_DATA,  &TabListNull[0][0], 0,      &WS.DelayLen,   1,  0,      127,    1,      Fct_Ch_DlLen,    FctNull,    FctNull,    FctNull,    FctNull,
     "AMT",  "DELAY AMOUNT", MIDI_CC_DEL_LEVEL,     TYPE_DATA,  &TabListNull[0][0], 0,      &WS.DelayAmount,   1,  0,      127,    1,      Fct_Ch_DlAmount, FctNull,    FctNull,    FctNull,    FctNull,
     "FEE",  "DELAY FEEBACK",MIDI_CC_DEL_FEEDBACK,  TYPE_DATA,  &TabListNull[0][0], 0,      &WS.DelayFeedback,   1,  0,      127,    1,      Fct_Ch_DlFeed,   FctNull,    FctNull,    FctNull,    FctNull,
-    "PIN",  "DELAY P-P",    MIDI_CC_DEL_PP,        TYPE_DATA,  &TabListNull[0][0], 0,      &WS.DelayPP,   1,  0,      127,    1,      Fct_Ch_DlPP,         FctNull,    FctNull,    FctNull,    FctNull,
+    "PAN",  "DELAY PAN",    MIDI_CC_DEL_PP,        TYPE_DATA,  &TabListNull[0][0], 0,      &WS.DelayPP,   1,  0,      127,    1,      Fct_Ch_DlPP,         FctNull,    FctNull,    FctNull,    FctNull,
     "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
 
     "REV",  "REVERB LEVEL", MIDI_CC_REVERB_LEVEL,  TYPE_DATA,  &TabListNull[0][0], 0,      &WS.ReverbLevel,   1,  0,      127,    1,      Fct_Ch_Reverb,         FctNull,    FctNull,    FctNull,    FctNull,

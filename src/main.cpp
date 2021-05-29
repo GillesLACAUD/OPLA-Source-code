@@ -183,7 +183,7 @@ void setup()
     Serial.begin(115200);
 
     Serial.println();
-
+    
     Serial.printf("Initialize Synth Module\n");
     Synth_Init();
  
@@ -214,6 +214,8 @@ void setup()
     //esp_wifi_deinit();
 #endif
 
+    SDCard_Init();
+
     Serial.printf("ESP.getFreeHeap() %d\n", ESP.getFreeHeap());
     Serial.printf("ESP.getMinFreeHeap() %d\n", ESP.getMinFreeHeap());
     Serial.printf("ESP.getHeapSize() %d\n", ESP.getHeapSize());
@@ -221,9 +223,7 @@ void setup()
 
     Serial.printf("Firmware started successfully\n");
 
-    SDCard_Init();
-
-  
+     
 
     Lfo_timer1 = timerBegin(LFO_ID1, 80, true);             // 80 Prescaler = 1MHertz 800 100KHertz
     timerAlarmWrite(Lfo_timer1,LFO_MAX_TIME,true);          // 1024 -> T=1s 2048 T=2s 16=2048/127 T=16ms = 32 Hertz
