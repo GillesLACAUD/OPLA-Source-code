@@ -1,6 +1,7 @@
 /* max delay can be changed but changes also the memory consumption */
 //#define MAX_DELAY	11100
-#define MAX_DELAY	9000
+//#define MAX_DELAY	9000
+#define MAX_DELAY	22050*2
 
 #include <Arduino.h>
 

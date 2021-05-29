@@ -11,18 +11,29 @@
 
 void Delay_Init(void)
 {
-    delayLine_l = (float *)malloc(sizeof(float) * MAX_DELAY);
+
+    psramInit();
+    Serial.printf("---- BEFORE PS_MALLOC ----\n");
+    Serial.printf("Total PSRAM: %d\n", ESP.getPsramSize());
+    Serial.printf("Free PSRAM: %d\n", ESP.getFreePsram());
+
+    delayLine_l = (float *)ps_malloc(sizeof(float) * MAX_DELAY);
     if (delayLine_l == NULL)
     {
         Serial.printf("No more heap memory!\n");
         while(1);
     }
-    delayLine_r = (float *)malloc(sizeof(float) * MAX_DELAY);
+    delayLine_r = (float *)ps_malloc(sizeof(float) * MAX_DELAY);
     if (delayLine_r == NULL)
     {
         Serial.printf("No more heap memory!\n");
         while(1);
     }
+
+    Serial.printf("---- AFTER PS_MALLOC ----\n");
+    Serial.printf("Total PSRAM: %d\n", ESP.getPsramSize());
+    Serial.printf("Free PSRAM: %d\n", ESP.getFreePsram());
+
     Delay_Reset();
     Serial.printf("Delay Init Done\n");
 }

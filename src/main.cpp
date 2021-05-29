@@ -229,6 +229,10 @@ void setup()
     Serial.printf("ESP.getHeapSize() %d\n", ESP.getHeapSize());
     Serial.printf("ESP.getMaxAllocHeap() %d\n", ESP.getMaxAllocHeap());
 
+    /* PSRAM will be fully used by the looper */
+    Serial.printf("Total PSRAM: %d\n", ESP.getPsramSize());
+    Serial.printf("Free PSRAM: %d\n", ESP.getFreePsram());
+
     Serial.printf("Firmware started successfully\n");
 
 
