@@ -51,11 +51,20 @@ struct WorkSound
     int16_t DelayLen;
     int16_t DelayAmount;
     int16_t DelayFeedback;
+    int16_t DelayPP;
+
+    int16_t ReverbLevel;
+    int16_t ReverbPan;
 
     int16_t MWDest;
     int16_t MWAmt;
     int16_t ATDest;
     int16_t ATAmt;
+
+    int16_t Spread;
+    int16_t Transpose;
+    int16_t SVolume;
+      
 };
 
 

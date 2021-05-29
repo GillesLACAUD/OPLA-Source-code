@@ -21,12 +21,16 @@ float delayFeedback = 0.0;
 uint32_t delayLen = 11098;
 uint32_t delayIn = 0;
 uint32_t delayOut = 0;
+uint8_t pingpong = 0;
+float delayPan = 0.0;
 #else
 extern float delayToMix;
 extern float delayFeedback;
 extern uint32_t delayLen;
 extern uint32_t delayIn;
 extern uint32_t delayOut;
+extern uint8_t pingpong;
+extern float delayPan;
 #endif
 
 DELAY_EXTRN void Delay_Init();

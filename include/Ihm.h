@@ -111,6 +111,9 @@ int Fct_Ch_L2Amount(int val);
 int Fct_Ch_DlLen(int val);
 int Fct_Ch_DlAmount(int val);
 int Fct_Ch_DlFeed(int val);
+int Fct_Ch_DlPP(int val);
+int Fct_Ch_Reverb(int val);
+int Fct_Ch_RevPan(int val);
 
 int Fct_Ch_SoundMode(int val);
 int Fct_Ch_PBRange(int val);
@@ -120,6 +123,8 @@ int Fct_Ch_ATDest(int val);
 int Fct_Ch_ATAmt(int val);
 int Fct_Ch_MidiRx(int val);
 int Fct_Ch_Spread(int val);
+int Fct_Ch_Transpose(int val);
+int Fct_Ch_SVolume(int val);
 
 
 Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
@@ -185,11 +190,11 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
     "LEN",  "DELAY LEN",    MIDI_CC_DEL_LENGHT,    TYPE_DATA,  &TabListNull[0][0], 0,      &WS.DelayLen,   1,  0,      127,    1,      Fct_Ch_DlLen,    FctNull,    FctNull,    FctNull,    FctNull,
     "AMT",  "DELAY AMOUNT", MIDI_CC_DEL_LEVEL,     TYPE_DATA,  &TabListNull[0][0], 0,      &WS.DelayAmount,   1,  0,      127,    1,      Fct_Ch_DlAmount, FctNull,    FctNull,    FctNull,    FctNull,
     "FEE",  "DELAY FEEBACK",MIDI_CC_DEL_FEEDBACK,  TYPE_DATA,  &TabListNull[0][0], 0,      &WS.DelayFeedback,   1,  0,      127,    1,      Fct_Ch_DlFeed,   FctNull,    FctNull,    FctNull,    FctNull,
-    "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
+    "PIN",  "DELAY P-P",    MIDI_CC_DEL_PP,        TYPE_DATA,  &TabListNull[0][0], 0,      &WS.DelayPP,   1,  0,      127,    1,      Fct_Ch_DlPP,         FctNull,    FctNull,    FctNull,    FctNull,
     "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
 
-    "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
-    "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
+    "REV",  "REVERB LEVEL", MIDI_CC_REVERB_LEVEL,  TYPE_DATA,  &TabListNull[0][0], 0,      &WS.ReverbLevel,   1,  0,      127,    1,      Fct_Ch_Reverb,         FctNull,    FctNull,    FctNull,    FctNull,
+    "PAN",  "REVERB PAN",   MIDI_CC_REVERB_PAN,    TYPE_DATA,  &TabListNull[0][0], 0,      &WS.ReverbPan,   1,  0,      127,    1,      Fct_Ch_RevPan,         FctNull,    FctNull,    FctNull,    FctNull,
     "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
     "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
     "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
@@ -198,9 +203,9 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
     /* Name                 MIDICC                 TYPE        LIST                INDEX   VALUE      SIZE MIN     MAX     STEP    CHANGE           ON          OFF         HOLD        DCLK  */
     "MOD",  "SOUND MODE",   MIDI_CC_SOUND_MODE,    TYPE_LIST,  &Sound_Mode[0][0], 0,       &WS.SoundMode,   1,  0,      MAX_SND_MODE,    1,     Fct_Ch_SoundMode,         FctNull,    FctNull,    FctNull,    FctNull,
     "PBR",  "PB RANGE",     MIDI_CC_PB_RANGE,      TYPE_DATA,  &TabListNull[0][0], 0,      &WS.PBRange,   1,  0,      24,    1,      Fct_Ch_PBRange,         FctNull,    FctNull,    FctNull,    FctNull,
-    "SPE",  "SPREAD",       MIDI_CC_SPREAD,        TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      Fct_Ch_Spread,         FctNull,    FctNull,    FctNull,    FctNull,
-    "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
-    "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
+    "SPE",  "SPREAD",       MIDI_CC_SPREAD,        TYPE_DATA,  &TabListNull[0][0], 0,      &WS.Spread,   1,  0,      127,    1,      Fct_Ch_Spread,         FctNull,    FctNull,    FctNull,    FctNull,
+    "TRP",  "TRANSPOSE",    MIDI_CC_OCTAVE,     TYPE_DATA,  &TabListNull[0][0], 0,         &WS.Transpose,   1,  -24,     24,    1,      Fct_Ch_Transpose,         FctNull,    FctNull,    FctNull,    FctNull,
+    "VOL",  "SOUND VOLUME", MIDI_CC_SVOLUME,       TYPE_DATA,  &TabListNull[0][0], 0,      &WS.SVolume,   1,  0,      127,    1,      Fct_Ch_SVolume,         FctNull,    FctNull,    FctNull,    FctNull,
 
     "MWD",  "MW DEST",      MIDI_CC_MD_DEST,       TYPE_DATA,  &Dest_Name[0][0], 0,        &WS.MWDest,   1,  0,      127,    1,      Fct_Ch_MDDest,         FctNull,    FctNull,    FctNull,    FctNull,
     "MWA",  "MW AMT",       MIDI_CC_MD_AMT,        TYPE_DATA,  &TabListNull[0][0], 0,      &WS.MWAmt,   1,  0,      127,    1,      Fct_Ch_MDAmt,         FctNull,    FctNull,    FctNull,    FctNull,

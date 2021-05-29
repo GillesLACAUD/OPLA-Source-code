@@ -8,6 +8,7 @@
 
 #include "Lfo.h"
 #include "simple_delay.h"
+#include "reverb.h"
 
 uint8_t serialdebug=1;
 
@@ -76,7 +77,7 @@ int Fct_Ch_Noise(int val)
 float value;    
 
     value = val * NORM127MUL;
-    NoiseLevel = value/1;
+    NoiseLevel = value*0.7;
     if(serialdebug)
         Serial.printf("Noise Level: %f\n", NoiseLevel);
 
@@ -115,11 +116,11 @@ uint8_t note;
             osc->addVal = tmp;
             // Detune OSC2
             osc = &oscPlayer[v*3+1];
-            tmp= midi_note_to_add[note]*(1.0-oscdetune);
+            tmp= midi_note_to_add[note]*(1.0-oscdetune*0.75);
             osc->addVal = tmp;
             // Detune OSC3 SUB
             osc = &oscPlayer[v*3+2];
-            osc->addVal = midi_note_to_add[note+(int8_t)SubTranspose]*(0.5-oscdetune);
+            osc->addVal = midi_note_to_add[note+(int8_t)SubTranspose]/**(0.5-oscdetune)*/;
         }
     }
     if(serialdebug)
@@ -175,7 +176,7 @@ int Fct_Ch_OscMix(int val)
 float value;    
 
     value = val * NORM127MUL;
-    MixOsc = value;
+    MixOsc = value*0.7;
     if(serialdebug)
         Serial.printf("Osc vol: %f\n",MixOsc);
     return(0);
@@ -190,7 +191,7 @@ int Fct_Ch_SubMix(int val)
 float value;    
 
     value = val * NORM127MUL;
-    MixSub = value;
+    MixSub = value*0.7;
     if(serialdebug)
         Serial.printf("Sub vol: %f\n",MixSub);
     return(0);
@@ -720,6 +721,44 @@ float value;
 /*                                                 */
 /*                                                 */
 /***************************************************/
+int Fct_Ch_DlPP(int val)
+{
+float value;    
+
+    value = val * NORM127MUL;
+}
+
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+int Fct_Ch_Reverb(int val)
+{
+float value;    
+
+    value = val * NORM127MUL;
+    Reverb_SetLevel(0,value);
+}
+
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+int Fct_Ch_RevPan(int val)
+{
+float value;    
+
+    value = val * NORM127MUL;
+}
+
+
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
 int Fct_Ch_SoundMode(int val)
 {
 float value;    
@@ -817,4 +856,28 @@ float value;
 
     value = val * NORM127MUL;
     return(0);
+}
+
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+int Fct_Ch_Transpose(int val)
+{
+float value;    
+
+    value = val * NORM127MUL;
+}
+
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+int Fct_Ch_SVolume(int val)
+{
+float value;    
+
+    value = val * NORM127MUL;
 }

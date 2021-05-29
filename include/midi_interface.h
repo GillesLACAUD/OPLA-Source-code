@@ -86,6 +86,10 @@
 #define MIDI_CC_DEL_LENGHT      50
 #define MIDI_CC_DEL_LEVEL       51
 #define MIDI_CC_DEL_FEEDBACK    52
+#define MIDI_CC_DEL_PP          53      // Ping pong
+
+#define MIDI_CC_REVERB_LEVEL    54
+#define MIDI_CC_REVERB_PAN      55
 
 #define MIDI_CC_SOUND_MODE      60
 #define MIDI_CC_PB_RANGE        61
@@ -94,6 +98,8 @@
 #define MIDI_CC_AT_DEST         64
 #define MIDI_CC_AT_AMT          65
 #define MIDI_CC_SPREAD          66
+#define MIDI_CC_OCTAVE          67
+#define MIDI_CC_SVOLUME         68
 
 
 #define MIDI_CC_LFO1_SPEED      70

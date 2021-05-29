@@ -19,6 +19,7 @@
 #include "Lfo.h"
 #include "AC101.h"
 #include "Ihm.h"
+#include "Reverb.h"
 
 #include "esp_attr.h"
 
@@ -42,10 +43,10 @@ void Synth_Init()
     silence = (float *)malloc(sizeof(float) * WAVEFORM_CNT);
     wavework = (float *)malloc(sizeof(float) * WAVEFORM_CNT);
     */
-
     
-
     Delay_Init();
+    Serial.printf("Initialize Reverb Module\n");
+    Reverb_Setup();
 
     /*
      * let us calculate some waveforms
@@ -596,8 +597,8 @@ int indx=0;
                 case WAVE_NOISE:
                 for (i = 0; i < WAVEFORM_CNT/2; i++)
                 {
-                    tmp16 = EpData[j+1]<<8;
-                    tmp16 +=EpData[j];
+                    tmp16 = VoiceData[j+1]<<8;
+                    tmp16 +=VoiceData[j];
                     wavework[i] = (float)(tmp16)/32768.0f;
                     wavework[i+WAVEFORM_CNT/2] = wavework[i];
                     //Serial.printf("%04d %02x %02x %04x %3.2f\n",i,VoiceData[j],VoiceData[j+1],tmp16,wavework[i]);
@@ -665,9 +666,9 @@ int indx=0;
             for (int o = 0; o < 3; o++)
             {
                 oscillatorT *osc = &oscPlayer[o+v*3];
-                // Apply the pitch modulation and the pitch bend + yhe pitch EG
+                // Apply the pitch modulation and the pitch bend + the pitch EG
                 osc->samplePos += (uint32_t)((float)osc->addVal*(1+PitchMod)*pitchMultiplier*(1+voice->p_control_sign*pitchEG));
-
+                
                 
                 switch(o)
                 {
@@ -791,20 +792,7 @@ int indx=0;
 
     out_l *= (1+PanMod);
     out_r *= (1-PanMod);
-
-    
-
-    /*
-     * process delay line
-     */
-    //Delay_Process(&out_l, &out_r);
-
-    /*
-     * reduce level a bit to avoid distortion
-     */
-    
-
-    
+     
    
     /*
      * finally output our samples
@@ -1016,7 +1004,7 @@ float setvel;
     osc = getFreeOsc();
     if (osc != NULL)
     {
-        tmp= midi_note_to_add[note]*(1.0-oscdetune);
+        tmp= midi_note_to_add[note]*(1.0-oscdetune*0.75);
         //tmp= midi_note_to_add[note];      // No Detune
         osc->addVal = tmp;
         if(!retrig)
@@ -1037,7 +1025,7 @@ float setvel;
     {
         if (note + SubTranspose < 128)
         {
-            osc->addVal = midi_note_to_add[note+(int8_t)SubTranspose]*(0.5-oscdetune);
+            osc->addVal = midi_note_to_add[note+(int8_t)SubTranspose]/**(0.5-oscdetune)*/;
             if(!retrig)
             {
                 //osc->samplePos = 0; /* we could add some offset maybe */

@@ -24,6 +24,7 @@
 #include "Lfo.h"
 #include "SDCard.h"
 #include "Simple_Delay.h"
+#include "Reverb.h"
 
 TaskHandle_t  Core0TaskHnd;
 
@@ -185,7 +186,8 @@ void setup()
 
     Serial.printf("Initialize Synth Module\n");
     Synth_Init();
-    
+ 
+   
     out = new AudioOutputI2S();
     out->SetPinout(IIS_SCLK /*bclkPin*/, IIS_LCLK /*wclkPin*/, IIS_DSIN /*doutPin*/);
     out->begin();
@@ -351,6 +353,7 @@ static uint16_t cpttimer2;
         {
             float fl_sample, fr_sample;
             Synth_Process(&fl_sample, &fr_sample);
+            Reverb_Process( &fl_sample, &fr_sample, SAMPLE_BUFFER_SIZE );       
             Delay_Process(&fl_sample, &fr_sample);
             sampleData32.sample[0] = (int16_t)(fl_sample*32768.0f);
             sampleData32.sample[1] = (int16_t)(fr_sample*32768.0f);

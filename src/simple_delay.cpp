@@ -37,6 +37,8 @@ void Delay_Reset(void)
 
 void Delay_Process(float *signal_l, float *signal_r)
 {
+float tmpr,tmpl;
+
     delayLine_l[delayIn] = *signal_l;
     delayLine_r[delayIn] = *signal_r;
 
@@ -45,10 +47,18 @@ void Delay_Process(float *signal_l, float *signal_r)
     if (delayOut >= MAX_DELAY)
     {
         delayOut -= MAX_DELAY;
+        pingpong = !pingpong;
     }
 
-    *signal_l += delayLine_l[delayOut] * delayToMix;
-    *signal_r += delayLine_r[delayOut] * delayToMix;
+    // delayPan 0.0 to 1.0
+    tmpr = delayPan*2;
+    tmpl = 2-tmpr;
+
+    tmpr = 1;
+    tmpl = 1;
+
+    *signal_l += delayLine_l[delayOut] * delayToMix * tmpl;
+    *signal_r += delayLine_r[delayOut] * delayToMix * tmpr;
 
     delayLine_l[delayIn] += delayLine_l[delayOut] * delayFeedback;
     delayLine_r[delayIn] += delayLine_r[delayOut] * delayFeedback;
