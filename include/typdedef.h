@@ -103,6 +103,7 @@ struct notePlayerT
     uint8_t active;
     adsr_phaseT phase;
     uint8_t midiNote;
+    float spread;
 
     float control_sign;
     float out_level;

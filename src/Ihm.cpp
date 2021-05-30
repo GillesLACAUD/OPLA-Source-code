@@ -542,9 +542,17 @@ float value;
 int Fct_Ch_Spread(int val)
 {
 float value;    
+float nz=0;
+
+    nz = ((random(1024) / 512.0f) - 1.0f);
 
     value = (val+20) * NORM127MUL;
-     return(0);
+    for (int v = 0; v < MAX_POLY_VOICE; v++) /* one loop is faster than two loops */
+    {
+        notePlayerT *voice = &voicePlayer[v];
+        voice->spread = 1.0; // change here and in hte key on
+    }
+    return(0);
 }
 
 

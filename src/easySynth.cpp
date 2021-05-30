@@ -83,6 +83,7 @@ void Synth_Init()
         voice->lastSample[1] = 0.0f;
         voice->filterL.filterCoeff = &voice->filterC;
         voice->filterR.filterCoeff = &voice->filterC;
+        voice->spread=1.0;
     }
 
     /*
@@ -479,6 +480,7 @@ bool voice_off;
 float nz=0;
 uint16_t Triinc,Tridec;
 float finc,fdec;
+uint32_t spread;
 
 int cmp;
 static uint8_t cptvoice=0;
@@ -662,8 +664,10 @@ int indx=0;
             for (int o = 0; o < 3; o++)
             {
                 oscillatorT *osc = &oscPlayer[o+v*3];
+                // Apply the spread
+                spread = (uint32_t)((float)osc->addVal*(voice->spread));
                 // Apply the pitch modulation and the pitch bend + the pitch EG
-                osc->samplePos += (uint32_t)((float)osc->addVal*(1+PitchMod)*pitchMultiplier*(1+voice->p_control_sign*pitchEG));
+                osc->samplePos += (uint32_t)((float)spread*(1+PitchMod)*pitchMultiplier*(1+voice->p_control_sign*pitchEG));
                 
                 
                 switch(o)
