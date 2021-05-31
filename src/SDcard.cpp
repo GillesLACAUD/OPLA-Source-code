@@ -269,6 +269,17 @@ unsigned int sz=sizeof(WorkSound);
     Serial.printf("Noise read %d\n",WS.NoiseLevel);
     file.close();    
 
+    
+    for(uint8_t s=0;s<MAX_SECTION;s++)
+    {
+        for(uint8_t e=0;e<MAX_ENCODER;e++)
+        {
+            Tab_Encoder[s][e].ptrfunctValueChange((int)*Tab_Encoder[s][e].Data);
+        }
+    }
+    
+
+   /*
     Fct_Ch_OscWave(WS.OscWave);
     Fct_Ch_SubWave(WS.SubWave);
     Fct_Ch_Noise(WS.NoiseLevel);
@@ -318,6 +329,8 @@ unsigned int sz=sizeof(WorkSound);
     Fct_Ch_MDAmt(WS.MWAmt);
     Fct_Ch_ATDest(WS.ATDest);
     Fct_Ch_ATAmt(WS.ATAmt);
+    */
+
 
     //Fct_Ch_MidiRx(WS.R);
     //Fct_Ch_Spread(WS.S);    
