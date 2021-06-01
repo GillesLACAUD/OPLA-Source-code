@@ -148,7 +148,6 @@ struct filterCoeffT mainFilt;
 // b_f = frequency 0..1
 // b_q = resonance 0..5
 
-#define FILTER_1
 #define MVF     10
 
 /***************************************************/
@@ -316,7 +315,7 @@ static float buf1[6],buf2[6],buf3[6],buf4[6];
 /*
  * calculate coefficients of the 2nd order IIR filter
  */
-inline void Filter_Calculate(float c, float reso, struct filterCoeffT *const  filterC)
+void Filter_Calculate(float c, float reso, struct filterCoeffT *const  filterC)
 {
     float *aNorm = filterC->aNorm;
     float *bNorm = filterC->bNorm;
@@ -756,7 +755,7 @@ int indx=0;
                  if (count % 32 == 0)
                 {
                     voice->f_control_sign_slow = 0.05 * voice->f_control_sign + 0.95 * voice->f_control_sign_slow;
-                    Filter_Calculate(voice->f_control_sign_slow, filtReso, &voice->filterC);
+                    Filter_Calculate(voice->f_control_sign_slow, soundFiltReso, &voice->filterC);
                 }
                 Filter_Process(&voice->lastSample[0], &voice->filterL);
                 //Filter_Process(&voice->lastSample[1], &voice->filterR);

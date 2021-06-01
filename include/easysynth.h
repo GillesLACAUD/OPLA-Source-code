@@ -6,11 +6,12 @@
 #define SYNTH_EXTRN extern
 #endif
 
+#define FILTER_5		// Define the type of filter
 
 /*
  * Following defines can be changed for different puprposes
  */
-#define MAX_POLY_VOICE	4                               /* max single voices, can use multiple osc */
+#define MAX_POLY_VOICE	6                               /* max single voices, can use multiple osc */
 														/* 8 or more for poly mode				   */
 
 #define OSC_PER_VOICE	3                               /* max single voices, can use multiple osc */
@@ -386,10 +387,12 @@ struct adsrT adsr_pit = {0.0f, 0.0f, 0.0f, 0.0f};
 
 float filtCutoff = 1.0f;
 float filtReso = 0.5f;
+float soundFiltReso = 0.5f;
 float filterEG=0;
 float filterKBtrack=0;
 float NoiseLevel = 0.0f;
 float WaveShapping1 = 0.0f;
+
 
 float pitchEG=0;
 float PitchMod = 0;
@@ -459,6 +462,7 @@ extern struct stLfo Lfo1;
 extern struct stLfo Lfo2;
 
 extern float filtCutoff;
+extern float soundFiltReso;
 extern float filtReso;
 extern float filterEG;
 extern float filterKBtrack;
@@ -516,4 +520,8 @@ SYNTH_EXTRN inline void Filter_Reset(struct filterProcT *filter);
 SYNTH_EXTRN void Synth_NoteOn(uint8_t note,uint8_t vel);
 SYNTH_EXTRN void Synth_NoteOff(uint8_t note);
 SYNTH_EXTRN int Synth_SetRotary(uint8_t rotary, int val);
+
+#ifdef FILTER_5
+SYNTH_EXTRN void Filter_Calculate(float c, float reso, struct filterCoeffT *const  filterC);
+#endif
 
