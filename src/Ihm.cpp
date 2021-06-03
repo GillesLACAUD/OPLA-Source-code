@@ -564,14 +564,13 @@ int Fct_Ch_Spread(int val)
 float value;    
 float nz=0;
 
-    value = val*NORM127MUL;
+    nz = ((random(1024) / 512.0f) - 1.0f);
+
+    value = (val+20) * NORM127MUL;
     for (int v = 0; v < MAX_POLY_VOICE; v++) /* one loop is faster than two loops */
     {
         notePlayerT *voice = &voicePlayer[v];
-        nz = ((((float)random(1024))/1024.0)-0.5)/50;
-        voice->spread = 1.0+(nz*value);
-        if(serialdebug)
-            Serial.printf("Spread %d %6.3f\n",v,voice->spread);
+        voice->spread = 1.0; // change here and in hte key on
     }
     return(0);
 }
