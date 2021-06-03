@@ -186,7 +186,7 @@ float IRAM_ATTR KarlsenLPF(float input, float fc, float res, uint8_t m)
 #endif
 
 #ifdef FILTER_1
-float IRAM_ATTR KarlsenLPF(float signal, float freq, float res, uint8_t m)
+inline float KarlsenLPF(float signal, float freq, float res, uint8_t m)
 {
 	static float b_inSH[MVF], b_in[MVF], b_f[MVF], b_q[MVF], b_fp[MVF], pole1[MVF], pole2[MVF], pole3[MVF], pole4[MVF];
 
@@ -239,35 +239,64 @@ float IRAM_ATTR KarlsenLPF(float signal, float freq, float res, uint8_t m)
 #endif
 
 #ifdef FILTER_2
-float KarlsenLPF(float signal, float freq, float res, uint8_t m)
+inline float KarlsenLPF(float signal, float freq, float res, uint8_t m)
 {
-	static float b_inSH[6], b_in[6], b_f[6], b_q[6], b_fp[6], pole1[6], pole2[6], pole3[6], pole4[6];
-	b_inSH[m] = signal;
-	b_in[m] = signal;
+	static float b_inSH[6], b_f[6], b_q[6],pole1[6], pole2[6], pole3[6], pole4[6];
+
+    static int64_t ib_inSH[6], ib_f[6], ib_q[6],ipole1[6], ipole2[6], ipole3[6], ipole4[6];
+    int16_t reso = 100;
+
+    if(0)
+    {
+	ib_inSH[m] = (int64_t)(signal*reso);
 	if(freq > 1.0f)freq = 1.0f;
 	if(freq < 0.0f)freq = 0.0f;
+	ib_f[m] = freq*reso;
+	ib_q[m] = res*reso;
+	uint32_t irez=0;
+
+    irez = ipole4[m]*ib_q[m];
+    //if(rez>1.2){rez=1.2;}
+    //b_inSH[m] *=0.85;
+    ib_inSH[m] = ib_inSH[m]-irez;
+    
+
+    ipole1[m] = ipole1[m] + ((-ipole1[m] + ib_inSH[m]) * ib_f[m]);
+    ipole2[m] = ipole2[m] + ((-ipole2[m] + ipole1[m]) * ib_f[m]);
+    ipole3[m] = ipole3[m] + ((-ipole3[m] + ipole2[m]) * ib_f[m]);
+    ipole4[m] = ipole4[m] + ((-ipole4[m] + ipole3[m]) * ib_f[m]);
+    
+    pole4[m] = (float)ipole4[m]/reso; 
+    }
+
+    if(1)
+    {
+	b_inSH[m] = signal;
+	//if(freq > 0.9f)freq = 0.9f;
+	//if(freq < 0.0f)freq = 0.0f;
 	b_f[m] = freq;
 	b_q[m] = res;
-	uint8_t b_oversample = 0;
-    float rez=0;
+	float rez=0;
 
-        rez = pole4[m]*b_q[m];if(rez>1.2){rez=1.2;}
-        b_inSH[m] *=0.85;
+        rez = pole2[m]*b_q[m];
+        //if(rez>0.9){rez=0.9;}
+        //b_inSH[m] *=0.85;
         b_inSH[m] = b_inSH[m]-rez;
         
 
         pole1[m] = pole1[m] + ((-pole1[m] + b_inSH[m]) * b_f[m]);
         pole2[m] = pole2[m] + ((-pole2[m] + pole1[m]) * b_f[m]);
-        pole3[m] = pole3[m] + ((-pole3[m] + pole2[m]) * b_f[m]);
-        pole4[m] = pole4[m] + ((-pole4[m] + pole3[m]) * b_f[m]);
+        //pole3[m] = pole3[m] + ((-pole3[m] + pole2[m]) * b_f[m]);
+        //pole4[m] = pole4[m] + ((-pole4[m] + pole3[m]) * b_f[m]);
+    }
 
-    return pole4[m];
-	//return pole4[m];
+    return pole2[m];
+
 }
 #endif
 
 #ifdef FILTER_3
-float KarlsenLPF(float signal, float freq, float res, uint8_t m)
+float IRAM_ATTR KarlsenLPF(float signal, float freq, float res, uint8_t m)
 {
   float f, p, q;             //filter coefficients
   static float b0[6], b1[6], b2[6], b3[6], b4[6];  //filter buffers (beware denormals!)
@@ -294,7 +323,7 @@ float KarlsenLPF(float signal, float freq, float res, uint8_t m)
 #endif
 
 #ifdef FILTER_4
-float KarlsenLPF(float in, float cut, float res, uint8_t m)
+float IRAM_ATTR KarlsenLPF(float in, float cut, float res, uint8_t m)
 {
 float resoclip;
 static float buf1[6],buf2[6],buf3[6],buf4[6];
@@ -315,7 +344,7 @@ static float buf1[6],buf2[6],buf3[6],buf4[6];
 /*
  * calculate coefficients of the 2nd order IIR filter
  */
-void Filter_Calculate(float c, float reso, struct filterCoeffT *const  filterC)
+void IRAM_ATTR Filter_Calculate(float c, float reso, struct filterCoeffT *const  filterC)
 {
     float *aNorm = filterC->aNorm;
     float *bNorm = filterC->bNorm;
@@ -740,22 +769,18 @@ int indx=0;
                 voice->lastSample[0] *= voice->control_sign*voice->avelocity;
                 voice->lastSample[1] *= voice->control_sign*voice->avelocity;
 
-                voice->lastSample[0] *=0.25;
-                voice->lastSample[1] *=0.25;
+                voice->lastSample[0] *=0.10;
+                voice->lastSample[1] *=0.10;
                 
 
                 //channel[i] = channel[i] * (vcacutoff[i] * vcavellvl[i]);
                 //summer = summer + KarlsenLPF(channel[i], (vcfval * vcfenvlvl) * ((vcfcutoff[i] * vcfkeyfollow[i]) * vcfvellvl[i]), resonance, i);
 
                 // Apply the filter EG
-                //float cf = FiltCutoffMod+voice->f_control_sign*filterEG;
-                //cf *=1+voice->fvelocity;
+                float cf = FiltCutoffMod+voice->f_control_sign*filterEG;
+                cf *=1+voice->fvelocity;
                 // Apply the kbtrack
-                //cf *= 1+(voice->midiNote-64)*filterKBtrack;
-
-                float cf=voice->f_control_sign;
-                //Serial.printf("Ph %d Fc %6.2f\n",voice->f_phase,cf);
-                //cf *=1+voice->fvelocity;
+                cf *= 1+(voice->midiNote-64)*filterKBtrack;
 
                 #ifdef FILTER_5
                  if (count % 32 == 0)
@@ -1049,6 +1074,7 @@ float setvel;
     /*
      * trying to avoid audible suprises
      */
+    #ifdef FILTER_5
     Filter_Reset(&voice->filterL);
     Filter_Reset(&voice->filterR);
     Filter_Process(&voice->lastSample[0], &voice->filterL);
@@ -1058,6 +1084,7 @@ float setvel;
     Filter_Process(&voice->lastSample[1], &voice->filterR);
     Filter_Process(&voice->lastSample[1], &voice->filterR);
     Filter_Process(&voice->lastSample[1], &voice->filterR);
+    #endif
     //Midi_Dump();
 }
 /***************************************************/

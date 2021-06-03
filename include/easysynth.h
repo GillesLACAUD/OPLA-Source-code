@@ -6,13 +6,17 @@
 #define SYNTH_EXTRN extern
 #endif
 
-#define FILTER_5		// Define the type of filter
-
+//#define FILTER_1		// Filtre standart max poly4
+#define FILTER_2		// Bons resultats 4 voies ok / Rev+Del HS / Del HS / Rev HS / 5 voies HS
+						// En 2 poles 
+						//	-4 voies effect ok
+						//	-resonance faiblarde, son bien 5 voies possible sans effects
+						//  -HPF/BPF possible
 /*
  * Following defines can be changed for different puprposes
  */
-#define MAX_POLY_VOICE	5                               /* max single voices, can use multiple osc */
-														/* 8 or more for poly mode				   */
+#define MAX_POLY_VOICE	4                               /* max single voices, can use multiple osc */
+														/* 8 or more for para mode				   */
 
 #define OSC_PER_VOICE	3                               /* max single voices, can use multiple osc */
 #define MAX_POLY_OSC	MAX_POLY_VOICE*OSC_PER_VOICE    /* osc polyphony, always active reduces single voices max poly */

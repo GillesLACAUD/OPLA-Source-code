@@ -28,6 +28,8 @@
 
 TaskHandle_t  Core0TaskHnd;
 
+float fl_sample, fr_sample;
+
 //********************************************************************************
 // HARDWARE CONFIGURATION
 //
@@ -163,7 +165,7 @@ void CoreTask0( void *parameter )
             }
         }
         Nextion_Process();
-    	/* this seems necessary to trigger the watchdog */
+        /* this seems necessary to trigger the watchdog */
         delay(5);
         yield();
     }
@@ -200,7 +202,7 @@ void setup()
 		delay(1000);
 	}
 	Serial.printf("OK\n");
-    AC101_volume = 45;
+    AC101_volume = 50;
     ac.SetVolumeSpeaker(AC101_volume);
 	ac.SetVolumeHeadphone(AC101_volume);
  
@@ -362,7 +364,7 @@ static uint16_t cpttimer2;
     {
         if(i2s_write_sample_16ch2(sampleData32.sample32))
         {
-            float fl_sample, fr_sample;
+           
             Synth_Process(&fl_sample, &fr_sample);
             Reverb_Process( &fl_sample, &fr_sample, SAMPLE_BUFFER_SIZE );       
             Delay_Process(&fl_sample, &fr_sample);
