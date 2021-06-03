@@ -11,7 +11,7 @@
 /*
  * Following defines can be changed for different puprposes
  */
-#define MAX_POLY_VOICE	6                               /* max single voices, can use multiple osc */
+#define MAX_POLY_VOICE	5                               /* max single voices, can use multiple osc */
 														/* 8 or more for poly mode				   */
 
 #define OSC_PER_VOICE	3                               /* max single voices, can use multiple osc */
@@ -382,7 +382,7 @@ float *selectedWaveForm2 = &sine[0];
 uint32_t osc_act = 0;
 uint32_t voc_act = 0;
 struct adsrT adsr_vol = {0.04f, 0.03f, 1.0f, 0.04f};
-struct adsrT adsr_fil = {1.0f, 0.25f, 1.0f, 0.01f};
+struct adsrT adsr_fil = {0.25f, 0.10f, 1.0f, 0.01f};
 struct adsrT adsr_pit = {0.0f, 0.0f, 0.0f, 0.0f};
 
 float filtCutoff = 1.0f;

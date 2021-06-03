@@ -160,9 +160,9 @@ void Reverb_Process(float *signal_l, float *signal_r, int buffLen)
         inSample = signal_l[n] + signal_r[n]; /* it may cause unwanted audible effects */
         inSample *= 0.5f;
 
-        float newsample = (Do_Comb0(inSample) + Do_Comb1(inSample) /*+ Do_Comb2(inSample) + Do_Comb3(inSample)*/) / 4.0f;
+        float newsample = (Do_Comb0(inSample) + Do_Comb1(inSample)/* + Do_Comb2(inSample) + Do_Comb3(inSample)*/) / 4.0f;
         newsample = Do_Allpass0(newsample);
-        //newsample = Do_Allpass1(newsample);
+        newsample = Do_Allpass1(newsample);
         //newsample = Do_Allpass2(newsample);
 
         /* apply reverb level */

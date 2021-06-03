@@ -739,26 +739,33 @@ int indx=0;
 
                 voice->lastSample[0] *= voice->control_sign*voice->avelocity;
                 voice->lastSample[1] *= voice->control_sign*voice->avelocity;
+
+                voice->lastSample[0] *=0.25;
+                voice->lastSample[1] *=0.25;
                 
 
                 //channel[i] = channel[i] * (vcacutoff[i] * vcavellvl[i]);
                 //summer = summer + KarlsenLPF(channel[i], (vcfval * vcfenvlvl) * ((vcfcutoff[i] * vcfkeyfollow[i]) * vcfvellvl[i]), resonance, i);
 
                 // Apply the filter EG
-                float cf = FiltCutoffMod+voice->f_control_sign*filterEG;
-                cf *=1+voice->fvelocity;
+                //float cf = FiltCutoffMod+voice->f_control_sign*filterEG;
+                //cf *=1+voice->fvelocity;
                 // Apply the kbtrack
-                cf *= 1+(voice->midiNote-64)*filterKBtrack;
-                //Serial.printf("Filtercf = %0.3f\n",cf);
+                //cf *= 1+(voice->midiNote-64)*filterKBtrack;
+
+                float cf=voice->f_control_sign;
+                //Serial.printf("Ph %d Fc %6.2f\n",voice->f_phase,cf);
+                //cf *=1+voice->fvelocity;
 
                 #ifdef FILTER_5
                  if (count % 32 == 0)
                 {
-                    voice->f_control_sign_slow = 0.05 * voice->f_control_sign + 0.95 * voice->f_control_sign_slow;
-                    Filter_Calculate(voice->f_control_sign_slow, soundFiltReso, &voice->filterC);
+                    //voice->f_control_sign_slow = 0.05 * cf + 0.95 * voice->f_control_sign_slow;
+                    //Filter_Calculate(voice->f_control_sign_slow, soundFiltReso, &voice->filterC);
+                    Filter_Calculate(voice->f_control_sign, soundFiltReso, &voice->filterC);
                 }
                 Filter_Process(&voice->lastSample[0], &voice->filterL);
-                //Filter_Process(&voice->lastSample[1], &voice->filterR);
+                Filter_Process(&voice->lastSample[1], &voice->filterR);
                 #else
                 voice->lastSample[0] = KarlsenLPF(voice->lastSample[0],cf, filtReso,i);
                 //voice->lastSample[0] /=4; //for para mode
@@ -782,6 +789,7 @@ int indx=0;
 
     #ifdef FILTER_5
     Filter_Process(&out_l, &mainFilterL);
+    Filter_Process(&out_r, &mainFilterL);
     out_r=out_l;
     #endif        
         
@@ -966,16 +974,17 @@ float setvel;
         voice->lastSample[0] = 0.0f;
         voice->lastSample[1] = 0.0f;
         voice->control_sign = 0.0f;
+
+        voice->f_control_sign = 0;
+        voice->f_control_sign_slow = adsr_fil.a;
     }
     voice->phase = attack;
     voice->f_phase = attack;
     voice->p_phase = attack;
 
-    voice->f_control_sign = 0;
-    voice->f_control_sign_slow = adsr_fil.a;
-
     voc_act += 1;
-  
+
+   
 
     /*
      * add oscillator
@@ -1037,6 +1046,18 @@ float setvel;
             osc_act += 1;
         }
     }
+    /*
+     * trying to avoid audible suprises
+     */
+    Filter_Reset(&voice->filterL);
+    Filter_Reset(&voice->filterR);
+    Filter_Process(&voice->lastSample[0], &voice->filterL);
+    Filter_Process(&voice->lastSample[0], &voice->filterL);
+    Filter_Process(&voice->lastSample[0], &voice->filterL);
+
+    Filter_Process(&voice->lastSample[1], &voice->filterR);
+    Filter_Process(&voice->lastSample[1], &voice->filterR);
+    Filter_Process(&voice->lastSample[1], &voice->filterR);
     //Midi_Dump();
 }
 /***************************************************/

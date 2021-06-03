@@ -200,7 +200,7 @@ void setup()
 		delay(1000);
 	}
 	Serial.printf("OK\n");
-    AC101_volume = 40;
+    AC101_volume = 45;
     ac.SetVolumeSpeaker(AC101_volume);
 	ac.SetVolumeHeadphone(AC101_volume);
  

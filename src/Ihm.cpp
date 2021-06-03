@@ -236,6 +236,7 @@ float value;
     value = val * NORM127MUL;
     #ifdef FILTER_5
     filtCutoff = value;
+    adsr_fil.s = value;
     Filter_Calculate(filtCutoff, filtReso, &filterGlobalC);
     #else
     filtCutoff = 0.005+value/1.2;
@@ -258,9 +259,9 @@ float value;
 
     value = val * NORM127MUL;
     #ifdef FILTER_5
-    filtReso =  0.5f + 10 * value * value * value; /* min q is 0.5 here */
+    filtReso =  0.5f + 5 * value * value * value; /* min q is 0.5 here */
     Filter_Calculate(filtCutoff, filtReso, &filterGlobalC);
-    soundFiltReso = 0.5f + 10 * value * value * value; /* min q is 0.5 here */
+    soundFiltReso = 0.5f + 5 * value * value * value; /* min q is 0.5 here */
     #else
     //filtReso =  0.5f + 5 * value * value * value; /* min q is 0.5 here */
     filtReso =  0.8f + 4 * value * value * value; /* min q is 0.5 here */
@@ -330,8 +331,12 @@ int Fct_Ch_FlAttack(int val)
 float value;    
 
     value = val * NORM127MUL;
+    #ifdef FILTER_5
+    //adsr_fil.a = value;
+    adsr_fil.a = (0.00010 * pow(2000, 1.0f - value));
+    #else
     adsr_fil.a = (0.00005 * pow(5000, 1.0f - value));         
-    //adsr_fil.a = value;       
+    #endif
     if(serialdebug) 
         Serial.printf("Filter Attack: %f\n",adsr_fil.a);
     return(0);
@@ -347,7 +352,11 @@ int Fct_Ch_FlDecay(int val)
 float value;    
 
     value = val * NORM127MUL;
+    #ifdef FILTER_5
+    adsr_fil.d = (0.00005 * pow(5000, 1.0f - value));
+    #else
     adsr_fil.d = (0.0010 * pow(100, 1.0f - value*2));    
+    #endif
     if(serialdebug)  
         Serial.printf("Filter Decay: %f\n",adsr_fil.d);
     return(0);
