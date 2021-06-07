@@ -11,7 +11,7 @@
 /*                                                 */
 /*                                                 */
 /***************************************************/
-void Lfo_Process(stLfo* prlfo)
+void IRAM_ATTR Lfo_Process(stLfo* prlfo)
 {
 float lfoamt=0;    
 uint16_t freq=9999;    
@@ -32,7 +32,7 @@ uint16_t freq=9999;
         //freq +=LFO_MIN_CPT;
         //timerAlarmWrite(Lfo_timer2,freq,true);       
     }
-
+    
     switch(prlfo->ui8_Wave)        
     {
         case WLFO_SINE:
@@ -68,7 +68,7 @@ uint16_t freq=9999;
         prlfo->f_modlfo = silence[prlfo->ui16_Cpt]*lfoamt;
         break;
     }
-
+    
     switch(prlfo->ui8_Dest)
     {
         case LFO_AMP:
@@ -103,4 +103,6 @@ uint16_t freq=9999;
             Lfo1AmtMod=prlfo->f_modlfo;
         break;
     }
+    
+    
 }

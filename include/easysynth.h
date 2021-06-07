@@ -6,8 +6,8 @@
 #define SYNTH_EXTRN extern
 #endif
 
-//#define FILTER_1		// Filtre standart max poly4
-#define FILTER_2		// Bons resultats 4 voies ok / Rev+Del HS / Del HS / Rev HS / 5 voies HS
+#define FILTER_2		// Filtre standart max poly4
+//#define FILTER_2		// Bons resultats 4 voies ok / Rev+Del HS / Del HS / Rev HS / 5 voies HS
 						// En 2 poles 
 						//	-4 voies effect ok
 						//	-resonance faiblarde, son bien 5 voies possible sans effects
@@ -15,11 +15,11 @@
 /*
  * Following defines can be changed for different puprposes
  */
-#define MAX_POLY_VOICE	4                               /* max single voices, can use multiple osc */
+#define MAX_POLY_VOICE	6                               /* max single voices, can use multiple osc */
 														/* 8 or more for para mode				   */
 
 #define OSC_PER_VOICE	3                               /* max single voices, can use multiple osc */
-#define MAX_POLY_OSC	MAX_POLY_VOICE*OSC_PER_VOICE    /* osc polyphony, always active reduces single voices max poly */
+#define MAX_POLY_OSC	(MAX_POLY_VOICE)*(OSC_PER_VOICE)    /* osc polyphony, always active reduces single voices max poly */
 
 
 
@@ -51,16 +51,23 @@ SYNTH_EXTRN uint32_t midi_note_to_add[MIDI_NOTE_CNT]; /* lookup to playback wave
  * set the correct count of available waveforms
  */
 #define MAX_LABEL           5
-#define WAVEFORM_TYPE_COUNT	7
 #define DEST_TYPE_COUNT	    8
-#define MAX_FLT_TYPE		4
+
 #define MAX_SND_MODE		3
+
+#define SND_MODE_POLY		0
+#define SND_MODE_PARA		1
+#define SND_MODE_MONO		2
+
+
+#define MAX_FLT_TYPE		4
 
 #define FILTER_LPF			0
 #define FILTER_HPF			1
 #define FILTER_BPF			2
 #define FILTER_NPF			3
 
+#define WAVEFORM_TYPE_COUNT	7
 
 #define WAVE_SINE       0
 #define WAVE_SAW        1
@@ -368,7 +375,7 @@ float oscdetune=0;
 char Filter_Type[MAX_FLT_TYPE][MAX_LABEL] =
 {"LPF","HPF","BPF","NPF"};
 
-char Sound_Mode[3][MAX_LABEL] = 
+char Sound_Mode[MAX_SND_MODE][MAX_LABEL] = 
 {"POL","PAR","MON"};
 
 char Wave_Name[WAVEFORM_TYPE_COUNT][MAX_LABEL] = 
@@ -381,7 +388,7 @@ char Dest_Name[DEST_TYPE_COUNT][MAX_LABEL] =
  * do not forget to enter the waveform pointer addresses here
  */
 float *waveFormLookUp[WAVEFORM_TYPE_COUNT] = {&sine[0], &saw[0], &square[0], &pulse[0], &tri[0], &noise[0], &silence[0]};
-float *selectedWaveForm =  &saw[0];
+float *selectedWaveForm =  &sine[0];
 float *selectedWaveForm2 = &sine[0];
 uint32_t osc_act = 0;
 uint32_t voc_act = 0;

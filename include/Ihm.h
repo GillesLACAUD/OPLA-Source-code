@@ -202,7 +202,7 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
     // SECTION SYSTEM
     /* Name                 MIDICC                 TYPE        LIST                INDEX   VALUE      SIZE MIN     MAX     STEP    CHANGE           ON          OFF         HOLD        DCLK  */
     "MOD",  "SOUND MODE",   MIDI_CC_SOUND_MODE,    TYPE_LIST,  &Sound_Mode[0][0], 0,       &WS.SoundMode,   1,  0,      MAX_SND_MODE,    1,     Fct_Ch_SoundMode,         FctNull,    FctNull,    FctNull,    FctNull,
-    "PBR",  "PB RANGE",     MIDI_CC_PB_RANGE,      TYPE_DATA,  &TabListNull[0][0], 0,      &WS.PBRange,   1,  0,      24,    1,      Fct_Ch_PBRange,         FctNull,    FctNull,    FctNull,    FctNull,
+    "PBR",  "PB RANGE",     MIDI_CC_PB_RANGE,      TYPE_DATA,  &TabListNull[0][0], 0,      &WS.PBRange,   1,  0,      12,    1,      Fct_Ch_PBRange,         FctNull,    FctNull,    FctNull,    FctNull,
     "SPE",  "SPREAD",       MIDI_CC_SPREAD,        TYPE_DATA,  &TabListNull[0][0], 0,      &WS.Spread,   1,  0,      127,    1,      Fct_Ch_Spread,         FctNull,    FctNull,    FctNull,    FctNull,
     "TRP",  "TRANSPOSE",    MIDI_CC_OCTAVE,     TYPE_DATA,  &TabListNull[0][0], 0,         &WS.Transpose,   1,  -24,     24,    1,      Fct_Ch_Transpose,         FctNull,    FctNull,    FctNull,    FctNull,
     "VOL",  "SOUND VOLUME", MIDI_CC_SVOLUME,       TYPE_DATA,  &TabListNull[0][0], 0,      &WS.SVolume,   1,  0,      127,    1,      Fct_Ch_SVolume,         FctNull,    FctNull,    FctNull,    FctNull,

@@ -202,7 +202,7 @@ void setup()
 		delay(1000);
 	}
 	Serial.printf("OK\n");
-    AC101_volume = 50;
+    AC101_volume = 99;
     ac.SetVolumeSpeaker(AC101_volume);
 	ac.SetVolumeHeadphone(AC101_volume);
  
@@ -367,7 +367,7 @@ static uint16_t cpttimer2;
            
             Synth_Process(&fl_sample, &fr_sample);
             Reverb_Process( &fl_sample, &fr_sample, SAMPLE_BUFFER_SIZE );       
-            Delay_Process(&fl_sample, &fr_sample);
+            //Delay_Process(&fl_sample, &fr_sample);
             sampleData32.sample[0] = (int16_t)(fl_sample*32768.0f);
             sampleData32.sample[1] = (int16_t)(fr_sample*32768.0f);
         }

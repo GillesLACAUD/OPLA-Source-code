@@ -243,54 +243,30 @@ inline float KarlsenLPF(float signal, float freq, float res, uint8_t m)
 {
 	static float b_inSH[6], b_f[6], b_q[6],pole1[6], pole2[6], pole3[6], pole4[6];
 
-    static int64_t ib_inSH[6], ib_f[6], ib_q[6],ipole1[6], ipole2[6], ipole3[6], ipole4[6];
     int16_t reso = 100;
-
-    if(0)
-    {
-	ib_inSH[m] = (int64_t)(signal*reso);
-	if(freq > 1.0f)freq = 1.0f;
-	if(freq < 0.0f)freq = 0.0f;
-	ib_f[m] = freq*reso;
-	ib_q[m] = res*reso;
-	uint32_t irez=0;
-
-    irez = ipole4[m]*ib_q[m];
-    //if(rez>1.2){rez=1.2;}
-    //b_inSH[m] *=0.85;
-    ib_inSH[m] = ib_inSH[m]-irez;
-    
-
-    ipole1[m] = ipole1[m] + ((-ipole1[m] + ib_inSH[m]) * ib_f[m]);
-    ipole2[m] = ipole2[m] + ((-ipole2[m] + ipole1[m]) * ib_f[m]);
-    ipole3[m] = ipole3[m] + ((-ipole3[m] + ipole2[m]) * ib_f[m]);
-    ipole4[m] = ipole4[m] + ((-ipole4[m] + ipole3[m]) * ib_f[m]);
-    
-    pole4[m] = (float)ipole4[m]/reso; 
-    }
 
     if(1)
     {
 	b_inSH[m] = signal;
-	//if(freq > 0.9f)freq = 0.9f;
-	//if(freq < 0.0f)freq = 0.0f;
+	if(freq > 0.9f)freq = 0.9f;
+	if(freq < 0.0f)freq = 0.0f;
 	b_f[m] = freq;
 	b_q[m] = res;
 	float rez=0;
 
         rez = pole2[m]*b_q[m];
-        //if(rez>0.9){rez=0.9;}
-        //b_inSH[m] *=0.85;
+        if(rez>0.9){rez=0.9;}
+        b_inSH[m] *=0.85;
         b_inSH[m] = b_inSH[m]-rez;
         
 
         pole1[m] = pole1[m] + ((-pole1[m] + b_inSH[m]) * b_f[m]);
         pole2[m] = pole2[m] + ((-pole2[m] + pole1[m]) * b_f[m]);
-        //pole3[m] = pole3[m] + ((-pole3[m] + pole2[m]) * b_f[m]);
-        //pole4[m] = pole4[m] + ((-pole4[m] + pole3[m]) * b_f[m]);
+        pole3[m] = pole3[m] + ((-pole3[m] + pole2[m]) * b_f[m]);
+        pole4[m] = pole4[m] + ((-pole4[m] + pole3[m]) * b_f[m]);
     }
 
-    return pole2[m];
+    return pole4[m];
 
 }
 #endif
@@ -500,7 +476,7 @@ extern portMUX_TYPE timer2Mux_xms;
 /*                                                 */
 /***************************************************/
 //[[gnu::noinline, gnu::optimize ("fast-math")]]
-void Synth_Process(float *left, float *right)
+void IRAM_ATTR Synth_Process(float *left, float *right)
 {
 uint16_t j=0;    
 int16_t tmp16;
@@ -537,6 +513,9 @@ int indx=0;
     AmpMod=0;
     NoiseMod=0;
     WaveShapping1Mod=0;
+
+    WS.SoundMode=SND_MODE_PARA;
+    
     
     if(!Lfo1_Mutex)
     {
@@ -544,13 +523,16 @@ int indx=0;
         Lfo_Process(&Lfo1);
         Lfo1_Mutex=0;
     }
+    /*
     if(!Lfo2_Mutex)
     {
         Lfo2_Mutex=1;
         Lfo_Process(&Lfo2);
         Lfo2_Mutex=0;
     }
-    
+    */
+
+
 
     /*
      * update pitch bending / modulation
@@ -678,6 +660,7 @@ int indx=0;
             }
         }
     }
+    
 
   
     /*
@@ -689,9 +672,9 @@ int indx=0;
         notePlayerT *voice = &voicePlayer[v];
         if (voice->active)            
         {
-            for (int o = 0; o < 3; o++)
+            for (int o = 0; o < OSC_PER_VOICE; o++)
             {
-                oscillatorT *osc = &oscPlayer[o+v*3];
+                oscillatorT *osc = &oscPlayer[o+v*OSC_PER_VOICE];
                 // Apply the spread
                 spread = (uint32_t)((float)osc->addVal*(voice->spread));
                 // Apply the pitch modulation and the pitch bend + the pitch EG
@@ -738,6 +721,7 @@ int indx=0;
                     Serial.printf("Ph %d val %3.2f\n",voice->phase,voice->control_sign);
                 }
                 */
+               
                 if (!voice_off && voice->active)
                 {
                     for (int j = 0; j < MAX_POLY_VOICE ; j++)
@@ -753,60 +737,62 @@ int indx=0;
                     globalrank--;
                     Voice_Off(i);
                 }
+               
                 /*
                  * make is slow to avoid bad things .. or crying ears
                  */
                 (void)ADSR_Process(&adsr_fil, &voice->f_control_sign, &voice->f_phase);
                 (void)ADSR_Process(&adsr_pit, &voice->p_control_sign, &voice->p_phase);
             }
-            if (voice->active)
+            /* add some noise to the voice */
+            voice->lastSample[0] += nz*(1+NoiseMod);
+            voice->lastSample[1] += nz*(1+NoiseMod);
+
+            voice->lastSample[0] *= voice->control_sign*voice->avelocity;
+            voice->lastSample[1] *= voice->control_sign*voice->avelocity;
+
+            voice->lastSample[0] *=0.10;
+            voice->lastSample[1] *=0.10;
+            
+
+            //channel[i] = channel[i] * (vcacutoff[i] * vcavellvl[i]);
+            //summer = summer + KarlsenLPF(channel[i], (vcfval * vcfenvlvl) * ((vcfcutoff[i] * vcfkeyfollow[i]) * vcfvellvl[i]), resonance, i);
+
+            // Apply the filter EG
+            float cf = FiltCutoffMod+voice->f_control_sign*filterEG;
+            cf *=1+voice->fvelocity;
+            // Apply the kbtrack
+            cf *= 1+(voice->midiNote-64)*filterKBtrack;
+
+            #ifdef FILTER_5
+                if (count % 32 == 0)
             {
-
-                /* add some noise to the voice */
-                voice->lastSample[0] += nz*(1+NoiseMod);
-                voice->lastSample[1] += nz*(1+NoiseMod);
-
-                voice->lastSample[0] *= voice->control_sign*voice->avelocity;
-                voice->lastSample[1] *= voice->control_sign*voice->avelocity;
-
-                voice->lastSample[0] *=0.10;
-                voice->lastSample[1] *=0.10;
-                
-
-                //channel[i] = channel[i] * (vcacutoff[i] * vcavellvl[i]);
-                //summer = summer + KarlsenLPF(channel[i], (vcfval * vcfenvlvl) * ((vcfcutoff[i] * vcfkeyfollow[i]) * vcfvellvl[i]), resonance, i);
-
-                // Apply the filter EG
-                float cf = FiltCutoffMod+voice->f_control_sign*filterEG;
-                cf *=1+voice->fvelocity;
-                // Apply the kbtrack
-                cf *= 1+(voice->midiNote-64)*filterKBtrack;
-
-                #ifdef FILTER_5
-                 if (count % 32 == 0)
-                {
-                    //voice->f_control_sign_slow = 0.05 * cf + 0.95 * voice->f_control_sign_slow;
-                    //Filter_Calculate(voice->f_control_sign_slow, soundFiltReso, &voice->filterC);
-                    Filter_Calculate(voice->f_control_sign, soundFiltReso, &voice->filterC);
-                }
-                Filter_Process(&voice->lastSample[0], &voice->filterL);
-                Filter_Process(&voice->lastSample[1], &voice->filterR);
-                #else
-                voice->lastSample[0] = KarlsenLPF(voice->lastSample[0],cf, filtReso,i);
-                //voice->lastSample[0] /=4; //for para mode
-                #endif
-                voice->lastSample[1] = voice->lastSample[0];
-
-                out_l += voice->lastSample[0];
-                out_r += voice->lastSample[1];
-                voice->lastSample[0] = 0.0f;
-                voice->lastSample[1] = 0.0f;
+                //voice->f_control_sign_slow = 0.05 * cf + 0.95 * voice->f_control_sign_slow;
+                //Filter_Calculate(voice->f_control_sign_slow, soundFiltReso, &voice->filterC);
+                Filter_Calculate(voice->f_control_sign, soundFiltReso, &voice->filterC);
             }
+            Filter_Process(&voice->lastSample[0], &voice->filterL);
+            Filter_Process(&voice->lastSample[1], &voice->filterR);
+            #else
+            voice->lastSample[0] /=4; //for para mode
+            //voice->lastSample[0] = KarlsenLPF(voice->lastSample[0],cf, filtReso,i);
+            #endif
+            voice->lastSample[1] = voice->lastSample[0];
+
+            out_l += voice->lastSample[0];
+            out_r += voice->lastSample[1];
+            voice->lastSample[0] = 0.0f;
+            voice->lastSample[1] = 0.0f;
         }
     }
     // Try para mode - ok good
-    //out_l = KarlsenLPF(out_l,FiltCutoffMod+voicePlayer[0].f_control_sign*filterEG, filtReso,0);
-    //out_r = out_l;
+    #ifndef FILTER_5
+    if(WS.SoundMode!=SND_MODE_POLY)
+    {
+        out_l = KarlsenLPF(out_l,FiltCutoffMod+voicePlayer[0].f_control_sign*filterEG, filtReso,0);
+    }
+    #endif
+    out_r = out_l;
 
     cptvoice++;
     if(cptvoice==MAX_POLY_VOICE)
@@ -824,7 +810,6 @@ int indx=0;
 
     out_l *= (1+PanMod);
     out_r *= (1-PanMod);
-     
    
     /*
      * finally output our samples
