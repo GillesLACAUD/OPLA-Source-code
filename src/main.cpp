@@ -367,7 +367,8 @@ static uint16_t cpttimer2;
            
             Synth_Process(&fl_sample, &fr_sample);
             Reverb_Process( &fl_sample, &fr_sample, SAMPLE_BUFFER_SIZE );       
-            //Delay_Process(&fl_sample, &fr_sample);
+            if(WS.SoundMode!=SND_MODE_POLY)
+                Delay_Process(&fl_sample, &fr_sample);
             sampleData32.sample[0] = (int16_t)(fl_sample*32768.0f);
             sampleData32.sample[1] = (int16_t)(fr_sample*32768.0f);
         }

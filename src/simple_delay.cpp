@@ -51,7 +51,6 @@ void Delay_Reset(void)
 void Delay_Process(float *signal_l, float *signal_r)
 {
 
-
     delayLine_l[delayIn] = *signal_l;
     delayLine_r[delayIn] = *signal_r;
 

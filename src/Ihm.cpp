@@ -138,6 +138,8 @@ int Fct_Ch_WS1(int val)
 float value;    
 struct oscillatorT *osc;
 
+    return(0);
+
     value = val * NORM127MUL;
     OldWaveShapping1Mod=value+0.5;  // Force update waveform
     WaveShapping1=value;
@@ -208,7 +210,7 @@ uint8_t note;
     SubTranspose = (float)val;
     oscillatorT *osc;
 
-    for (int i = 0; i < MAX_POLY_VOICE ; i++)
+    for (int i = 0; i < WS.PolyMax; i++)
     {
         if (voicePlayer[i].active)
         {
@@ -567,7 +569,7 @@ float nz=0;
     nz = ((random(1024) / 512.0f) - 1.0f);
 
     value = (val+20) * NORM127MUL;
-    for (int v = 0; v < MAX_POLY_VOICE; v++) /* one loop is faster than two loops */
+    for (int v = 0; v < WS.PolyMax; v++) /* one loop is faster than two loops */
     {
         notePlayerT *voice = &voicePlayer[v];
         voice->spread = 1.0; // change here and in hte key on

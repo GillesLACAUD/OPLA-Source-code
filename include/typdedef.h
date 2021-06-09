@@ -4,6 +4,7 @@ struct WorkSound
 {
 
     int16_t SoundMode;
+    int8_t  PolyMax;
 
     int16_t OscBank;
     int16_t OscWave;

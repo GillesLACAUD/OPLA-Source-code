@@ -514,7 +514,8 @@ int indx=0;
     NoiseMod=0;
     WaveShapping1Mod=0;
 
-    WS.SoundMode=SND_MODE_PARA;
+    WS.SoundMode=SND_MODE_POLY;
+    WS.PolyMax=4;
     
     
     if(!Lfo1_Mutex)
@@ -523,14 +524,14 @@ int indx=0;
         Lfo_Process(&Lfo1);
         Lfo1_Mutex=0;
     }
-    /*
+
     if(!Lfo2_Mutex)
     {
         Lfo2_Mutex=1;
         Lfo_Process(&Lfo2);
         Lfo2_Mutex=0;
     }
-    */
+
 
 
 
@@ -667,7 +668,7 @@ int indx=0;
      * oscillator processing -> mix to voice
     */
     float sig;
-    for (int v = 0; v < MAX_POLY_VOICE; v++) /* one loop is faster than two loops */
+    for (int v = 0; v < WS.PolyMax; v++) /* one loop is faster than two loops */
     {
         notePlayerT *voice = &voicePlayer[v];
         if (voice->active)            
@@ -707,7 +708,7 @@ int indx=0;
 
     // WS.SoundMode  different mode for the filter Poly/Para/Monp       
 
-    for (int i = 0; i < MAX_POLY_VOICE; i++) /* one loop is faster than two loops */
+    for (int i = 0; i < WS.PolyMax; i++) /* one loop is faster than two loops */
     {
         notePlayerT *voice = &voicePlayer[i];
         if (voice->active)
@@ -724,7 +725,7 @@ int indx=0;
                
                 if (!voice_off && voice->active)
                 {
-                    for (int j = 0; j < MAX_POLY_VOICE ; j++)
+                    for (int j = 0; j < WS.PolyMax ; j++)
                     {
                         if(voicePlayer[j].active>voice->active)
                             voicePlayer[j].active--;
@@ -751,8 +752,8 @@ int indx=0;
             voice->lastSample[0] *= voice->control_sign*voice->avelocity;
             voice->lastSample[1] *= voice->control_sign*voice->avelocity;
 
-            voice->lastSample[0] *=0.10;
-            voice->lastSample[1] *=0.10;
+            voice->lastSample[0] *=0.25;
+            voice->lastSample[1] *=0.25;
             
 
             //channel[i] = channel[i] * (vcacutoff[i] * vcavellvl[i]);
@@ -774,8 +775,13 @@ int indx=0;
             Filter_Process(&voice->lastSample[0], &voice->filterL);
             Filter_Process(&voice->lastSample[1], &voice->filterR);
             #else
-            voice->lastSample[0] /=4; //for para mode
-            //voice->lastSample[0] = KarlsenLPF(voice->lastSample[0],cf, filtReso,i);
+            if(WS.SoundMode!=SND_MODE_POLY)
+                voice->lastSample[0] /=4; //for para mode
+            else
+            {
+                voice->lastSample[0] /=4;
+                voice->lastSample[0] = KarlsenLPF(voice->lastSample[0],cf, filtReso,i);
+            }
             #endif
             voice->lastSample[1] = voice->lastSample[0];
 
@@ -795,7 +801,7 @@ int indx=0;
     out_r = out_l;
 
     cptvoice++;
-    if(cptvoice==MAX_POLY_VOICE)
+    if(cptvoice==WS.PolyMax)
         cptvoice=0;
 
     #ifdef FILTER_5
@@ -868,7 +874,7 @@ uint8_t keysteal=99;
     //--------------------------------------------
     // A voice is free - Simple case
     //--------------------------------------------
-    for (int i = 0; i < MAX_POLY_VOICE ; i++)
+    for (int i = 0; i < WS.PolyMax ; i++)
     {
         if (voicePlayer[i].active == 0)
         {
@@ -885,7 +891,7 @@ uint8_t keysteal=99;
     //--------------------------------------------
     // Search a note on release phase
     //--------------------------------------------
-    for (int i = 0; i < MAX_POLY_VOICE ; i++)
+    for (int i = 0; i < WS.PolyMax ; i++)
     {
         if(voicePlayer[i].phase==release)
         {
@@ -905,7 +911,7 @@ uint8_t keysteal=99;
         //Midi_Dump();        
         Voice_Off(keytab);  
         //*retrig=1;   
-        for (int i = 0; i < MAX_POLY_VOICE ; i++)
+        for (int i = 0; i < WS.PolyMax ; i++)
         {
             if(voicePlayer[i].active>1)
                 voicePlayer[i].active--;
@@ -919,7 +925,7 @@ uint8_t keysteal=99;
     //--------------------------------------------
     else
     {
-        for(int i = 0; i < MAX_POLY_VOICE ; i++)
+        for(int i = 0; i < WS.PolyMax ; i++)
         {
             if(voicePlayer[i].active<keysteal)
             {
@@ -932,7 +938,7 @@ uint8_t keysteal=99;
             //Serial.printf("S S %d Act %d\n",keytab,voicePlayer[keytab].active);
             Voice_Off(keytab);   
             //*retrig=1;
-            for (int i = 0; i < MAX_POLY_VOICE ; i++)
+            for (int i = 0; i < WS.PolyMax ; i++)
             {
             if(voicePlayer[i].active>1)
                 voicePlayer[i].active--;
@@ -1079,7 +1085,7 @@ float setvel;
 /***************************************************/
 void Synth_NoteOff(uint8_t note)
 {
-    for (int i = 0; i < MAX_POLY_VOICE ; i++)
+    for (int i = 0; i < WS.PolyMax ; i++)
     {
         if ((voicePlayer[i].active) && (voicePlayer[i].midiNote == note))
         {

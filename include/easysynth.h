@@ -6,7 +6,7 @@
 #define SYNTH_EXTRN extern
 #endif
 
-#define FILTER_2		// Filtre standart max poly4
+#define FILTER_1		// Filtre standart max poly4
 //#define FILTER_2		// Bons resultats 4 voies ok / Rev+Del HS / Del HS / Rev HS / 5 voies HS
 						// En 2 poles 
 						//	-4 voies effect ok
