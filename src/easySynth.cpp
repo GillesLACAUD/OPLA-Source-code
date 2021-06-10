@@ -127,6 +127,8 @@ void Synth_Init()
     value = (10+20) * NORM127MUL;
     adsr_vol.r = (0.0020 * pow(100, 1.0f - value*2));    
 
+    SoundMode=SND_MODE_POLY;
+    WS.PolyMax=4;
 
 }
 
@@ -182,6 +184,24 @@ float IRAM_ATTR KarlsenLPF(float input, float fc, float res, uint8_t m)
   out4 = out3 + 0.3 * in4 + invf * out4;  // Pole 4
   in4  = out3;
   return out4;
+}
+#endif
+
+#ifdef FILTER_7
+float IRAM_ATTR KarlsenLPF(float in, float cut, float res, uint8_t m)
+{
+float resoclip;
+static float buf1[6],buf2[6],buf3[6],buf4[6];
+    
+    resoclip = buf4[m]; if (resoclip > 0.73) resoclip = 0.73;
+    in = (-resoclip * res)+in;
+
+    buf1[m] = ((- buf1[m]+in)*cut) + buf1[m];
+    buf2[m] = ((- buf2[m]+buf1[m])*cut) + buf2[m];
+    buf3[m] = ((- buf3[m]+buf2[m])*cut) + buf3[m];
+    buf4[m] = ((- buf4[m]+buf3[m])*cut) + buf4[m];
+    
+    return(buf4[m]);
 }
 #endif
 
@@ -424,6 +444,7 @@ inline bool ADSR_Process(const struct adsrT *ctrl, float *ctrlSig, adsr_phaseT *
         break;
     case standby:
         break;
+    /*
     case release:
     if(*ctrlSig <0.1)
         *ctrlSig -= ctrl->r/8;        
@@ -439,8 +460,20 @@ inline bool ADSR_Process(const struct adsrT *ctrl, float *ctrlSig, adsr_phaseT *
             //voice->active = false;
             return false;
         }
+    break;
+    */
+    case release:
+    *ctrlSig -= ctrl->r;
+    if (*ctrlSig < 0.0f)
+    {
+        *ctrlSig = 0.0f;
+        //voice->active = false;
+        return false;
+    }
+    break;   
     }
     return true;
+
 }
 /***************************************************/
 /*                                                 */
@@ -514,8 +547,8 @@ int indx=0;
     NoiseMod=0;
     WaveShapping1Mod=0;
 
-    WS.SoundMode=SND_MODE_POLY;
-    WS.PolyMax=4;
+    //SoundMode=SND_MODE_POLY;
+    //WS.PolyMax=4;
     
     
     if(!Lfo1_Mutex)
@@ -706,8 +739,7 @@ int indx=0;
     if(FiltCutoffMod<0.0)
         FiltCutoffMod = 0.0;
 
-    // WS.SoundMode  different mode for the filter Poly/Para/Monp       
-
+    
     for (int i = 0; i < WS.PolyMax; i++) /* one loop is faster than two loops */
     {
         notePlayerT *voice = &voicePlayer[i];
@@ -742,7 +774,14 @@ int indx=0;
                 /*
                  * make is slow to avoid bad things .. or crying ears
                  */
-                (void)ADSR_Process(&adsr_fil, &voice->f_control_sign, &voice->f_phase);
+                if(SoundMode==SND_MODE_POLY)
+                    (void)ADSR_Process(&adsr_fil, &voice->f_control_sign, &voice->f_phase);
+                else
+                {
+                    if(i==0)
+                        (void)ADSR_Process(&adsr_fil, &voice->f_control_sign, &voice->f_phase);
+                }
+
                 (void)ADSR_Process(&adsr_pit, &voice->p_control_sign, &voice->p_phase);
             }
             /* add some noise to the voice */
@@ -775,7 +814,7 @@ int indx=0;
             Filter_Process(&voice->lastSample[0], &voice->filterL);
             Filter_Process(&voice->lastSample[1], &voice->filterR);
             #else
-            if(WS.SoundMode!=SND_MODE_POLY)
+            if(SoundMode!=SND_MODE_POLY)
                 voice->lastSample[0] /=4; //for para mode
             else
             {
@@ -793,11 +832,13 @@ int indx=0;
     }
     // Try para mode - ok good
     #ifndef FILTER_5
-    if(WS.SoundMode!=SND_MODE_POLY)
+    if(SoundMode!=SND_MODE_POLY)
     {
         out_l = KarlsenLPF(out_l,FiltCutoffMod+voicePlayer[0].f_control_sign*filterEG, filtReso,0);
     }
     #endif
+    //out_l = KarlsenLPF(out_l,filtCutoff,filtReso,0);
+
     out_r = out_l;
 
     cptvoice++;
@@ -995,8 +1036,15 @@ float setvel;
         voice->f_control_sign_slow = adsr_fil.a;
     }
     voice->phase = attack;
-    voice->f_phase = attack;
     voice->p_phase = attack;
+
+    if(SoundMode==SND_MODE_POLY)
+        voice->f_phase = attack;
+    else
+    {
+        if(voc_act==0)
+            voice->f_phase = attack;
+    }
 
     voc_act += 1;
 

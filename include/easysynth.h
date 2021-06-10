@@ -6,7 +6,10 @@
 #define SYNTH_EXTRN extern
 #endif
 
-#define FILTER_1		// Filtre standart max poly4
+//#define FILTER_1		// Filtre standart max poly4
+#define FILTER_7		// Filtre standart max poly4
+
+
 //#define FILTER_2		// Bons resultats 4 voies ok / Rev+Del HS / Del HS / Rev HS / 5 voies HS
 						// En 2 poles 
 						//	-4 voies effect ok
@@ -15,7 +18,7 @@
 /*
  * Following defines can be changed for different puprposes
  */
-#define MAX_POLY_VOICE	6                               /* max single voices, can use multiple osc */
+#define MAX_POLY_VOICE	8                               /* max single voices, can use multiple osc */
 														/* 8 or more for para mode				   */
 
 #define OSC_PER_VOICE	3                               /* max single voices, can use multiple osc */
@@ -62,6 +65,7 @@ SYNTH_EXTRN uint32_t midi_note_to_add[MIDI_NOTE_CNT]; /* lookup to playback wave
 
 #define MAX_FLT_TYPE		4
 
+
 #define FILTER_LPF			0
 #define FILTER_HPF			1
 #define FILTER_BPF			2
@@ -81,6 +85,8 @@ SYNTH_EXTRN WorkSound	WS;
 
 SYNTH_EXTRN uint8_t oldCurrentSound;
 SYNTH_EXTRN uint8_t CurrentSound;
+
+SYNTH_EXTRN uint8_t SoundMode;
 
 /*
  * add here your waveforms

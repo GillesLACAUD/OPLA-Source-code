@@ -796,9 +796,16 @@ int Fct_Ch_SoundMode(int val)
 float value;    
   
     value = val * NORM127MUL;
-    WS.SoundMode = (value) * (MAX_SND_MODE);
+    SoundMode = (value) * (MAX_SND_MODE);
+   
+
+    if(SoundMode==SND_MODE_POLY)
+        WS.PolyMax=5;
+    else
+        WS.PolyMax=6;
+
     if(serialdebug)       
-        Serial.printf("Filter type: %d\n",WS.SoundMode);
+        Serial.printf("Sound Mode: %d Max Poly %d\n",SoundMode,WS.PolyMax);
     return(0);
 }
 
