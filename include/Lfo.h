@@ -18,7 +18,7 @@
 #define LFO_MIN_CPT 50
 
 
-#define LFO_MAX_TIME    1024*2
+#define LFO_MAX_TIME    1024*4
 
 LFO_EXTRN struct stLfo Lfo1;
 LFO_EXTRN struct stLfo Lfo2;
