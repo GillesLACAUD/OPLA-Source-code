@@ -65,6 +65,11 @@ struct WorkSound
     int16_t Spread;
     int16_t Transpose;
     int16_t SVolume;
+
+    // Add 12.06.21
+    int16_t LFO1Sync;
+    int16_t LFO2Sync;
+
       
 };
 

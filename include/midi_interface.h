@@ -110,16 +110,13 @@
 #define MIDI_CC_LFO1_SHAPE      71
 #define MIDI_CC_LFO1_DEST       72
 #define MIDI_CC_LFO1_AMT        73
+#define MIDI_CC_LFO1_SYNC       74
 
 #define MIDI_CC_LFO2_SPEED      75
 #define MIDI_CC_LFO2_SHAPE      76
 #define MIDI_CC_LFO2_DEST       77
 #define MIDI_CC_LFO2_AMT        78
-
-
-
-
-
+#define MIDI_CC_LFO2_SYNC       79
 
 
 /*

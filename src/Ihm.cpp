@@ -646,6 +646,20 @@ float value;
 /*                                                 */
 /*                                                 */
 /***************************************************/
+int Fct_Ch_L1Sync(int val)
+{
+float value;    
+
+    value = val * NORM127MUL;
+    Lfo1.ui8_Sync = (value) * (WAVE_LFO_SYNC);  
+    return(0);
+}
+
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
 int Fct_Ch_L2Speed(int val)
 {
 float value;    
@@ -699,6 +713,21 @@ float value;
     Lfo2.f_Amount=value;           
     return(0);
 }
+
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+int Fct_Ch_L2Sync(int val)
+{
+float value;    
+
+    value = val * NORM127MUL;
+    Lfo2.ui8_Sync = (value) * (WAVE_LFO_SYNC);  
+    return(0);
+}
+
 
 //--------------------------------------------------
 // FX

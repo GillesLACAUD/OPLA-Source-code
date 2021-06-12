@@ -193,6 +193,7 @@ float IRAM_ATTR KarlsenLPF(float in, float cut, float res, uint8_t m)
 float resoclip;
 static float buf1[6],buf2[6],buf3[6],buf4[6];
     
+    if(cut > 0.8) cut=0.8;
     resoclip = buf4[m]; if (resoclip > 0.73) resoclip = 0.73;
     in = (-resoclip * res)+in;
 
@@ -200,8 +201,14 @@ static float buf1[6],buf2[6],buf3[6],buf4[6];
     buf2[m] = ((- buf2[m]+buf1[m])*cut) + buf2[m];
     buf3[m] = ((- buf3[m]+buf2[m])*cut) + buf3[m];
     buf4[m] = ((- buf4[m]+buf3[m])*cut) + buf4[m];
-    
-    return(buf4[m]);
+   
+    switch(WS.FType)
+    {
+        case FILTER_LPF: return buf4[m];
+        case FILTER_HPF: return (buf4[m]-buf1[m]);
+        case FILTER_BPF: return (in-buf1[m]);
+        case FILTER_NPF: return (in-buf4[m]-buf1[m]);
+    }
 }
 #endif
 
@@ -324,6 +331,9 @@ float IRAM_ATTR KarlsenLPF(float in, float cut, float res, uint8_t m)
 float resoclip;
 static float buf1[6],buf2[6],buf3[6],buf4[6];
     
+    if(cut > 0.8) cut=0.8;
+    if(cut < 0) cut=0;
+    //if(res > 0.9) res=0.9;
     resoclip = buf4[m]; if (resoclip > 1) resoclip = 1;
     in = in - (resoclip * res);
     buf1[m] = ((in - buf1[m]) * cut) + buf1[m];
@@ -331,8 +341,14 @@ static float buf1[6],buf2[6],buf3[6],buf4[6];
     buf2[m] = ((buf1[m] - buf2[m]) * cut) + buf2[m];
     buf3[m] = ((buf2[m] - buf3[m]) * cut) + buf3[m];
     buf4[m] = ((buf3[m] - buf4[m]) * cut) + buf4[m];
-
-    return(buf4[m]);
+    switch(WS.FType)
+    {
+        case FILTER_LPF: return buf4[m];
+        case FILTER_HPF: return (buf4[m]-buf1[m]);
+        case FILTER_BPF: return (in-buf1[m]);
+        case FILTER_NPF: return (in-buf4[m]-buf1[m]);
+    }
+ 
 }
 #endif
 

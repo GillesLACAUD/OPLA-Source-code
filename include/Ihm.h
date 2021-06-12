@@ -103,10 +103,12 @@ int Fct_Ch_L1Speed(int val);
 int Fct_Ch_L1Shape(int val);
 int Fct_Ch_L1Dest(int val);
 int Fct_Ch_L1Amount(int val);
+int Fct_Ch_L1Sync(int val);
 int Fct_Ch_L2Speed(int val);
 int Fct_Ch_L2Shape(int val);
 int Fct_Ch_L2Dest(int val);  
 int Fct_Ch_L2Amount(int val);
+int Fct_Ch_L2Sync(int val);
 
 int Fct_Ch_DlLen(int val);
 int Fct_Ch_DlAmount(int val);
@@ -177,13 +179,13 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
     "SHA",  "LFO1 SHAPE",   MIDI_CC_LFO1_SHAPE,  TYPE_LIST,  &Wave_LfoName[0][0],0,      &WS.LFO1Shape,   1,  0,      WAVE_LFO_COUNT,    1,      Fct_Ch_L1Shape,    FctNull,    FctNull,    FctNull,    FctNull,
     "DES",  "LFO1 DEST",    MIDI_CC_LFO1_DEST,   TYPE_LIST,  &Dest_Name[0][0],   0,      &WS.LFO1Dest,   1,  0,      DEST_TYPE_COUNT,    1,      Fct_Ch_L1Dest,     FctNull,    FctNull,    FctNull,    FctNull,
     "AMT",  "LFO1 AMOUNT",  MIDI_CC_LFO1_AMT,    TYPE_DATA,  &TabListNull[0][0], 0,      &WS.LFO1Amount,   1,  0,      127,    1,      Fct_Ch_L1Amount,   FctNull,    FctNull,    FctNull,    FctNull,
-    "---",  "---",          0xFF,                TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,           FctNull,    FctNull,    FctNull,    FctNull,
+    "SYN",  "LFO1 SYNC",    MIDI_CC_LFO1_SYNC,   TYPE_LIST,  &Wave_LfoSync[0][0], 0,     &WS.LFO2Sync,   1,  0,      WAVE_LFO_SYNC,    1,Fct_Ch_L1Sync,           FctNull,    FctNull,    FctNull,    FctNull,
 
     "SPE",  "LFO2 SPEED",   MIDI_CC_LFO2_SPEED,  TYPE_DATA,  &TabListNull[0][0], 0,      &WS.LFO2Speed,   1,  0,      127,    1,      Fct_Ch_L2Speed,    FctNull,    FctNull,    FctNull,    FctNull,
     "SHA",  "LFO2 SHAPE",   MIDI_CC_LFO2_SHAPE,  TYPE_LIST,  &Wave_LfoName[0][0],0,      &WS.LFO2Shape,   1,  0,      WAVE_LFO_COUNT,    1,      Fct_Ch_L2Shape,    FctNull,    FctNull,    FctNull,    FctNull,
     "DES",  "LFO2 DEST",    MIDI_CC_LFO2_DEST,   TYPE_LIST,  &Dest_Name[0][0],   0,      &WS.LFO2Dest,   1,  0,      DEST_TYPE_COUNT,    1,      Fct_Ch_L2Dest,     FctNull,    FctNull,    FctNull,    FctNull,
     "AMT",  "LFO2 AMOUNT",  MIDI_CC_LFO2_AMT,    TYPE_DATA,  &TabListNull[0][0], 0,      &WS.LFO2Amount,   1,  0,      127,    1,      Fct_Ch_L2Amount,   FctNull,    FctNull,    FctNull,    FctNull,
-    "---",  "---",          0xFF,                TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,           FctNull,    FctNull,    FctNull,    FctNull,
+    "SYN",  "LFO2 SYNC",    MIDI_CC_LFO2_SYNC,   TYPE_LIST,  &Wave_LfoSync[0][0], 0,     &WS.LFO2Sync,   1,  0,      WAVE_LFO_SYNC,    1,Fct_Ch_L2Sync,           FctNull,    FctNull,    FctNull,    FctNull,
 
     // SECTION FX 
     /* Name                 MIDICC                 TYPE        LIST                INDEX   VALUE      SIZE MIN     MAX     STEP    CHANGE           ON          OFF         HOLD        DCLK  */

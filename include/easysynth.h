@@ -6,15 +6,16 @@
 #define SYNTH_EXTRN extern
 #endif
 
-//#define FILTER_1		// Filtre standart max poly4
-#define FILTER_7		// Filtre standart max poly4
+//#define FILTER_1		// hard resoance at hight level
+//#define FILTER_7		// ok for poly but hard sound at the edge
+//#define FILTER_2		// No resonance ???
+//#define FILTER_3		// Crash direct
+#define FILTER_4		// Poly ok but had sound at the edge like FILTER7 but less less rapid ass filter7
 
-
-//#define FILTER_2		// Bons resultats 4 voies ok / Rev+Del HS / Del HS / Rev HS / 5 voies HS
-						// En 2 poles 
-						//	-4 voies effect ok
-						//	-resonance faiblarde, son bien 5 voies possible sans effects
-						//  -HPF/BPF possible
+					
+				
+						
+						
 /*
  * Following defines can be changed for different puprposes
  */
@@ -54,7 +55,7 @@ SYNTH_EXTRN uint32_t midi_note_to_add[MIDI_NOTE_CNT]; /* lookup to playback wave
  * set the correct count of available waveforms
  */
 #define MAX_LABEL           5
-#define DEST_TYPE_COUNT	    8
+#define DEST_TYPE_COUNT	    12
 
 #define MAX_SND_MODE		3
 
@@ -388,7 +389,7 @@ char Wave_Name[WAVEFORM_TYPE_COUNT][MAX_LABEL] =
 {"SIN","SAW","SQU","PUL","TRI","NOI","NOT"};
 
 char Dest_Name[DEST_TYPE_COUNT][MAX_LABEL] = 
-{"AMP","CUT","PIT","NOI","PAN","WS1","LxS","LxA"};
+{"AMP","CUT","PIT","NOI","PAN","WS1","LxS","LxA","RPA","DPA","RAM","DAM"};
 
 /*
  * do not forget to enter the waveform pointer addresses here

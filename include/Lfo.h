@@ -9,6 +9,7 @@
 #define WAVE_LFO_SIZE   1024
 
 #define WAVE_LFO_COUNT  8
+#define WAVE_LFO_SYNC   3       // Sync Mode
 
 #define LFO_ID1     0
 #define LFO_ID2     1
@@ -27,6 +28,11 @@ LFO_EXTRN struct stLfo Lfo2;
 char Wave_LfoName[WAVE_LFO_COUNT][5] = 
 {"SIN","TRI","SAW","ISA","SQU","S&H","NOI","MUT"};
 
+char Wave_LfoSync[WAVE_LFO_SYNC][5] = 
+{"FRE","SYN","ONE"};
+
+
+
 uint8_t Lfo1_Mutex=0;
 uint8_t Lfo2_Mutex=0;
 
@@ -44,6 +50,7 @@ float *selectedWaveLfo1 =  &sine[0];
 float *selectedWaveLfo2 =  &sine[0];
 #else
 extern char Wave_LfoName[WAVE_LFO_COUNT][5];
+extern char Wave_LfoSync[WAVE_LFO_SYNC][5];
 
 extern uint8_t Lfo1_Mutex;
 extern uint8_t Lfo2_Mutex;
