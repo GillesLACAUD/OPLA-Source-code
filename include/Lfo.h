@@ -15,10 +15,8 @@
 #define LFO_ID2     1
 #define TIMER_1MS   2
 
-#define LFO_MIN_CPT 50
-
-
-#define LFO_MAX_TIME    1024*4
+#define LFO_MIN_CPT     35          // Determine the LFO max speed
+#define LFO_MAX_TIME    1024*4      // Determine the LFO min speed
 
 LFO_EXTRN struct stLfo Lfo1;
 LFO_EXTRN struct stLfo Lfo2;
