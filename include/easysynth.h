@@ -63,6 +63,9 @@ SYNTH_EXTRN uint32_t midi_note_to_add[MIDI_NOTE_CNT]; /* lookup to playback wave
 #define SND_MODE_PARA		1
 #define SND_MODE_MONO		2
 
+#define SND_MAX_POLY		4
+#define SND_MAX_PARA		6
+
 
 #define MAX_FLT_TYPE		4
 
@@ -88,6 +91,8 @@ SYNTH_EXTRN uint8_t oldCurrentSound;
 SYNTH_EXTRN uint8_t CurrentSound;
 
 SYNTH_EXTRN uint8_t SoundMode;
+SYNTH_EXTRN uint8_t FilterType;
+
 
 /*
  * add here your waveforms

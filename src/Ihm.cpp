@@ -138,7 +138,8 @@ int Fct_Ch_WS1(int val)
 float value;    
 struct oscillatorT *osc;
 
-    return(0);
+    if(val==0)    
+        return(0);
 
     value = val * NORM127MUL;
     OldWaveShapping1Mod=value+0.5;  // Force update waveform
@@ -316,10 +317,11 @@ int Fct_Ch_FType(int val)
 {
 float value=0; 
 
+
     value = val * NORM127MUL;
-    WS.FType = (value) * (MAX_FLT_TYPE);
+    FilterType = (value) * (MAX_FLT_TYPE);
     if(serialdebug)       
-        Serial.printf("Filter type: %d\n",WS.FType);
+        Serial.printf("Filter type: %d\n",FilterType);
     return(0);
 }
 
@@ -566,13 +568,14 @@ int Fct_Ch_Spread(int val)
 float value;    
 float nz=0;
 
-    nz = ((random(1024) / 512.0f) - 1.0f);
-
-    value = (val+20) * NORM127MUL;
-    for (int v = 0; v < WS.PolyMax; v++) /* one loop is faster than two loops */
+    value = val*NORM127MUL;
+    for (int v = 0; v < WS.PolyMax; v++)
     {
         notePlayerT *voice = &voicePlayer[v];
-        voice->spread = 1.0; // change here and in hte key on
+        nz = ((((float)random(1024))/1024.0)-0.5)/30;
+        voice->spread = 1.0+(nz*value);
+        if(serialdebug)
+            Serial.printf("Spread %d %6.3f\n",v,voice->spread);
     }
     return(0);
 }
@@ -592,7 +595,13 @@ int Fct_Ch_L1Speed(int val)
 float value;    
 
     value = val * NORM127MUL;
-    Lfo1.ui16_Freq = LFO_MAX_TIME*(1-value)+LFO_MIN_CPT;
+    if(value<0.25)
+        Lfo1.ui16_Freq = LFO_MAX_TIME*(1-value)*8+LFO_MIN_CPT;
+    else
+        if(value<0.5)
+            Lfo1.ui16_Freq = LFO_MAX_TIME*(1-value)*2+LFO_MIN_CPT;
+        else
+            Lfo1.ui16_Freq = LFO_MAX_TIME*(1-value)/2+LFO_MIN_CPT;
     timerAlarmWrite(Lfo_timer1,Lfo1.ui16_Freq,true);     // 1024 -> T=1s 2048 T=2s 16=2048/127 T=16ms = 32 Hertz
     return(0);
 }
@@ -665,7 +674,13 @@ int Fct_Ch_L2Speed(int val)
 float value;    
 
     value = val * NORM127MUL;
-    Lfo2.ui16_Freq = LFO_MAX_TIME*(1-value)*2+LFO_MIN_CPT;
+    if(value<0.25)
+        Lfo2.ui16_Freq = LFO_MAX_TIME*(1-value)*8+LFO_MIN_CPT;
+    else
+        if(value<0.5)
+            Lfo2.ui16_Freq = LFO_MAX_TIME*(1-value)*2+LFO_MIN_CPT;
+        else
+            Lfo2.ui16_Freq = LFO_MAX_TIME*(1-value)/2+LFO_MIN_CPT;
     timerAlarmWrite(Lfo_timer2,Lfo2.ui16_Freq,true);     // 1024 -> T=1s 2048 T=2s 16=2048/127 T=16ms = 32 Hertz
     return(0);
 }
@@ -829,9 +844,9 @@ float value;
    
 
     if(SoundMode==SND_MODE_POLY)
-        WS.PolyMax=5;
+        WS.PolyMax=SND_MAX_POLY;
     else
-        WS.PolyMax=6;
+        WS.PolyMax=SND_MAX_PARA;
 
     if(serialdebug)       
         Serial.printf("Sound Mode: %d Max Poly %d\n",SoundMode,WS.PolyMax);

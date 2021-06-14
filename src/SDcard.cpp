@@ -6,6 +6,8 @@
 #include "easysynth.h"
 #include "ihm.h"
 
+#include "Nextion.h"
+
 #define __SDCARD__
 #include "SDCard.h"
 
@@ -261,6 +263,9 @@ char path[30];
 uint16_t wr;
 unsigned int sz=sizeof(WorkSound);
 
+    //sprintf(messnex,"v4.pco=62222");
+    //Nextion_Send(messnex);
+
     sprintf(path,"/sound/%d.snd",snd);
     File file = SD_MMC.open(path,"rb");
     wr=file.read((uint8_t*)&WS,sz);
@@ -277,7 +282,10 @@ unsigned int sz=sizeof(WorkSound);
             Tab_Encoder[s][e].ptrfunctValueChange((int)*Tab_Encoder[s][e].Data);
         }
     }
-    
+
+    //delay(1000);
+    //sprintf(messnex,"v4.pco=38815");
+    //Nextion_Send(messnex);
 
    /*
     Fct_Ch_OscWave(WS.OscWave);
@@ -344,6 +352,28 @@ unsigned int sz=sizeof(WorkSound);
 /***************************************************/
 void SDCard_LoadSndName(void)
 {
+char path[30];
+char nom[30];
+uint8_t ret;
+
+    sprintf(path,"/sound/Names.txt");
+    File file = SD_MMC.open(path,"rb");
+    ret=file.readBytesUntil(0x0D,nom,15);
+    nom[ret+1]=0x00;
+    Serial.printf("File Name %s\n",nom);
+    file.readBytesUntil(0x0D,nom,15);
+    nom[ret+1]=0x00;
+    Serial.printf("File Name %s\n",nom);
+
+    file.readBytesUntil(0x0D,nom,15);
+    nom[ret+1]=0x00;
+    Serial.printf("File Name %s\n",nom);
+
+    file.readBytesUntil(0x0D,nom,15);
+    nom[ret+1]=0x00;
+    Serial.printf("File Name %s\n",nom);
+
+    file.close();    
 }
 
 /***************************************************/

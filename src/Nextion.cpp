@@ -59,7 +59,7 @@ void Nextion_Init()
     Serial1.begin(115200, SERIAL_8N1, RXD_NEX, TXD_NEX);
     Nextion_Send("rest");
     Nextion_Send("rest");
-    delay(2000);
+    delay(1000);
 
     //sprintf(messnex,"touch_j");
 	//Nextion_Send(messnex);
@@ -97,7 +97,7 @@ void Nextion_Process()
 				Nextion_Mess[cptm]=0x01;
 				Nextion_Begin_Receive=1;
 			}
-			if(Nextion_Mess[cptm]==0xF5 && cptm==5)
+			if(Nextion_Mess[cptm]==0xF5 && Nextion_Begin_Receive)
 			{
 				Nextion_Cmd_Receive=1;
 				Nextion_Begin_Receive=0;
@@ -314,21 +314,21 @@ uint8_t cc;
         // Load save page
         if(Nextion_Mess[2]==1)
         {
-            sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
+            sprintf(messnex,"pagekeybdA0.b%d.bco=65535",CurrentSound);
             Nextion_Send(messnex);
-            sprintf(messnex,"page2.b%d.pco=0",CurrentSound);
+            sprintf(messnex,"pagekeybdA0.b%d.pco=0",CurrentSound);
             Nextion_Send(messnex);
             // Change page
-            sprintf(messnex,"page 2");
+            sprintf(messnex,"pagekeybdA0");
             Nextion_Send(messnex);
 
         }
         // Escape
         if(Nextion_Mess[2]==4)
         {
-            // Change page
-            sprintf(messnex,"page 0");
-            Nextion_Send(messnex);
+            // Change page already done in the Nextion screen
+            //sprintf(messnex,"page 0");
+            //Nextion_Send(messnex);
         }
         // Save
         if(Nextion_Mess[2]==2)
@@ -374,6 +374,7 @@ uint8_t cc;
             else
                 gui_Section=0;
         }
+        Serial.printf("Section %d\n",gui_Section);
         Nextion_PrintLabel();
         Nextion_PrintValues();
 		break;
@@ -424,5 +425,13 @@ uint8_t cc;
             //delay(2);
         }
         break;
+
+        // N Name sound
+        case 0x4E:
+        char Name[20];
+		strcpy(Name,&Nextion_Mess[3]);
+        Serial.printf("Name %s\n",Name);
+		break;
+
 	}
 }

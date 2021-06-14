@@ -216,7 +216,7 @@ void setup()
     //esp_wifi_deinit();
 #endif
 
-    SDCard_Init();
+    uint8_t sdcard=SDCard_Init();
 
     Serial.printf("ESP.getFreeHeap() %d\n", ESP.getFreeHeap());
     Serial.printf("ESP.getMinFreeHeap() %d\n", ESP.getMinFreeHeap());
@@ -256,6 +256,19 @@ void setup()
     xTaskCreatePinnedToCore(CoreTask0, "terminalTask", 8000, NULL,0, &Core0TaskHnd, 0);
 
     Nextion_Init();
+    
+    if(sdcard)
+    {
+        sprintf(messnex,"page0.b2.txt=%c>ERR:No SDCARD DETECTED%c",0x22,0x22);
+        Nextion_Send(messnex);
+    }
+    else
+    {
+        sprintf(messnex,"page0.b2.txt=%c>SDCARD DETECTED%c",0x22,0x22);
+        Nextion_Send(messnex);
+        SDCard_LoadSndName();
+
+    }
 
     //Synth_NoteOn(64-12);
 }

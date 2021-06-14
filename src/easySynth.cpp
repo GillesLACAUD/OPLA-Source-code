@@ -20,6 +20,7 @@
 #include "AC101.h"
 #include "Ihm.h"
 #include "Reverb.h"
+#include "Nextion.h"
 
 #include "esp_attr.h"
 
@@ -202,7 +203,7 @@ static float buf1[6],buf2[6],buf3[6],buf4[6];
     buf3[m] = ((- buf3[m]+buf2[m])*cut) + buf3[m];
     buf4[m] = ((- buf4[m]+buf3[m])*cut) + buf4[m];
    
-    switch(WS.FType)
+    switch(FilterType)
     {
         case FILTER_LPF: return buf4[m];
         case FILTER_HPF: return (buf4[m]-buf1[m]);
@@ -252,7 +253,7 @@ inline float KarlsenLPF(float signal, float freq, float res, uint8_t m)
     NPF:=I-fPole[1];
     HPF:=I-fPole[4]-fPole[1];
     */
-    switch(WS.FType)
+    switch(FilterType)
     {
 
         case FILTER_LPF: return pole4[m];
@@ -341,7 +342,7 @@ static float buf1[6],buf2[6],buf3[6],buf4[6];
     buf2[m] = ((buf1[m] - buf2[m]) * cut) + buf2[m];
     buf3[m] = ((buf2[m] - buf3[m]) * cut) + buf3[m];
     buf4[m] = ((buf3[m] - buf4[m]) * cut) + buf4[m];
-    switch(WS.FType)
+    switch(FilterType)
     {
         case FILTER_LPF: return buf4[m];
         case FILTER_HPF: return (buf4[m]-buf1[m]);
@@ -510,6 +511,8 @@ void Voice_Off(uint32_t i)
         }
     }
     voc_act -= 1;
+    sprintf(messnex,"page0.b2.txt=%c%d%c",0x22,voc_act,0x22);
+    Nextion_Send(messnex);
 }
 
 static float out_l, out_r;
@@ -910,6 +913,7 @@ struct oscillatorT *getFreeOsc()
 struct notePlayerT *getFreeVoice(uint8_t note,uint8_t* retrig)
 {
 uint8_t keysteal=99;    
+uint8_t aff=0;
 
     *retrig=0;
     //--------------------------------------------
@@ -921,6 +925,7 @@ uint8_t keysteal=99;
         if (voicePlayer[i].active && voicePlayer[i].midiNote==note)
         {
             Voice_Off(i);
+            if (aff) Serial.printf("Retrig\n");
             //voicePlayer[i].active = globalrank;
             *retrig=1;
             return &voicePlayer[i];
@@ -937,6 +942,7 @@ uint8_t keysteal=99;
         {
             globalrank++;
             voicePlayer[i].active = globalrank;
+            if (aff) Serial.printf("Free slot %d Rank %d MaxPoly %d\n",i,globalrank,WS.PolyMax);
             return &voicePlayer[i];
         }
     }
@@ -975,6 +981,7 @@ uint8_t keysteal=99;
         }
         voicePlayer[keytab].active = globalrank;
         //Midi_Dump();        
+        if (aff) Serial.printf("Release\n");
         return &voicePlayer[keytab];
     }
     //--------------------------------------------
@@ -992,7 +999,7 @@ uint8_t keysteal=99;
         }
         if(keysteal!=99)
         {   
-            //Serial.printf("S S %d Act %d\n",keytab,voicePlayer[keytab].active);
+            if (aff) Serial.printf("Steal %d Act %d\n",keytab,voicePlayer[keytab].active);
             Voice_Off(keytab);   
             //*retrig=1;
             for (int i = 0; i < WS.PolyMax ; i++)
@@ -1064,13 +1071,16 @@ float setvel;
 
     voc_act += 1;
 
+    sprintf(messnex,"page0.b2.txt=%c%d%c",0x22,voc_act,0x22);
+    Nextion_Send(messnex);
+
    
 
     /*
      * add oscillator
      */
 
-    osc = getFreeOsc();
+    //osc = getFreeOsc();
     float tmp;
     if (osc != NULL)
     {
@@ -1156,7 +1166,6 @@ void Synth_NoteOff(uint8_t note)
             voicePlayer[i].phase = release;
             voicePlayer[i].f_phase = release;
             voicePlayer[i].p_phase = release;
-            
         }
     }
 }
