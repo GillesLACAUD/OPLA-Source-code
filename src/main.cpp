@@ -395,10 +395,13 @@ static uint16_t cpttimer2;
         {
            
             Synth_Process(&fl_sample, &fr_sample);
+            
             Reverb_Process( &fl_sample, &fr_sample, SAMPLE_BUFFER_SIZE );       
                         
             if(SoundMode!=SND_MODE_POLY)
                 Delay_Process(&fl_sample, &fr_sample);
+            
+
             
             sampleData32.sample[0] = (int16_t)(fl_sample*32768.0f);
             sampleData32.sample[1] = (int16_t)(fr_sample*32768.0f);
@@ -409,7 +412,7 @@ static uint16_t cpttimer2;
      * Midi does not required to be checked after every processed sample
      * - we divide our operation by 8
      */
-    if (loop_count_u8 % 4 == 0)
+    if (loop_count_u8 % 2 == 0)
     {
         Midi_Process();
         //Nextion_Process(); // in the task0

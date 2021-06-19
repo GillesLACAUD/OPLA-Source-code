@@ -332,6 +332,8 @@ float IRAM_ATTR KarlsenLPF(float in, float cut, float res, uint8_t m)
 float resoclip;
 static float buf1[6],buf2[6],buf3[6],buf4[6];
     
+    //return(in);
+
     if(cut > 0.8) cut=0.8;
     if(cut < 0) cut=0;
     //if(res > 0.9) res=0.9;
@@ -434,6 +436,7 @@ inline bool ADSR_Process(const struct adsrT *ctrl, float *ctrlSig, adsr_phaseT *
     switch (*phase)
     {
     case attack:
+        /*
         if(*ctrlSig <0.1)
             *ctrlSig += ctrl->a/8;        
         else if(*ctrlSig <0.2)
@@ -442,7 +445,9 @@ inline bool ADSR_Process(const struct adsrT *ctrl, float *ctrlSig, adsr_phaseT *
             *ctrlSig += ctrl->a/2;            
         else 
             *ctrlSig += ctrl->a;
+        */
 
+        *ctrlSig += ctrl->a;
         if (*ctrlSig > (1.0f-ctrl->a))
         {
             //*ctrlSig = 1.0f;
@@ -668,7 +673,6 @@ int indx=0;
                 break;
             
                 case WAVE_SINE:
-                
                 //cmp = ((int)(float)WAVEFORM_CNT*tmp);
                 //for (i = 0; i < WAVEFORM_CNT; i++)
                 //{
@@ -732,8 +736,6 @@ int indx=0;
                 spread = (uint32_t)((float)osc->addVal*(voice->spread));
                 // Apply the pitch modulation and the pitch bend + the pitch EG
                 osc->samplePos += (uint32_t)((float)spread*(1+PitchMod)*pitchMultiplier*(1+voice->p_control_sign*pitchEG));
-                
-                
                 switch(o)
                 {
                     case 0: sig = osc->waveForm[WAVEFORM_I(osc->samplePos)]*MixOsc;break;
@@ -793,29 +795,21 @@ int indx=0;
                 /*
                  * make is slow to avoid bad things .. or crying ears
                  */
+
                 if(SoundMode==SND_MODE_POLY)
                     (void)ADSR_Process(&adsr_fil, &voice->f_control_sign, &voice->f_phase);
                 else
                 {
+                    
                     if(i==0)
                         (void)ADSR_Process(&adsr_fil, &voice->f_control_sign, &voice->f_phase);
+                    
                 }
-
                 (void)ADSR_Process(&adsr_pit, &voice->p_control_sign, &voice->p_phase);
             }
             /* add some noise to the voice */
             voice->lastSample[0] += nz*(1+NoiseMod);
-            voice->lastSample[1] += nz*(1+NoiseMod);
-
             voice->lastSample[0] *= voice->control_sign*voice->avelocity;
-            voice->lastSample[1] *= voice->control_sign*voice->avelocity;
-
-            voice->lastSample[0] *=0.25;
-            voice->lastSample[1] *=0.25;
-            
-
-            //channel[i] = channel[i] * (vcacutoff[i] * vcavellvl[i]);
-            //summer = summer + KarlsenLPF(channel[i], (vcfval * vcfenvlvl) * ((vcfcutoff[i] * vcfkeyfollow[i]) * vcfvellvl[i]), resonance, i);
 
             // Apply the filter EG
             float cf = FiltCutoffMod+voice->f_control_sign*filterEG;
@@ -834,10 +828,10 @@ int indx=0;
             Filter_Process(&voice->lastSample[1], &voice->filterR);
             #else
             if(SoundMode!=SND_MODE_POLY)
-                voice->lastSample[0] /=4; //for para mode
+                voice->lastSample[0] /=32; //for para mode
             else
             {
-                voice->lastSample[0] /=4;
+                voice->lastSample[0] /=32;
                 voice->lastSample[0] = KarlsenLPF(voice->lastSample[0],cf, filtReso,i);
             }
             #endif
@@ -859,10 +853,11 @@ int indx=0;
     //out_l = KarlsenLPF(out_l,filtCutoff,filtReso,0);
 
     out_r = out_l;
-
+    /*
     cptvoice++;
     if(cptvoice==WS.PolyMax)
         cptvoice=0;
+    */
 
     #ifdef FILTER_5
     Filter_Process(&out_l, &mainFilterL);
@@ -870,7 +865,7 @@ int indx=0;
     out_r=out_l;
     #endif        
         
-    float multi = (1+AmpMod)*0.25f;
+    float multi = (1+AmpMod)*0.75f;
     out_l *=multi;
     out_r *=multi;
 

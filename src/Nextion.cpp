@@ -295,16 +295,19 @@ uint8_t cc;
         // X Select Sound
 		case 0x58:
         CurrentSound=Nextion_Mess[2];
-        sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
-        Nextion_Send(messnex);
-        sprintf(messnex,"page2.b%d.pco=0",CurrentSound);
-        Nextion_Send(messnex);
+        if(oldCurrentSound!=CurrentSound)
+        {
+            sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
+            Nextion_Send(messnex);
+            sprintf(messnex,"page2.b%d.pco=0",CurrentSound);
+            Nextion_Send(messnex);
 
-        sprintf(messnex,"page2.b%d.bco=0",oldCurrentSound);
-        Nextion_Send(messnex);
-        sprintf(messnex,"page2.b%d.pco=2024",oldCurrentSound);
-        Nextion_Send(messnex);
-        oldCurrentSound=CurrentSound;
+            sprintf(messnex,"page2.b%d.bco=0",oldCurrentSound);
+            Nextion_Send(messnex);
+            sprintf(messnex,"page2.b%d.pco=2024",oldCurrentSound);
+            Nextion_Send(messnex);
+            oldCurrentSound=CurrentSound;
+        }
         break;
 
         // S Section Sound save load
