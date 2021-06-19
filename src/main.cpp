@@ -25,6 +25,7 @@
 #include "SDCard.h"
 #include "Simple_Delay.h"
 #include "Reverb.h"
+#include "Ihm.h"
 
 TaskHandle_t  Core0TaskHnd;
 
@@ -266,7 +267,22 @@ void setup()
     {
         sprintf(messnex,"page0.b2.txt=%c>SDCARD DETECTED%c",0x22,0x22);
         Nextion_Send(messnex);
+        // Load all the names in the memory
         SDCard_LoadSndName();
+        // Send 10 first names to the Nextion screen
+        SoundNameInc10=0;
+        SDCard_Display10SndName();
+
+        // Test Write
+        /*      
+        sprintf((char*)SndName,"BRASS   \r\n");
+        SDCard_WriteSndName(0);
+        SDCard_SaveSndName();
+
+        sprintf((char*)SndName,"LEAD SQR\r\n");
+        SDCard_WriteSndName(5);
+        SDCard_SaveSndName();
+        */
 
     }
 

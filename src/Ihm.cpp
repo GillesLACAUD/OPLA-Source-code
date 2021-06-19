@@ -10,7 +10,7 @@
 #include "simple_delay.h"
 #include "reverb.h"
 
-uint8_t serialdebug=1;
+uint8_t serialdebug=0;
 
 //--------------------------------------------------
 // OSC

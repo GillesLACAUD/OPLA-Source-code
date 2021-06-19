@@ -337,7 +337,7 @@ uint8_t cc;
             Nextion_Send(messnex);
             delay(250);
             Serial.printf("Save sound %d\n",CurrentSound);
-            SDCard_SaveSound(CurrentSound);
+            SDCard_SaveSound(CurrentSound+SoundNameInc10*10);
             sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
             Nextion_Send(messnex);
         }
@@ -348,13 +348,26 @@ uint8_t cc;
             Nextion_Send(messnex);
             delay(250);
             Nextion_Send(messnex);
-            Serial.printf("Load sound %d\n",CurrentSound);
-            SDCard_LoadSound(CurrentSound);
+            SDCard_LoadSound(CurrentSound+SoundNameInc10*10);
             sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
             Nextion_Send(messnex);
-
             Nextion_PrintValues();
-
+        }
+        // 10 previous
+        if(Nextion_Mess[2]==5)
+        {
+            SoundNameInc10--;
+            if(SoundNameInc10<0)
+                SoundNameInc10=9;
+            SDCard_Display10SndName();
+        }
+        // 10 next
+        if(Nextion_Mess[2]==6)
+        {
+            SoundNameInc10++;
+            if(SoundNameInc10==10)
+                SoundNameInc10=0;
+            SDCard_Display10SndName();
         }
         break;
 
@@ -428,9 +441,14 @@ uint8_t cc;
 
         // N Name sound
         case 0x4E:
-        char Name[20];
-		strcpy(Name,&Nextion_Mess[3]);
-        Serial.printf("Name %s\n",Name);
+		strcpy((char*)SndName,&Nextion_Mess[3]);
+        Serial.printf("Name %s\n",SndName);
+        // Set the name to the memory
+        SDCard_WriteSndName(CurrentSound+SoundNameInc10*10);
+        SDCard_SaveSndName();
+        // Refresh Display
+        SDCard_Display10SndName();
+
 		break;
 
 	}

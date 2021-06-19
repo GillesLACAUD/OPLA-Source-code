@@ -229,6 +229,15 @@ uint8_t cardType = SD_MMC.cardType();
     Serial.printf("Total space: %lluMB\n", SD_MMC.totalBytes() / (1024 * 1024));
     Serial.printf("Used space: %lluMB\n", SD_MMC.usedBytes() / (1024 * 1024));
     
+    tabname = (uint8_t*)ps_malloc(SDCARD_TAB_NAME);
+    if (tabname == NULL)
+    {
+        Serial.printf("No more heap memory!\n");
+        while(1);
+    }
+    Serial.printf("---- AFTER PS_MALLOC NAME SOUNDS----\n");
+    Serial.printf("Total PSRAM: %d\n", ESP.getPsramSize());
+    Serial.printf("Free PSRAM: %d\n", ESP.getFreePsram());    
 
     return(0);
 }
@@ -246,10 +255,8 @@ unsigned int sz=sizeof(WorkSound);
     sprintf(path,"/sound/%d.snd",snd);
     File file = SD_MMC.open(path,"wb");
     wr=file.write((uint8_t*)&WS,sz);
-    Serial.printf("File write %s oct %d\n",path,wr);
-    Serial.printf("Wave write %d\n",WS.OscWave);
-    Serial.printf("Noise write %d\n",WS.NoiseLevel);
     file.close();
+    Serial.printf("Save sound %d\n",snd);
 }
 
 /***************************************************/
@@ -269,12 +276,9 @@ unsigned int sz=sizeof(WorkSound);
     sprintf(path,"/sound/%d.snd",snd);
     File file = SD_MMC.open(path,"rb");
     wr=file.read((uint8_t*)&WS,sz);
-    Serial.printf("File read %s oct %d\n",path,wr);
-    Serial.printf("Wave read %d\n",WS.OscWave);
-    Serial.printf("Noise read %d\n",WS.NoiseLevel);
     file.close();    
+    Serial.printf("Load sound %d\n",snd);
 
-    
     for(uint8_t s=0;s<MAX_SECTION;s++)
     {
         for(uint8_t e=0;e<MAX_ENCODER;e++)
@@ -283,66 +287,17 @@ unsigned int sz=sizeof(WorkSound);
         }
     }
 
-    //delay(1000);
-    //sprintf(messnex,"v4.pco=38815");
-    //Nextion_Send(messnex);
+    // Update sound name and number for the different pages
+    SDCard_ReadSndName(snd);
+    sprintf(messnex,"page0.Setup_Name.txt=%c%s%c",0x22,SndName,0x22);
+    Nextion_Send(messnex);
+    sprintf(messnex,"page0.Setup_Number.txt=%c%02d%c",0x22,snd,0x22);
+    Nextion_Send(messnex);
 
-   /*
-    Fct_Ch_OscWave(WS.OscWave);
-    Fct_Ch_SubWave(WS.SubWave);
-    Fct_Ch_Noise(WS.NoiseLevel);
-    Fct_Ch_Detune(WS.OscDetune);
-    Fct_Ch_WS1(WS.WaveShapping1);   
-    Fct_Ch_OscMix(WS.OscVolume);
-    Fct_Ch_SubMix(WS.SubVolume);
-    Fct_Ch_SubOct(WS.SubTranspose);
-    
-    Fct_Ch_Cutoff(WS.Cutoff);  
-    Fct_Ch_Resonance(WS.Resonance);
-    Fct_Ch_KbTrack(WS.KbTrack); 
-    Fct_Ch_FVelo(WS.FVelo); 
-    Fct_Ch_FType(WS.FType); 
-    Fct_Ch_FlAttack(WS.FEgAttack);
-    Fct_Ch_FlDecay(WS.FEgDecay);
-    Fct_Ch_FlRelease(WS.FEgRelease);
-    Fct_Ch_FlAmount(WS.FEgAmount);
-
-    Fct_Ch_AmAttack(WS.AEgAttack);
-    Fct_Ch_AmDecay(WS.AEgDecay);
-    Fct_Ch_AmSustain(WS.AEgSustain);
-    Fct_Ch_AmRelease(WS.AEgRelease);
-    Fct_Ch_AmVelo(WS.AmpVelo);
-    Fct_Ch_PiAttack(WS.PEgAttack);
-    Fct_Ch_PiDecay(WS.PEgDecay);
-    Fct_Ch_PiRelease(WS.PEgRelease);
-    Fct_Ch_PiAmount(WS.PEgAmount);
-    Fct_Ch_Portamento(WS.Portamento);
-
-    Fct_Ch_L1Speed(WS.LFO1Speed);
-    Fct_Ch_L1Shape(WS.LFO1Shape);
-    Fct_Ch_L1Dest(WS.LFO1Dest);
-    Fct_Ch_L1Amount(WS.LFO1Amount);
-    Fct_Ch_L2Speed(WS.LFO2Speed);
-    Fct_Ch_L2Shape(WS.LFO2Shape);
-    Fct_Ch_L2Dest(WS.LFO2Dest);  
-    Fct_Ch_L2Amount(WS.LFO2Amount);
-
-    Fct_Ch_DlLen(WS.DelayLen);
-    Fct_Ch_DlAmount(WS.DelayAmount);
-    Fct_Ch_DlFeed(WS.DelayFeedback);
-    
-    Fct_Ch_SoundMode(WS.SoundMode);
-    Fct_Ch_PBRange(WS.PBRange);
-    Fct_Ch_MDDest(WS.MWDest);
-    Fct_Ch_MDAmt(WS.MWAmt);
-    Fct_Ch_ATDest(WS.ATDest);
-    Fct_Ch_ATAmt(WS.ATAmt);
-    */
-
-
-    //Fct_Ch_MidiRx(WS.R);
-    //Fct_Ch_Spread(WS.S);    
-
+    sprintf(messnex,"page2.Setup_Name.txt=%c%s%c",0x22,SndName,0x22);
+    Nextion_Send(messnex);
+    sprintf(messnex,"page2.Setup_Number.txt=%c%02d%c",0x22,snd,0x22);
+    Nextion_Send(messnex);
 }
 
 /***************************************************/
@@ -350,29 +305,60 @@ unsigned int sz=sizeof(WorkSound);
 /*                                                 */
 /*                                                 */
 /***************************************************/
-void SDCard_LoadSndName(void)
+void SDCard_ReadSndName(uint8_t s)
+{
+uint8_t* ptname; 
+
+    ptname = tabname+s*SDCARD_NAME_SIZE;
+    memcpy(SndName,ptname,SDCARD_NAME_SIZE);
+    SndName[SDCARD_NAME_SIZE-2]=0x00;
+}
+
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+void SDCard_WriteSndName(uint8_t s)
+{
+uint8_t* ptname; 
+
+    ptname = tabname+s*SDCARD_NAME_SIZE;
+    memcpy(ptname,SndName,SDCARD_NAME_SIZE);
+    Serial.printf("New Name %s",SndName);
+
+}
+
+
+
+
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+void SDCard_LoadSndName()
 {
 char path[30];
-char nom[30];
 uint8_t ret;
+uint16_t rd;
+
+    // 38 37 36 35 34 33 32 31 0D 0A -> 87654321 + CR + LF
+    // seek from the beginning of the file
 
     sprintf(path,"/sound/Names.txt");
     File file = SD_MMC.open(path,"rb");
-    ret=file.readBytesUntil(0x0D,nom,15);
-    nom[ret+1]=0x00;
-    Serial.printf("File Name %s\n",nom);
-    file.readBytesUntil(0x0D,nom,15);
-    nom[ret+1]=0x00;
-    Serial.printf("File Name %s\n",nom);
 
-    file.readBytesUntil(0x0D,nom,15);
-    nom[ret+1]=0x00;
-    Serial.printf("File Name %s\n",nom);
+    // read all the names and store them in the memory
+    rd=file.read(tabname,SDCARD_TAB_NAME);
+    
+    for(uint8_t n=0;n<20;n++)
+    {
+        SDCard_ReadSndName(n);
+        Serial.printf("File Name %03d %s\n",n,SndName);        
 
-    file.readBytesUntil(0x0D,nom,15);
-    nom[ret+1]=0x00;
-    Serial.printf("File Name %s\n",nom);
-
+    }
+    
     file.close();    
 }
 
@@ -381,8 +367,38 @@ uint8_t ret;
 /*                                                 */
 /*                                                 */
 /***************************************************/
-void SDCard_SaveSndName(uint8_t snd)
+void SDCard_SaveSndName()
 {
+char path[30];
+uint8_t ret;
+uint16_t wr;
+uint8_t* pt;
+
+    // 38 37 36 35 34 33 32 31 0D 0A -> 87654321 + CR + LF
+    // seek from the beginning of the file
+    
+    sprintf(path,"/sound/Names.txt");
+    File file = SD_MMC.open(path,"wb");
+    pt=tabname;
+    for(uint16_t j=0;j<SDCARD_TAB_NAME;j++)
+    {
+        wr=file.printf("%c",*pt);
+        pt++;
+    }
+    file.close();    
 }
 
-
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+void SDCard_Display10SndName()
+{
+    for(uint8_t i=0;i<10;i++)
+    {
+        SDCard_ReadSndName(i+SoundNameInc10*10);
+        sprintf(messnex,"page2.b%d.txt=%c%s%c",i,0x22,SndName,0x22);
+        Nextion_Send(messnex);
+    }
+}
