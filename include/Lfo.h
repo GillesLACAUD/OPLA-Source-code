@@ -21,6 +21,10 @@
 LFO_EXTRN struct stLfo Lfo1;
 LFO_EXTRN struct stLfo Lfo2;
 
+#define LFO_FREE        0
+#define LFO_SYNC        1
+#define LFO_ONE         2
+
 #ifdef __LFO__
 
 char Wave_LfoName[WAVE_LFO_COUNT][5] = 

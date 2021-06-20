@@ -368,14 +368,20 @@ static uint16_t cpttimer2;
         //sprintf(messnex,"page0.Setup_Name.txt=%cLFO1 %d%c",0x22,cpttimer1,0x22);
         //Nextion_Send(messnex);
         cpttimer1++;
-        Lfo_cnt1=0;
+        if(Lfo1.ui8_Sync !=LFO_ONE)
+            Lfo_cnt1=0;
+        else
+            Lfo_cnt1=1024;
     }
     if (Lfo_cnt2 >= 1024)
     {
         //sprintf(messnex,"page0.Setup_Name.txt=%cLFO2 %d%c",0x22,cpttimer2,0x22);
         //Nextion_Send(messnex);
         cpttimer2++;
-        Lfo_cnt2=0;
+        if(Lfo2.ui8_Sync !=LFO_ONE)
+            Lfo_cnt2=0;
+        else
+            Lfo_cnt2=1024;
     }
 
     if(0)

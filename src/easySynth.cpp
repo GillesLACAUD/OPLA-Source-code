@@ -129,7 +129,7 @@ void Synth_Init()
     adsr_vol.r = (0.0020 * pow(100, 1.0f - value*2));    
 
     SoundMode=SND_MODE_POLY;
-    WS.PolyMax=4;
+    WS.PolyMax=SND_MAX_POLY;
 
 }
 
@@ -193,9 +193,16 @@ float IRAM_ATTR KarlsenLPF(float in, float cut, float res, uint8_t m)
 {
 float resoclip;
 static float buf1[6],buf2[6],buf3[6],buf4[6];
+int16_t icut;
+int16_t ires;
     
-    if(cut > 0.8) cut=0.8;
-    resoclip = buf4[m]; if (resoclip > 0.73) resoclip = 0.73;
+    // Compare to an int seem faster
+    icut = cut*100;
+    if(icut>80)
+        cut=0.8;
+    resoclip = buf4[m];
+    ires = resoclip*100;
+    if (ires > 73) resoclip = 0.73;
     in = (-resoclip * res)+in;
 
     buf1[m] = ((- buf1[m]+in)*cut) + buf1[m];
@@ -210,6 +217,36 @@ static float buf1[6],buf2[6],buf3[6],buf4[6];
         case FILTER_BPF: return (in-buf1[m]);
         case FILTER_NPF: return (in-buf4[m]-buf1[m]);
     }
+}
+#endif
+
+#ifdef FILTER_8
+
+float IRAM_ATTR KarlsenLPF(float in, float cut, float res, uint8_t m)
+{
+static float buf0[6],buf1[6];
+float resoclip;  
+int16_t icut;
+    //set feedback amount given f and q between 0 and 1
+    //fb = 0;
+
+    icut = cut*100;
+    if(icut>80)
+        cut=0.8;
+    if(icut<10)
+       cut=0.1;
+
+    /*
+    if(cut > 0.8) cut=0.8;
+    if(cut < 0.1) cut=0.1;
+    */
+   resoclip = buf1[m];
+   in = (-resoclip * res)+in;
+
+    //for each sample...
+    buf0[m] = buf0[m] + cut*(in-buf0[m]);           // 6db
+    buf1[m] = buf1[m] + cut * (buf0[m] - buf1[m]);      // 12db
+    return buf1[m];
 }
 #endif
 
@@ -865,7 +902,7 @@ int indx=0;
     out_r=out_l;
     #endif        
         
-    float multi = (1+AmpMod)*0.75f;
+    float multi = (1+AmpMod)*0.95f;
     out_l *=multi;
     out_r *=multi;
 
@@ -1061,7 +1098,20 @@ float setvel;
     else
     {
         if(voc_act==0)
-            voice->f_phase = attack;
+            voice->f_phase = attack;  
+    }
+
+    // No voices
+    if(voc_act==0)
+    {
+        if(Lfo1.ui8_Sync != LFO_FREE)
+        {
+            Lfo_cnt1=0;
+        }
+        if(Lfo2.ui8_Sync != LFO_FREE)
+        {
+            Lfo_cnt2=0;
+        }
     }
 
     voc_act += 1;

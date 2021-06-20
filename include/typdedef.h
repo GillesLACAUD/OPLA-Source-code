@@ -70,6 +70,8 @@ struct WorkSound
     int16_t LFO1Sync;
     int16_t LFO2Sync;
 
+    int16_t Reserved[50];
+
       
 };
 

@@ -7,7 +7,8 @@
 #endif
 
 //#define FILTER_1		// hard resoance at hight level
-#define FILTER_7		// ok for poly but hard sound at the edge
+#define FILTER_7		// USE THIS ONE ok for poly but hard sound at the edge
+//#define FILTER_8		// 12 dB
 //#define FILTER_2		// No resonance ???
 //#define FILTER_3		// Crash direct
 //#define FILTER_4		// Poly ok but had sound at the edge like FILTER7 but less less rapid ass filter7
@@ -64,7 +65,7 @@ SYNTH_EXTRN uint32_t midi_note_to_add[MIDI_NOTE_CNT]; /* lookup to playback wave
 #define SND_MODE_MONO		2
 
 #define SND_MAX_POLY		4
-#define SND_MAX_PARA		5			// 6 if possible ????
+#define SND_MAX_PARA		6			// 6 if possible ????
 
 
 #define MAX_FLT_TYPE		4

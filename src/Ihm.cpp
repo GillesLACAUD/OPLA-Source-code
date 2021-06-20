@@ -10,7 +10,7 @@
 #include "simple_delay.h"
 #include "reverb.h"
 
-uint8_t serialdebug=0;
+uint8_t serialdebug=1;
 
 //--------------------------------------------------
 // OSC
@@ -617,6 +617,8 @@ float value;
 
     value = val * NORM127MUL;
     Lfo1.ui8_Wave = (value) * (WAVE_LFO_COUNT);
+    if(serialdebug)    
+        Serial.printf("LFO1 Shape: %d\n",WS.LFO1Shape);
     return(0);
 }
 
@@ -633,6 +635,8 @@ float value;
     Lfo1SpeedMod=0;
     Lfo1AmtMod=0;
     Lfo1.ui8_Dest = (lfo_dest)((value) * (DEST_TYPE_COUNT));  
+    if(serialdebug)    
+        Serial.printf("LFO1 Dest: %d\n",WS.LFO1Dest);
     return(0);
 }
 
@@ -647,6 +651,8 @@ float value;
 
     value = val * NORM127MUL;
     Lfo1.f_Amount=value;
+    if(serialdebug)    
+        Serial.printf("LFO1 Dest: %d\n",WS.LFO1Amount);
     return(0);
 }
 
@@ -661,6 +667,8 @@ float value;
 
     value = val * NORM127MUL;
     Lfo1.ui8_Sync = (value) * (WAVE_LFO_SYNC);  
+    if(serialdebug)    
+        Serial.printf("LFO1 Sync: %d\n",WS.LFO1Sync);
     return(0);
 }
 
@@ -740,6 +748,8 @@ float value;
 
     value = val * NORM127MUL;
     Lfo2.ui8_Sync = (value) * (WAVE_LFO_SYNC);  
+    if(serialdebug)    
+        Serial.printf("LFO2 Sync: %d\n",Lfo2.ui8_Sync);
     return(0);
 }
 
