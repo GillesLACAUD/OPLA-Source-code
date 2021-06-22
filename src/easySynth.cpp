@@ -902,7 +902,7 @@ int indx=0;
     out_r=out_l;
     #endif        
         
-    float multi = (1+AmpMod)*0.95f;
+    float multi = (1+AmpMod)*0.75f;
     out_l *=multi;
     out_r *=multi;
 
