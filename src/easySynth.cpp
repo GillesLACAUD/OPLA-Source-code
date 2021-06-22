@@ -626,9 +626,6 @@ int indx=0;
         Lfo2_Mutex=0;
     }
 
-
-
-
     /*
      * update pitch bending / modulation
      */
@@ -845,7 +842,8 @@ int indx=0;
                 (void)ADSR_Process(&adsr_pit, &voice->p_control_sign, &voice->p_phase);
             }
             /* add some noise to the voice */
-            voice->lastSample[0] += nz*(1+NoiseMod);
+            if(NoiseType == NOISE_PRE)
+                voice->lastSample[0] += nz*(1+NoiseMod);
             voice->lastSample[0] *= voice->control_sign*voice->avelocity;
 
             // Apply the filter EG
@@ -888,6 +886,9 @@ int indx=0;
     }
     #endif
     //out_l = KarlsenLPF(out_l,filtCutoff,filtReso,0);
+
+    if(NoiseType == NOISE_POST)
+        out_l += nz*(1+NoiseMod);
 
     out_r = out_l;
     /*
