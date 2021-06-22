@@ -887,8 +887,8 @@ int indx=0;
     #endif
     //out_l = KarlsenLPF(out_l,filtCutoff,filtReso,0);
 
-    if(NoiseType == NOISE_POST)
-        out_l += nz*(1+NoiseMod);
+    if(NoiseType == NOISE_POST && voc_act!=0)
+        out_l += (nz*(1+NoiseMod))/32;
 
     out_r = out_l;
     /*
