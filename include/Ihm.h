@@ -8,6 +8,7 @@
 
 #include "midi_interface.h"
 #include "Lfo.h"
+#include "Modulator.h"
 
 #define TYPE_DATA	0
 #define TYPE_LIST	1
@@ -234,9 +235,9 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
     "TRP",  "TRANSPOSE",    MIDI_CC_OCTAVE,     TYPE_DATA,  &TabListNull[0][0], 0,         &WS.Transpose,   1,  -24,     24,    1,      Fct_Ch_Transpose,         FctNull,    FctNull,    FctNull,    FctNull,
     "VOL",  "SOUND VOLUME", MIDI_CC_SVOLUME,       TYPE_DATA,  &TabListNull[0][0], 0,      &WS.SVolume,   1,  0,      127,    1,      Fct_Ch_SVolume,         FctNull,    FctNull,    FctNull,    FctNull,
 
-    "MWD",  "MW DEST",      MIDI_CC_MD_DEST,       TYPE_DATA,  &Dest_Name[0][0], 0,        &WS.MWDest,   1,  0,      127,    1,      Fct_Ch_MDDest,         FctNull,    FctNull,    FctNull,    FctNull,
+    "MWD",  "MW DEST",      MIDI_CC_MD_DEST,       TYPE_LIST,  &ModName[0][0], 0,        &WS.MWDest,   1,  0,      MOD_MAX,    1,      Fct_Ch_MDDest,         FctNull,    FctNull,    FctNull,    FctNull,
     "MWA",  "MW AMT",       MIDI_CC_MD_AMT,        TYPE_DATA,  &TabListNull[0][0], 0,      &WS.MWAmt,   1,  0,      127,    1,      Fct_Ch_MDAmt,         FctNull,    FctNull,    FctNull,    FctNull,
-    "AFD",  "AT DEST",      MIDI_CC_AT_DEST,       TYPE_DATA,  &Dest_Name[0][0], 0,        &WS.ATDest,   1,  0,      127,    1,      Fct_Ch_ATDest,         FctNull,    FctNull,    FctNull,    FctNull,
+    "AFD",  "AT DEST",      MIDI_CC_AT_DEST,       TYPE_LIST,  &ModName[0][0], 0,        &WS.ATDest,   1,  0,     MOD_MAX,    1,      Fct_Ch_ATDest,         FctNull,    FctNull,    FctNull,    FctNull,
     "AFA",  "AT AMT",       MIDI_CC_AT_AMT,        TYPE_DATA,  &TabListNull[0][0], 0,      &WS.ATAmt,   1,  0,      127,    1,      Fct_Ch_ATAmt,         FctNull,    FctNull,    FctNull,    FctNull,
     "MRX",  "MIDI RX",      0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      15,     1,      Fct_Ch_MidiRx,         FctNull,    FctNull,    FctNull,    FctNull,
 

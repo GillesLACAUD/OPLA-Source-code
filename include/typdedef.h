@@ -73,8 +73,7 @@ struct WorkSound
     // Add 22.06.21
     int16_t NoiseType;
 
-    int16_t Reserved[50];
-
+    int16_t Reserved[49];
       
 };
 

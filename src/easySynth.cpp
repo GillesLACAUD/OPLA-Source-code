@@ -21,6 +21,7 @@
 #include "Ihm.h"
 #include "Reverb.h"
 #include "Nextion.h"
+#include "Modulator.h"
 
 #include "esp_attr.h"
 
@@ -626,6 +627,9 @@ int indx=0;
         Lfo2_Mutex=0;
     }
 
+    ModWheel_Process();
+    AfterTouch_Process();
+
     /*
      * update pitch bending / modulation
      */
@@ -870,7 +874,7 @@ int indx=0;
                 voice->lastSample[0] = KarlsenLPF(voice->lastSample[0],cf, filtReso,i);
             }
             #endif
-            voice->lastSample[1] = voice->lastSample[0];
+            voice->lastSample[1] = voice->lastSample[0];  
 
             out_l += voice->lastSample[0];
             out_r += voice->lastSample[1];

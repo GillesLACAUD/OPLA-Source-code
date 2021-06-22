@@ -11,6 +11,7 @@
 #include "midi_interface.h"
 #include "easysynth.h"
 #include "Nextion.h"
+#include "Modulator.h"
 
 
 /* use define to dump midi data */
@@ -96,6 +97,19 @@ int16_t bend;
 /***************************************************/
 inline void Midi_ControlChange(uint8_t channel, uint8_t data1, uint8_t data2)
 {
+
+    // Mod Wheel
+    if(data1 == 1)
+    {
+        ModWheelValue = (float)data2/128.0;
+        return;            
+    }
+    if(data1 == 2)
+    {
+        AfterTouchValue = (float)data2/128.0;
+        return;            
+    }
+
     if(!overon)
     {
         overon = true;

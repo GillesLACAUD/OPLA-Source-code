@@ -9,6 +9,7 @@
 #include "Lfo.h"
 #include "simple_delay.h"
 #include "reverb.h"
+#include "Modulator.h"
 
 uint8_t serialdebug=1;
 
@@ -906,7 +907,7 @@ int Fct_Ch_MDDest(int val)
 float value;    
 
     value = val * NORM127MUL;
-    WS.MWDest = (value) * (DEST_TYPE_COUNT);  
+    ui8_ModWheelDest = (value) * (MOD_MAX);  
     if(serialdebug)       
         Serial.printf("MW Destination: %d\n",WS.MWDest);
 
@@ -922,6 +923,7 @@ int Fct_Ch_MDAmt(int val)
 float value;    
 
     value = val * NORM127MUL;
+    ModWheelAmount=value;
     if(serialdebug)       
         Serial.printf("MW Amount: %d\n",WS.MWAmt);
     return(0);
@@ -936,7 +938,7 @@ int Fct_Ch_ATDest(int val)
 float value;    
 
     value = val * NORM127MUL;
-    WS.ATDest = (value) * (DEST_TYPE_COUNT);  
+    ui8_AfterTouchDest = (value) * (MOD_MAX);  
     if(serialdebug)       
         Serial.printf("MW Destination: %d\n",WS.ATDest);
 
@@ -952,6 +954,7 @@ int Fct_Ch_ATAmt(int val)
 float value;    
 
     value = val * NORM127MUL;
+    AfterTouchAmount=value;
     if(serialdebug)       
         Serial.printf("MW Amount: %d\n",WS.ATAmt);
     return(0);
