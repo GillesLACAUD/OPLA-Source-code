@@ -67,6 +67,24 @@ struct oscillatorT *osc;
 
     return(0);
 }
+
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+int Fct_Ch_NoiseType(int val) 
+{
+float value;    
+
+    value = val * NORM127MUL;
+    NoiseType = (value) * (NOISE_TYPE_COUNT);
+    if(serialdebug)       
+       Serial.printf("Filter type: %d\n",NoiseType);
+
+    return(0);
+}
+
 /***************************************************/
 /*                                                 */
 /*                                                 */

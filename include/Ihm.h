@@ -49,7 +49,7 @@ typedef struct
   int 		    (*ptrfunctBPDoubleClick) (int);
 } Encoder_Data;
 
-#define MAX_SECTION     6
+#define MAX_SECTION     7
 #define MAX_ENCODER     10
 
 #define SECTION_OSC     0
@@ -63,6 +63,7 @@ typedef struct
 char Tab_Section_Name[MAX_SECTION][15]=
 {
     "OSCILLATOR",
+    "NOISE",
     "FILTER",
     "ENV GENERATOR",
     "LFO",
@@ -70,14 +71,19 @@ char Tab_Section_Name[MAX_SECTION][15]=
     "SYSTEM",
 };
 
+
+
 int Fct_Ch_OscWave(int val);
-int Fct_Ch_SubWave(int val);
-int Fct_Ch_Noise(int val); 
+int Fct_Ch_OscMix(int val);
 int Fct_Ch_Detune(int val);
 int Fct_Ch_WS1(int val);   
-int Fct_Ch_OscMix(int val);
+
+int Fct_Ch_SubWave(int val);
 int Fct_Ch_SubMix(int val);
 int Fct_Ch_SubOct(int val);
+
+int Fct_Ch_NoiseType(int val);
+int Fct_Ch_Noise(int val); 
 
 int Fct_Ch_Cutoff(int val);  
 int Fct_Ch_Resonance(int val);
@@ -127,8 +133,11 @@ int Fct_Ch_ATDest(int val);
 int Fct_Ch_ATAmt(int val);
 int Fct_Ch_MidiRx(int val);
 int Fct_Ch_Spread(int val);
+
 int Fct_Ch_Transpose(int val);
 int Fct_Ch_SVolume(int val);
+
+
 
 
 Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
@@ -136,16 +145,30 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
     // SECTION OSC
     /* Name                 MIDICC          TYPE        LIST                INDEX   VALUE      SIZE MIN     MAX     STEP    CHANGE      ON          OFF         HOLD        DCLK  */
     "OSC",  "OSC WAVEFORM", MIDI_CC_WAVE1,  TYPE_LIST,  &Wave_Name[0][0],   0,      &WS.OscWave,   1,  0,      WAVEFORM_TYPE_COUNT,    1,        Fct_Ch_OscWave,   FctNull,    FctNull,    FctNull,    FctNull,
-    "SUB",  "SUB WAVEFORM", MIDI_CC_SUBOSC, TYPE_LIST,  &Wave_Name[0][0],   0,      &WS.SubWave,   1,  0,      WAVEFORM_TYPE_COUNT,    1,        Fct_Ch_SubWave,   FctNull,    FctNull,    FctNull,    FctNull,
-    "NOIS", "NOISE VOLUME", MIDI_CC_NOISE,  TYPE_DATA,  &TabListNull[0][0], 0,      &WS.NoiseLevel,   1,  0,      127,    1,      Fct_Ch_Noise,     FctNull,    FctNull,    FctNull,    FctNull,
-    "DET",  "DETUNE",       MIDI_CC_DETUNE, TYPE_DATA,  &TabListNull[0][0], 0,      &WS.OscDetune,   1,  0,      127,    1,      Fct_Ch_Detune,    FctNull,    FctNull,    FctNull,    FctNull,
-    "BNK",  "OSC BANQUE",   MIDI_CC_BANQUE, TYPE_DATA,  &Wave_Name[0][0],   0,      &WS.OscBank,   1,  0,      50,    1,        FctNull,   FctNull,    FctNull,    FctNull,    FctNull,
-    
     "MIX",  "OSC VOLUME",   MIDI_CC_OSCVOL, TYPE_DATA,  &TabListNull[0][0], 0,      &WS.OscVolume,   1,  0,      127,    1,      Fct_Ch_OscMix,    FctNull,    FctNull,    FctNull,    FctNull,
-    "MIX",  "SUB VOLUME",   MIDI_CC_SUBVOL, TYPE_DATA,  &TabListNull[0][0], 0,      &WS.SubVolume,   1,  0,      127,    1,      Fct_Ch_SubMix,    FctNull,    FctNull,    FctNull,    FctNull,
-    "TRA",  "TRANSPOSE",    MIDI_CC_SUBTR,  TYPE_DATA,  &TabListNull[0][0], 0,      &WS.SubTranspose,   1,  -24,    12,     1,      Fct_Ch_SubOct,    FctNull,    FctNull,    FctNull,    FctNull,
+    "DET",  "DETUNE",       MIDI_CC_DETUNE, TYPE_DATA,  &TabListNull[0][0], 0,      &WS.OscDetune,   1,  0,      127,    1,      Fct_Ch_Detune,    FctNull,    FctNull,    FctNull,    FctNull,
     "WS1",  "WAVE SHAPE1",  MIDI_CC_WS1,    TYPE_DATA,  &TabListNull[0][0], 0,      &WS.WaveShapping1,   1,  0,      127,    1,      Fct_Ch_WS1,       FctNull,    FctNull,    FctNull,    FctNull,
     "WS2",  "WAVE SHAPE2",  MIDI_CC_WS2,    TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,          FctNull,    FctNull,    FctNull,    FctNull,
+
+    "SUB",  "SUB WAVEFORM", MIDI_CC_SUBOSC, TYPE_LIST,  &Wave_Name[0][0],   0,      &WS.SubWave,   1,  0,      WAVEFORM_TYPE_COUNT,    1,        Fct_Ch_SubWave,   FctNull,    FctNull,    FctNull,    FctNull,
+    "MIX",  "SUB VOLUME",   MIDI_CC_SUBVOL, TYPE_DATA,  &TabListNull[0][0], 0,      &WS.SubVolume,   1,  0,      127,    1,      Fct_Ch_SubMix,    FctNull,    FctNull,    FctNull,    FctNull,
+    "TRA",  "TRANSPOSE",    MIDI_CC_SUBTR,  TYPE_DATA,  &TabListNull[0][0], 0,      &WS.SubTranspose,   1,  -24,    12,     1,      Fct_Ch_SubOct,    FctNull,    FctNull,    FctNull,    FctNull,
+    "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
+    "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
+    
+    "NOIS", "NOISE TYPE",   MIDI_CC_NTYPE,  TYPE_LIST,  &Noise_Name[0][0], 0,       &WS.NoiseType,   1,  0,      NOISE_TYPE_COUNT,    1,      Fct_Ch_NoiseType,     FctNull,    FctNull,    FctNull,    FctNull,
+    "MIX", "NOISE VOLUME",  MIDI_CC_NOISE,  TYPE_DATA,  &TabListNull[0][0], 0,      &WS.NoiseLevel,   1,  0,      127,    1,      Fct_Ch_Noise,     FctNull,    FctNull,    FctNull,    FctNull,
+    "---",  "---",          MIDI_CC_82,     TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
+    "---",  "---",          MIDI_CC_83,     TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
+    "---",  "---",          MIDI_CC_84,     TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
+
+    "---",  "---",          MIDI_CC_85,     TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
+    "---",  "---",          MIDI_CC_86,     TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
+    "---",  "---",          MIDI_CC_87,     TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
+    "---",  "---",          MIDI_CC_88,     TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
+    "---",  "---",          MIDI_CC_89,     TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
+    
+    
 
     // SECTION FILTER
     /* Name                 MIDICC          TYPE        LIST                INDEX   VALUE      SIZE MIN     MAX     STEP    CHANGE      ON          OFF         HOLD        DCLK  */

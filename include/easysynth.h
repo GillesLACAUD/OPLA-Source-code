@@ -86,6 +86,12 @@ SYNTH_EXTRN uint32_t midi_note_to_add[MIDI_NOTE_CNT]; /* lookup to playback wave
 #define WAVE_NOISE      5
 #define WAVE_SILENCE    6
 
+#define NOISE_TYPE_COUNT	2
+
+#define NOISE_PRE       0
+#define NOISE_POST      1
+
+
 SYNTH_EXTRN WorkSound	WS;
 
 SYNTH_EXTRN uint8_t oldCurrentSound;
@@ -94,11 +100,17 @@ SYNTH_EXTRN uint8_t CurrentSound;
 SYNTH_EXTRN uint8_t SoundMode;
 SYNTH_EXTRN uint8_t FilterType;
 
+SYNTH_EXTRN uint8_t NoiseType;
+
 
 /*
  * add here your waveforms
  */
 #ifdef __SYNTH__
+
+char Noise_Name[NOISE_TYPE_COUNT][5] = 
+{"PRE","POS"};
+
 float sine[WAVEFORM_CNT];
 float saw[WAVEFORM_CNT];
 float square[WAVEFORM_CNT];
@@ -443,6 +455,7 @@ float FilterVel=1.0;
 
 #else
 
+extern char Noise_Name[NOISE_TYPE_COUNT][5];
 extern char Filter_Type[MAX_FLT_TYPE][MAX_LABEL];
 extern char Wave_Name[WAVEFORM_TYPE_COUNT][MAX_LABEL];
 extern char Dest_Name[DEST_TYPE_COUNT][MAX_LABEL];
@@ -520,8 +533,6 @@ extern float FilterVel;
 
 
 #endif
-
-
 
 
 SYNTH_EXTRN struct filterCoeffT filterGlobalC;

@@ -70,6 +70,9 @@ struct WorkSound
     int16_t LFO1Sync;
     int16_t LFO2Sync;
 
+    // Add 22.06.21
+    int16_t NoiseType;
+
     int16_t Reserved[50];
 
       

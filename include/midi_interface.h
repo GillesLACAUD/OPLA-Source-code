@@ -49,16 +49,27 @@
 
 
 #define MIDI_CC_WAVE1           10
-#define MIDI_CC_SUBOSC          11
-#define MIDI_CC_NOISE           12
-#define MIDI_CC_DETUNE          13
-#define MIDI_CC_BANQUE          14
+#define MIDI_CC_OSCVOL          11
+#define MIDI_CC_DETUNE          12
+#define MIDI_CC_WS1             13
+#define MIDI_CC_WS2             14
 
-#define MIDI_CC_OSCVOL          15
+#define MIDI_CC_SUBOSC          15
 #define MIDI_CC_SUBVOL          16
 #define MIDI_CC_SUBTR           17
-#define MIDI_CC_WS1             18
-#define MIDI_CC_WS2             19
+
+#define MIDI_CC_NTYPE           80
+#define MIDI_CC_NOISE           81
+#define MIDI_CC_82              82
+#define MIDI_CC_83              83
+#define MIDI_CC_84              84
+
+#define MIDI_CC_85              85
+#define MIDI_CC_86              86
+#define MIDI_CC_87              87
+#define MIDI_CC_88              88
+#define MIDI_CC_89              89
+
 
 #define MIDI_CC_CUTOFF          20
 #define MIDI_CC_RES             21
@@ -101,9 +112,6 @@
 #define MIDI_CC_MD_AMT          66
 #define MIDI_CC_AT_DEST         67
 #define MIDI_CC_AT_AMT          68
-
-
-
 
 
 #define MIDI_CC_LFO1_SPEED      70
