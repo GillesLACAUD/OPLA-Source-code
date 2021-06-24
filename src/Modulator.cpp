@@ -43,6 +43,10 @@ float temp;
         case MOD_LSPEED2:
         Lfo2SpeedMod +=(0.5-temp)*2;
         break;
+        case MOD_WS1:
+        WaveShapping1Mod +=temp-0.5;
+        break;
+
     }
 }
 
