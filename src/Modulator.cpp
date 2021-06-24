@@ -31,7 +31,18 @@ float temp;
         PanMod +=temp-0.5;
         //Serial.printf("Mod:Send %3.2f\n",PanMod);      
         break;
-
+        case MOD_LAMT1:
+        Lfo1AmtMod +=temp-0.5;
+        break;
+        case MOD_LAMT2:
+        Lfo2AmtMod +=temp-0.5;
+        break;
+        case MOD_LSPEED1:
+        Lfo1SpeedMod +=(0.5-temp)*2;
+        break;
+        case MOD_LSPEED2:
+        Lfo2SpeedMod +=(0.5-temp)*2;
+        break;
     }
 }
 

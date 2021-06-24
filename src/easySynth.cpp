@@ -199,8 +199,11 @@ int16_t ires;
     
     // Compare to an int seem faster
     icut = cut*100;
-    if(icut>80)
-        cut=0.8;
+    if(icut>85)
+        cut=0.85;
+    if(icut<0)
+        cut=0.1;
+
     resoclip = buf4[m];
     ires = resoclip*100;
     if (ires > 73) resoclip = 0.73;
@@ -609,9 +612,18 @@ int indx=0;
     NoiseMod=0;
     WaveShapping1Mod=0;
 
+    Lfo1AmtMod=0;
+    Lfo2AmtMod=0;
+
+    Lfo1SpeedMod = 0;
+    Lfo2SpeedMod = 0;
+
     //SoundMode=SND_MODE_POLY;
     //WS.PolyMax=4;
     
+
+    ModWheel_Process();
+    AfterTouch_Process();
     
     if(!Lfo1_Mutex)
     {
@@ -627,8 +639,7 @@ int indx=0;
         Lfo2_Mutex=0;
     }
 
-    ModWheel_Process();
-    AfterTouch_Process();
+    
 
     /*
      * update pitch bending / modulation
