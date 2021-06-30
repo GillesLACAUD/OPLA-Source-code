@@ -110,10 +110,6 @@ float value;
 int Fct_Ch_Detune(int val)
 {
 float value;    
-struct notePlayerT *voice;
-struct oscillatorT *osc;
-float tmp;
-uint8_t note;
 
     value = val * NORM127MUL;
     if(val==0)
@@ -124,24 +120,8 @@ uint8_t note;
     {
         oscdetune =(0.0001*pow(500,value)); 
     }
-    for(uint8_t v=0;v<=voc_act;v++)
-    {
-        if (voicePlayer[v].active)
-        {
-            note = voicePlayer[v].midiNote;
-            // Detune OSC1
-            osc = &oscPlayer[v*3+0];
-            tmp= midi_note_to_add[note]*(1.0+oscdetune);
-            osc->addVal = tmp;
-            // Detune OSC2
-            osc = &oscPlayer[v*3+1];
-            tmp= midi_note_to_add[note]*(1.0-oscdetune*0.75);
-            osc->addVal = tmp;
-            // Detune OSC3 SUB
-            osc = &oscPlayer[v*3+2];
-            osc->addVal = midi_note_to_add[note+(int8_t)SubTranspose]/**(0.5-oscdetune)*/;
-        }
-    }
+    Update_Tune(TUNE_OSC);
+
     if(serialdebug)
         Serial.printf("Osc Detune: %f\n", oscdetune);
 
@@ -230,17 +210,23 @@ uint8_t note;
     SubTranspose = (float)val;
     oscillatorT *osc;
 
-    for (int i = 0; i < WS.PolyMax; i++)
-    {
-        if (voicePlayer[i].active)
-        {
-            osc = &oscPlayer[2+i*3];                // 2 -> The thirth OSC is the sub
-            note = voicePlayer[i].midiNote;
-            osc->addVal = midi_note_to_add[note+(int8_t)SubTranspose];
-        }
-    }
+    Update_Tune(TUNE_SUB);
+
     return(0);
 }
+
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+int Fct_Ch_PanSpread(int val)
+{
+    return(0);
+}
+
+
+
 
 //--------------------------------------------------
 // FILTER
@@ -871,11 +857,20 @@ float value;
     value = val * NORM127MUL;
     SoundMode = (value) * (MAX_SND_MODE);
    
-
-    if(SoundMode==SND_MODE_POLY)
+    switch(SoundMode)
+    {
+        case SND_MODE_POLY:
         WS.PolyMax=SND_MAX_POLY;
-    else
+        break;
+
+        case SND_MODE_PARA:
         WS.PolyMax=SND_MAX_PARA;
+        break;
+
+        case SND_MODE_MONO:
+        WS.PolyMax=SND_MAX_MONO;
+        break;
+    }
 
     if(serialdebug)       
         Serial.printf("Sound Mode: %d Max Poly %d\n",SoundMode,WS.PolyMax);
@@ -981,7 +976,9 @@ int Fct_Ch_Transpose(int val)
 {
 float value;    
 
+    oscillatorT *osc;
     value = val * NORM127MUL;
+    Update_Tune(TUNE_TRANSPOSE);
 }
 
 /***************************************************/

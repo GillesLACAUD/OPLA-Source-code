@@ -57,6 +57,8 @@
 #define MIDI_CC_SUBOSC          15
 #define MIDI_CC_SUBVOL          16
 #define MIDI_CC_SUBTR           17
+#define MIDI_CC_18              18
+#define MIDI_CC_PANSPR          19
 
 #define MIDI_CC_NTYPE           80
 #define MIDI_CC_NOISE           81

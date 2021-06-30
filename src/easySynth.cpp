@@ -204,22 +204,33 @@ int16_t ires;
     if(icut<0)
         cut=0.1;
 
-    resoclip = buf4[m];
+    if(FilterType<FILTER_1LP)
+        resoclip = buf4[m];
+    else
+        resoclip = buf2[m];
     ires = resoclip*100;
     if (ires > 73) resoclip = 0.73;
     in = (-resoclip * res)+in;
 
     buf1[m] = ((- buf1[m]+in)*cut) + buf1[m];
     buf2[m] = ((- buf2[m]+buf1[m])*cut) + buf2[m];
-    buf3[m] = ((- buf3[m]+buf2[m])*cut) + buf3[m];
-    buf4[m] = ((- buf4[m]+buf3[m])*cut) + buf4[m];
+    if(FilterType<FILTER_1LP)
+    {
+        buf3[m] = ((- buf3[m]+buf2[m])*cut) + buf3[m];
+        buf4[m] = ((- buf4[m]+buf3[m])*cut) + buf4[m];
+    }
    
     switch(FilterType)
     {
-        case FILTER_LPF: return buf4[m];
-        case FILTER_HPF: return (buf4[m]-buf1[m]);
-        case FILTER_BPF: return (in-buf1[m]);
-        case FILTER_NPF: return (in-buf4[m]-buf1[m]);
+        case FILTER_2LP: return buf4[m];
+        case FILTER_2HP: return (buf4[m]-buf1[m]);
+        case FILTER_2BP: return (in-buf1[m]);
+        case FILTER_2NP: return (in-buf4[m]-buf1[m]);
+
+        case FILTER_1LP: return buf2[m];
+        case FILTER_1HP: return (buf2[m]-buf1[m]);
+        case FILTER_1BP: return (in-buf1[m]);
+        case FILTER_1NP: return (in-buf2[m]-buf1[m]);
     }
 }
 #endif
@@ -460,6 +471,73 @@ inline void Filter_Process(float *const signal, struct filterProcT *const filter
     *signal = out;
 }
 #endif
+
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+void Update_Tune(uint8_t type)
+{
+struct oscillatorT *osc;
+float tmp;
+uint8_t note;
+
+    switch(type)
+    {
+        case TUNE_SUB:
+        for (int i = 0; i < WS.PolyMax; i++)
+        {
+            if (voicePlayer[i].active)
+            {
+                osc = &oscPlayer[2+i*3];                // 2 -> The thirth OSC is the sub
+                note = voicePlayer[i].midiNote+WS.Transpose;
+                osc->addVal = midi_note_to_add[note+(int8_t)SubTranspose];
+            }
+        }        
+        break;
+        case TUNE_OSC:
+        for(uint8_t v=0;v<=voc_act;v++)
+        {
+            if (voicePlayer[v].active)
+            {
+                note = voicePlayer[v].midiNote+WS.Transpose;
+                // Detune OSC1
+                osc = &oscPlayer[v*3+0];
+                tmp= midi_note_to_add[note]*(1.0+oscdetune);
+                osc->addVal = tmp;
+                // Detune OSC2
+                osc = &oscPlayer[v*3+1];
+                tmp= midi_note_to_add[note]*(1.0-oscdetune*0.75);
+                osc->addVal = tmp;
+                // Detune OSC3 SUB
+                osc = &oscPlayer[v*3+2];
+                osc->addVal = midi_note_to_add[note+(int8_t)SubTranspose]/**(0.5-oscdetune)*/;
+            }
+        }
+        break;
+        case TUNE_TRANSPOSE:
+        for(uint8_t v=0;v<=voc_act;v++)
+        {
+            if (voicePlayer[v].active)
+            {
+                note = voicePlayer[v].midiNote+WS.Transpose;
+                // Detune OSC1
+                osc = &oscPlayer[v*3+0];
+                tmp= midi_note_to_add[note]*(1.0+oscdetune);
+                osc->addVal = tmp;
+                // Detune OSC2
+                osc = &oscPlayer[v*3+1];
+                tmp= midi_note_to_add[note]*(1.0-oscdetune*0.75);
+                osc->addVal = tmp;
+                // Detune OSC3 SUB
+                osc = &oscPlayer[v*3+2];
+                osc->addVal = midi_note_to_add[note+(int8_t)SubTranspose]/**(0.5-oscdetune)*/;
+            }
+        }
+        break;
+    }
+}
 
 
 /***************************************************/
@@ -781,7 +859,7 @@ int indx=0;
             for (int o = 0; o < OSC_PER_VOICE; o++)
             {
                 oscillatorT *osc = &oscPlayer[o+v*OSC_PER_VOICE];
-                // Apply the spread
+                // Apply the pitch spread
                 spread = (uint32_t)((float)osc->addVal*(voice->spread));
                 // Apply the pitch modulation and the pitch bend + the pitch EG
                 osc->samplePos += (uint32_t)((float)spread*(1+PitchMod)*pitchMultiplier*(1+voice->p_control_sign*pitchEG));
@@ -809,22 +887,17 @@ int indx=0;
     if(FiltCutoffMod<0.0)
         FiltCutoffMod = 0.0;
 
-    
+    float cf;
+        
     for (int i = 0; i < WS.PolyMax; i++) /* one loop is faster than two loops */
     {
         notePlayerT *voice = &voicePlayer[i];
+        cf = FiltCutoffMod;
         if (voice->active)
         {
             if (count % 4 == 0)
             {
                 voice_off = ADSR_Process(&adsr_vol, &voice->control_sign, &voice->phase);
-                /*
-                if(i==0)
-                {
-                    Serial.printf("Ph %d val %3.2f\n",voice->phase,voice->control_sign);
-                }
-                */
-               
                 if (!voice_off && voice->active)
                 {
                     for (int j = 0; j < WS.PolyMax ; j++)
@@ -841,20 +914,18 @@ int indx=0;
                     Voice_Off(i);
                 }
                
-                /*
-                 * make is slow to avoid bad things .. or crying ears
-                 */
 
                 if(SoundMode==SND_MODE_POLY)
+                {
                     (void)ADSR_Process(&adsr_fil, &voice->f_control_sign, &voice->f_phase);
+                }
                 else
                 {
-                    
                     if(i==0)
                         (void)ADSR_Process(&adsr_fil, &voice->f_control_sign, &voice->f_phase);
-                    
                 }
                 (void)ADSR_Process(&adsr_pit, &voice->p_control_sign, &voice->p_phase);
+
             }
             /* add some noise to the voice */
             if(NoiseType == NOISE_PRE)
@@ -862,66 +933,43 @@ int indx=0;
             voice->lastSample[0] *= voice->control_sign*voice->avelocity;
 
             // Apply the filter EG
-            float cf = FiltCutoffMod+voice->f_control_sign*filterEG;
+            cf += voice->f_control_sign*filterEG;
             cf *=1+voice->fvelocity;
             // Apply the kbtrack
             cf *= 1+(voice->midiNote-64)*filterKBtrack;
 
-            #ifdef FILTER_5
-                if (count % 32 == 0)
-            {
-                //voice->f_control_sign_slow = 0.05 * cf + 0.95 * voice->f_control_sign_slow;
-                //Filter_Calculate(voice->f_control_sign_slow, soundFiltReso, &voice->filterC);
-                Filter_Calculate(voice->f_control_sign, soundFiltReso, &voice->filterC);
-            }
-            Filter_Process(&voice->lastSample[0], &voice->filterL);
-            Filter_Process(&voice->lastSample[1], &voice->filterR);
-            #else
             if(SoundMode!=SND_MODE_POLY)
-                voice->lastSample[0] /=32; //for para mode
+            {
+                voice->lastSample[0] /=32.0; //for para mode
+            }
             else
             {
-                voice->lastSample[0] /=32;
+                voice->lastSample[0] /=32.0;
                 voice->lastSample[0] = KarlsenLPF(voice->lastSample[0],cf, filtReso,i);
             }
-            #endif
-            voice->lastSample[1] = voice->lastSample[0];  
-
-            out_l += voice->lastSample[0];
-            out_r += voice->lastSample[1];
+            out_l += voice->lastSample[0]*(1-voice->panspread);
+            out_r += voice->lastSample[0]*(voice->panspread);
             voice->lastSample[0] = 0.0f;
-            voice->lastSample[1] = 0.0f;
         }
     }
     // Try para mode - ok good
-    #ifndef FILTER_5
     if(SoundMode!=SND_MODE_POLY)
     {
         out_l = KarlsenLPF(out_l,FiltCutoffMod+voicePlayer[0].f_control_sign*filterEG, filtReso,0);
+        out_r = KarlsenLPF(out_r,FiltCutoffMod+voicePlayer[0].f_control_sign*filterEG, filtReso,0);
     }
-    #endif
-    //out_l = KarlsenLPF(out_l,filtCutoff,filtReso,0);
 
     if(NoiseType == NOISE_POST && voc_act!=0)
+    {
         out_l += (nz*(1+NoiseMod))/32;
-
-    out_r = out_l;
-    /*
-    cptvoice++;
-    if(cptvoice==WS.PolyMax)
-        cptvoice=0;
-    */
-
-    #ifdef FILTER_5
-    Filter_Process(&out_l, &mainFilterL);
-    Filter_Process(&out_r, &mainFilterL);
-    out_r=out_l;
-    #endif        
+        out_r += (nz*(1+NoiseMod))/32;
+    }
         
     float multi = (1+AmpMod)*0.75f;
     out_l *=multi;
     out_r *=multi;
-
+    //out_r =out_l;
+    
     out_l *= (1+PanMod);
     out_r *= (1-PanMod);
    
@@ -938,10 +986,13 @@ int indx=0;
 /***************************************************/
 struct oscillatorT *getFreeOsc()
 {
+uint8_t aff=0;    
     for (int i = 0; i < MAX_POLY_OSC ; i++)
     {
         if (oscPlayer[i].dest == voiceSink)
         {
+            if(aff)
+                Serial.printf("Get OSC %d\n",i);
             return &oscPlayer[i];
         }
     }
@@ -990,7 +1041,7 @@ uint8_t aff=0;
         {
             globalrank++;
             voicePlayer[i].active = globalrank;
-            if (aff) Serial.printf("Free slot %d Rank %d MaxPoly %d\n",i,globalrank,WS.PolyMax);
+            if (aff) Serial.printf("Free slot %d Rank %d MaxPoly %d Retrig %d\n",i,globalrank,WS.PolyMax,*retrig);
             return &voicePlayer[i];
         }
     }
@@ -1052,8 +1103,8 @@ uint8_t aff=0;
             //*retrig=1;
             for (int i = 0; i < WS.PolyMax ; i++)
             {
-            if(voicePlayer[i].active>1)
-                voicePlayer[i].active--;
+                if(voicePlayer[i].active>1)
+                    voicePlayer[i].active--;
             }
             voicePlayer[keytab].active = globalrank;
             return &voicePlayer[keytab];
@@ -1080,6 +1131,7 @@ void Synth_NoteOn(uint8_t note,uint8_t vel)
 {
 uint8_t retrig;
 float setvel;
+static uint8_t flippan;
 
     struct notePlayerT *voice = getFreeVoice(note,&retrig);
     struct oscillatorT *osc = getFreeOsc();
@@ -1089,11 +1141,20 @@ float setvel;
      */
     if ((voice == NULL) || (osc == NULL))
     {  
-        //Serial.printf("voc: %d, osc: %d\n", voc_act, osc_act);
+        Serial.printf("voc: %d, osc: %d\n", voc_act, osc_act);
         return ;
     }
 
     voice->midiNote = note;
+
+    flippan = !flippan;
+    // PanSpread  000 -> 1
+    // PanSpread  127 -> 1 to 0 
+    if(flippan)
+        voice->panspread = (float)WS.PanSpread/127.0;
+    else
+        voice->panspread = 1-(float)WS.PanSpread/127.0;
+
     setvel = (float)vel/127;        // Real velocity
     voice->avelocity =1-(1-setvel)*AmpVel;
     voice->fvelocity = (setvel-0.5)*FilterVel; 
@@ -1102,7 +1163,6 @@ float setvel;
         voice->lastSample[0] = 0.0f;
         voice->lastSample[1] = 0.0f;
         voice->control_sign = 0.0f;
-
         voice->f_control_sign = 0;
         voice->f_control_sign_slow = adsr_fil.a;
     }
@@ -1116,6 +1176,7 @@ float setvel;
         if(voc_act==0)
             voice->f_phase = attack;  
     }
+
 
     // No voices
     if(voc_act==0)
@@ -1197,20 +1258,20 @@ float setvel;
             osc_act += 1;
         }
     }
+    
     /*
-     * trying to avoid audible suprises
-     */
-    #ifdef FILTER_5
-    Filter_Reset(&voice->filterL);
-    Filter_Reset(&voice->filterR);
-    Filter_Process(&voice->lastSample[0], &voice->filterL);
-    Filter_Process(&voice->lastSample[0], &voice->filterL);
-    Filter_Process(&voice->lastSample[0], &voice->filterL);
+    for (int i = 0; i < WS.PolyMax; i++)
+    {
+        notePlayerT *voice = &voicePlayer[i];
+        if (voice->active)
+        {
+            Serial.printf("V %d pA %d pF %d A %d\n",i,voice->phase,voice->f_phase,voice->active);
+        }
+    }
+    */
+    
 
-    Filter_Process(&voice->lastSample[1], &voice->filterR);
-    Filter_Process(&voice->lastSample[1], &voice->filterR);
-    Filter_Process(&voice->lastSample[1], &voice->filterR);
-    #endif
+
     //Midi_Dump();
 }
 /***************************************************/
@@ -1227,6 +1288,7 @@ void Synth_NoteOff(uint8_t note)
             voicePlayer[i].phase = release;
             voicePlayer[i].f_phase = release;
             voicePlayer[i].p_phase = release;
+            return;
         }
     }
 }

@@ -46,6 +46,9 @@ float temp;
         case MOD_WS1:
         WaveShapping1Mod +=temp-0.5;
         break;
+        // Route the Mod wheel to another CC
+        case MOD_CC:
+        break;
 
     }
 }

@@ -73,7 +73,9 @@ struct WorkSound
     // Add 22.06.21
     int16_t NoiseType;
 
-    int16_t Reserved[49];
+    int16_t PanSpread;
+
+    int16_t Reserved[48];
       
 };
 
@@ -114,6 +116,7 @@ struct notePlayerT
     adsr_phaseT phase;
     uint8_t midiNote;
     float spread;
+    float panspread;
 
     float control_sign;
     float out_level;

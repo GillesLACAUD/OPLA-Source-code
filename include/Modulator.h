@@ -17,19 +17,25 @@
 #define  MOD_LAMT1      7
 #define  MOD_LSPEED2    8
 #define  MOD_LAMT2      9
-#define  MOD_MAX        10
+
+#define  MOD_CC         10
+
+#define  MOD_MAX        11
 
 
 
 #ifdef __MODULATOR__
 char ModName[MOD_MAX][5] = 
-{"AMP","CUT","NOI","PAN","WS1","WS2","LS1","LA1","LS2","LA2"};
+{"AMP","CUT","NOI","PAN","WS1","WS2","LS1","LA1","LS2","LA2","CC"};
 #else
 extern char ModName[MOD_MAX][5];
 #endif
 
 MOD_EXTRN uint8_t ui8_ModWheelDest;  
 MOD_EXTRN uint8_t ui8_AfterTouchDest;
+
+MOD_EXTRN uint8_t ui8_ModWheelCC;           // Route ModWhell to another CC
+MOD_EXTRN uint8_t ui8_AfterTouchCC;         // Route Aftertouch to another CC
 
 MOD_EXTRN float ModWheelAmount;
 MOD_EXTRN float AfterTouchAmount;

@@ -6,6 +6,39 @@
 #define SYNTH_EXTRN extern
 #endif
 
+
+#define MIDI_NOTE_CNT 128
+SYNTH_EXTRN uint32_t midi_note_to_add[MIDI_NOTE_CNT]; /* lookup to playback waveforms with correct frequency */
+
+/*
+ * set the correct count of available waveforms
+ */
+#define MAX_LABEL           5
+#define DEST_TYPE_COUNT	    12
+
+//----------------------------------------------------------
+// SOUND MODE AND POLY DEFINE
+//----------------------------------------------------------
+#define MAX_POLY_VOICE	8                               /* max single voices, can use multiple osc */
+														/* 8 or more for para mode				   */
+
+#define OSC_PER_VOICE	3                               /* max single voices, can use multiple osc */
+#define MAX_POLY_OSC	(MAX_POLY_VOICE)*(OSC_PER_VOICE)    /* osc polyphony, always active reduces single voices max poly */
+
+#define MAX_SND_MODE		3
+
+#define SND_MODE_POLY		0
+#define SND_MODE_PARA		1
+#define SND_MODE_MONO		2
+
+#define SND_MAX_POLY		4
+#define SND_MAX_PARA		6			// 6 if possible ????
+#define SND_MAX_MONO		1
+
+//----------------------------------------------------------
+// FILTER DEFINE
+//----------------------------------------------------------
+
 //#define FILTER_1		// hard resoance at hight level
 #define FILTER_7		// USE THIS ONE ok for poly but hard sound at the edge
 //#define FILTER_8		// 12 dB
@@ -13,21 +46,29 @@
 //#define FILTER_3		// Crash direct
 //#define FILTER_4		// Poly ok but had sound at the edge like FILTER7 but less less rapid ass filter7
 
-					
-				
-						
-						
-/*
- * Following defines can be changed for different puprposes
- */
-#define MAX_POLY_VOICE	8                               /* max single voices, can use multiple osc */
-														/* 8 or more for para mode				   */
+#define MAX_FLT_TYPE		4*2
 
-#define OSC_PER_VOICE	3                               /* max single voices, can use multiple osc */
-#define MAX_POLY_OSC	(MAX_POLY_VOICE)*(OSC_PER_VOICE)    /* osc polyphony, always active reduces single voices max poly */
+// 24 db/Oct
+#define FILTER_2LP			0
+#define FILTER_2HP			1
+#define FILTER_2BP			2
+#define FILTER_2NP			3
+// 12 db/Oct
+#define FILTER_1LP			4
+#define FILTER_1HP			5
+#define FILTER_1BP			6
+#define FILTER_1NP			7
 
+//----------------------------------------------------------
+// TUNE DEFINE
+//----------------------------------------------------------
+#define TUNE_SUB            0
+#define TUNE_OSC            1
+#define TUNE_TRANSPOSE      2
 
-
+//----------------------------------------------------------
+// WAVEFORM DEFINE
+//----------------------------------------------------------
 
 /*
  * this is just a kind of magic to go through the waveforms
@@ -49,33 +90,6 @@
 */
 
 
-#define MIDI_NOTE_CNT 128
-SYNTH_EXTRN uint32_t midi_note_to_add[MIDI_NOTE_CNT]; /* lookup to playback waveforms with correct frequency */
-
-/*
- * set the correct count of available waveforms
- */
-#define MAX_LABEL           5
-#define DEST_TYPE_COUNT	    12
-
-#define MAX_SND_MODE		3
-
-#define SND_MODE_POLY		0
-#define SND_MODE_PARA		1
-#define SND_MODE_MONO		2
-
-#define SND_MAX_POLY		4
-#define SND_MAX_PARA		5			// 6 if possible ????
-
-
-#define MAX_FLT_TYPE		4
-
-
-#define FILTER_LPF			0
-#define FILTER_HPF			1
-#define FILTER_BPF			2
-#define FILTER_NPF			3
-
 #define WAVEFORM_TYPE_COUNT	7
 
 #define WAVE_SINE       0
@@ -86,11 +100,17 @@ SYNTH_EXTRN uint32_t midi_note_to_add[MIDI_NOTE_CNT]; /* lookup to playback wave
 #define WAVE_NOISE      5
 #define WAVE_SILENCE    6
 
+//----------------------------------------------------------
+// NOISE DEFINE
+//----------------------------------------------------------
 #define NOISE_TYPE_COUNT	2
 
 #define NOISE_PRE       0
 #define NOISE_POST      1
 
+//----------------------------------------------------------
+// END DEFINE
+//----------------------------------------------------------
 
 SYNTH_EXTRN WorkSound	WS;
 
@@ -398,7 +418,7 @@ uint8_t globalrank=0;
 float oscdetune=0;
 
 char Filter_Type[MAX_FLT_TYPE][MAX_LABEL] =
-{"LPF","HPF","BPF","NPF"};
+{"2LP","2HP","2BP","2NP","1LP","1HP","1BP","1NP"};
 
 char Sound_Mode[MAX_SND_MODE][MAX_LABEL] = 
 {"POL","PAR","MON"};
@@ -555,6 +575,8 @@ SYNTH_EXTRN inline void Filter_Reset(struct filterProcT *filter);
 SYNTH_EXTRN void Synth_NoteOn(uint8_t note,uint8_t vel);
 SYNTH_EXTRN void Synth_NoteOff(uint8_t note);
 SYNTH_EXTRN int Synth_SetRotary(uint8_t rotary, int val);
+
+SYNTH_EXTRN void Update_Tune(uint8_t type);
 
 #ifdef FILTER_5
 SYNTH_EXTRN void Filter_Calculate(float c, float reso, struct filterCoeffT *const  filterC);
