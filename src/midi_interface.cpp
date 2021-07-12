@@ -120,7 +120,11 @@ inline void Midi_ControlChange(uint8_t channel, uint8_t data1, uint8_t data2)
         Nextion_Send(messnex);
         */
        Nextion_PrintCC(data1,data2,0);
-       sprintf(messnex,"page 1");
+       if(data1==MIDI_CC_BK || data1==MIDI_CC_WA)
+        sprintf(messnex,"page 3");
+        //sprintf(messnex,"page 1");
+       else
+        sprintf(messnex,"page 1");
        Nextion_Send(messnex);
        //delay(10);
        
@@ -147,16 +151,16 @@ inline void HandleShortMsg(uint8_t *data)
         case 0x90:
             if (data[2] > 0)
             {
-                Midi_NoteOn(data[1],data[2]);
+                Midi_NoteOn(data[1]+WS.Transpose,data[2]);
             }
             else
             {
-                Midi_NoteOff(data[1],data[2]);
+                Midi_NoteOff(data[1]+WS.Transpose,data[2]);
             }
             break;
         /* note off */
         case 0x80:
-            Midi_NoteOff(data[1],data[2]);
+            Midi_NoteOff(data[1]+WS.Transpose,data[2]);
             break;
         case 0xb0:
             Midi_ControlChange(ch, data[1], data[2]);

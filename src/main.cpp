@@ -327,6 +327,7 @@ static uint16_t cpttimer2;
 
     loop_cnt_1hz++;
     overcpt++;
+    Cptloadwave++;
     if (loop_cnt_1hz >= 44)
     {
         //Loop_1Hz();
@@ -343,6 +344,22 @@ static uint16_t cpttimer2;
        sprintf(messnex,"page 0");
        Nextion_Send(messnex);
     }
+
+    if(trigloadwave && Cptloadwave > LOADWAVE_MAX_OVER_TIME)
+    {
+        trigloadwave=false;
+        SDCard_LoadWave(WS.OscBank+1,WS.OscWave+1);
+        Nextion_Plot();
+        /*
+        sprintf(messnex,"page3.BK.txt=%c%03d%c",0x22,WS.OscBank+1,0x22);
+        Nextion_Send(messnex);
+        sprintf(messnex,"page3.WA.txt=%c%03d%c",0x22,WS.OscWave+1,0x22);
+        Nextion_Send(messnex);
+        */
+
+    }
+
+
 
     /*
     if(Timer1ms_cnt>=2)
@@ -415,7 +432,7 @@ static uint16_t cpttimer2;
      * Midi does not required to be checked after every processed sample
      * - we divide our operation by 8
      */
-    if (loop_count_u8 % 2 == 0)
+    if (loop_count_u8 % 8 == 0)
     {
         Midi_Process();
         //Nextion_Process(); // in the task0

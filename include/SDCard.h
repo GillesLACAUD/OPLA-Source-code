@@ -12,6 +12,13 @@
 
 #define SDCARD_TAB_NAME     SDCARD_NAX_NAME*SDCARD_NAME_SIZE
 
+SDCARD_EXTRN uint8_t trigloadwave;
+SDCARD_EXTRN uint16_t Cptloadwave;
+
+SDCARD_EXTRN uint8_t IsLoadSound;                                       // At 1 when loading sound
+
+#define LOADWAVE_MAX_OVER_TIME  15000
+
 SDCARD_EXTRN uint8_t *tabname;
 
 SDCARD_EXTRN uint8_t SndName[SDCARD_NAME_SIZE];
@@ -24,6 +31,8 @@ SDCARD_EXTRN    void SDCard_ReadSndName(uint8_t s);                     // Read 
 SDCARD_EXTRN    void SDCard_WriteSndName(uint8_t s);                    // Write in the memory
 SDCARD_EXTRN    void SDCard_SaveSndName();                              // Write all the memory to the file
 SDCARD_EXTRN    void SDCard_Display10SndName();
+
+SDCARD_EXTRN    void SDCard_LoadWave(uint8_t bk,uint8_t wa);
 
 
 

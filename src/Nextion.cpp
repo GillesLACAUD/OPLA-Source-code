@@ -261,12 +261,59 @@ void Nextion_PotTxt(uint8_t pot,char* ms)
 /*                                                 */
 /*                                                 */
 /***************************************************/
+void Nextion_Plot()
+{
+int s;
+uint8_t tabplot[256];
+struct oscillatorT *osc;
+
+    // Built the tab
+    s=0;
+    for(int16_t i=0;i<254;i++)
+    {
+        tabplot[i] = (uint8_t)((wavework[s]+1.0)*64);
+        s+=4;
+    }
+
+    sprintf (messnex,"addt 3,0,253");
+    //sprintf (messnex,"addt 3,0,254/4");
+    Serial1.printf(messnex);
+    Serial1.write(0xff);
+    Serial1.write(0xff);
+    Serial1.write(0xff);
+    delayMicroseconds(100);
+
+    for(int16_t value=253;value>=0;value--)
+    //for(int16_t value=254/4;value>=0;value--)
+    {
+        Serial1.write(tabplot[value]);
+    }
+    Serial1.write(0xff);
+    Serial1.write(0xff);
+    Serial1.write(0xff);
+    selectedWaveForm = &wavework[0];
+    for(uint8_t o=0;o<=osc_act;o+=3)
+    {
+        osc = &oscPlayer[o+0];
+        osc->waveForm = selectedWaveForm;
+
+        osc = &oscPlayer[o+1];
+        osc->waveForm = selectedWaveForm;
+    }
+}
+
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
 void Nextion_Parse()
 {
 int val;
 int cas;
 int ret;
 uint8_t cc;
+
 
     // NEXTION SIDE
     //  prints 0xF3,1
@@ -291,6 +338,28 @@ uint8_t cc;
 	cas = (int)Nextion_Mess[1];
   	switch(cas)
 	{
+
+        // W Select wave
+        case 0x57:
+        if(Nextion_Mess[2]==0  || Nextion_Mess[2]==2)      // Bank
+        {
+            WS.OscBank = Nextion_Mess[3];
+            sprintf(messnex,"page3.BK.txt=%c%03d%c",0x22,WS.OscBank+1,0x22);
+            Nextion_Send(messnex);
+        }
+        if(Nextion_Mess[2]==1  || Nextion_Mess[2]==3)      // Wave
+        {
+            WS.OscWave = Nextion_Mess[3];
+            sprintf(messnex,"page3.WA.txt=%c%03d%c",0x22,WS.OscWave+1,0x22);
+            Nextion_Send(messnex);
+        }
+        // Draw the wave on the release
+        if(Nextion_Mess[2]==0 || Nextion_Mess[2]==1)
+        {
+            SDCard_LoadWave(WS.OscBank+1,WS.OscWave+1);
+            Nextion_Plot();
+        }
+        break;
 
         // X Select Sound
 		case 0x58:

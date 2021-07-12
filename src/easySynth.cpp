@@ -87,7 +87,7 @@ void Synth_Init()
         voice->filterR.filterCoeff = &voice->filterC;
         voice->spread=1.0;
     }
-
+ 
     /*
      * prepare lookup for constants to drive oscillators
      */
@@ -97,9 +97,6 @@ void Synth_Init()
         uint32_t add = (uint32_t)(f * ((float)(1ULL << 32ULL) / ((float)SAMPLE_RATE)));
         midi_note_to_add[i] = add;
     }
-
-    
-    
     /*
      * assign main filter
      */
@@ -211,6 +208,7 @@ int16_t ires;
     ires = resoclip*100;
     if (ires > 73) resoclip = 0.73;
     in = (-resoclip * res)+in;
+    
 
     buf1[m] = ((- buf1[m]+in)*cut) + buf1[m];
     buf2[m] = ((- buf2[m]+buf1[m])*cut) + buf2[m];
@@ -279,7 +277,7 @@ inline float KarlsenLPF(float signal, float freq, float res, uint8_t m)
 	b_q[m] = res;
 	uint8_t b_oversample = 0;
 		
-	while (b_oversample < 2)
+	while (b_oversample < 1)
 	{	
 		//2x oversampling
 		float prevfp;
@@ -292,7 +290,7 @@ inline float KarlsenLPF(float signal, float freq, float res, uint8_t m)
 		b_in[m] =	b_inSH[m] - intfp;	                // inverted feedback	
 
 		pole1[m] = (b_in[m] * b_f[m]) + (pole1[m] * (1.0f - b_f[m]));	// pole 1
-		if (pole1[m] > 1.0f) {pole1[m] = 1.0f;} else if (pole1[m] < -1.0f) {pole1[m] = -1.0f;} // pole 1 clipping
+		//if (pole1[m] > 1.0f) {pole1[m] = 1.0f;} else if (pole1[m] < -1.0f) {pole1[m] = -1.0f;} // pole 1 clipping
 		pole2[m] = (pole1[m] * b_f[m]) + (pole2[m] * (1 - b_f[m]));	// pole 2
 		pole3[m] = (pole2[m] * b_f[m]) + (pole3[m] * (1 - b_f[m]));	// pole 3
 		pole4[m] = (pole3[m] * b_f[m]) + (pole4[m] * (1 - b_f[m]));	// pole 4
@@ -305,15 +303,19 @@ inline float KarlsenLPF(float signal, float freq, float res, uint8_t m)
     NPF:=I-fPole[1];
     HPF:=I-fPole[4]-fPole[1];
     */
+
     switch(FilterType)
     {
+        case FILTER_2LP: return pole4[m];
+        case FILTER_2HP: return (pole4[m]-pole1[m]);
+        case FILTER_2BP: return (signal-pole1[m]);
+        case FILTER_2NP: return (signal-pole4[m]-pole1[m]);
 
-        case FILTER_LPF: return pole4[m];
-        case FILTER_HPF: return (pole4[m]-pole1[m]);
-        case FILTER_BPF: return (signal-pole1[m]);
-        case FILTER_NPF: return (signal-pole4[m]-pole1[m]);
+        case FILTER_1LP: return pole2[m];
+        case FILTER_1HP: return (pole2[m]-pole1[m]);
+        case FILTER_1BP: return (signal-pole1[m]);
+        case FILTER_1NP: return (signal-pole2[m]-pole1[m]);
     }
-    //return pole4[m];
     
 }
 #endif
@@ -482,6 +484,7 @@ void Update_Tune(uint8_t type)
 struct oscillatorT *osc;
 float tmp;
 uint8_t note;
+uint8_t oldnote;
 
     switch(type)
     {
@@ -501,7 +504,8 @@ uint8_t note;
         {
             if (voicePlayer[v].active)
             {
-                note = voicePlayer[v].midiNote+WS.Transpose;
+                note = voicePlayer[v].midiNote;
+                voicePlayer[v].midiNote=note+WS.Transpose;
                 // Detune OSC1
                 osc = &oscPlayer[v*3+0];
                 tmp= midi_note_to_add[note]*(1.0+oscdetune);
@@ -944,21 +948,30 @@ int indx=0;
             }
             else
             {
-                voice->lastSample[0] /=32.0;
+                voice->lastSample[0] /=16.0;
                 voice->lastSample[0] = KarlsenLPF(voice->lastSample[0],cf, filtReso,i);
             }
-            out_l += voice->lastSample[0]*(1-voice->panspread);
-            out_r += voice->lastSample[0]*(voice->panspread);
+            if(SoundMode==SND_MODE_POLY)
+            {
+                out_l += voice->lastSample[0]*(1-voice->panspread);
+                out_r += voice->lastSample[0]*(voice->panspread);
+            }
+            else
+            {
+                out_l += voice->lastSample[0];
+            }
             voice->lastSample[0] = 0.0f;
         }
     }
     // Try para mode - ok good
+    
     if(SoundMode!=SND_MODE_POLY)
     {
         out_l = KarlsenLPF(out_l,FiltCutoffMod+voicePlayer[0].f_control_sign*filterEG, filtReso,0);
-        out_r = KarlsenLPF(out_r,FiltCutoffMod+voicePlayer[0].f_control_sign*filterEG, filtReso,0);
+        //out_r = KarlsenLPF(out_r,FiltCutoffMod+voicePlayer[0].f_control_sign*filterEG, filtReso,0);
+        out_r = out_l;
     }
-
+    
     if(NoiseType == NOISE_POST && voc_act!=0)
     {
         out_l += (nz*(1+NoiseMod))/32;
@@ -1288,7 +1301,6 @@ void Synth_NoteOff(uint8_t note)
             voicePlayer[i].phase = release;
             voicePlayer[i].f_phase = release;
             voicePlayer[i].p_phase = release;
-            return;
         }
     }
 }

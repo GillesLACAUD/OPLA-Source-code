@@ -10,6 +10,8 @@
 #include "simple_delay.h"
 #include "reverb.h"
 #include "Modulator.h"
+#include "Nextion.h"
+#include "SDCard.h"
 
 uint8_t serialdebug=1;
 
@@ -102,6 +104,69 @@ float value;
 
     return(0);
 }
+
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+int Fct_Ch_Bank(int val) 
+{
+    selectedWaveForm = &wavework[0];
+    if(!trigloadwave)
+    {
+        trigloadwave=1;
+        if(!IsLoadSound)
+        {
+            sprintf(messnex,"page 3");
+            Nextion_Send(messnex);
+        }
+    }
+    Cptloadwave=0;
+    // No plot screen when load sound
+    if(!IsLoadSound)
+    {
+        sprintf(messnex,"page3.BK.txt=%c%03d%c",0x22,WS.OscBank+1,0x22);
+        Nextion_Send(messnex);
+    }
+    if(serialdebug)
+        Serial.printf("BANK: %d\n", WS.OscBank);
+
+    return(0);
+}
+
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+int Fct_Ch_Wave(int val) 
+{
+    selectedWaveForm = &wavework[0];
+    if(!trigloadwave)
+    {
+        trigloadwave=1;
+        if(!IsLoadSound)
+        {
+            sprintf(messnex,"page 3");
+            Nextion_Send(messnex);
+        }
+    }
+    Cptloadwave=0;
+    // No plot screen when load sound
+    if(!IsLoadSound)
+    {
+        sprintf(messnex,"page3.WA.txt=%c%03d%c",0x22,WS.OscWave+1,0x22);
+        Nextion_Send(messnex);
+    }
+    if(serialdebug)
+        Serial.printf("WAVE: %d\n", WS.OscWave);
+
+    return(0);
+}
+
+
+
 /***************************************************/
 /*                                                 */
 /*                                                 */
@@ -272,7 +337,7 @@ float value;
     soundFiltReso = 0.5f + 5 * value * value * value; /* min q is 0.5 here */
     #else
     //filtReso =  0.5f + 5 * value * value * value; /* min q is 0.5 here */
-    filtReso =  0.8f + 4 * value * value * value; /* min q is 0.5 here */
+    filtReso =  0.5f + 3 * value * value * value; /* min q is 0.5 here */
     #endif
     if(serialdebug)
         Serial.printf("main filter reso: %0.3f\n", filtReso);

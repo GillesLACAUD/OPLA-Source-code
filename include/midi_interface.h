@@ -66,8 +66,8 @@
 #define MIDI_CC_83              83
 #define MIDI_CC_84              84
 
-#define MIDI_CC_85              85
-#define MIDI_CC_86              86
+#define MIDI_CC_BK              85
+#define MIDI_CC_WA              86
 #define MIDI_CC_87              87
 #define MIDI_CC_88              88
 #define MIDI_CC_89              89

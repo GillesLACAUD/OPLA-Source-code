@@ -279,6 +279,7 @@ unsigned int sz=sizeof(WorkSound);
     file.close();    
     Serial.printf("Load sound %d\n",snd);
 
+    IsLoadSound = 1;
     for(uint8_t s=0;s<MAX_SECTION;s++)
     {
         for(uint8_t e=0;e<MAX_ENCODER;e++)
@@ -286,6 +287,7 @@ unsigned int sz=sizeof(WorkSound);
             Tab_Encoder[s][e].ptrfunctValueChange((int)*Tab_Encoder[s][e].Data);
         }
     }
+    IsLoadSound = 0;
 
     // Update sound name and number for the different pages
     SDCard_ReadSndName(snd);
@@ -399,3 +401,38 @@ void SDCard_Display10SndName()
         Nextion_Send(messnex);
     }
 }
+
+/***************************************************/
+/* bk bank                                         */
+/* wa wavefrom                                     */
+/*                                                 */
+/***************************************************/
+void SDCard_LoadWave(uint8_t bk,uint8_t wa)
+{
+char path[30];   
+uint16_t rd,j; 
+uint8_t tabspl[1024*2];
+int16_t tmp16;
+uint8_t *pt;
+
+    Serial.printf("Load wave bk %d wa %d\n",bk,wa);
+    pt = &tabspl[0];
+    sprintf(path,"/AKWF/%03d/%03d.raw",bk,wa);
+    File file = SD_MMC.open(path,"rb");
+    rd=file.read(pt,1024*2);
+    Serial.printf("File read %s data %d\n",path,rd);
+    j=0;
+    for (int i = 0; i < WAVEFORM_CNT; i++)
+    {
+        tmp16 = tabspl[j+1]<<8;
+        tmp16 +=tabspl[j];
+        wavework[i] = (float)(tmp16)/32768.0f;
+        wavework[i+WAVEFORM_CNT/2] = wavework[i];
+        j+=2;
+    }
+    file.close();    
+}
+
+
+
+

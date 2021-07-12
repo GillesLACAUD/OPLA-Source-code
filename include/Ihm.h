@@ -85,6 +85,8 @@ int Fct_Ch_SubOct(int val);
 
 int Fct_Ch_NoiseType(int val);
 int Fct_Ch_Noise(int val); 
+int Fct_Ch_Bank(int val); 
+int Fct_Ch_Wave(int val); 
 
 int Fct_Ch_Cutoff(int val);  
 int Fct_Ch_Resonance(int val);
@@ -153,7 +155,7 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
     "WS1",  "WAVE SHAPE1",  MIDI_CC_WS1,    TYPE_DATA,  &TabListNull[0][0], 0,      &WS.WaveShapping1,   1,  0,      127,    1,      Fct_Ch_WS1,       FctNull,    FctNull,    FctNull,    FctNull,
     "WS2",  "WAVE SHAPE2",  MIDI_CC_WS2,    TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,          FctNull,    FctNull,    FctNull,    FctNull,
 
-    "SUB",  "SUB WAVEFORM", MIDI_CC_SUBOSC, TYPE_LIST,  &Wave_Name[0][0],   0,      &WS.SubWave,   1,  0,      WAVEFORM_TYPE_COUNT,    1,        Fct_Ch_SubWave,   FctNull,    FctNull,    FctNull,    FctNull,
+    "SUB",  "SUB WAVEFORM", MIDI_CC_SUBOSC, TYPE_LIST,  &Wave_SubName[0][0],   0,   &WS.SubWave,   1,  0,      WAVEFORM_SUB_COUNT,    1,        Fct_Ch_SubWave,   FctNull,    FctNull,    FctNull,    FctNull,
     "MIX",  "SUB VOLUME",   MIDI_CC_SUBVOL, TYPE_DATA,  &TabListNull[0][0], 0,      &WS.SubVolume,   1,  0,      127,    1,      Fct_Ch_SubMix,    FctNull,    FctNull,    FctNull,    FctNull,
     "TRA",  "TRANSPOSE",    MIDI_CC_SUBTR,  TYPE_DATA,  &TabListNull[0][0], 0,      &WS.SubTranspose,   1,  -24,    12,     1,      Fct_Ch_SubOct,    FctNull,    FctNull,    FctNull,    FctNull,
     "---",  "---",          0xFF,           TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
@@ -165,8 +167,8 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
     "---",  "---",          MIDI_CC_83,     TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
     "---",  "---",          MIDI_CC_84,     TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
 
-    "---",  "---",          MIDI_CC_85,     TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
-    "---",  "---",          MIDI_CC_86,     TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
+    "BAK",  "AKWF BANK",    MIDI_CC_BK,     TYPE_DATA,  &TabListNull[0][0], 0,      &WS.OscBank, 1,  1,      40,    1,      Fct_Ch_Bank,         FctNull,    FctNull,    FctNull,    FctNull,
+    "WAV",  "AKWF WAVE",    MIDI_CC_WA,     TYPE_DATA,  &TabListNull[0][0], 0,      &WS.OscWave, 1,  0,      100,    1,      Fct_Ch_Wave,         FctNull,    FctNull,    FctNull,    FctNull,
     "---",  "---",          MIDI_CC_87,     TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
     "---",  "---",          MIDI_CC_88,     TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
     "---",  "---",          MIDI_CC_89,     TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
