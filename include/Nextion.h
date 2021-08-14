@@ -9,8 +9,8 @@
 // Label Name   La0 to La11
 // Pot          Po0 to Po11
 
-#define RXD_NEX 18 /* U2RRXD */
-#define TXD_NEX 23
+#define RXD_NEX 23 /* U2RRXD */
+#define TXD_NEX 18
 
 #define NEXTION_MAX_LABEL 10
 #define NEXTION_MAX_POT 10
