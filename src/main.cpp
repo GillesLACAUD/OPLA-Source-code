@@ -185,6 +185,7 @@ void setup()
 
     Serial.begin(115200);
 
+    
     Serial.println();
     
     Serial.printf("Initialize Synth Module\n");
@@ -257,6 +258,7 @@ void setup()
     xTaskCreatePinnedToCore(CoreTask0, "terminalTask", 8000, NULL,0, &Core0TaskHnd, 0);
 
     Nextion_Init();
+
     
     if(sdcard)
     {
@@ -285,6 +287,7 @@ void setup()
         */
 
     }
+    SDCard_LoadLastSound();
 
     //Synth_NoteOn(64-12);
 }
@@ -341,7 +344,7 @@ static uint16_t cpttimer2;
        Nextion_PrintLabel();
        Nextion_PrintValues();
        // Change page
-       sprintf(messnex,"page 0");
+       sprintf(messnex,"page 1");
        Nextion_Send(messnex);
     }
 

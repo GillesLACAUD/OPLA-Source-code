@@ -707,6 +707,7 @@ int indx=0;
     ModWheel_Process();
     AfterTouch_Process();
     
+
     if(!Lfo1_Mutex)
     {
         Lfo1_Mutex=1;
@@ -720,7 +721,6 @@ int indx=0;
         Lfo_Process(&Lfo2);
         Lfo2_Mutex=0;
     }
-
     
 
     /*
@@ -737,6 +737,8 @@ int indx=0;
     float inf;
     float tmp;
     
+
+    selectedWaveForm = &wavework[0];
     
     if(selectedWaveForm == wavework)
     {
@@ -749,6 +751,14 @@ int indx=0;
 
             switch(selWaveForm1)
             {
+
+                case WAVE_SILENCE:
+                for (i = 0; i < WAVEFORM_CNT; i++)
+                {
+                    wavework[i] = 0;
+                }
+                break;
+                
                 // PWM
                 case WAVE_SQUARE:
                 if(tmp<0.01)
@@ -763,6 +773,10 @@ int indx=0;
                 break;
 
                 case WAVE_PULSE:
+                for (i = 0; i < WAVEFORM_CNT; i++)
+                {
+                     wavework[i]=pulse[i];
+                }
                 break;
 
                 case WAVE_TRI:
@@ -792,25 +806,15 @@ int indx=0;
                 break;
 
                 case WAVE_NOISE:
-                for (i = 0; i < WAVEFORM_CNT/2; i++)
+                for (i = 0; i < WAVEFORM_CNT; i++)
                 {
-                    tmp16 = VoiceData[j+1]<<8;
-                    tmp16 +=VoiceData[j];
-                    wavework[i] = (float)(tmp16)/32768.0f;
-                    wavework[i+WAVEFORM_CNT/2] = wavework[i];
-                    //Serial.printf("%04d %02x %02x %04x %3.2f\n",i,VoiceData[j],VoiceData[j+1],tmp16,wavework[i]);
-                    j+=2;
+                     wavework[i]=noise[i];
                 }
                 break;
             
                 case WAVE_SINE:
-                //cmp = ((int)(float)WAVEFORM_CNT*tmp);
-                //for (i = 0; i < WAVEFORM_CNT; i++)
-                //{
-                    //wavework[i] = (i > cmp) ? sine[i] : 0;
-                //}
-                
-                cmp = 1+tmp*20;
+                /*
+                cmp = 1+tmp*12;
                 for (i = 0; i < WAVEFORM_CNT; i++)
                 {
                     wavework[i] = sine[indx];
@@ -818,7 +822,11 @@ int indx=0;
                     if(indx>WAVEFORM_CNT)
                         indx=0;
                 }
-
+                */
+               for (i = 0; i < WAVEFORM_CNT; i++)
+                {
+                     wavework[i]=sine[i];
+                }
                 break;
 
                 // SAW To TRI
@@ -848,6 +856,7 @@ int indx=0;
             }
         }
     }
+
     
 
   

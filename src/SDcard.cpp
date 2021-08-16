@@ -300,6 +300,35 @@ unsigned int sz=sizeof(WorkSound);
     Nextion_Send(messnex);
     sprintf(messnex,"page2.Setup_Number.txt=%c%02d%c",0x22,snd,0x22);
     Nextion_Send(messnex);
+
+    // Write the sound number in a file
+    sprintf(path,"/sound/last.lst");
+    file = SD_MMC.open(path,"wb");
+    wr=file.write((uint8_t*)&snd,1);
+    file.close();    
+
+       
+}
+
+
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+void SDCard_LoadLastSound()
+{
+    char path[30];
+    uint16_t wr;
+    uint8_t snd;
+
+    // Read the sound number in a file
+    sprintf(path,"/sound/last.lst");
+    File file = SD_MMC.open(path,"rb");
+    wr=file.read((uint8_t*)&snd,1);
+    file.close();   
+
+    SDCard_LoadSound(snd);
 }
 
 /***************************************************/

@@ -64,6 +64,9 @@ void Nextion_Init()
     //sprintf(messnex,"touch_j");
 	//Nextion_Send(messnex);
 
+    sprintf(messnex,"page 1");
+    Nextion_Send(messnex);
+
     sprintf(messnex,"page0.Setup_Name.txt=%cESP32%c",0x22,0x22);
     Nextion_Send(messnex);
     sprintf(messnex,"page0.CCInfo.txt=%cAUDIO%c",0x22,0x22);
@@ -344,13 +347,13 @@ uint8_t cc;
         if(Nextion_Mess[2]==0  || Nextion_Mess[2]==2)      // Bank
         {
             WS.OscBank = Nextion_Mess[3];
-            sprintf(messnex,"page3.BK.txt=%c%03d%c",0x22,WS.OscBank+1,0x22);
+            sprintf(messnex,"page3.BK.txt=%c%03d%c",0x22,WS.OscBank,0x22);
             Nextion_Send(messnex);
         }
         if(Nextion_Mess[2]==1  || Nextion_Mess[2]==3)      // Wave
         {
             WS.OscWave = Nextion_Mess[3];
-            sprintf(messnex,"page3.WA.txt=%c%03d%c",0x22,WS.OscWave+1,0x22);
+            sprintf(messnex,"page3.WA.txt=%c%03d%c",0x22,WS.OscWave,0x22);
             Nextion_Send(messnex);
         }
         // Draw the wave on the release
@@ -376,7 +379,49 @@ uint8_t cc;
             sprintf(messnex,"page2.b%d.pco=2024",oldCurrentSound);
             Nextion_Send(messnex);
             oldCurrentSound=CurrentSound;
+
+            //SDCard_LoadSound(CurrentSound+SoundNameInc10*10);
+            //Nextion_PrintValues();
+
         }
+        break;
+        
+        // Y Select bank and wave inc dec
+		case 0x59:
+        // Bank dec
+        if(Nextion_Mess[2]==0)
+        {
+            if(WS.OscBank>0)
+                WS.OscBank--;
+            sprintf(messnex,"page3.BK.txt=%c%03d%c",0x22,WS.OscBank,0x22);
+            Nextion_Send(messnex);
+        }
+        // Bank inc
+        if(Nextion_Mess[2]==1)
+        {
+            if(WS.OscBank<99)
+                WS.OscBank++;
+            sprintf(messnex,"page3.BK.txt=%c%03d%c",0x22,WS.OscBank,0x22);
+            Nextion_Send(messnex);
+        }
+        // wave dec
+        if(Nextion_Mess[2]==2)
+        {
+            if(WS.OscWave>0)
+                WS.OscWave--;
+            sprintf(messnex,"page3.WA.txt=%c%03d%c",0x22,WS.OscWave,0x22);
+            Nextion_Send(messnex);
+        }
+        // wave inc
+        if(Nextion_Mess[2]==3)
+        {
+            if(WS.OscWave<99)
+                WS.OscWave++;
+            sprintf(messnex,"page3.WA.txt=%c%03d%c",0x22,WS.OscWave,0x22);
+            Nextion_Send(messnex);            
+        }
+        SDCard_LoadWave(WS.OscBank+1,WS.OscWave+1);
+        Nextion_Plot();
         break;
 
         // S Section Sound save load
@@ -399,7 +444,7 @@ uint8_t cc;
         if(Nextion_Mess[2]==4)
         {
             // Change page already done in the Nextion screen
-            //sprintf(messnex,"page 0");
+            //sprintf(messnex,"page 1");
             //Nextion_Send(messnex);
         }
         // Save
@@ -408,7 +453,6 @@ uint8_t cc;
             sprintf(messnex,"page2.b%d.bco=32000",CurrentSound);
             Nextion_Send(messnex);
             delay(250);
-            Serial.printf("Save sound %d\n",CurrentSound);
             SDCard_SaveSound(CurrentSound+SoundNameInc10*10);
             sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
             Nextion_Send(messnex);
@@ -484,7 +528,7 @@ uint8_t cc;
         Nextion_PrintLabel();
         Nextion_PrintValues();
         // Change page
-        sprintf(messnex,"page 0");
+        sprintf(messnex,"page 1");
         Nextion_Send(messnex);
         overon = false;
         overcpt=0;
@@ -505,7 +549,7 @@ uint8_t cc;
         {
             Nextion_PrintCC(cc,*Tab_Encoder[gui_Section][gui_Param].Data,1);
             Nextion_PotValue(*Tab_Encoder[gui_Section][gui_Param].Data);
-            sprintf(messnex,"page 1");
+            sprintf(messnex,"page 2");
             Nextion_Send(messnex);
             //delay(2);
         }

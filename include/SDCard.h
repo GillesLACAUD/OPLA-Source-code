@@ -31,6 +31,7 @@ SDCARD_EXTRN    void SDCard_ReadSndName(uint8_t s);                     // Read 
 SDCARD_EXTRN    void SDCard_WriteSndName(uint8_t s);                    // Write in the memory
 SDCARD_EXTRN    void SDCard_SaveSndName();                              // Write all the memory to the file
 SDCARD_EXTRN    void SDCard_Display10SndName();
+SDCARD_EXTRN    void SDCard_LoadLastSound();
 
 SDCARD_EXTRN    void SDCard_LoadWave(uint8_t bk,uint8_t wa);
 

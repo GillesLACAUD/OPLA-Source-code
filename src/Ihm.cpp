@@ -33,6 +33,7 @@ struct oscillatorT *osc;
     selWaveForm1 = (value) * (WAVEFORM_TYPE_COUNT);
     selectedWaveForm = waveFormLookUp[selWaveForm1];
 
+    
     for(uint8_t o=0;o<=osc_act;o+=3)
     {
         osc = &oscPlayer[o+0];
@@ -118,7 +119,7 @@ int Fct_Ch_Bank(int val)
         trigloadwave=1;
         if(!IsLoadSound)
         {
-            sprintf(messnex,"page 3");
+            sprintf(messnex,"page 4");
             Nextion_Send(messnex);
         }
     }
@@ -148,7 +149,7 @@ int Fct_Ch_Wave(int val)
         trigloadwave=1;
         if(!IsLoadSound)
         {
-            sprintf(messnex,"page 3");
+            sprintf(messnex,"page 4");
             Nextion_Send(messnex);
         }
     }
@@ -202,25 +203,13 @@ int Fct_Ch_WS1(int val)
 float value;    
 struct oscillatorT *osc;
 
-    if(val==0)    
-        return(0);
-
     value = val * NORM127MUL;
-    OldWaveShapping1Mod=value+0.5;  // Force update waveform
     WaveShapping1=value;
+    WaveShapping1Mod = 0; 
+    OldWaveShapping1Mod=0;  // Force update waveform
+    OldWaveShapping1Mod = WaveShapping1Mod+0.5;
     if(serialdebug)
         Serial.printf("WS1: %f\n",WaveShapping1);
-    /*
-    if(WaveShapping1<0.01)
-        WaveShapping1 = 0.01;
-    if(WaveShapping1>0.99)
-        WaveShapping1 = 0.99;
-    cmp = ((int)(float)WAVEFORM_CNT*WaveShapping1);
-    for (int i = 0; i < WAVEFORM_CNT; i++)
-    {
-        wavework[i] = (i > cmp) ? 1 : -1;
-    }
-    */
 
     selectedWaveForm = &wavework[0];
     for(uint8_t o=0;o<=osc_act;o+=3)
@@ -233,6 +222,20 @@ struct oscillatorT *osc;
     }
     return(0);
 }
+
+
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+int Fct_Ch_WS2(int val)   
+{
+    if(serialdebug)
+        Serial.printf("WS2:\n");
+    return(0);
+}
+
 /***************************************************/
 /*                                                 */
 /*                                                 */

@@ -121,10 +121,9 @@ inline void Midi_ControlChange(uint8_t channel, uint8_t data1, uint8_t data2)
         */
        Nextion_PrintCC(data1,data2,0);
        if(data1==MIDI_CC_BK || data1==MIDI_CC_WA)
-        sprintf(messnex,"page 3");
-        //sprintf(messnex,"page 1");
+        sprintf(messnex,"page 4");
        else
-        sprintf(messnex,"page 1");
+        sprintf(messnex,"page 2");
        Nextion_Send(messnex);
        //delay(10);
        
