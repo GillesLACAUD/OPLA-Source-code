@@ -31,9 +31,7 @@ struct oscillatorT *osc;
 
     value = val * NORM127MUL;
     selWaveForm1 = (value) * (WAVEFORM_TYPE_COUNT);
-    selectedWaveForm = waveFormLookUp[selWaveForm1];
 
-    
     for(uint8_t o=0;o<=osc_act;o+=3)
     {
         osc = &oscPlayer[o+0];
@@ -113,7 +111,9 @@ float value;
 /***************************************************/
 int Fct_Ch_Bank(int val) 
 {
-    selectedWaveForm = &wavework[0];
+    if(selWaveForm1!=WAVE_AKWF)
+        return(0);
+  
     if(!trigloadwave)
     {
         trigloadwave=1;
@@ -130,7 +130,7 @@ int Fct_Ch_Bank(int val)
         sprintf(messnex,"page3.BK.txt=%c%03d%c",0x22,WS.OscBank+1,0x22);
         Nextion_Send(messnex);
     }
-    if(serialdebug)
+   if(serialdebug)
         Serial.printf("BANK: %d\n", WS.OscBank);
 
     return(0);
@@ -143,7 +143,8 @@ int Fct_Ch_Bank(int val)
 /***************************************************/
 int Fct_Ch_Wave(int val) 
 {
-    selectedWaveForm = &wavework[0];
+    if(selWaveForm1!=WAVE_AKWF)
+        return(0);
     if(!trigloadwave)
     {
         trigloadwave=1;
@@ -153,6 +154,7 @@ int Fct_Ch_Wave(int val)
             Nextion_Send(messnex);
         }
     }
+
     Cptloadwave=0;
     // No plot screen when load sound
     if(!IsLoadSound)
@@ -161,7 +163,7 @@ int Fct_Ch_Wave(int val)
         Nextion_Send(messnex);
     }
     if(serialdebug)
-        Serial.printf("WAVE: %d\n", WS.OscWave);
+        Serial.printf("WAVE: %d\n", WS.AKWFWave);
 
     return(0);
 }
@@ -1003,7 +1005,7 @@ float value;
     value = val * NORM127MUL;
     ui8_AfterTouchDest = (value) * (MOD_MAX);  
     if(serialdebug)       
-        Serial.printf("MW Destination: %d\n",WS.ATDest);
+        Serial.printf("AT Destination: %d\n",WS.ATDest);
 
     return(0);
 }
@@ -1019,7 +1021,7 @@ float value;
     value = val * NORM127MUL;
     AfterTouchAmount=value;
     if(serialdebug)       
-        Serial.printf("MW Amount: %d\n",WS.ATAmt);
+        Serial.printf("AT Amount: %d\n",WS.ATAmt);
     return(0);
 }
 /***************************************************/

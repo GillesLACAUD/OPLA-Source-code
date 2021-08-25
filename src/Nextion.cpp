@@ -334,13 +334,50 @@ uint8_t cc;
     //  Nextion_Mess[4]     End MSB
 
     // F3 'O' 1 68 0 F5     Change value pot Oscillors 1 value 68
-	
+
+    // W Select bank/wave AKWF
+    // X Select sound
+    // Y Select bank/wave AKWF inc/dec
+    // S Select section
+    // V Section inc/dec
+	// P Value of a parameter
+    // L Select a parameter
+    // Q Quit
+    // N Name sound
+    // D Draw AKWF
+
 	val = Nextion_Mess[4]*255+Nextion_Mess[3];
 	Nextion_Cmd_Receive=0;
     
 	cas = (int)Nextion_Mess[1];
   	switch(cas)
 	{
+
+        // D Draw AKWF
+        case 0x44:
+        
+        sprintf(messnex,"page3.BK.txt=%c%03d%c",0x22,WS.OscBank,0x22);
+        Nextion_Send(messnex);
+        sprintf(messnex,"page3.WA.txt=%c%03d%c",0x22,WS.AKWFWave,0x22);
+        Nextion_Send(messnex);
+
+        sprintf(messnex,"page3.BKPOT.val=%d",WS.OscBank);
+        Nextion_Send(messnex);
+        sprintf(messnex,"page3.WAPOT.val=%d",WS.AKWFWave);
+        Nextion_Send(messnex);
+
+        sprintf(messnex,"page3.BKNAME.txt=%c%s%c",0x22,SampleDIR[WS.OscBank].name,0x22);
+        Nextion_Send(messnex);
+        
+
+        trigloadwave=1;
+        Cptloadwave=0;
+             
+        sprintf(messnex,"page 4");
+        Nextion_Send(messnex);
+        
+        
+        break;
 
         // W Select wave
         case 0x57:
@@ -349,17 +386,29 @@ uint8_t cc;
             WS.OscBank = Nextion_Mess[3];
             sprintf(messnex,"page3.BK.txt=%c%03d%c",0x22,WS.OscBank,0x22);
             Nextion_Send(messnex);
+
+            sprintf(messnex,"page3.BKNAME.txt=%c%s%c",0x22,SampleDIR[WS.OscBank].name,0x22);
+            Nextion_Send(messnex);
+            sprintf(messnex,"page3.WAPOT.maxval=%d",SampleDIR[WS.OscBank].nbr-1);
+            Nextion_Send(messnex);
+            sprintf(messnex,"page3.BKPOT.val=%d",WS.OscBank);
+            Nextion_Send(messnex);
+            WS.AKWFWave=0;
+            sprintf(messnex,"page3.WAPOT.val=%d",WS.AKWFWave);
+            Nextion_Send(messnex);
+            sprintf(messnex,"page3.WA.txt=%c%03d%c",0x22,WS.AKWFWave,0x22);
+            Nextion_Send(messnex);
         }
         if(Nextion_Mess[2]==1  || Nextion_Mess[2]==3)      // Wave
         {
-            WS.OscWave = Nextion_Mess[3];
-            sprintf(messnex,"page3.WA.txt=%c%03d%c",0x22,WS.OscWave,0x22);
+            WS.AKWFWave = Nextion_Mess[3];
+            sprintf(messnex,"page3.WA.txt=%c%03d%c",0x22,WS.AKWFWave,0x22);
             Nextion_Send(messnex);
         }
         // Draw the wave on the release
         if(Nextion_Mess[2]==0 || Nextion_Mess[2]==1)
         {
-            SDCard_LoadWave(WS.OscBank+1,WS.OscWave+1);
+            SDCard_LoadWave(WS.OscBank+1,WS.AKWFWave+1);
             Nextion_Plot();
         }
         break;
@@ -395,32 +444,61 @@ uint8_t cc;
                 WS.OscBank--;
             sprintf(messnex,"page3.BK.txt=%c%03d%c",0x22,WS.OscBank,0x22);
             Nextion_Send(messnex);
+
+            sprintf(messnex,"page3.BKNAME.txt=%c%s%c",0x22,SampleDIR[WS.OscBank].name,0x22);
+            Nextion_Send(messnex);
+            sprintf(messnex,"page3.WAPOT.maxval=%d",SampleDIR[WS.OscBank].nbr-1);
+            Nextion_Send(messnex);
+            sprintf(messnex,"page3.BKPOT.val=%d",WS.OscBank);
+            Nextion_Send(messnex);
+            WS.AKWFWave=0;
+            sprintf(messnex,"page3.WAPOT.val=%d",WS.AKWFWave);
+            Nextion_Send(messnex);
+            sprintf(messnex,"page3.WA.txt=%c%03d%c",0x22,WS.AKWFWave,0x22);
+            Nextion_Send(messnex);
         }
         // Bank inc
         if(Nextion_Mess[2]==1)
         {
-            if(WS.OscBank<99)
+            if(WS.OscBank<AKWFMAX_BANK-1)
                 WS.OscBank++;
             sprintf(messnex,"page3.BK.txt=%c%03d%c",0x22,WS.OscBank,0x22);
             Nextion_Send(messnex);
+
+            sprintf(messnex,"page3.BKNAME.txt=%c%s%c",0x22,SampleDIR[WS.OscBank].name,0x22);
+            Nextion_Send(messnex);
+            sprintf(messnex,"page3.WAPOT.maxval=%d",SampleDIR[WS.OscBank].nbr-1);
+            Nextion_Send(messnex);
+            sprintf(messnex,"page3.BKPOT.val=%d",WS.OscBank);
+            Nextion_Send(messnex);
+            WS.AKWFWave=0;
+            sprintf(messnex,"page3.WAPOT.val=%d",WS.AKWFWave);
+            Nextion_Send(messnex);
+            sprintf(messnex,"page3.WA.txt=%c%03d%c",0x22,WS.AKWFWave,0x22);
+            Nextion_Send(messnex);
+
         }
         // wave dec
         if(Nextion_Mess[2]==2)
         {
-            if(WS.OscWave>0)
-                WS.OscWave--;
-            sprintf(messnex,"page3.WA.txt=%c%03d%c",0x22,WS.OscWave,0x22);
+            if(WS.AKWFWave>0)
+                WS.AKWFWave--;
+            sprintf(messnex,"page3.WA.txt=%c%03d%c",0x22,WS.AKWFWave,0x22);
+            Nextion_Send(messnex);
+            sprintf(messnex,"page3.WAPOT.val=%d",WS.AKWFWave);
             Nextion_Send(messnex);
         }
         // wave inc
         if(Nextion_Mess[2]==3)
         {
-            if(WS.OscWave<99)
-                WS.OscWave++;
-            sprintf(messnex,"page3.WA.txt=%c%03d%c",0x22,WS.OscWave,0x22);
-            Nextion_Send(messnex);            
+            if(WS.AKWFWave<SampleDIR[WS.OscBank].nbr-1)
+                WS.AKWFWave++;
+            sprintf(messnex,"page3.WA.txt=%c%03d%c",0x22,WS.AKWFWave,0x22);
+            Nextion_Send(messnex);      
+            sprintf(messnex,"page3.WAPOT.val=%d",WS.AKWFWave);
+            Nextion_Send(messnex);      
         }
-        SDCard_LoadWave(WS.OscBank+1,WS.OscWave+1);
+        SDCard_LoadWave(WS.OscBank+1,WS.AKWFWave+1);
         Nextion_Plot();
         break;
 
@@ -446,6 +524,7 @@ uint8_t cc;
             // Change page already done in the Nextion screen
             //sprintf(messnex,"page 1");
             //Nextion_Send(messnex);
+            Nextion_PrintValues();
         }
         // Save
         if(Nextion_Mess[2]==2)
@@ -547,8 +626,8 @@ uint8_t cc;
         cc = Tab_Encoder[gui_Section][gui_Param].MidiCC;
         if(cc !=0xFF)
         {
-            Nextion_PrintCC(cc,*Tab_Encoder[gui_Section][gui_Param].Data,1);
             Nextion_PotValue(*Tab_Encoder[gui_Section][gui_Param].Data);
+            Nextion_PrintCC(cc,*Tab_Encoder[gui_Section][gui_Param].Data,1);
             sprintf(messnex,"page 2");
             Nextion_Send(messnex);
             //delay(2);

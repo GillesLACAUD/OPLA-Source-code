@@ -67,7 +67,7 @@ void Delay_Process(float *signal_l, float *signal_r)
     delayLine_l[delayIn] += delayLine_l[delayOut] * delayFeedback;
     delayLine_r[delayIn] += delayLine_r[delayOut] * delayFeedback;
 
-    delayIn ++;
+    delayIn++;
 
     if (delayIn >= MAX_DELAY)
     {

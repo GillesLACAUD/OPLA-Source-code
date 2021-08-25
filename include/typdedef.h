@@ -75,7 +75,10 @@ struct WorkSound
 
     int16_t PanSpread;
 
-    int16_t Reserved[48];
+    // Add 16.08.21
+    int16_t AKWFWave;
+
+    int16_t Reserved[47];
       
 };
 

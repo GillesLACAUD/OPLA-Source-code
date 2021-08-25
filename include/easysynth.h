@@ -19,10 +19,10 @@ SYNTH_EXTRN uint32_t midi_note_to_add[MIDI_NOTE_CNT]; /* lookup to playback wave
 //----------------------------------------------------------
 // SOUND MODE AND POLY DEFINE
 //----------------------------------------------------------
-#define MAX_POLY_VOICE	8                               /* max single voices, can use multiple osc */
-														/* 8 or more for para mode				   */
+#define MAX_POLY_VOICE	8                               	/* max single voices, can use multiple osc */
+															/* 8 or more for para mode				   */
 
-#define OSC_PER_VOICE	3                               /* max single voices, can use multiple osc */
+#define OSC_PER_VOICE	3                               	/* max single voices, can use multiple osc */
 #define MAX_POLY_OSC	(MAX_POLY_VOICE)*(OSC_PER_VOICE)    /* osc polyphony, always active reduces single voices max poly */
 
 #define MAX_SND_MODE		3
@@ -32,15 +32,18 @@ SYNTH_EXTRN uint32_t midi_note_to_add[MIDI_NOTE_CNT]; /* lookup to playback wave
 #define SND_MODE_MONO		2
 
 #define SND_MAX_POLY		4
-#define SND_MAX_PARA		5			// 6 if possible ????
+#define SND_MAX_PARA		4			// 6 if possible ????
 #define SND_MAX_MONO		1
 
 //----------------------------------------------------------
 // FILTER DEFINE
 //----------------------------------------------------------
 
-#define FILTER_1		// hard resoance at hight level
+#define FILTER_1		// hard resonance at hight level
 //#define FILTER_7		// USE THIS ONE ok for poly but hard sound at the edge
+
+
+
 //#define FILTER_8		// 12 dB
 //#define FILTER_2		// No resonance ???
 //#define FILTER_3		// Crash direct
@@ -100,6 +103,7 @@ SYNTH_EXTRN uint32_t midi_note_to_add[MIDI_NOTE_CNT]; /* lookup to playback wave
 #define WAVE_TRI        4
 #define WAVE_NOISE      5
 #define WAVE_SILENCE    6
+#define WAVE_AKWF	    7
 
 //----------------------------------------------------------
 // NOISE DEFINE
@@ -168,7 +172,7 @@ char Dest_Name[DEST_TYPE_COUNT][MAX_LABEL] =
  * do not forget to enter the waveform pointer addresses here
  */
 float *waveFormLookUp[WAVEFORM_TYPE_COUNT] = {&sine[0], &saw[0], &square[0], &pulse[0], &tri[0], &noise[0], &silence[0],&wavework[0]};
-float *selectedWaveForm =  &sine[0];
+float *selectedWaveForm =  &wavework[0];
 float *selectedWaveForm2 = &sine[0];
 uint32_t osc_act = 0;
 uint32_t voc_act = 0;
@@ -226,6 +230,7 @@ extern float noise[WAVEFORM_CNT];
 extern float silence[WAVEFORM_CNT];
 extern float wavework[WAVEFORM_CNT];
 extern float wavetrash[WAVEFORM_CNT];
+
 
 extern uint8_t selWaveForm1;
 extern uint8_t selWaveForm2;

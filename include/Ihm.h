@@ -168,7 +168,7 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
     "---",  "---",          MIDI_CC_84,     TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
 
     "BAK",  "AKWF BANK",    MIDI_CC_BK,     TYPE_DATA,  &TabListNull[0][0], 0,      &WS.OscBank, 1,  1,      40,    1,      Fct_Ch_Bank,         FctNull,    FctNull,    FctNull,    FctNull,
-    "WAV",  "AKWF WAVE",    MIDI_CC_WA,     TYPE_DATA,  &TabListNull[0][0], 0,      &WS.OscWave, 1,  0,      100,    1,      Fct_Ch_Wave,         FctNull,    FctNull,    FctNull,    FctNull,
+    "WAV",  "AKWF WAVE",    MIDI_CC_WA,     TYPE_DATA,  &TabListNull[0][0], 0,      &WS.AKWFWave,1,  0,      100,    1,      Fct_Ch_Wave,         FctNull,    FctNull,    FctNull,    FctNull,
     "---",  "---",          MIDI_CC_87,     TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
     "---",  "---",          MIDI_CC_88,     TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
     "---",  "---",          MIDI_CC_89,     TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,

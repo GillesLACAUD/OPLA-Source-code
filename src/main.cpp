@@ -237,6 +237,21 @@ void setup()
     Serial.printf("Total PSRAM: %d\n", ESP.getPsramSize());
     Serial.printf("Free PSRAM: %d\n", ESP.getFreePsram());
 
+    uint32_t Freq = 0;
+    Freq = getCpuFrequencyMhz();
+    Serial.print("CPU Freq = ");
+    Serial.print(Freq);
+    Serial.println(" MHz");
+    Freq = getXtalFrequencyMhz();
+    Serial.print("XTAL Freq = ");
+    Serial.print(Freq);
+    Serial.println(" MHz");
+    Freq = getApbFrequency();
+    Serial.print("APB Freq = ");
+    Serial.print(Freq);
+    Serial.println(" Hz");
+
+
     Serial.printf("Firmware started successfully\n");
 
 
@@ -288,6 +303,8 @@ void setup()
 
     }
     SDCard_LoadLastSound();
+    Nextion_PrintLabel();
+    Nextion_PrintValues();
 
     //Synth_NoteOn(64-12);
 }
@@ -320,23 +337,14 @@ void loop()
 {
 static uint16_t cpttimer1;    
 static uint16_t cpttimer2;    
-
-
     // put your main code here, to run repeatedly:
-    static uint32_t loop_cnt_1hz;
+
     static uint8_t loop_count_u8 = 0;
 
     loop_count_u8++;
-
-    loop_cnt_1hz++;
     overcpt++;
     Cptloadwave++;
-    if (loop_cnt_1hz >= 44)
-    {
-        //Loop_1Hz();
-        //sprintf(messnex,"page0.Setup_Name.txt=%c1 %04d 2 %04d%c",0x22,Lfo_cnt1,Lfo_cnt2,0x22);
-        //Nextion_Send(messnex);
-    }
+
     if(overon && overcpt > NEXTION_MAX_OVER_TIME)
     {
        overon=false;
@@ -348,45 +356,8 @@ static uint16_t cpttimer2;
        Nextion_Send(messnex);
     }
 
-    if(trigloadwave && Cptloadwave > LOADWAVE_MAX_OVER_TIME)
-    {
-        trigloadwave=false;
-        SDCard_LoadWave(WS.OscBank+1,WS.OscWave+1);
-        Nextion_Plot();
-        /*
-        sprintf(messnex,"page3.BK.txt=%c%03d%c",0x22,WS.OscBank+1,0x22);
-        Nextion_Send(messnex);
-        sprintf(messnex,"page3.WA.txt=%c%03d%c",0x22,WS.OscWave+1,0x22);
-        Nextion_Send(messnex);
-        */
-
-    }
-
-
-
-    /*
-    if(Timer1ms_cnt>=2)
-    {
-        // Reset all the mod
-        
-        FiltCutoffMod = 0;
-        PanMod=0;
-        AmpMod=0;
-        NoiseMod=0;
-        WaveShapping1Mod=0;
-        
-        Lfo_Process(&Lfo1);
-        Lfo_Process(&Lfo2);
-
-        Timer1ms_cnt = 0;
-    }
-    */
-
-
     if (Lfo_cnt1 >= 1024)
     {   
-        //sprintf(messnex,"page0.Setup_Name.txt=%cLFO1 %d%c",0x22,cpttimer1,0x22);
-        //Nextion_Send(messnex);
         cpttimer1++;
         if(Lfo1.ui8_Sync !=LFO_ONE)
             Lfo_cnt1=0;
@@ -395,49 +366,38 @@ static uint16_t cpttimer2;
     }
     if (Lfo_cnt2 >= 1024)
     {
-        //sprintf(messnex,"page0.Setup_Name.txt=%cLFO2 %d%c",0x22,cpttimer2,0x22);
-        //Nextion_Send(messnex);
         cpttimer2++;
         if(Lfo2.ui8_Sync !=LFO_ONE)
             Lfo_cnt2=0;
         else
             Lfo_cnt2=1024;
     }
-
-    if(0)
+    if(i2s_write_sample_16ch2(sampleData32.sample32))
     {
-        if (i2s_write_sample_32ch2(sampleDataU.sample))  /* function returns always true / it blocks until samples are written to buffer */
-        {
-            float fl_sample, fr_sample;
-            Synth_Process(&fl_sample, &fr_sample);
-
-            sampleDataU.ch[0] = int32_t(fl_sample * 536870911.0f);
-            sampleDataU.ch[1] = int32_t(fr_sample * 536870911.0f);
-        }
-    }
-    if(1)
-    {
-        static int cpt;
-        if(i2s_write_sample_16ch2(sampleData32.sample32))
-        {
-           
-            Synth_Process(&fl_sample, &fr_sample);
-            Reverb_Process( &fl_sample, &fr_sample, SAMPLE_BUFFER_SIZE );       
-            if(SoundMode!=SND_MODE_POLY)
-                Delay_Process(&fl_sample, &fr_sample);
+        Synth_Process(&fl_sample, &fr_sample);
+        
+        if(SoundMode!=SND_MODE_POLY)
+            Delay_Process(&fl_sample, &fr_sample);
+        Reverb_Process( &fl_sample, &fr_sample, SAMPLE_BUFFER_SIZE );       
+               
             
-            sampleData32.sample[0] = (int16_t)(fl_sample*32768.0f);
-            sampleData32.sample[1] = (int16_t)(fr_sample*32768.0f);
-        }
+        sampleData32.sample[0] = (int16_t)(fl_sample*32768.0f);
+        sampleData32.sample[1] = (int16_t)(fr_sample*32768.0f);
     }
 
     /*
      * Midi does not required to be checked after every processed sample
      * - we divide our operation by 8
      */
-    if (loop_count_u8 % 8 == 0)
+    if (loop_count_u8 % 32 == 0)
     {
         Midi_Process();
+        if(trigloadwave && Cptloadwave > LOADWAVE_MAX_OVER_TIME)
+        {
+            trigloadwave=false;
+            SDCard_LoadWave(WS.OscBank+1,WS.AKWFWave+1);
+            Nextion_Plot();
+        }
         //Nextion_Process(); // in the task0
     }
 }

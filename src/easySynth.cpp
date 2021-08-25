@@ -196,19 +196,20 @@ int16_t ires;
     
     // Compare to an int seem faster
     icut = cut*100;
+    
     if(icut>85)
         cut=0.85;
     if(icut<0)
         cut=0.1;
-
+    
     if(FilterType<FILTER_1LP)
         resoclip = buf4[m];
     else
         resoclip = buf2[m];
     ires = resoclip*100;
+    
     if (ires > 73) resoclip = 0.73;
     in = (-resoclip * res)+in;
-    
 
     buf1[m] = ((- buf1[m]+in)*cut) + buf1[m];
     buf2[m] = ((- buf2[m]+buf1[m])*cut) + buf2[m];
@@ -217,7 +218,8 @@ int16_t ires;
         buf3[m] = ((- buf3[m]+buf2[m])*cut) + buf3[m];
         buf4[m] = ((- buf4[m]+buf3[m])*cut) + buf4[m];
     }
-   
+  
+
     switch(FilterType)
     {
         case FILTER_2LP: return buf4[m];
@@ -271,7 +273,7 @@ inline float KarlsenLPF(float signal, float freq, float res, uint8_t m)
 
 	b_inSH[m] = signal;
 	b_in[m] = signal;
-	if(freq > 1.0f)freq = 1.0f;
+	if(freq > 0.95f)freq = 0.95f;
 	if(freq < 0.0f)freq = 0.0f;
 	b_f[m] = freq;
 	b_q[m] = res;
@@ -400,10 +402,10 @@ static float buf1[6],buf2[6],buf3[6],buf4[6];
     buf4[m] = ((buf3[m] - buf4[m]) * cut) + buf4[m];
     switch(FilterType)
     {
-        case FILTER_LPF: return buf4[m];
-        case FILTER_HPF: return (buf4[m]-buf1[m]);
-        case FILTER_BPF: return (in-buf1[m]);
-        case FILTER_NPF: return (in-buf4[m]-buf1[m]);
+        case FILTER_2LP: return buf4[m];
+        case FILTER_2HP: return (buf4[m]-buf1[m]);
+        case FILTER_2BP: return (in-buf1[m]);
+        case FILTER_2NP: return (in-buf4[m]-buf1[m]);
     }
  
 }
@@ -555,25 +557,12 @@ uint8_t oldnote;
  */
 inline bool ADSR_Process(const struct adsrT *ctrl, float *ctrlSig, adsr_phaseT *phase)
 {
-    //Serial.printf("Ph %d val %8.6f\n",*phase,*ctrlSig);
     switch (*phase)
     {
     case attack:
-        /*
-        if(*ctrlSig <0.1)
-            *ctrlSig += ctrl->a/8;        
-        else if(*ctrlSig <0.2)
-            *ctrlSig += ctrl->a/4;
-        else if(*ctrlSig <0.4)
-            *ctrlSig += ctrl->a/2;            
-        else 
-            *ctrlSig += ctrl->a;
-        */
-
         *ctrlSig += ctrl->a;
         if (*ctrlSig > (1.0f-ctrl->a))
         {
-            //*ctrlSig = 1.0f;
             *phase = decay;
         }
         break;
@@ -581,7 +570,6 @@ inline bool ADSR_Process(const struct adsrT *ctrl, float *ctrlSig, adsr_phaseT *
         *ctrlSig -= ctrl->d/4;
         if (*ctrlSig < ctrl->s+ctrl->d)
         {
-            //*ctrlSig = ctrl->s;
             *phase = sustain;
         }
         break;
@@ -612,14 +600,15 @@ inline bool ADSR_Process(const struct adsrT *ctrl, float *ctrlSig, adsr_phaseT *
     if (*ctrlSig < 0.0f)
     {
         *ctrlSig = 0.0f;
-        //voice->active = false;
         return false;
     }
     break;   
     }
     return true;
-
 }
+
+
+
 /***************************************************/
 /*                                                 */
 /*                                                 */
@@ -658,16 +647,14 @@ extern portMUX_TYPE timer2Mux_xms;
 //[[gnu::noinline, gnu::optimize ("fast-math")]]
 void IRAM_ATTR Synth_Process(float *left, float *right)
 {
-uint16_t j=0;    
-int16_t tmp16;
 bool voice_off;
 float nz=0;
 uint16_t Triinc,Tridec;
 float finc,fdec;
 uint32_t spread;
+float ftmp;
 
 int cmp;
-static uint8_t cptvoice=0;
 int indx=0;
 
     nz = ((random(1024) / 512.0f) - 1.0f)*NoiseLevel*(1+NoiseMod);
@@ -699,15 +686,12 @@ int indx=0;
 
     Lfo1SpeedMod = 0;
     Lfo2SpeedMod = 0;
-
-    //SoundMode=SND_MODE_POLY;
-    //WS.PolyMax=4;
-    
+  
 
     ModWheel_Process();
     AfterTouch_Process();
     
-
+    
     if(!Lfo1_Mutex)
     {
         Lfo1_Mutex=1;
@@ -722,17 +706,6 @@ int indx=0;
         Lfo2_Mutex=0;
     }
     
-
-    /*
-     * update pitch bending / modulation
-     */
-    /*
-    if (count % 64 == 0)
-    {
-        pitchMultiplier = pow(2.0f, pitchVar / 12.0f);
-    }
-    */
-
     float sup;
     float inf;
     float tmp;
@@ -813,7 +786,6 @@ int indx=0;
                 break;
             
                 case WAVE_SINE:
-                /*
                 cmp = 1+tmp*12;
                 for (i = 0; i < WAVEFORM_CNT; i++)
                 {
@@ -821,11 +793,6 @@ int indx=0;
                     indx+=cmp;
                     if(indx>WAVEFORM_CNT)
                         indx=0;
-                }
-                */
-               for (i = 0; i < WAVEFORM_CNT; i++)
-                {
-                     wavework[i]=sine[i];
                 }
                 break;
 
@@ -857,9 +824,6 @@ int indx=0;
         }
     }
 
-    
-
-  
     /*
      * oscillator processing -> mix to voice
     */
@@ -926,8 +890,6 @@ int indx=0;
                     globalrank--;
                     Voice_Off(i);
                 }
-               
-
                 if(SoundMode==SND_MODE_POLY)
                 {
                     (void)ADSR_Process(&adsr_fil, &voice->f_control_sign, &voice->f_phase);
@@ -938,11 +900,11 @@ int indx=0;
                         (void)ADSR_Process(&adsr_fil, &voice->f_control_sign, &voice->f_phase);
                 }
                 (void)ADSR_Process(&adsr_pit, &voice->p_control_sign, &voice->p_phase);
-
             }
             /* add some noise to the voice */
             if(NoiseType == NOISE_PRE)
                 voice->lastSample[0] += nz*(1+NoiseMod);
+                
             voice->lastSample[0] *= voice->control_sign*voice->avelocity;
 
             // Apply the filter EG
@@ -969,11 +931,12 @@ int indx=0;
             {
                 out_l += voice->lastSample[0];
             }
+
+            
             voice->lastSample[0] = 0.0f;
         }
     }
     // Try para mode - ok good
-    
     if(SoundMode!=SND_MODE_POLY)
     {
         out_l = KarlsenLPF(out_l,FiltCutoffMod+voicePlayer[0].f_control_sign*filterEG, filtReso,0);
@@ -983,11 +946,13 @@ int indx=0;
     
     if(NoiseType == NOISE_POST && voc_act!=0)
     {
-        out_l += (nz*(1+NoiseMod))/32;
-        out_r += (nz*(1+NoiseMod))/32;
+        ftmp = (nz*(1+NoiseMod))/32;
+        out_l += ftmp;
+        out_r += ftmp;
     }
         
-    float multi = (1+AmpMod)*0.75f;
+    //float multi = (1+AmpMod)*0.75f;
+    float multi = (1+AmpMod);
     out_l *=multi;
     out_r *=multi;
     //out_r =out_l;
