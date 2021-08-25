@@ -102,11 +102,7 @@ inline void Midi_ControlChange(uint8_t channel, uint8_t data1, uint8_t data2)
     if(data1 == 1)
     {
         ModWheelValue = (float)data2/128.0;
-        return;            
-    }
-    if(data1 == 2)
-    {
-        AfterTouchValue = (float)data2/128.0;
+        //Serial.printf("MW %d",data2);
         return;            
     }
 
@@ -136,6 +132,31 @@ inline void Midi_ControlChange(uint8_t channel, uint8_t data1, uint8_t data2)
     
 }
 
+
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+inline void HandleByteMsg(uint8_t *data)
+{
+    uint8_t ch = data[0] & 0x0F;
+
+    switch (data[0] & 0xF0)
+    {
+        // Aftertouch
+        case 0xD0:
+            AfterTouchValue = (float)data[1]/128.0;
+            //Serial.printf("AT %d\n",data[1]);
+            break;
+        // Program changed
+        case 0xC0:
+            //Serial.printf("PC %d\n",data[1]);
+            break;
+    }
+}
+            
+
 /***************************************************/
 /*                                                 */
 /*                                                 */
@@ -161,6 +182,7 @@ inline void HandleShortMsg(uint8_t *data)
         case 0x80:
             Midi_NoteOff(data[1]+WS.Transpose,data[2]);
             break;
+        /* Midi control change */
         case 0xb0:
             Midi_ControlChange(ch, data[1], data[2]);
             break;        
@@ -195,6 +217,8 @@ void Midi_Process()
     static uint32_t inMsgWd = 0;
     static uint8_t inMsg[3];
     static uint8_t inMsgIndex = 0;
+    static uint8_t lenMsg=3;
+    static uint8_t Msg;
 
     //Choose Serial1 or Serial2 as required
 
@@ -202,13 +226,33 @@ void Midi_Process()
     {
         uint8_t incomingByte = Serial2.read();
 
-#ifdef DUMP_SERIAL2_TO_SERIAL 
+        #ifdef DUMP_SERIAL2_TO_SERIAL 
         Serial.printf("%02x\n", incomingByte);
-#endif
+        #endif
         /* ignore live messages */
         if ((incomingByte & 0xF0) == 0xF0)
         {
             return;
+        }
+
+        if(incomingByte & 0x80)
+        {
+            Msg=incomingByte & 0xF0;
+
+            switch(Msg)
+            {
+                case 0xD0:
+                case 0xC0:
+                lenMsg=2;
+                break;
+                
+                case 0x80:
+                case 0xB0:
+                case 0x90:
+                case 0xE0:
+                lenMsg=3;
+                break;
+            }
         }
 
         if (inMsgIndex == 0)
@@ -222,11 +266,16 @@ void Midi_Process()
         inMsg[inMsgIndex] = incomingByte;
         inMsgIndex += 1;
 
-        if (inMsgIndex >= 3)
+        if (lenMsg==2 && inMsgIndex >= 2)
         {
-#ifdef DUMP_SERIAL2_TO_SERIAL
+            HandleByteMsg(inMsg);
+            inMsgIndex = 0;
+        }
+        if (lenMsg==3 && inMsgIndex >= 3)
+        {
+            #ifdef DUMP_SERIAL2_TO_SERIAL
             Serial.printf(">%02x %02x %02x\n", inMsg[0], inMsg[1], inMsg[2]);
-#endif
+            #endif
             HandleShortMsg(inMsg);
             inMsgIndex = 0;
         }
@@ -236,7 +285,6 @@ void Midi_Process()
          */
         inMsgWd = 0;
     }
-
     else
     {
         if (inMsgIndex > 0)
