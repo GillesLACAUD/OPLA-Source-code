@@ -1031,9 +1031,8 @@ float value;
 /***************************************************/
 int Fct_Ch_MidiRx(int val)
 {
-float value;    
-
-    value = val * NORM127MUL;
+    if(!IsLoadSound)
+        SDCard_SaveMidiRx();
     return(0);
 }
 

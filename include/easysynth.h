@@ -117,6 +117,8 @@ SYNTH_EXTRN uint32_t midi_note_to_add[MIDI_NOTE_CNT]; /* lookup to playback wave
 // END DEFINE
 //----------------------------------------------------------
 
+SYNTH_EXTRN int16_t		MidiRx;
+
 SYNTH_EXTRN WorkSound	WS;
 
 SYNTH_EXTRN uint8_t CurrentSound;

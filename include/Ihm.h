@@ -243,7 +243,7 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
     "MWA",  "MW AMT",       MIDI_CC_MD_AMT,        TYPE_DATA,  &TabListNull[0][0], 0,      &WS.MWAmt,   1,  0,      127,    1,      Fct_Ch_MDAmt,         FctNull,    FctNull,    FctNull,    FctNull,
     "AFD",  "AT DEST",      MIDI_CC_AT_DEST,       TYPE_LIST,  &ModName[0][0], 0,        &WS.ATDest,   1,  0,     MOD_MAX,    1,      Fct_Ch_ATDest,         FctNull,    FctNull,    FctNull,    FctNull,
     "AFA",  "AT AMT",       MIDI_CC_AT_AMT,        TYPE_DATA,  &TabListNull[0][0], 0,      &WS.ATAmt,   1,  0,      127,    1,      Fct_Ch_ATAmt,         FctNull,    FctNull,    FctNull,    FctNull,
-    "MRX",  "MIDI RX",      0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      15,     1,      Fct_Ch_MidiRx,         FctNull,    FctNull,    FctNull,    FctNull,
+    "MRX",  "MIDI RX",      MIDI_CC_MIDI_RX,       TYPE_DATA,  &TabListNull[0][0], 0,      &MidiRx,   1,  1,      16,     1,      Fct_Ch_MidiRx,         FctNull,    FctNull,    FctNull,    FctNull,
 
 
 };

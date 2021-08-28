@@ -336,6 +336,39 @@ void SDCard_LoadLastSound()
 /*                                                 */
 /*                                                 */
 /***************************************************/
+void SDCard_SaveMidiRx()
+{
+    char path[30];
+    uint16_t wr;
+    // Write the Midirx in a file
+    sprintf(path,"/System/midirx.cfg");
+    File file = SD_MMC.open(path,"wb+");
+    wr=file.write((uint8_t*)&MidiRx,1);
+    file.close();   
+}
+
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+void SDCard_LoadMidiRx()
+{
+    char path[30];
+    uint16_t rd;
+    // Read the Midirx in a file
+    sprintf(path,"/System/midirx.cfg");
+    File file = SD_MMC.open(path,"rb");
+    rd=file.read((uint8_t*)&MidiRx,1);
+    file.close();   
+}
+
+
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
 void SDCard_ReadSndName(uint8_t s)
 {
 uint8_t* ptname; 

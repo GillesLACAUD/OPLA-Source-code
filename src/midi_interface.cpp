@@ -219,6 +219,7 @@ void Midi_Process()
     static uint8_t inMsgIndex = 0;
     static uint8_t lenMsg=3;
     static uint8_t Msg;
+    uint8_t mrx;
 
     //Choose Serial1 or Serial2 as required
 
@@ -238,6 +239,11 @@ void Midi_Process()
         if(incomingByte & 0x80)
         {
             Msg=incomingByte & 0xF0;
+            mrx=incomingByte & 0x0F;
+            if((mrx+1)!=MidiRx)
+            {
+                return;
+            }
 
             switch(Msg)
             {

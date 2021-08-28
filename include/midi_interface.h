@@ -114,6 +114,7 @@
 #define MIDI_CC_MD_AMT          66
 #define MIDI_CC_AT_DEST         67
 #define MIDI_CC_AT_AMT          68
+#define MIDI_CC_MIDI_RX         69
 
 
 #define MIDI_CC_LFO1_SPEED      70

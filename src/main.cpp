@@ -303,6 +303,8 @@ void setup()
 
     }
     SDCard_LoadLastSound();
+    SDCard_LoadMidiRx();
+    Serial.printf("Midi Rx is %d\n",MidiRx);
     Nextion_PrintLabel();
     Nextion_PrintValues();
 
