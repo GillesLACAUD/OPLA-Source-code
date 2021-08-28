@@ -12,6 +12,7 @@
 #include "easysynth.h"
 #include "Nextion.h"
 #include "Modulator.h"
+#include "SDCard.h"
 
 
 /* use define to dump midi data */
@@ -151,7 +152,8 @@ inline void HandleByteMsg(uint8_t *data)
             break;
         // Program changed
         case 0xC0:
-            //Serial.printf("PC %d\n",data[1]);
+            Serial.printf("PC %d\n",data[1]);
+            SDCard_LoadSound(data[1]);
             break;
     }
 }
@@ -240,6 +242,7 @@ void Midi_Process()
         {
             Msg=incomingByte & 0xF0;
             mrx=incomingByte & 0x0F;
+            //Serial.printf("RX mess %d\n",mrx);
             if((mrx+1)!=MidiRx)
             {
                 return;
