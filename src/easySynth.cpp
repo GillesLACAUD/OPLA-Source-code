@@ -915,11 +915,11 @@ int indx=0;
 
             if(SoundMode!=SND_MODE_POLY)
             {
-                voice->lastSample[0] /=32.0; //for para mode
+                voice->lastSample[0] /=8.0; //for para mode
             }
             else
             {
-                voice->lastSample[0] /=16.0;
+                voice->lastSample[0] /=8.0;
                 voice->lastSample[0] = KarlsenLPF(voice->lastSample[0],cf, filtReso,i);
             }
             if(SoundMode==SND_MODE_POLY)
@@ -929,7 +929,9 @@ int indx=0;
             }
             else
             {
-                out_l += voice->lastSample[0];
+                //out_l += voice->lastSample[0];
+                out_l += voice->lastSample[0]*(1-voice->panspread);
+                out_r += voice->lastSample[0]*(voice->panspread);
             }
 
             
@@ -940,8 +942,8 @@ int indx=0;
     if(SoundMode!=SND_MODE_POLY)
     {
         out_l = KarlsenLPF(out_l,FiltCutoffMod+voicePlayer[0].f_control_sign*filterEG, filtReso,0);
-        //out_r = KarlsenLPF(out_r,FiltCutoffMod+voicePlayer[0].f_control_sign*filterEG, filtReso,0);
-        out_r = out_l;
+        out_r = KarlsenLPF(out_r,FiltCutoffMod+voicePlayer[0].f_control_sign*filterEG, filtReso,0);
+        //out_r = out_l;
     }
     
     if(NoiseType == NOISE_POST && voc_act!=0)

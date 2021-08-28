@@ -1,7 +1,7 @@
 /*
  * a simple implementation to use midi
  *
- * Author: Marcel Licence
+ * Author: Marcel Licence/Gilles Lacaud
  */
 
 #include <Arduino.h>
@@ -110,19 +110,12 @@ inline void Midi_ControlChange(uint8_t channel, uint8_t data1, uint8_t data2)
     if(!overon)
     {
         overon = true;
-        /*
-        sprintf(messnex,"vis CCInfo,1");
-        Nextion_Send(messnex);
-        sprintf(messnex,"vis CCVal,1");
-        Nextion_Send(messnex);
-        */
        Nextion_PrintCC(data1,data2,0);
        if(data1==MIDI_CC_BK || data1==MIDI_CC_WA)
         sprintf(messnex,"page 4");
        else
         sprintf(messnex,"page 2");
        Nextion_Send(messnex);
-       //delay(10);
        
     }
     overcpt=0;
@@ -141,8 +134,6 @@ inline void Midi_ControlChange(uint8_t channel, uint8_t data1, uint8_t data2)
 /***************************************************/
 inline void HandleByteMsg(uint8_t *data)
 {
-    uint8_t ch = data[0] & 0x0F;
-
     switch (data[0] & 0xF0)
     {
         // Aftertouch
