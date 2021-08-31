@@ -232,12 +232,13 @@ void Midi_Process()
         if(incomingByte & 0x80)
         {
             Msg=incomingByte & 0xF0;
+            
             mrx=incomingByte & 0x0F;
-            //Serial.printf("RX mess %d\n",mrx);
             if((mrx+1)!=MidiRx)
             {
                 return;
             }
+            
 
             switch(Msg)
             {

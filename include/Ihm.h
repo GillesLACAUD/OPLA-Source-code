@@ -149,8 +149,8 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
 {
     // SECTION OSC
     /* Name                 MIDICC          TYPE        LIST                INDEX   VALUE             SIZE  MIN     MAX                     STEP    CHANGE      ON          OFF         HOLD        DCLK  */
-    "OSC",  "OSC WAVEFORM", MIDI_CC_WAVE1,  TYPE_LIST,  &Wave_Name[0][0],   0,      &WS.OscWave,      1,    0,      WAVEFORM_TYPE_COUNT,    1,      Fct_Ch_OscWave,   FctNull,    FctNull,    FctNull,    FctNull,
-    "MIX",  "OSC VOLUME",   MIDI_CC_OSCVOL, TYPE_DATA,  &TabListNull[0][0], 0,      &WS.OscVolume,    1,    0,      127,                    1,      Fct_Ch_OscMix,    FctNull,    FctNull,    FctNull,    FctNull,
+    "OSC",  "OSC-WAVEFORM", MIDI_CC_WAVE1,  TYPE_LIST,  &Wave_Name[0][0],   0,      &WS.OscWave,      1,    0,      WAVEFORM_TYPE_COUNT,    1,      Fct_Ch_OscWave,   FctNull,    FctNull,    FctNull,    FctNull,
+    "MIX",  "OSC-VOLUME",   MIDI_CC_OSCVOL, TYPE_DATA,  &TabListNull[0][0], 0,      &WS.OscVolume,    1,    0,      127,                    1,      Fct_Ch_OscMix,    FctNull,    FctNull,    FctNull,    FctNull,
     "DET",  "DETUNE",       MIDI_CC_DETUNE, TYPE_DATA,  &TabListNull[0][0], 0,      &WS.OscDetune,    1,    0,      127,                    1,      Fct_Ch_Detune,    FctNull,    FctNull,    FctNull,    FctNull,
     "WS1",  "WAVE SHAPE1",  MIDI_CC_WS1,    TYPE_DATA,  &TabListNull[0][0], 0,      &WS.WaveShapping1,1,    0,      127,                    1,      Fct_Ch_WS1,       FctNull,    FctNull,    FctNull,    FctNull,
     "WS2",  "WAVE SHAPE2",  MIDI_CC_WS2,    TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,         1,    0,      127,                    1,      FctNull,          FctNull,    FctNull,    FctNull,    FctNull,
