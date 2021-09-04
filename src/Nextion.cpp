@@ -382,6 +382,7 @@ uint8_t cc;
         // W Select wave
         case 0x57:
         overcpt=0;
+        overon = true;
         if(Nextion_Mess[2]==0  || Nextion_Mess[2]==2)      // Bank
         {
             WS.OscBank = Nextion_Mess[3];
@@ -442,6 +443,7 @@ uint8_t cc;
         // Y Select bank and wave inc dec
 		case 0x59:
         overcpt=0;
+        overon = true;
         // Bank dec
         if(Nextion_Mess[2]==0)
         {
