@@ -381,6 +381,7 @@ uint8_t cc;
 
         // W Select wave
         case 0x57:
+        overcpt=0;
         if(Nextion_Mess[2]==0  || Nextion_Mess[2]==2)      // Bank
         {
             WS.OscBank = Nextion_Mess[3];
@@ -391,6 +392,9 @@ uint8_t cc;
             Nextion_Send(messnex);
             sprintf(messnex,"page3.WAPOT.maxval=%d",SampleDIR[WS.OscBank].nbr-1);
             Nextion_Send(messnex);
+
+            Tab_Encoder[1][6].MaxData=SampleDIR[WS.OscBank].nbr-1;  // Chg the max for the MIDI CC
+
             sprintf(messnex,"page3.BKPOT.val=%d",WS.OscBank);
             Nextion_Send(messnex);
             WS.AKWFWave=0;
@@ -437,6 +441,7 @@ uint8_t cc;
         
         // Y Select bank and wave inc dec
 		case 0x59:
+        overcpt=0;
         // Bank dec
         if(Nextion_Mess[2]==0)
         {
@@ -449,6 +454,7 @@ uint8_t cc;
             Nextion_Send(messnex);
             sprintf(messnex,"page3.WAPOT.maxval=%d",SampleDIR[WS.OscBank].nbr-1);
             Nextion_Send(messnex);
+            Tab_Encoder[1][6].MaxData=SampleDIR[WS.OscBank].nbr-1;  // Chg the max for the MIDI CC
             sprintf(messnex,"page3.BKPOT.val=%d",WS.OscBank);
             Nextion_Send(messnex);
             WS.AKWFWave=0;
@@ -469,6 +475,7 @@ uint8_t cc;
             Nextion_Send(messnex);
             sprintf(messnex,"page3.WAPOT.maxval=%d",SampleDIR[WS.OscBank].nbr-1);
             Nextion_Send(messnex);
+            Tab_Encoder[1][6].MaxData=SampleDIR[WS.OscBank].nbr-1;  // Chg the max for the MIDI CC
             sprintf(messnex,"page3.BKPOT.val=%d",WS.OscBank);
             Nextion_Send(messnex);
             WS.AKWFWave=0;

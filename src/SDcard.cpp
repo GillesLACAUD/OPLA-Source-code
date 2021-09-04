@@ -301,6 +301,8 @@ unsigned int sz=sizeof(WorkSound);
     sprintf(messnex,"page2.Setup_Number.txt=%c%02d%c",0x22,snd,0x22);
     Nextion_Send(messnex);
 
+    
+
     // Write the sound number in a file
     sprintf(path,"/sound/last.lst");
     file = SD_MMC.open(path,"wb");
