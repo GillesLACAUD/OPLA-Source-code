@@ -88,7 +88,7 @@ static uint16_t sl1,sl2;
         FiltCutoffMod += prlfo->f_modlfo/2;
         break;
         case LFO_PITCH:
-        PitchMod += prlfo->f_modlfo/10;
+        PitchMod += prlfo->f_modlfo/8;
         break;
         case LFO_NOISE:
         NoiseMod += prlfo->f_modlfo;            // +/- 1 max

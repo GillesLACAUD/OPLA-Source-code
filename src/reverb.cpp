@@ -152,26 +152,19 @@ inline float Do_Allpass2(float inSample)
 
 void Reverb_Process(float *signal_l, float *signal_r, int buffLen)
 {
-    int n = 0;
-    //for (int n = 0; n < buffLen; n++)
-    //{
-        float inSample;
+    float inSample;
 
-        /* create mono sample */
-        inSample = signal_l[n] + signal_r[n]; /* it may cause unwanted audible effects */
-        inSample *= 0.5f;
+    /* create mono sample */
+    inSample = *signal_l + *signal_r; /* it may cause unwanted audible effects */
 
-        float newsample = (Do_Comb0(inSample) /*+Do_Comb1(inSample)*//* + Do_Comb2(inSample) + Do_Comb3(inSample)*/) / 1.0f;
-        newsample = Do_Allpass0(newsample);
-        //newsample = Do_Allpass1(newsample);
-        //newsample = Do_Allpass2(newsample);
+    float newsample = Do_Comb0(inSample);
+    newsample = Do_Allpass0(newsample);
 
-        /* apply reverb level */
-        newsample *= rev_level;
-        
-        signal_l[n] += newsample*(1-reverbPan);
-        signal_r[n] += newsample*reverbPan;
-    //}
+    /* apply reverb level */
+    newsample *= rev_level;
+    
+    *signal_l += newsample*(1-reverbPan);
+    *signal_r += newsample*reverbPan;
 }
 
 void Reverb_Setup(void)

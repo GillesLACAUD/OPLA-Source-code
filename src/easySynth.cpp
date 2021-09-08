@@ -596,12 +596,17 @@ inline bool ADSR_Process(const struct adsrT *ctrl, float *ctrlSig, adsr_phaseT *
     break;
     */
     case release:
-    *ctrlSig -= ctrl->r;
+    if (*ctrlSig > ctrl->r)
+        *ctrlSig -= ctrl->r;
+    else
+        return false;
+    /*
     if (*ctrlSig < 0.0f)
     {
         *ctrlSig = 0.0f;
         return false;
     }
+    */
     break;   
     }
     return true;
@@ -1069,7 +1074,7 @@ uint8_t aff=0;
         }
         voicePlayer[keytab].active = globalrank;
         //Midi_Dump();        
-        if (aff) Serial.printf("Release\n");
+        //if (aff) Serial.printf("Release\n");
         return &voicePlayer[keytab];
     }
     //--------------------------------------------
@@ -1130,7 +1135,7 @@ static uint8_t flippan;
      */
     if ((voice == NULL) || (osc == NULL))
     {  
-        Serial.printf("voc: %d, osc: %d\n", voc_act, osc_act);
+        //Serial.printf("voc: %d, osc: %d\n", voc_act, osc_act);
         return ;
     }
 

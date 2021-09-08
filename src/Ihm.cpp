@@ -138,7 +138,9 @@ int Fct_Ch_Bank(int val)
     sprintf(messnex,"page3.WAPOT.maxval=%d",SampleDIR[WS.OscBank].nbr-1);
     Nextion_Send(messnex);
 
-    WS.AKWFWave=0;
+    if(!IsLoadSound)
+        WS.AKWFWave=0;
+
     sprintf(messnex,"page3.WAPOT.val=%d",WS.AKWFWave);
     Nextion_Send(messnex);
     sprintf(messnex,"page3.WA.txt=%c%03d%c",0x22,WS.AKWFWave,0x22);

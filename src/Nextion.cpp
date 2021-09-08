@@ -645,6 +645,7 @@ uint8_t cc;
 
         // N Name sound
         case 0x4E:
+        Nextion_Mess[3+9] = 0; // Filter extra char
 		strcpy((char*)SndName,&Nextion_Mess[3]);
         Serial.printf("Name %s\n",SndName);
         // Set the name to the memory
