@@ -112,6 +112,17 @@ static uint16_t sl1,sl2;
         if(prlfo == &Lfo2)
             Lfo1AmtMod=prlfo->f_modlfo;
         break;
+
+        case LFO_REVPAN:
+        RevPanMod += prlfo->f_modlfo;            // +/- 1 max;
+        break;
+        case LFO_DELAYPAN:
+        break;
+        case LFO_REVAMT:
+        break;
+        case LFO_DELAYAMT:
+        break;
+
     }
     
     

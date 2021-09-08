@@ -691,7 +691,12 @@ int indx=0;
 
     Lfo1SpeedMod = 0;
     Lfo2SpeedMod = 0;
-  
+
+    RevPanMod=0;
+    DelayPanMod=0;
+    RevAmtMod=0;
+    DelayAmtMod=0;
+ 
 
     ModWheel_Process();
     AfterTouch_Process();

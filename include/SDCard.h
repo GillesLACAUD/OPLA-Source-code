@@ -15,6 +15,8 @@
 SDCARD_EXTRN uint8_t trigloadwave;
 SDCARD_EXTRN uint16_t Cptloadwave;
 
+SDCARD_EXTRN uint8_t LastSoundNumber;
+
 SDCARD_EXTRN uint8_t IsLoadSound;                                       // At 1 when loading sound
 
 #define LOADWAVE_MAX_OVER_TIME  15000

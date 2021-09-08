@@ -270,6 +270,9 @@ char path[30];
 uint16_t wr;
 unsigned int sz=sizeof(WorkSound);
 
+    LastSoundNumber = snd;
+    SoundNameInc10 =   LastSoundNumber/10;
+
     //sprintf(messnex,"v4.pco=62222");
     //Nextion_Send(messnex);
 
