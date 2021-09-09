@@ -35,6 +35,10 @@ extern uint8_t pingpong;
 extern float delayPan;
 #endif
 
+
+DELAY_EXTRN float DelayPanMod;
+DELAY_EXTRN float DelayAmtMod;
+
 DELAY_EXTRN void Delay_Init();
 DELAY_EXTRN void Delay_Reset();
 DELAY_EXTRN void Delay_Process(float *signal_l, float *signal_r);

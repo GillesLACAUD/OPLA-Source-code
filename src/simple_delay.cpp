@@ -61,8 +61,8 @@ void Delay_Process(float *signal_l, float *signal_r)
         delayOut -= MAX_DELAY;
     }
 
-    *signal_l += delayLine_l[delayOut] * delayToMix*(1-delayPan);
-    *signal_r += delayLine_r[delayOut] * delayToMix*(delayPan);
+    *signal_l += delayLine_l[delayOut] * delayToMix*(1-DelayPanMod);
+    *signal_r += delayLine_r[delayOut] * delayToMix*(DelayPanMod);
 
     delayLine_l[delayIn] += delayLine_l[delayOut] * delayFeedback;
     delayLine_r[delayIn] += delayLine_r[delayOut] * delayFeedback;

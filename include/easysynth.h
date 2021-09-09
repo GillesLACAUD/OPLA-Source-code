@@ -203,8 +203,7 @@ float Lfo2SpeedMod=0;
 float Lfo2AmtMod=0;
 float WaveShapping1Mod=0;
 float OldWaveShapping1Mod=0;
-float DelayPanMod=0;
-float DelayAmtMod=0;
+
 
 float MixOsc = 1;
 float MixSub = 1;
@@ -279,10 +278,6 @@ extern float Lfo1AmtMod;
 extern float Lfo2SpeedMod;
 extern float Lfo2AmtMod;
 extern float WaveShapping1Mod;
-extern float RevPanMod;
-extern float DelayPanMod;
-extern float RevAmtMod;
-extern float DelayAmtMod;
 
 extern float SubTranspose;
 

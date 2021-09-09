@@ -4,6 +4,8 @@
 #define __LFO__
 #include "Lfo.h"
 #include "easysynth.h"
+#include "reverb.h"
+#include "simple_delay.h"
 
 
 /***************************************************/
@@ -114,9 +116,18 @@ static uint16_t sl1,sl2;
         break;
 
         case LFO_REVPAN:
-        RevPanMod += prlfo->f_modlfo;            // +/- 1 max;
+        RevPanMod = reverbPan+prlfo->f_modlfo/2;            // +/- 1 max;
+        if(RevPanMod<0)
+        RevPanMod=0;
+        if(RevPanMod>1)
+        RevPanMod=1;
         break;
         case LFO_DELAYPAN:
+        DelayPanMod = delayPan+prlfo->f_modlfo/2;            // +/- 1 max;
+        if(DelayPanMod<0)
+        DelayPanMod=0;
+        if(DelayPanMod>1)
+        DelayPanMod=1;
         break;
         case LFO_REVAMT:
         break;

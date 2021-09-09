@@ -906,6 +906,7 @@ float value;
 
     value = val * NORM127MUL;
     delayPan = value;
+    DelayPanMod=delayPan;
 }
 
 /***************************************************/
@@ -932,6 +933,7 @@ float value;
 
     value = val * NORM127MUL;
     reverbPan = value;
+    RevPanMod=reverbPan;
 }
 
 
