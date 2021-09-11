@@ -828,6 +828,15 @@ int indx=0;
                     wavework[i] = 1 - i*fdec;
                 }
                 break;
+                /*
+                case WAVE_AKWF:
+                for (i = 0; i < WAVEFORM_CNT; i++)
+                {
+                    wavework[i] = wavework[i];
+                }
+                break;
+                */
+
             }
         }
     }
@@ -962,7 +971,8 @@ int indx=0;
     }
         
     //float multi = (1+AmpMod)*0.75f;
-    float multi = (1+AmpMod);
+    //float multi = (1+AmpMod)*2.0;   //fait des clics ???
+    float multi = (1+AmpMod)*GeneralVolume;
     out_l *=multi;
     out_r *=multi;
     //out_r =out_l;

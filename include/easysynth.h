@@ -129,6 +129,7 @@ SYNTH_EXTRN uint8_t FilterType;
 SYNTH_EXTRN uint8_t NoiseType;
 
 
+
 /*
  * add here your waveforms
  */
@@ -214,6 +215,7 @@ float pitchMultiplier = 1.0f;
 
 float AmpVel=0.5;
 float FilterVel=1.0;
+float GeneralVolume=1.0;
 
 #else
 
@@ -289,6 +291,8 @@ extern float pitchMultiplier;
 
 extern float AmpVel;
 extern float FilterVel;
+
+extern float GeneralVolume;
 
 extern uint8_t oldCurrentSound;
 

@@ -43,5 +43,6 @@ MOD_EXTRN float AfterTouchAmount;
 MOD_EXTRN float ModWheelValue;
 MOD_EXTRN float AfterTouchValue;
 
+
 MOD_EXTRN void ModWheel_Process();
 MOD_EXTRN void AfterTouch_Process();

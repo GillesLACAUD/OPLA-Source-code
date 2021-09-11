@@ -895,6 +895,7 @@ float value;
     return(0);
 }
 
+
 /***************************************************/
 /*                                                 */
 /*                                                 */
@@ -919,7 +920,7 @@ int Fct_Ch_Reverb(int val)
 float value;    
 
     value = val * NORM127MUL;
-    Reverb_SetLevel(0,value);
+    Reverb_SetLevel(0,value/2);
 }
 
 /***************************************************/
@@ -1079,7 +1080,8 @@ float value;
 /***************************************************/
 int Fct_Ch_SVolume(int val)
 {
-float value;    
-
-    value = val * NORM127MUL;
+    if(val<100)
+        GeneralVolume = val * 0.01;
+    else
+        GeneralVolume = val * 0.02;
 }
