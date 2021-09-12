@@ -14,10 +14,6 @@
 #include "Modulator.h"
 #include "SDCard.h"
 
-
-/* use define to dump midi data */
-//#define DUMP_SERIAL2_TO_SERIAL
-
 /* constant to normalize midi value to 0.0 - 1.0f */
 #define NORM127MUL	0.007874f
 /***************************************************/
@@ -126,6 +122,58 @@ inline void Midi_ControlChange(uint8_t channel, uint8_t data1, uint8_t data2)
     
 }
 
+// Sysex Midi clock and Real time
+/****************************************************/
+/*                                                  */
+/*                                                  */
+/*                                                  */
+/*                                                  */
+/****************************************************/
+inline void HandleRealTimeMsg(uint8_t realtime)
+{
+uint8_t incomingByte;
+
+  switch(realtime)
+  {
+    case MIDI_CLOCK:
+    /*
+    if(!gu8_MidiClock)
+    {
+      gu8_MidiClock=1;
+      gu8_MidiCptClock=0;
+    }
+    gu16_TimerMidiClock=0;
+    */
+    break;
+    
+    case MIDI_SYSTEM_EXCLUSIVE:
+    incomingByte=0x00;
+    #ifdef DUMP_SERIAL2_TO_SERIAL
+    Serial.printf("SYSEX 0xF0 ");
+    #endif
+    while(incomingByte !=0xF7)      // Wait end sysex
+    {
+      if (Serial2.available())
+      {
+        incomingByte = Serial2.read();
+        #ifdef DUMP_SERIAL2_TO_SERIAL
+        Serial.printf("0X%02X ",incomingByte);
+        #endif
+      }
+    }
+    #ifdef DUMP_SERIAL2_TO_SERIAL
+    Serial.printf("\n");
+    #endif
+    break;
+    
+    case MIDI_START:
+    break;
+    
+    case MIDI_STOP:
+    break;
+    
+  }
+}
 
 /***************************************************/
 /*                                                 */
@@ -223,9 +271,11 @@ void Midi_Process()
         #ifdef DUMP_SERIAL2_TO_SERIAL 
         Serial.printf("%02x\n", incomingByte);
         #endif
-        /* ignore live messages */
-        if ((incomingByte & 0xF0) == 0xF0)
+
+        /* System or real time messages */
+        if ((incomingByte >= 0xF0))
         {
+            HandleRealTimeMsg(incomingByte);
             return;
         }
 

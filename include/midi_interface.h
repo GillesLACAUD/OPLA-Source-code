@@ -169,5 +169,6 @@ MIDI_EXTRN inline void Midi_NoteOff(uint8_t note,uint8_t vel);
 MIDI_EXTRN inline void Midi_PitchBend(uint8_t channel,uint8_t data1, uint8_t data2);
 MIDI_EXTRN inline void Midi_ControlChange(uint8_t channel, uint8_t data1, uint8_t data2);
 MIDI_EXTRN inline void HandleShortMsg(uint8_t *data);
+MIDI_EXTRN inline void HandleRealTimeMsg(uint8_t realtime);
 MIDI_EXTRN void Midi_Setup();
 MIDI_EXTRN void Midi_Process();
