@@ -187,6 +187,7 @@ void setup()
 
     
     Serial.println();
+
     
     Serial.printf("Initialize Synth Module\n");
     Synth_Init();
@@ -270,10 +271,11 @@ void setup()
     timerAttachInterrupt(timer_1ms, &onTimer1ms, true);
     timerAlarmEnable(timer_1ms);
     
+
     xTaskCreatePinnedToCore(CoreTask0, "terminalTask", 8000, NULL,0, &Core0TaskHnd, 0);
 
     Nextion_Init();
-
+    
     
     if(sdcard)
     {
@@ -289,18 +291,6 @@ void setup()
         // Send 10 first names to the Nextion screen
         SoundNameInc10=0;
         SDCard_Display10SndName();
-
-        // Test Write
-        /*      
-        sprintf((char*)SndName,"BRASS   \r\n");
-        SDCard_WriteSndName(0);
-        SDCard_SaveSndName();
-
-        sprintf((char*)SndName,"LEAD SQR\r\n");
-        SDCard_WriteSndName(5);
-        SDCard_SaveSndName();
-        */
-
     }
     SDCard_LoadLastSound();
     SDCard_LoadMidiRx();

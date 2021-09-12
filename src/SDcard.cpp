@@ -272,6 +272,8 @@ unsigned int sz=sizeof(WorkSound);
 
     LastSoundNumber = snd;
     SoundNameInc10 =   LastSoundNumber/10;
+    CurrentSound = snd-SoundNameInc10*10;
+    oldCurrentSound = CurrentSound; 
 
     //sprintf(messnex,"v4.pco=62222");
     //Nextion_Send(messnex);
@@ -466,6 +468,7 @@ void SDCard_Display10SndName()
         SDCard_ReadSndName(i+SoundNameInc10*10);
         sprintf(messnex,"page2.b%d.txt=%c%s%c",i,0x22,SndName,0x22);
         Nextion_Send(messnex);
+        Serial.printf("%s\n",SndName);
     }
 }
 

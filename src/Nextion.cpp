@@ -345,13 +345,29 @@ uint8_t cc;
     // Q Quit
     // N Name sound
     // D Draw AKWF
+    // A Select sound
+    // B Confirm save yes/no    B0 yes B1 No
+
 
 	val = Nextion_Mess[4]*255+Nextion_Mess[3];
 	Nextion_Cmd_Receive=0;
     
 	cas = (int)Nextion_Mess[1];
+    //Serial.printf("NEXTION %02X\n",cas);
   	switch(cas)
 	{
+
+        // A Select sound
+        // Select page always in the Nextion IHM
+        case 0x41:      
+        SDCard_Display10SndName();
+        sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
+        Nextion_Send(messnex);
+        sprintf(messnex,"page2.b%d.pco=0",CurrentSound);
+        Nextion_Send(messnex);
+        sprintf(messnex,"page 3");
+        Nextion_Send(messnex);
+        break;
 
         // D Draw AKWF
         case 0x44:
