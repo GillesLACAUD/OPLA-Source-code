@@ -80,6 +80,7 @@ SYNTH_EXTRN uint32_t midi_note_to_add[MIDI_NOTE_CNT]; /* lookup to playback wave
 
 #define WAVEFORM_BIT	10UL                            // 10 = 1024 sample 9 = 512 8 = 256 
 #define WAVEFORM_CNT	(1<<WAVEFORM_BIT)
+#define WAVEFORM_Q2		(1<<(WAVEFORM_BIT-1))
 #define WAVEFORM_Q4		(1<<(WAVEFORM_BIT-2))
 #define WAVEFORM_MSK	((1<<WAVEFORM_BIT)-1)
 #define WAVEFORM_I(i)	((i) >> (32 - WAVEFORM_BIT)) & WAVEFORM_MSK

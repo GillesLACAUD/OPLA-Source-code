@@ -717,6 +717,10 @@ int indx=0;
     float sup;
     float inf;
     float tmp;
+    float slope;
+    int trig;
+    float tmpphase[WAVEFORM_CNT];
+    int dephase;
     
 
     selectedWaveForm = &wavework[0];
@@ -728,6 +732,10 @@ int indx=0;
         if(WaveShapping1Mod > sup || WaveShapping1Mod < inf)
         {
             tmp = WaveShapping1+WaveShapping1Mod;
+            if(tmp>0.90)
+		        tmp = 0.90;
+            if(tmp<0)
+                tmp = 0;
             OldWaveShapping1Mod = WaveShapping1Mod;
 
             switch(selWaveForm1)
@@ -742,21 +750,32 @@ int indx=0;
                 
                 // PWM
                 case WAVE_SQUARE:
-                if(tmp<0.01)
-                    tmp = 0.01;
-                if(tmp>0.99)
-                    tmp = 0.99;
-                cmp = ((int)(float)WAVEFORM_CNT*tmp);
-                for (i = 0; i < WAVEFORM_CNT; i++)
+            	cmp = WAVEFORM_Q2-((int)(float)WAVEFORM_Q2*tmp);
+                for (i = 0; i < cmp; i++)
                 {
-                    wavework[i] = (i > cmp) ? 1 : -1;
+                    wavework[i] = 1;
+                }
+                for (i = cmp; i < WAVEFORM_CNT; i++)
+                {
+                    wavework[i] = -1;
                 }
                 break;
 
                 case WAVE_PULSE:
-                for (i = 0; i < WAVEFORM_CNT; i++)
+	            trig=WAVEFORM_Q4 - (int)((float)(WAVEFORM_Q4)*tmp);
+                if(trig!=WAVEFORM_Q4)
+                    slope=2/(float)(WAVEFORM_Q4-trig);
+                for (i = 0; i < trig; i++)
                 {
-                     wavework[i]=pulse[i];
+                    wavework[i] = 1;
+                }
+                for (i = trig; i < WAVEFORM_Q4; i++)
+                {
+                    wavework[i] = 1-slope*(i-trig);
+                }
+                for (i = WAVEFORM_Q4; i < WAVEFORM_CNT; i++)
+                {
+                    wavework[i] = -1;
                 }
                 break;
 
@@ -828,6 +847,8 @@ int indx=0;
                     wavework[i] = 1 - i*fdec;
                 }
                 break;
+              
+
                 /*
                 case WAVE_AKWF:
                 for (i = 0; i < WAVEFORM_CNT; i++)
