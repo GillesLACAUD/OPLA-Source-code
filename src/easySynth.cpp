@@ -785,30 +785,43 @@ int indx=0;
                 // tmp from 0 to 1
                 // gate1 = 1-tmp/2
                 // gate2 = -gate1
-                float gate1,gate2;
-                gate1 = 1 -tmp/2;
-                gate2 = 0-gate1;
+                // float gate1,gate2;
+                // gate1 = 1 -tmp/2;
+                // gate2 = 0-gate1;
+                // for (i = 0; i < WAVEFORM_CNT; i++)
+                // {
+                //     if(tri[i]>gate1)
+                //     {
+                //         wavework[i] = gate1;
+                //     }
+                //     else if(tri[i]<gate2)
+                //     {
+                //         wavework[i] = gate2;
+                //     }
+                //     else
+                //     {
+                //         wavework[i] = tri[i];
+                //     }
+                // }
+                tmp *=0.5;
                 for (i = 0; i < WAVEFORM_CNT; i++)
                 {
-                    if(tri[i]>gate1)
-                    {
-                        wavework[i] = gate1;
-                    }
-                    else if(tri[i]<gate2)
-                    {
-                        wavework[i] = gate2;
-                    }
-                    else
-                    {
-                        wavework[i] = tri[i];
-                    }
+                    wavework[i] = tri[i]+saw[i]*tmp;
+                    if(wavework[i]>1.0)
+                        wavework[i]=1.0;
+                    if(wavework[i]<-1.0)
+                        wavework[i]=-1.0;
                 }
                 break;
 
                 case WAVE_NOISE:
                 for (i = 0; i < WAVEFORM_CNT; i++)
                 {
-                     wavework[i]=noise[i];
+                    wavework[i] = noise[i]*(1-tmp)+saw[i]*tmp;      // Morphing
+                    if(wavework[i]>1.0)
+                        wavework[i]=1.0;
+                    if(wavework[i]<-1.0)
+                        wavework[i]=-1.0;
                 }
                 break;
             
@@ -862,6 +875,14 @@ int indx=0;
         }
     }
 
+/*     for (i = 0; i < WAVEFORM_CNT; i++)
+    {
+        if(wavework[i]>1.0)
+            wavework[i]=1.0;
+        if(wavework[i]<-1.0)
+           wavework[i]=-1.0;
+    }
+ */ 
     /*
      * oscillator processing -> mix to voice
     */
