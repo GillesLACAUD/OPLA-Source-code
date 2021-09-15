@@ -89,6 +89,7 @@ struct adsrT
     float d;
     float s;
     float r;
+    uint8_t loop;
 };
 
 typedef enum

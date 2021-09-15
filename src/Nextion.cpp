@@ -142,7 +142,7 @@ uint8_t s,e;
         // From Nextion
         if(source==1)
         {
-            sprintf(messnex,"page1.CCInfo.txt=%c%s%c",0x22,Tab_Encoder[gui_Section][gui_Param].LgName,0x22);
+            sprintf(messnex,"page1.CCInfo.txt=%c%03d %s%c",0x22,cc,Tab_Encoder[gui_Section][gui_Param].LgName,0x22);
         }
         // From Midi
         else

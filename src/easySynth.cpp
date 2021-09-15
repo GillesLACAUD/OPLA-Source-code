@@ -570,7 +570,10 @@ inline bool ADSR_Process(const struct adsrT *ctrl, float *ctrlSig, adsr_phaseT *
         *ctrlSig -= ctrl->d/4;
         if (*ctrlSig < ctrl->s+ctrl->d)
         {
-            *phase = sustain;
+            if(ctrl->loop)
+                *phase = attack;
+            else
+                *phase = sustain;
         }
         break;
     case sustain:

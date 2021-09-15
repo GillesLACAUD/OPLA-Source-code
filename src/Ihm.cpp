@@ -541,8 +541,9 @@ float value;
     value = val * NORM127MUL;
     adsr_vol.s = (0.01 * pow(100, value)); 
     adsr_vol.s = value;
+
     if(serialdebug)       
-        Serial.printf("Amp Sustain: %f\n",adsr_vol.s);
+        Serial.printf("Amp Sustain: %f Loop Mode %d\n",adsr_vol.s,adsr_vol.loop);
     return(0);
 }
 
