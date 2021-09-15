@@ -82,6 +82,7 @@ int Fct_Ch_WS1(int val);
 int Fct_Ch_SubWave(int val);
 int Fct_Ch_SubMix(int val);
 int Fct_Ch_SubOct(int val);
+int Fct_Ch_SubDetune(int val);
 
 int Fct_Ch_NoiseType(int val);
 int Fct_Ch_Noise(int val); 
@@ -157,8 +158,8 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
 
     "SUB",  "SUB WAVEFORM", MIDI_CC_SUBOSC, TYPE_LIST,  &Wave_SubName[0][0],0,      &WS.SubWave,   1,  0,      WAVEFORM_SUB_COUNT,    1,        Fct_Ch_SubWave,   FctNull,    FctNull,    FctNull,    FctNull,
     "MIX",  "SUB VOLUME",   MIDI_CC_SUBVOL, TYPE_DATA,  &TabListNull[0][0], 0,      &WS.SubVolume,   1,  0,      127,    1,      Fct_Ch_SubMix,    FctNull,    FctNull,    FctNull,    FctNull,
+    "DET",  "SUB DETUNE",   MIDI_CC_SUBDET, TYPE_DATA,  &TabListNull[0][0], 0,      &WS.SubDetune,   1,  0,      127,    1,       Fct_Ch_SubDetune,         FctNull,    FctNull,    FctNull,    FctNull,
     "TRA",  "TRANSPOSE",    MIDI_CC_SUBTR,  TYPE_DATA,  &TabListNull[0][0], 0,      &WS.SubTranspose,   1,  -24,    12,     1,      Fct_Ch_SubOct,    FctNull,    FctNull,    FctNull,    FctNull,
-    "---",  "---",          0xFF,           TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
     "PAN",  "PAN SPREAD",   MIDI_CC_PANSPR, TYPE_DATA,  &TabListNull[0][0], 0,      &WS.PanSpread,   1,  0,      127,    1,      Fct_Ch_PanSpread,         FctNull,    FctNull,    FctNull,    FctNull,
     
     "NOIS", "NOISE TYPE",   MIDI_CC_NTYPE,  TYPE_LIST,  &Noise_Name[0][0], 0,       &WS.NoiseType,   1,  0,      NOISE_TYPE_COUNT,    1,      Fct_Ch_NoiseType,     FctNull,    FctNull,    FctNull,    FctNull,

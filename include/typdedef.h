@@ -66,19 +66,16 @@ struct WorkSound
     int16_t Transpose;
     int16_t SVolume;
 
-    // Add 12.06.21
-    int16_t LFO1Sync;
+
+    int16_t LFO1Sync;           // Add 12.06.21
     int16_t LFO2Sync;
 
-    // Add 22.06.21
-    int16_t NoiseType;
-
+    int16_t NoiseType;          // Add 22.06.21
     int16_t PanSpread;
+    int16_t AKWFWave;           // Add 16.08.21
+    int16_t SubDetune;          // Add 15.09.21
 
-    // Add 16.08.21
-    int16_t AKWFWave;
-
-    int16_t Reserved[47];
+    int16_t Reserved[46];
       
 };
 

@@ -497,7 +497,7 @@ uint8_t oldnote;
             {
                 osc = &oscPlayer[2+i*3];                // 2 -> The thirth OSC is the sub
                 note = voicePlayer[i].midiNote+WS.Transpose;
-                osc->addVal = midi_note_to_add[note+(int8_t)SubTranspose];
+                osc->addVal = midi_note_to_add[note+(int8_t)SubTranspose]*(1.0+subdetune*0.9);
             }
         }        
         break;
@@ -518,7 +518,7 @@ uint8_t oldnote;
                 osc->addVal = tmp;
                 // Detune OSC3 SUB
                 osc = &oscPlayer[v*3+2];
-                osc->addVal = midi_note_to_add[note+(int8_t)SubTranspose]/**(0.5-oscdetune)*/;
+                osc->addVal = midi_note_to_add[note+(int8_t)SubTranspose]*(1.0+subdetune*0.9);
             }
         }
         break;
@@ -538,7 +538,7 @@ uint8_t oldnote;
                 osc->addVal = tmp;
                 // Detune OSC3 SUB
                 osc = &oscPlayer[v*3+2];
-                osc->addVal = midi_note_to_add[note+(int8_t)SubTranspose]/**(0.5-oscdetune)*/;
+                osc->addVal = midi_note_to_add[note+(int8_t)SubTranspose]*(1.0+subdetune*0.9);
             }
         }
         break;
@@ -1297,7 +1297,7 @@ static uint8_t flippan;
     {
         if (note + SubTranspose < 128)
         {
-            osc->addVal = midi_note_to_add[note+(int8_t)SubTranspose]/**(0.5-oscdetune)*/;
+            osc->addVal = midi_note_to_add[note+(int8_t)SubTranspose]*(1.0+subdetune*0.9);
             if(!retrig)
             {
                 //osc->samplePos = 0; /* we could add some offset maybe */

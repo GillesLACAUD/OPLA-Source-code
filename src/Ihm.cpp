@@ -288,6 +288,35 @@ float value;
         Serial.printf("Sub vol: %f\n",MixSub);
     return(0);
 }
+
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+int Fct_Ch_SubDetune(int val)
+{
+float value;    
+
+    value = val * NORM127MUL;
+    if(val==0)
+    {
+        subdetune = 0;
+    }
+    else
+    {
+        subdetune =(0.0001*pow(500,value)); 
+    }
+    Update_Tune(TUNE_SUB);
+
+    if(serialdebug)
+        Serial.printf("Sub Detune: %f\n", subdetune);
+
+    return(0);
+
+}
+
+
 /***************************************************/
 /*                                                 */
 /*                                                 */

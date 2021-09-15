@@ -156,6 +156,7 @@ uint8_t selWaveForm2=0;
 uint8_t globalrank=0;
 
 float oscdetune=0;
+float subdetune=0;
 
 char Filter_Type[MAX_FLT_TYPE][MAX_LABEL] =
 {"2LP","2HP","2BP","2NP","1LP","1HP","1BP","1NP"};
@@ -244,6 +245,7 @@ extern uint8_t selWaveForm2;
 extern uint8_t globalrank;
 
 extern float oscdetune;
+extern float subdetune;
 
 /*
  * do not forget to enter the waveform pointer addresses here
