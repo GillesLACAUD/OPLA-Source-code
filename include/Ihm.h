@@ -64,9 +64,9 @@ typedef struct
 char Tab_Section_Name[MAX_SECTION][15]=
 {
     "OSCILLATOR",
+    "NOISE",
     "FILTER",
     "ENV GENERATOR",
-    "NOISE",
     "LFO",
     "FX",
     "SYSTEM",
@@ -165,7 +165,17 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
     "TRA",  "TRANSPOSE",    MIDI_CC_SUBTR,  TYPE_DATA,  &TabListNull[0][0], 0,      &WS.SubTranspose,   1,  -24,    12,     1,      Fct_Ch_SubOct,    FctNull,    FctNull,    FctNull,    FctNull,
     "PAN",  "PAN SPREAD",   MIDI_CC_PANSPR, TYPE_DATA,  &TabListNull[0][0], 0,      &WS.PanSpread,   1,  0,      127,    1,      Fct_Ch_PanSpread,         FctNull,    FctNull,    FctNull,    FctNull,
     
-     
+    "NOIS", "NOISE TYPE",   MIDI_CC_NTYPE,  TYPE_LIST,  &Noise_Name[0][0],  0,      &WS.NoiseType,    1,  0,      NOISE_TYPE_COUNT,    1,      Fct_Ch_NoiseType,     FctNull,    FctNull,     FctNull,    FctNull,
+    "MIX",  "NOISE VOLUME", MIDI_CC_NOISE,  TYPE_DATA,  &TabListNull[0][0], 0,      &WS.NoiseLevel,   1,  0,      127,    1,      Fct_Ch_Noise,     FctNull,    FctNull,    FctNull,    FctNull,
+    "FLP",  "FILTER LOOP",  MIDI_CC_82,     TYPE_LIST,  &YesNo[0][0],       0,      &WS.FilterLoop,   1,  0,      2,    1,      Fct_Ch_FilterLoop,         FctNull,    FctNull,    FctNull,    FctNull,
+    "ALP",  "AMP LOOP",     MIDI_CC_83,     TYPE_LIST,  &YesNo[0][0],       0,      &WS.AmpLoop,      1,  0,      2,    1,      Fct_Ch_AmpLoop,         FctNull,    FctNull,    FctNull,    FctNull,
+    "PLP",  "PITCH LOOP",   MIDI_CC_84,     TYPE_LIST,  &YesNo[0][0],       0,      &WS.PitchLoop,    1,  0,      2,    1,      Fct_Ch_PitchLoop,         FctNull,    FctNull,    FctNull,    FctNull,
+
+    "BAK",  "AKWF BANK",    MIDI_CC_BK,     TYPE_DATA,  &TabListNull[0][0], 0,      &WS.OscBank, 1,  0,      63,    1,      Fct_Ch_Bank,         FctNull,    FctNull,    FctNull,    FctNull,
+    "WAV",  "AKWF WAVE",    MIDI_CC_WA,     TYPE_DATA,  &TabListNull[0][0], 0,      &WS.AKWFWave,1,  0,      99,    1,      Fct_Ch_Wave,         FctNull,    FctNull,    FctNull,    FctNull,
+    "---",  "---",          MIDI_CC_87,     TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
+    "---",  "---",          MIDI_CC_88,     TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
+    "---",  "---",          MIDI_CC_89,     TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,     
     
 
     // SECTION FILTER
@@ -195,18 +205,6 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
     "REL",  "PI RELEASE",   MIDI_CC_PITC_R,  TYPE_DATA,  &TabListNull[0][0], 0,      &WS.PEgRelease,   1,  0,      127,    1,      Fct_Ch_PiRelease, FctNull,    FctNull,    FctNull,    FctNull,
     "AMT",  "PI AMOUNT",    MIDI_CC_PITC_Q,  TYPE_DATA,  &TabListNull[0][0], 0,      &WS.PEgAmount,   1,  0,      127,    1,      Fct_Ch_PiAmount,  FctNull,    FctNull,    FctNull,    FctNull,
     "POR",  "PORTAMENTO",   MIDI_CC_PORTA,   TYPE_DATA,  &TabListNull[0][0], 0,      &WS.Portamento,   1,  0,      127,    1,      Fct_Ch_Portamento,          FctNull,    FctNull,    FctNull,    FctNull,
-
-    "NOIS", "NOISE TYPE",   MIDI_CC_NTYPE,  TYPE_LIST,  &Noise_Name[0][0],  0,      &WS.NoiseType,    1,  0,      NOISE_TYPE_COUNT,    1,      Fct_Ch_NoiseType,     FctNull,    FctNull,     FctNull,    FctNull,
-    "MIX",  "NOISE VOLUME", MIDI_CC_NOISE,  TYPE_DATA,  &TabListNull[0][0], 0,      &WS.NoiseLevel,   1,  0,      127,    1,      Fct_Ch_Noise,     FctNull,    FctNull,    FctNull,    FctNull,
-    "FLP",  "FILTER LOOP",  MIDI_CC_82,     TYPE_LIST,  &YesNo[0][0],       0,      &WS.FilterLoop,   1,  0,      2,    1,      Fct_Ch_FilterLoop,         FctNull,    FctNull,    FctNull,    FctNull,
-    "ALP",  "AMP LOOP",     MIDI_CC_83,     TYPE_LIST,  &YesNo[0][0],       0,      &WS.AmpLoop,      1,  0,      2,    1,      Fct_Ch_AmpLoop,         FctNull,    FctNull,    FctNull,    FctNull,
-    "PLP",  "PITCH LOOP",   MIDI_CC_84,     TYPE_LIST,  &YesNo[0][0],       0,      &WS.PitchLoop,    1,  0,      2,    1,      Fct_Ch_PitchLoop,         FctNull,    FctNull,    FctNull,    FctNull,
-
-    "BAK",  "AKWF BANK",    MIDI_CC_BK,     TYPE_DATA,  &TabListNull[0][0], 0,      &WS.OscBank, 1,  0,      63,    1,      Fct_Ch_Bank,         FctNull,    FctNull,    FctNull,    FctNull,
-    "WAV",  "AKWF WAVE",    MIDI_CC_WA,     TYPE_DATA,  &TabListNull[0][0], 0,      &WS.AKWFWave,1,  0,      99,    1,      Fct_Ch_Wave,         FctNull,    FctNull,    FctNull,    FctNull,
-    "---",  "---",          MIDI_CC_87,     TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
-    "---",  "---",          MIDI_CC_88,     TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
-    "---",  "---",          MIDI_CC_89,     TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,   1,  0,      127,    1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
 
 
     // SECTION LFO
