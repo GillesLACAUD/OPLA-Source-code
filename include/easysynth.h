@@ -140,6 +140,9 @@ uint8_t oldCurrentSound=250;
 char Noise_Name[NOISE_TYPE_COUNT][5] = 
 {"PRE","POS"};
 
+char YesNo[2][5] = 
+{"NO","YES"};
+
 float sine[WAVEFORM_CNT];
 float saw[WAVEFORM_CNT];
 float square[WAVEFORM_CNT];
@@ -222,6 +225,7 @@ float GeneralVolume=1.0;
 #else
 
 extern char Noise_Name[NOISE_TYPE_COUNT][5];
+extern char YesNo[2][5];
 extern char Filter_Type[MAX_FLT_TYPE][MAX_LABEL];
 extern char Wave_Name[WAVEFORM_TYPE_COUNT][MAX_LABEL];
 extern char Wave_SubName[WAVEFORM_SUB_COUNT][MAX_LABEL];

@@ -75,7 +75,11 @@ struct WorkSound
     int16_t AKWFWave;           // Add 16.08.21
     int16_t SubDetune;          // Add 15.09.21
 
-    int16_t Reserved[46];
+    int16_t FilterLoop;          // Add 17.09.21
+    int16_t AmpLoop;             // Add 17.09.21
+    int16_t PitchLoop;           // Add 17.09.21
+    
+    int16_t Reserved[43];
       
 };
 
