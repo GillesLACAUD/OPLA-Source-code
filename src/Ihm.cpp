@@ -133,7 +133,9 @@ int Fct_Ch_Bank(int val)
    
     sprintf(messnex,"page3.BKNAME.txt=%c%s%c",0x22,SampleDIR[WS.OscBank].name,0x22);
     Nextion_Send(messnex);      
-    Tab_Encoder[1][6].MaxData=SampleDIR[WS.OscBank].nbr-1;  // Chg the max for the MIDI CC  
+    Tab_Encoder[SECTION_BANK_MAX][POT_BANK_MAX].MaxData=SampleDIR[WS.OscBank].nbr-1;  // Chg the max for the MIDI CC  
+
+
 
     sprintf(messnex,"page3.WAPOT.maxval=%d",SampleDIR[WS.OscBank].nbr-1);
     Nextion_Send(messnex);
