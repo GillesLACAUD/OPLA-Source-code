@@ -129,6 +129,8 @@ SYNTH_EXTRN uint8_t FilterType;
 
 SYNTH_EXTRN uint8_t NoiseType;
 
+SYNTH_EXTRN uint8_t FlipPan;
+
 
 
 /*

@@ -1183,7 +1183,6 @@ void Synth_NoteOn(uint8_t note,uint8_t vel)
 {
 uint8_t retrig;
 float setvel;
-static uint8_t flippan;
 
     struct notePlayerT *voice = getFreeVoice(note,&retrig);
     struct oscillatorT *osc = getFreeOsc();
@@ -1199,10 +1198,10 @@ static uint8_t flippan;
 
     voice->midiNote = note;
 
-    flippan = !flippan;
+    
     // PanSpread  000 -> 1
     // PanSpread  127 -> 1 to 0 
-    if(flippan)
+    if(FlipPan)
         voice->panspread = (float)WS.PanSpread/127.0;
     else
         voice->panspread = 1-(float)WS.PanSpread/127.0;

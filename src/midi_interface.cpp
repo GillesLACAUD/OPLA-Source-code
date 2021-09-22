@@ -45,7 +45,10 @@ void Midi_Dump()
 inline void Midi_NoteOn(uint8_t note,uint8_t vel)
 {
     if(note)
+    {
+        FlipPan = !FlipPan;
         Synth_NoteOn(note,vel);
+    }
     else
     {
         Midi_Dump();
