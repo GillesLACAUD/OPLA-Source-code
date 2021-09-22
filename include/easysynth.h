@@ -328,6 +328,9 @@ SYNTH_EXTRN struct notePlayerT *getFreeVoice();
 SYNTH_EXTRN inline void Filter_Reset(struct filterProcT *filter);
 SYNTH_EXTRN void Synth_NoteOn(uint8_t note,uint8_t vel);
 SYNTH_EXTRN void Synth_NoteOff(uint8_t note);
+SYNTH_EXTRN void Synth_MonoNoteOn(uint8_t note,uint8_t vel);
+SYNTH_EXTRN void Synth_MonoNoteOff(uint8_t note);
+
 SYNTH_EXTRN int Synth_SetRotary(uint8_t rotary, int val);
 
 SYNTH_EXTRN void Update_Tune(uint8_t type);
