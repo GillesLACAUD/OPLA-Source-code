@@ -47,7 +47,7 @@ inline void Midi_NoteOn(uint8_t note,uint8_t vel)
     if(note)
     {
         FlipPan = !FlipPan;
-        if(WS.SoundMode !=SND_MODE_MONO)
+        if(SoundMode !=SND_MODE_MONO)
             Synth_NoteOn(note,vel);
         else
             Synth_MonoNoteOn(note,vel);
@@ -64,7 +64,7 @@ inline void Midi_NoteOn(uint8_t note,uint8_t vel)
 /***************************************************/
 inline void Midi_NoteOff(uint8_t note,uint8_t vel)
 {
-    if(WS.SoundMode !=SND_MODE_MONO)
+    if(SoundMode !=SND_MODE_MONO)
         Synth_NoteOff(note);
     else
         Synth_MonoNoteOff(note);

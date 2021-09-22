@@ -1344,21 +1344,149 @@ void Synth_NoteOff(uint8_t note)
 }
 
 /***************************************************/
-/*                                                 */
+/* Play all the notes for monophonic sound         */
 /*                                                 */
 /*                                                 */
 /***************************************************/
 void Synth_MonoNoteOn(uint8_t note,uint8_t vel)
 {
+uint8_t retrig;
+float setvel;
+
+    struct notePlayerT *voice;
+    struct oscillatorT *osc;
+
+
+    for(uint8_t n=0;n<WS.PolyMax;n++)
+    {
+        voice = getFreeVoice(note,&retrig);
+        osc = getFreeOsc();
+
+        /*
+        * No free voice found, return otherwise crash xD
+        */
+        if ((voice == NULL) || (osc == NULL))
+        {  
+            //Serial.printf("voc: %d, osc: %d\n", voc_act, osc_act);
+            return ;
+        }
+
+        voicePlayer[n].midiNote = note;
+        
+        // PanSpread  000 -> 1
+        // PanSpread  127 -> 1 to 0 
+        if(FlipPan)
+            voicePlayer[n].panspread = (float)WS.PanSpread/127.0;
+        else
+            voicePlayer[n].panspread = 1-(float)WS.PanSpread/127.0;
+
+        setvel = (float)vel/127;        // Real velocity
+        voicePlayer[n].avelocity =1-(1-setvel)*AmpVel;
+        voicePlayer[n].fvelocity = (setvel-0.5)*FilterVel; 
+        if(!retrig)
+        {
+            voicePlayer[n].lastSample[0] = 0.0f;
+            voicePlayer[n].lastSample[1] = 0.0f;
+            voicePlayer[n].control_sign = 0.0f;
+            voicePlayer[n].f_control_sign = 0;
+            voicePlayer[n].f_control_sign_slow = adsr_fil.a;
+        }
+        voicePlayer[n].phase = attack;
+        voicePlayer[n].p_phase = attack;
+        voicePlayer[n].f_phase = attack;  
+
+        // No voices
+        if(voc_act==0)
+        {
+            if(Lfo1.ui8_Sync != LFO_FREE)
+            {
+                Lfo_cnt1=0;
+            }
+            if(Lfo2.ui8_Sync != LFO_FREE)
+            {
+                Lfo_cnt2=0;
+            }
+        }
+
+        voc_act += 1;
+    
+        float tmp;
+        if (osc != NULL)
+        {
+            tmp = midi_note_to_add[note]*(1.0+oscdetune);
+            //tmp = midi_note_to_add[note];     // No Detune
+            osc->addVal = tmp;
+            if(!retrig)
+            {
+                //osc->samplePos = 0;
+            }
+            osc->waveForm = selectedWaveForm;
+            osc->dest = voice->lastSample;
+            osc->pan_l = 1;
+            osc->pan_r = 1;
+        }
+
+        osc_act += 1;
+
+        osc = getFreeOsc();
+        if (osc != NULL)
+        {
+            tmp= midi_note_to_add[note]*(1.0-oscdetune*0.75);
+            //tmp= midi_note_to_add[note];      // No Detune
+            osc->addVal = tmp;
+            if(!retrig)
+            {
+                //osc->samplePos = 0;
+            }
+            osc->waveForm = selectedWaveForm;
+            osc->dest = voice->lastSample;
+            osc->pan_l = 1;
+            osc->pan_r = 1;
+
+            osc_act += 1;
+        }  
+
+        osc = getFreeOsc();
+        if (osc != NULL)
+        {
+            if (note + SubTranspose < 128)
+            {
+                osc->addVal = midi_note_to_add[note+(int8_t)SubTranspose]*(1.0+subdetune*0.9);
+                if(!retrig)
+                {
+                    //osc->samplePos = 0; /* we could add some offset maybe */
+                }
+                osc->waveForm = selectedWaveForm2;
+                osc->dest = voice->lastSample;
+                osc->pan_l = 1;
+                osc->pan_r = 1;
+
+                osc_act += 1;
+            }
+        }
+
+    }
+
+   
+
 }
 
 /***************************************************/
-/*                                                 */
+/* Stop all the notes for monophonic sound         */
 /*                                                 */
 /*                                                 */
 /***************************************************/
 void Synth_MonoNoteOff(uint8_t note)
 {
+    for (int i = 0; i < WS.PolyMax ; i++)
+    {
+        if ((voicePlayer[i].active) && (voicePlayer[i].midiNote == note))
+        {
+            voicePlayer[i].phase = release;
+            voicePlayer[i].f_phase = release;
+            voicePlayer[i].p_phase = release;
+        }
+    }
 }
 
 

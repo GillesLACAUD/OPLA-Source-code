@@ -33,7 +33,7 @@ SYNTH_EXTRN uint32_t midi_note_to_add[MIDI_NOTE_CNT]; /* lookup to playback wave
 
 #define SND_MAX_POLY		4
 #define SND_MAX_PARA		4			// 6 if possible ????
-#define SND_MAX_MONO		1
+#define SND_MAX_MONO		4
 
 //----------------------------------------------------------
 // FILTER DEFINE
