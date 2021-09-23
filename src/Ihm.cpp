@@ -699,8 +699,13 @@ float nz=0;
     for (int v = 0; v < WS.PolyMax; v++)
     {
         notePlayerT *voice = &voicePlayer[v];
-        nz = ((((float)random(1024))/1024.0)-0.5)/30;
+        if(SoundMode ==SND_MODE_MONO)
+            nz = ((((float)random(1024))/1024.0)-0.5)/10;
+        else
+            nz = ((((float)random(1024))/1024.0)-0.5)/30;
+            
         voice->spread = 1.0+(nz*value);
+        
         if(serialdebug)
             Serial.printf("Spread %d %6.3f\n",v,voice->spread);
     }

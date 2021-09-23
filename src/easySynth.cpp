@@ -1391,9 +1391,12 @@ float setvel;
             voicePlayer[n].f_control_sign = 0;
             voicePlayer[n].f_control_sign_slow = adsr_fil.a;
         }
-        voicePlayer[n].phase = attack;
-        voicePlayer[n].p_phase = attack;
-        voicePlayer[n].f_phase = attack;  
+        if(MonoCptNote==0)
+        {
+            voicePlayer[n].phase = attack;
+            voicePlayer[n].p_phase = attack;
+            voicePlayer[n].f_phase = attack;  
+        }
 
         // No voices
         if(voc_act==0)
@@ -1464,10 +1467,7 @@ float setvel;
                 osc_act += 1;
             }
         }
-
     }
-
-   
 
 }
 
@@ -1487,6 +1487,7 @@ void Synth_MonoNoteOff(uint8_t note)
             voicePlayer[i].p_phase = release;
         }
     }
+   
 }
 
 

@@ -382,7 +382,7 @@ static uint16_t cpttimer2;
      * Midi does not required to be checked after every processed sample
      * - we divide our operation by 8
      */
-    if (loop_count_u8 % 32 == 0)
+    if (loop_count_u8 % 8 == 0)
     {
         Midi_Process();
         if(trigloadwave && Cptloadwave > LOADWAVE_MAX_OVER_TIME)
