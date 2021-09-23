@@ -55,29 +55,26 @@ inline void Midi_NoteOn(uint8_t note,uint8_t vel)
             // Keep alway the last two notes
             if(MonoCptNote>=MONO_MAX_KEEP_NOTE)
             {
-                /*
+
                 Serial.printf("SHIFT LEFT\n");
                 for(uint8_t n=0;n<MONO_MAX_KEEP_NOTE;n++)
                 {
-                    Serial.printf("--- BEFORE MonoCptNote %d note %d\n",n,MonoKeepNote[n]);
+                    Serial.printf("--- BEFORE MonoCptNote ON %d note %d\n",n,MonoKeepNote[n]);
                 }
-                */
+                //for(uint8_t n=0;n<MONO_MAX_KEEP_NOTE;n++)
+                //{
+                    MonoKeepNote[0]=MonoKeepNote[1];
+                //}
+                //MonoCptNote--;
+                MonoKeepNote[1]=note;
                 for(uint8_t n=0;n<MONO_MAX_KEEP_NOTE;n++)
                 {
-                    MonoKeepNote[n]=MonoKeepNote[n+1];
+                    Serial.printf("--- AFTER MonoCptNote ON %d note %d\n",n,MonoKeepNote[n]);
                 }
-                MonoCptNote--;
-                MonoKeepNote[MonoCptNote]=note;
-                /*
-                for(uint8_t n=0;n<MONO_MAX_KEEP_NOTE;n++)
-                {
-                    Serial.printf("--- AFTER MonoCptNote %d note %d\n",n,MonoKeepNote[n]);
-                }
-                */
             }
             else
                 MonoKeepNote[MonoCptNote]=note;
-            Serial.printf("MonoCptNote %d note %d\n",MonoCptNote,note);
+            Serial.printf("MonoCptNote ON %d note %d\n",MonoCptNote,note);
             MonoCptNote++;
         }
     }
@@ -89,18 +86,58 @@ inline void Midi_NoteOn(uint8_t note,uint8_t vel)
 /***************************************************/
 inline void Midi_NoteOff(uint8_t note,uint8_t vel)
 {
+uint8_t n;
+
     if(SoundMode !=SND_MODE_MONO)
         Synth_NoteOff(note);
     else
     {
-        if(MonoCptNote)
-            MonoCptNote--;
+
         if(!MonoCptNote)
-            Synth_MonoNoteOff(note);
+        {
+            Synth_MonoNoteOff(MonoKeepNote[MonoCptNote]);
+            n=0;
+            Serial.printf("MonoCptNote OFF LAST NOTE %d note %d\n",n,MonoKeepNote[n]);
+        }
+        if(MonoKeepNote[MonoCptNote-1]==note)            
+        {
+            MonoCptNote--;
+            if(!MonoCptNote)
+            {
+                Synth_MonoNoteOff(MonoKeepNote[MonoCptNote]);
+                n=0;
+                Serial.printf("MonoCptNote OFF LAST NOTE %d note %d\n",n,MonoKeepNote[n]);
+            }
+            else
+            {
+                for(n=MonoCptNote-1;n>=0;n--)
+                {
+                    if(MonoKeepNote[n]!=0)
+                    {
+                        Synth_MonoNoteOn(MonoKeepNote[n],64);
+                        break;
+                    }
+                }
+                Serial.printf("MonoCptNote OFF/ON %d note %d\n",MonoCptNote,MonoKeepNote[n]);
+            }
+            
+        }
         else
-            Synth_MonoNoteOn(MonoKeepNote[MonoCptNote-1],64);
+        {
+            // search the note
+            for(uint8_t n=0;n<MONO_MAX_KEEP_NOTE;n++)
+            {
+                if(MonoKeepNote[n]==note)
+                {
+                    MonoKeepNote[n]=0;
+                    break;
+                }
+                MonoCptNote--;
+            }
+            Serial.printf("MonoCptNote OFF %d not last note %d\n",MonoCptNote,note);
+            
+        }
     }
-    Serial.printf("MonoCptNote %d\n",MonoCptNote);
 }
 
 /***************************************************/
