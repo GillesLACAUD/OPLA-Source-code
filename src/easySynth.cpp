@@ -991,12 +991,9 @@ int indx=0;
             }
             else
             {
-                //out_l += voice->lastSample[0];
-                out_l += voice->lastSample[0]*(1-voice->panspread);
-                out_r += voice->lastSample[0]*(voice->panspread);
+                out_l += voice->lastSample[0];
+                out_r += voice->lastSample[0];
             }
-
-            
             voice->lastSample[0] = 0.0f;
         }
     }
@@ -1005,7 +1002,9 @@ int indx=0;
     {
         out_l = KarlsenLPF(out_l,FiltCutoffMod+voicePlayer[0].f_control_sign*filterEG, filtReso,0);
         out_r = KarlsenLPF(out_r,FiltCutoffMod+voicePlayer[0].f_control_sign*filterEG, filtReso,0);
-        //out_r = out_l;
+        out_l *= 1-voicePlayer[0].panspread;
+        out_r *= voicePlayer[0].panspread;
+        
     }
     
     if(NoiseType == NOISE_POST && voc_act!=0)
@@ -1356,7 +1355,6 @@ float setvel;
     struct notePlayerT *voice;
     struct oscillatorT *osc;
 
-
     for(uint8_t n=0;n<WS.PolyMax;n++)
     {
         voice = getFreeVoice(note,&retrig);
@@ -1397,6 +1395,21 @@ float setvel;
             voicePlayer[n].p_phase = attack;
             voicePlayer[n].f_phase = attack;  
         }
+        if(adsr_fil.trig==1)
+        {
+            voicePlayer[n].f_phase = attack;  
+            voicePlayer[n].f_control_sign = 0;
+        }
+        if(adsr_vol.trig==1)
+        {
+            voicePlayer[n].phase = attack;  
+            voicePlayer[n].control_sign = 0;
+        }
+        if(adsr_pit.trig==1)
+        {
+            voicePlayer[n].p_phase = attack;  
+            voicePlayer[n].p_control_sign = 0;
+        }
 
         // No voices
         if(voc_act==0)
@@ -1414,58 +1427,49 @@ float setvel;
         voc_act += 1;
     
         float tmp;
-        if (osc != NULL)
+        tmp = midi_note_to_add[note]*(1.0+oscdetune);
+        //tmp = midi_note_to_add[note];     // No Detune
+        osc->addVal = tmp;
+        if(!retrig)
         {
-            tmp = midi_note_to_add[note]*(1.0+oscdetune);
-            //tmp = midi_note_to_add[note];     // No Detune
-            osc->addVal = tmp;
-            if(!retrig)
-            {
-                //osc->samplePos = 0;
-            }
-            osc->waveForm = selectedWaveForm;
-            osc->dest = voice->lastSample;
-            osc->pan_l = 1;
-            osc->pan_r = 1;
+            //osc->samplePos = 0;
         }
+        osc->waveForm = selectedWaveForm;
+        osc->dest = voice->lastSample;
+        osc->pan_l = 1;
+        osc->pan_r = 1;
 
         osc_act += 1;
 
         osc = getFreeOsc();
-        if (osc != NULL)
+        tmp= midi_note_to_add[note]*(1.0-oscdetune*0.75);
+        //tmp= midi_note_to_add[note];      // No Detune
+        osc->addVal = tmp;
+        if(!retrig)
         {
-            tmp= midi_note_to_add[note]*(1.0-oscdetune*0.75);
-            //tmp= midi_note_to_add[note];      // No Detune
-            osc->addVal = tmp;
+            //osc->samplePos = 0;
+        }
+        osc->waveForm = selectedWaveForm;
+        osc->dest = voice->lastSample;
+        osc->pan_l = 1;
+        osc->pan_r = 1;
+
+        osc_act += 1;
+
+        osc = getFreeOsc();
+        if (note + SubTranspose < 128)
+        {
+            osc->addVal = midi_note_to_add[note+(int8_t)SubTranspose]*(1.0+subdetune*0.9);
             if(!retrig)
             {
-                //osc->samplePos = 0;
+                //osc->samplePos = 0; /* we could add some offset maybe */
             }
-            osc->waveForm = selectedWaveForm;
+            osc->waveForm = selectedWaveForm2;
             osc->dest = voice->lastSample;
             osc->pan_l = 1;
             osc->pan_r = 1;
 
             osc_act += 1;
-        }  
-
-        osc = getFreeOsc();
-        if (osc != NULL)
-        {
-            if (note + SubTranspose < 128)
-            {
-                osc->addVal = midi_note_to_add[note+(int8_t)SubTranspose]*(1.0+subdetune*0.9);
-                if(!retrig)
-                {
-                    //osc->samplePos = 0; /* we could add some offset maybe */
-                }
-                osc->waveForm = selectedWaveForm2;
-                osc->dest = voice->lastSample;
-                osc->pan_l = 1;
-                osc->pan_r = 1;
-
-                osc_act += 1;
-            }
         }
     }
 

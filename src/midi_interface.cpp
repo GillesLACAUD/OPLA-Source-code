@@ -52,30 +52,22 @@ inline void Midi_NoteOn(uint8_t note,uint8_t vel)
         else
         {
             Synth_MonoNoteOn(note,vel);
+            MonoCptNote++;
+
             // Keep alway the last two notes
             if(MonoCptNote>=MONO_MAX_KEEP_NOTE)
             {
 
-                Serial.printf("SHIFT LEFT\n");
-                for(uint8_t n=0;n<MONO_MAX_KEEP_NOTE;n++)
-                {
-                    Serial.printf("--- BEFORE MonoCptNote ON %d note %d\n",n,MonoKeepNote[n]);
-                }
-                //for(uint8_t n=0;n<MONO_MAX_KEEP_NOTE;n++)
-                //{
-                    MonoKeepNote[0]=MonoKeepNote[1];
-                //}
-                //MonoCptNote--;
-                MonoKeepNote[1]=note;
-                for(uint8_t n=0;n<MONO_MAX_KEEP_NOTE;n++)
-                {
-                    Serial.printf("--- AFTER MonoCptNote ON %d note %d\n",n,MonoKeepNote[n]);
-                }
+                //MonoKeepNote[0]=MonoKeepNote[1];
+                //MonoKeepNote[1]=note;
             }
             else
-                MonoKeepNote[MonoCptNote]=note;
-            Serial.printf("MonoCptNote ON %d note %d\n",MonoCptNote,note);
-            MonoCptNote++;
+            {
+                MonoKeepNote[MonoIndexNote]=note;
+                MonoKeepVel[MonoIndexNote]=vel;
+            }
+            MonoIndexNote++;
+            //Midi_NotePrint(1,note,vel);
         }
     }
 }
@@ -92,51 +84,61 @@ uint8_t n;
         Synth_NoteOff(note);
     else
     {
+        MonoCptNote--;
 
-        if(!MonoCptNote)
+        if(MonoKeepNote[MonoIndexNote-1]==note)
         {
-            Synth_MonoNoteOff(MonoKeepNote[MonoCptNote]);
-            n=0;
-            Serial.printf("MonoCptNote OFF LAST NOTE %d note %d\n",n,MonoKeepNote[n]);
-        }
-        if(MonoKeepNote[MonoCptNote-1]==note)            
-        {
-            MonoCptNote--;
             if(!MonoCptNote)
             {
-                Synth_MonoNoteOff(MonoKeepNote[MonoCptNote]);
-                n=0;
-                Serial.printf("MonoCptNote OFF LAST NOTE %d note %d\n",n,MonoKeepNote[n]);
+                Synth_MonoNoteOff(MonoKeepNote[MonoIndexNote-1]);
+                MonoKeepNote[MonoIndexNote]=0;
+                MonoKeepVel[MonoIndexNote]=0;
+                MonoIndexNote=0;
             }
             else
             {
-                for(n=MonoCptNote-1;n>=0;n--)
+                MonoIndexNote--;
+                for(n=MonoIndexNote-1;n>=0;n--)
                 {
                     if(MonoKeepNote[n]!=0)
                     {
-                        Synth_MonoNoteOn(MonoKeepNote[n],64);
+                        Synth_MonoNoteOn(MonoKeepNote[n],MonoKeepVel[n]);
+                        break;
+                    }
+                    MonoIndexNote--;
+                    if(!MonoIndexNote)
+                    {
+                        Synth_MonoNoteOff(MonoKeepNote[MonoIndexNote]);
                         break;
                     }
                 }
-                Serial.printf("MonoCptNote OFF/ON %d note %d\n",MonoCptNote,MonoKeepNote[n]);
             }
-            
         }
         else
         {
-            // search the note
-            for(uint8_t n=0;n<MONO_MAX_KEEP_NOTE;n++)
+
+            if(!MonoCptNote)
             {
-                if(MonoKeepNote[n]==note)
-                {
-                    MonoKeepNote[n]=0;
-                    break;
-                }
-                MonoCptNote--;
+                Synth_MonoNoteOff(MonoKeepNote[MonoIndexNote-1]);
+                MonoKeepNote[MonoIndexNote-1]=0;
+                MonoKeepVel[MonoIndexNote-1]=0;
+                MonoIndexNote=0;
             }
-            Serial.printf("MonoCptNote OFF %d not last note %d\n",MonoCptNote,note);
-            
+            else
+            {
+                // search the note
+                for(uint8_t n=0;n<MONO_MAX_KEEP_NOTE;n++)
+                {
+                    if(MonoKeepNote[n]==note)
+                    {
+                        MonoKeepNote[n]=0;
+                        MonoKeepVel[n]=0;
+                        break;
+                    }
+                }
+            }
         }
+        //Midi_NotePrint(0,note,vel);
     }
 }
 

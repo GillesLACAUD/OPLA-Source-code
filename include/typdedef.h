@@ -78,8 +78,12 @@ struct WorkSound
     int16_t FilterLoop;          // Add 17.09.21
     int16_t AmpLoop;             // Add 17.09.21
     int16_t PitchLoop;           // Add 17.09.21
+
+    int16_t FilterTrig;          // Add 25.09.21
+    int16_t AmpTrig;             // Add 25.09.21
+    int16_t PitchTrig;           // Add 25.09.21
     
-    int16_t Reserved[43];
+    int16_t Reserved[40];
       
 };
 
@@ -91,6 +95,7 @@ struct adsrT
     float s;
     float r;
     uint8_t loop;
+    uint8_t trig;
 };
 
 typedef enum

@@ -61,10 +61,10 @@ typedef struct
 #define SECTION_SYSTEM  5
 
 #ifdef __IHM__
-char Tab_Section_Name[MAX_SECTION][15]=
+char Tab_Section_Name[MAX_SECTION][20]=
 {
     "OSCILLATOR",
-    "NOISE",
+    "NOISE/LOOP/TRIG",
     "FILTER",
     "ENV GENERATOR",
     "LFO",
@@ -147,6 +147,10 @@ int Fct_Ch_FilterLoop(int val);
 int Fct_Ch_AmpLoop(int val);
 int Fct_Ch_PitchLoop(int val);
 
+int Fct_Ch_FilterTrig(int val);
+int Fct_Ch_AmpTrig(int val);
+int Fct_Ch_PitchTrig(int val);
+
 // To change the max for the AKWF selection -> Tab_Encoder[SECTION_BANK_MAX][POT_BANK_MAX]
 #define SECTION_BANK_MAX    1
 #define POT_BANK_MAX        6 
@@ -175,9 +179,9 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
 
     "BAK",  "AKWF BANK",    MIDI_CC_BK,     TYPE_DATA,  &TabListNull[0][0], 0,      &WS.OscBank,      1,    0,      63,                     1,      Fct_Ch_Bank,          FctNull,    FctNull,    FctNull,    FctNull,
     "WAV",  "AKWF WAVE",    MIDI_CC_WA,     TYPE_DATA,  &TabListNull[0][0], 0,      &WS.AKWFWave,     1,    0,      99,                     1,      Fct_Ch_Wave,          FctNull,    FctNull,    FctNull,    FctNull,
-    "---",  "---",          MIDI_CC_87,     TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,         1,    0,      127,                    1,      FctNull,              FctNull,    FctNull,    FctNull,    FctNull,
-    "---",  "---",          MIDI_CC_88,     TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,         1,    0,      127,                    1,      FctNull,              FctNull,    FctNull,    FctNull,    FctNull,
-    "---",  "---",          MIDI_CC_89,     TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,         1,    0,      127,                    1,      FctNull,              FctNull,    FctNull,    FctNull,    FctNull,     
+    "FTR",  "FILTER TRIG"   MIDI_CC_87,     TYPE_DATA,  &YesNo[0][0],       0,      &WS.FilterTrig,   1,    0,      2,                      1,      Fct_Ch_FilterTrig,    FctNull,    FctNull,    FctNull,    FctNull,
+    "ATR-", "AMP TRIG",     MIDI_CC_88,     TYPE_DATA,  &YesNo[0][0],       0,      &WS.AmpTrig,      1,    0,      2,                      1,      Fct_Ch_AmpTrig,       FctNull,    FctNull,    FctNull,    FctNull,
+    "PTR",  "PITCH TRIG",   MIDI_CC_89,     TYPE_DATA,  &YesNo[0][0],       0,      &WS.PitchTrig,    1,    0,      2,                      1,      Fct_Ch_PitchTrig,     FctNull,    FctNull,    FctNull,    FctNull,     
 
 
     // SECTION FILTER
