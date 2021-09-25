@@ -64,7 +64,7 @@ typedef struct
 char Tab_Section_Name[MAX_SECTION][20]=
 {
     "OSCILLATOR",
-    "NOISE/LOOP/TRIG",
+    "NOISE-LOOP-TRIG",
     "FILTER",
     "ENV GENERATOR",
     "LFO",
@@ -179,9 +179,9 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
 
     "BAK",  "AKWF BANK",    MIDI_CC_BK,     TYPE_DATA,  &TabListNull[0][0], 0,      &WS.OscBank,      1,    0,      63,                     1,      Fct_Ch_Bank,          FctNull,    FctNull,    FctNull,    FctNull,
     "WAV",  "AKWF WAVE",    MIDI_CC_WA,     TYPE_DATA,  &TabListNull[0][0], 0,      &WS.AKWFWave,     1,    0,      99,                     1,      Fct_Ch_Wave,          FctNull,    FctNull,    FctNull,    FctNull,
-    "FTR",  "FILTER TRIG"   MIDI_CC_87,     TYPE_DATA,  &YesNo[0][0],       0,      &WS.FilterTrig,   1,    0,      2,                      1,      Fct_Ch_FilterTrig,    FctNull,    FctNull,    FctNull,    FctNull,
-    "ATR-", "AMP TRIG",     MIDI_CC_88,     TYPE_DATA,  &YesNo[0][0],       0,      &WS.AmpTrig,      1,    0,      2,                      1,      Fct_Ch_AmpTrig,       FctNull,    FctNull,    FctNull,    FctNull,
-    "PTR",  "PITCH TRIG",   MIDI_CC_89,     TYPE_DATA,  &YesNo[0][0],       0,      &WS.PitchTrig,    1,    0,      2,                      1,      Fct_Ch_PitchTrig,     FctNull,    FctNull,    FctNull,    FctNull,     
+    "FTR",  "FILTER TRIG",  MIDI_CC_87,     TYPE_LIST,  &YesNo[0][0],       0,      &WS.FilterTrig,   1,    0,      2,                      1,      Fct_Ch_FilterTrig,    FctNull,    FctNull,    FctNull,    FctNull,
+    "ATR",  "AMP TRIG",     MIDI_CC_88,     TYPE_LIST,  &YesNo[0][0],       0,      &WS.AmpTrig,      1,    0,      2,                      1,      Fct_Ch_AmpTrig,       FctNull,    FctNull,    FctNull,    FctNull,
+    "PTR",  "PITCH TRIG",   MIDI_CC_89,     TYPE_LIST,  &YesNo[0][0],       0,      &WS.PitchTrig,    1,    0,      2,                      1,      Fct_Ch_PitchTrig,     FctNull,    FctNull,    FctNull,    FctNull,     
 
 
     // SECTION FILTER
@@ -258,7 +258,7 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
 
 };
 #else
-IHM_EXTRN char Tab_Section_Name[MAX_SECTION][15];
+IHM_EXTRN char Tab_Section_Name[MAX_SECTION][20];
 IHM_EXTRN Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER];
 
 IHM_EXTRN int Fct_Ch_OscWave(int val);

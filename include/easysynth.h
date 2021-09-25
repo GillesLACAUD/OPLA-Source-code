@@ -132,7 +132,7 @@ SYNTH_EXTRN uint8_t NoiseType;
 SYNTH_EXTRN uint8_t FlipPan;
 
 
-#define MONO_MAX_KEEP_NOTE	20
+#define MONO_MAX_KEEP_NOTE	60
 SYNTH_EXTRN uint8_t MonoIndexNote;
 SYNTH_EXTRN uint8_t MonoCptNote;
 SYNTH_EXTRN uint8_t MonoKeepNote[MONO_MAX_KEEP_NOTE];

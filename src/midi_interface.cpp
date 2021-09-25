@@ -57,6 +57,7 @@ inline void Midi_NoteOn(uint8_t note,uint8_t vel)
             // Keep alway the last two notes
             if(MonoCptNote>=MONO_MAX_KEEP_NOTE)
             {
+                Serial.printf("You play like a monkey MonoCptNote = %d Index %d\n",MonoCptNote,MonoIndexNote);                    
 
                 //MonoKeepNote[0]=MonoKeepNote[1];
                 //MonoKeepNote[1]=note;
@@ -70,6 +71,7 @@ inline void Midi_NoteOn(uint8_t note,uint8_t vel)
             //Midi_NotePrint(1,note,vel);
         }
     }
+    Serial.printf("--MonoCptNote  ON= %d Index %d\n",MonoCptNote,MonoIndexNote);                    
 }
 /***************************************************/
 /*                                                 */
@@ -138,6 +140,7 @@ uint8_t n;
                 }
             }
         }
+        Serial.printf("--MonoCptNote OFF= %d Index %d\n",MonoCptNote,MonoIndexNote);                    
         //Midi_NotePrint(0,note,vel);
     }
 }
