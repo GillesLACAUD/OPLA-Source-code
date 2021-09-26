@@ -395,7 +395,7 @@ uint8_t cc;
         }
         else
         {
-            sprintf(messnex,"page0.b2.txt=%cAKWF%c",0x22,voc_act,0x22);
+            sprintf(messnex,"page0.b2.txt=%cSELECT AKWF WAVE FIRST%c",0x22,0x22);
             Nextion_Send(messnex);
         }
         
