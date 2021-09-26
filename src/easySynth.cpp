@@ -636,8 +636,12 @@ void Voice_Off(uint32_t i)
         }
     }
     voc_act -= 1;
-    sprintf(messnex,"page0.b2.txt=%c%d%c",0x22,voc_act,0x22);
-    Nextion_Send(messnex);
+
+    if(SoundMode !=SND_MODE_MONO)    
+    {
+        sprintf(messnex,"page0.b2.txt=%c%d%c",0x22,voc_act,0x22);
+        Nextion_Send(messnex);
+    }
 }
 
 static float out_l, out_r;

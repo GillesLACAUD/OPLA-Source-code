@@ -70,6 +70,8 @@ inline void Midi_NoteOn(uint8_t note,uint8_t vel)
             }
             MonoIndexNote++;
             //Midi_NotePrint(1,note,vel);
+            sprintf(messnex,"page0.b2.txt=%c%d%c",0x22,MonoCptNote,0x22);
+            Nextion_Send(messnex);
         }
     }
     Serial.printf("--MonoCptNote  ON= %d Index %d\n",MonoCptNote,MonoIndexNote);                    
@@ -143,8 +145,11 @@ uint8_t n;
             }
         }
         Serial.printf("--MonoCptNote OFF= %d Index %d\n",MonoCptNote,MonoIndexNote);                    
+        sprintf(messnex,"page0.b2.txt=%c%d%c",0x22,MonoCptNote,0x22);
+        Nextion_Send(messnex);
         //Midi_NotePrint(0,note,vel);
     }
+    
 }
 
 /***************************************************/
