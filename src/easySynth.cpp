@@ -1520,9 +1520,11 @@ float factor;
             {
                 if(Tab_Encoder[s][e].Type==TYPE_LIST)
                 {
-                    float value = (val-1) * NORM127MUL;
+                    if(val==MAXPOT)
+                        val=MAXPOT-1;
+                    float value = val * NORM127MUL;
                     Tab_Encoder[s][e].Index= (value) * (Tab_Encoder[s][e].MaxData);
-                    Serial.printf("List type val %d value %5.2f Index %d ->",val,value,Tab_Encoder[s][e].Index);
+                    //Serial.printf("List type val %d value %5.2f Index %d ->",val,value,Tab_Encoder[s][e].Index);
                 }
                 // 0-127 to min max data -> 0 = Min data 127 = Max data
                 // -24 to +12   range = 36

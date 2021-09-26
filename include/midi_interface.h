@@ -161,6 +161,7 @@ Def_Section Tab_Section[SECTION_MAX] =
 //#define DUMP_SERIAL2_TO_SERIAL
 
 /* constant to normalize midi value to 0.0 - 1.0f */
+#define MAXPOT	    127
 #define NORM127MUL	0.0078740157f
 
 MIDI_EXTRN void Midi_Dump();
