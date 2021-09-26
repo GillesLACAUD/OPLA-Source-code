@@ -40,6 +40,9 @@ struct oscillatorT *osc;
         osc = &oscPlayer[o+1];
         osc->waveForm = selectedWaveForm;
     }
+    if(selWaveForm1==WAVE_AKWF)
+        trigloadwave=1;
+
     // Force update
     OldWaveShapping1Mod += 0.03;
     if(serialdebug)

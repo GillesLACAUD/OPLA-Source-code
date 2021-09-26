@@ -371,27 +371,33 @@ uint8_t cc;
 
         // D Draw AKWF
         case 0x44:
-        
-        sprintf(messnex,"page3.BK.txt=%c%03d%c",0x22,WS.OscBank,0x22);
-        Nextion_Send(messnex);
-        sprintf(messnex,"page3.WA.txt=%c%03d%c",0x22,WS.AKWFWave,0x22);
-        Nextion_Send(messnex);
+         if(selWaveForm1 == WAVE_AKWF)
+        {
+            sprintf(messnex,"page3.BK.txt=%c%03d%c",0x22,WS.OscBank,0x22);
+            Nextion_Send(messnex);
+            sprintf(messnex,"page3.WA.txt=%c%03d%c",0x22,WS.AKWFWave,0x22);
+            Nextion_Send(messnex);
 
-        sprintf(messnex,"page3.BKPOT.val=%d",WS.OscBank);
-        Nextion_Send(messnex);
-        sprintf(messnex,"page3.WAPOT.val=%d",WS.AKWFWave);
-        Nextion_Send(messnex);
+            sprintf(messnex,"page3.BKPOT.val=%d",WS.OscBank);
+            Nextion_Send(messnex);
+            sprintf(messnex,"page3.WAPOT.val=%d",WS.AKWFWave);
+            Nextion_Send(messnex);
 
-        sprintf(messnex,"page3.BKNAME.txt=%c%s%c",0x22,SampleDIR[WS.OscBank].name,0x22);
-        Nextion_Send(messnex);
-        
+            sprintf(messnex,"page3.BKNAME.txt=%c%s%c",0x22,SampleDIR[WS.OscBank].name,0x22);
+            Nextion_Send(messnex);
+           
 
-        trigloadwave=1;
-        Cptloadwave=0;
-             
-        sprintf(messnex,"page 4");
-        Nextion_Send(messnex);
-        
+            trigloadwave=1;
+            Cptloadwave=0;
+                
+            sprintf(messnex,"page 4");
+            Nextion_Send(messnex);
+        }
+        else
+        {
+            sprintf(messnex,"page0.b2.txt=%cAKWF%c",0x22,voc_act,0x22);
+            Nextion_Send(messnex);
+        }
         
         break;
 
