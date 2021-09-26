@@ -161,7 +161,7 @@ Def_Section Tab_Section[SECTION_MAX] =
 //#define DUMP_SERIAL2_TO_SERIAL
 
 /* constant to normalize midi value to 0.0 - 1.0f */
-#define NORM127MUL	0.007874f
+#define NORM127MUL	0.0078740157f
 
 MIDI_EXTRN void Midi_Dump();
 MIDI_EXTRN inline void Midi_NoteOn(uint8_t note,uint8_t vel);

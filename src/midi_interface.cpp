@@ -44,6 +44,7 @@ void Midi_Dump()
 /***************************************************/
 inline void Midi_NoteOn(uint8_t note,uint8_t vel)
 {
+
     if(note)
     {
         FlipPan = !FlipPan;
@@ -138,6 +139,7 @@ uint8_t n;
                         break;
                     }
                 }
+                
             }
         }
         Serial.printf("--MonoCptNote OFF= %d Index %d\n",MonoCptNote,MonoIndexNote);                    
