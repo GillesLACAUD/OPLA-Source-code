@@ -78,6 +78,7 @@ int Fct_Ch_OscWave(int val);
 int Fct_Ch_OscMix(int val);
 int Fct_Ch_Detune(int val);
 int Fct_Ch_WS1(int val);   
+int Fct_Ch_WS2(int val);   
 
 int Fct_Ch_SubWave(int val);
 int Fct_Ch_SubMix(int val);
@@ -163,7 +164,7 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
     "MIX",  "OSC-VOLUME",   MIDI_CC_OSCVOL, TYPE_DATA,  &TabListNull[0][0], 0,      &WS.OscVolume,    1,    0,      127,                    1,      Fct_Ch_OscMix,        FctNull,    FctNull,    FctNull,    FctNull,
     "DET",  "DETUNE",       MIDI_CC_DETUNE, TYPE_DATA,  &TabListNull[0][0], 0,      &WS.OscDetune,    1,    0,      127,                    1,      Fct_Ch_Detune,        FctNull,    FctNull,    FctNull,    FctNull,
     "WS1",  "WAVE SHAPE1",  MIDI_CC_WS1,    TYPE_DATA,  &TabListNull[0][0], 0,      &WS.WaveShapping1,1,    0,      127,                    1,      Fct_Ch_WS1,           FctNull,    FctNull,    FctNull,    FctNull,
-    "WS2",  "WAVE SHAPE2",  MIDI_CC_WS2,    TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,         1,    0,      127,                    1,      FctNull,              FctNull,    FctNull,    FctNull,    FctNull,
+    "WS2",  "WAVE SHAPE2",  MIDI_CC_WS2,    TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,         1,    0,      127,                    1,      Fct_Ch_WS2,           FctNull,    FctNull,    FctNull,    FctNull,
     
     "SUB",  "SUB WAVEFORM", MIDI_CC_SUBOSC, TYPE_LIST,  &Wave_SubName[0][0],0,      &WS.SubWave,      1,    0,      WAVEFORM_SUB_COUNT,     1,      Fct_Ch_SubWave,       FctNull,    FctNull,    FctNull,    FctNull,
     "MIX",  "SUB VOLUME",   MIDI_CC_SUBVOL, TYPE_DATA,  &TabListNull[0][0], 0,      &WS.SubVolume,    1,    0,      127,                    1,      Fct_Ch_SubMix,        FctNull,    FctNull,    FctNull,    FctNull,

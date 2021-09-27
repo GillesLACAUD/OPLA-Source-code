@@ -739,8 +739,8 @@ int indx=0;
         if(WaveShapping1Mod > sup || WaveShapping1Mod < inf)
         {
             tmp = WaveShapping1+WaveShapping1Mod;
-            if(tmp>0.90)
-		        tmp = 0.90;
+            if(tmp>0.99)
+		        tmp = 0.99;
             if(tmp<0)
                 tmp = 0;
             OldWaveShapping1Mod = WaveShapping1Mod;
@@ -787,33 +787,10 @@ int indx=0;
                 break;
 
                 case WAVE_TRI:
-                // from -1 to +1
-                // gate1 = -0.8 gate2 = 0.8
-                // tmp from 0 to 1
-                // gate1 = 1-tmp/2
-                // gate2 = -gate1
-                // float gate1,gate2;
-                // gate1 = 1 -tmp/2;
-                // gate2 = 0-gate1;
-                // for (i = 0; i < WAVEFORM_CNT; i++)
-                // {
-                //     if(tri[i]>gate1)
-                //     {
-                //         wavework[i] = gate1;
-                //     }
-                //     else if(tri[i]<gate2)
-                //     {
-                //         wavework[i] = gate2;
-                //     }
-                //     else
-                //     {
-                //         wavework[i] = tri[i];
-                //     }
-                // }
-                tmp *=0.5;
+                // Tri to Saw
                 for (i = 0; i < WAVEFORM_CNT; i++)
                 {
-                    wavework[i] = tri[i]+saw[i]*tmp;
+                    wavework[i] = tri[i]*(1-tmp)+saw[i]*tmp;
                     if(wavework[i]>1.0)
                         wavework[i]=1.0;
                     if(wavework[i]<-1.0)
@@ -822,6 +799,7 @@ int indx=0;
                 break;
 
                 case WAVE_NOISE:
+                // Noise to Saw
                 for (i = 0; i < WAVEFORM_CNT; i++)
                 {
                     wavework[i] = noise[i]*(1-tmp)+saw[i]*tmp;      // Morphing
@@ -833,6 +811,7 @@ int indx=0;
                 break;
             
                 case WAVE_SINE:
+                // Multiply sine
                 cmp = 1+tmp*12;
                 for (i = 0; i < WAVEFORM_CNT; i++)
                 {
@@ -843,32 +822,17 @@ int indx=0;
                 }
                 break;
 
-                // SAW To TRI
                 case WAVE_SAW:
-                if(tmp<0.05)
-                    tmp = 0.0;
-                if(tmp>0.95)
-                    tmp = 1;
-                        
-                Triinc = (WAVEFORM_CNT/2)*(1+tmp);
-                Tridec = (WAVEFORM_CNT/2)*(1-tmp);
-
-                finc = 2.0/Triinc;
-                fdec = 2.0/Tridec;
-                
-                for(i = 0;i<Triinc;i++)
+                // Saw to Sine
+                for (i = 0; i < WAVEFORM_CNT; i++)
                 {
-                    wavework[i] = -1 + i*finc;
-                    //wavework[i] = sine[i];
-                }
-                for(i=0;i<Tridec;i++)
-                {
-                    //wavework[i]=0;
-                    wavework[i] = 1 - i*fdec;
+                    wavework[i] = saw[i]*(1-tmp)+sine[i]*tmp;      // Morphing
+                    if(wavework[i]>1.0)
+                        wavework[i]=1.0;
+                    if(wavework[i]<-1.0)
+                        wavework[i]=-1.0;
                 }
                 break;
-              
-
                 /*
                 case WAVE_AKWF:
                 for (i = 0; i < WAVEFORM_CNT; i++)
@@ -880,6 +844,11 @@ int indx=0;
 
             }
         }
+    }
+
+    for (i = 0; i < WAVEFORM_CNT; i++)
+    {
+        wavework[i] = wavework[i];
     }
 
 /*     for (i = 0; i < WAVEFORM_CNT; i++)
