@@ -44,6 +44,8 @@ void Midi_Dump()
 /***************************************************/
 inline void Midi_NoteOn(uint8_t note,uint8_t vel)
 {
+uint8_t slotav=0;
+uint8_t n=0;
 
     if(note)
     {
@@ -65,10 +67,24 @@ inline void Midi_NoteOn(uint8_t note,uint8_t vel)
             }
             else
             {
-                MonoKeepNote[MonoIndexNote]=note;
-                MonoKeepVel[MonoIndexNote]=vel;
+               		// search if a slot is available
+                for(n=0;n<MonoCptNote;n++)
+                {
+                    if(MonoKeepNote[n]==0x00)
+                    {
+                        MonoKeepNote[n]=note;
+                        MonoKeepVel[n]=vel;
+                        slotav = 1;
+                    }
+                    if(!slotav)
+                    {
+                        MonoKeepNote[MonoIndexNote]=note;
+                        MonoKeepVel[MonoIndexNote]=vel;
+                    }
+                }
             }
-            MonoIndexNote++;
+            if(n>MonoIndexNote)
+		        MonoIndexNote++;
             //Midi_NotePrint(1,note,vel);
             sprintf(messnex,"page0.b2.txt=%c%d%c",0x22,MonoCptNote,0x22);
             Nextion_Send(messnex);
@@ -147,6 +163,13 @@ uint8_t n;
         Serial.printf("--MonoCptNote OFF= %d Index %d\n",MonoCptNote,MonoIndexNote);                    
         sprintf(messnex,"page0.b2.txt=%c%d%c",0x22,MonoCptNote,0x22);
         Nextion_Send(messnex);
+        if(MonoCptNote==0 && MonoIndexNote==0)
+        {
+            Serial.printf("--KILL ALL NOTE\n");                    
+            for(n=0;n<MONO_MAX_KEEP_NOTE;n++)
+                Synth_MonoNoteOff(MonoKeepNote[n]);
+        }
+
         //Midi_NotePrint(0,note,vel);
     }
     
