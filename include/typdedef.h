@@ -82,8 +82,10 @@ struct WorkSound
     int16_t FilterTrig;          // Add 25.09.21
     int16_t AmpTrig;             // Add 25.09.21
     int16_t PitchTrig;           // Add 25.09.21
+
+    int16_t WaveShapping2;       // Add 27.09.21   
     
-    int16_t Reserved[40];
+    int16_t Reserved[39];
       
 };
 
