@@ -276,15 +276,15 @@ void setup()
 
     Nextion_Init();
     
-    
+    // SHOW SD CARD AND FIRMWARE VERSION
     if(sdcard)
     {
-        sprintf(messnex,"page0.b2.txt=%c>ERR:No SDCARD DETECTED%c",0x22,0x22);
+        sprintf(messnex,"page0.b2.txt=%c>SDCARD HS%c%c>V1.0 29.09.21%c",0x22,0x0D,0x0A,0x22);
         Nextion_Send(messnex);
     }
     else
     {
-        sprintf(messnex,"page0.b2.txt=%c>SDCARD DETECTED%c",0x22,0x22);
+        sprintf(messnex,"page0.b2.txt=%c>SDCARD OK%c%c>V1.0 29.09.21%c",0x22,0x0D,0x0A,0x22);
         Nextion_Send(messnex);
         // Load all the names in the memory
         SDCard_LoadSndName();
@@ -292,6 +292,7 @@ void setup()
         SoundNameInc10=0;
         SDCard_Display10SndName();
     }
+
     SDCard_LoadLastSound();
     SDCard_LoadMidiRx();
     Serial.printf("Midi Rx is %d\n",MidiRx);
