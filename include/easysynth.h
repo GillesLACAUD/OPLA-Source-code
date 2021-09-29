@@ -169,7 +169,7 @@ float oscdetune=0;
 float subdetune=0;
 
 char Filter_Type[MAX_FLT_TYPE][MAX_LABEL] =
-{"2LP","2HP","2BP","2NP","1LP","1HP","1BP","1NP"};
+{"4LP","4HP","4BP","4NP","2LP","2HP","2BP","2NP"};
 
 char Sound_Mode[MAX_SND_MODE][MAX_LABEL] = 
 {"POL","PAR","MON"};
