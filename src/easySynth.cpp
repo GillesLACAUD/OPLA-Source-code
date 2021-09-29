@@ -833,32 +833,38 @@ int indx=0;
                         wavework[i]=-1.0;
                 }
                 break;
-                /*
+
                 case WAVE_AKWF:
-                for (i = 0; i < WAVEFORM_CNT; i++)
-                {
-                    wavework[i] = wavework[i];
-                }
                 break;
-                */
 
             }
         }
     }
-
-    for (i = 0; i < WAVEFORM_CNT; i++)
+    /*
+    // To much time ?
+    sup = OldWaveShapping2Mod+0.02;
+    inf = OldWaveShapping2Mod-0.02;  
+    trig = WAVEFORM_CNT*(1-WaveShapping2Mod);
+    if(WaveShapping2Mod > sup || WaveShapping2Mod < inf)
     {
-        wavework[i] = wavework[i];
+        for (i = 0; i < trig; i++)
+        {
+        }
+        for (i = trig; i < WAVEFORM_CNT; i++)
+        {
+        }
     }
+    */
 
-/*     for (i = 0; i < WAVEFORM_CNT; i++)
+    /*
+    for (i = 0; i < WAVEFORM_CNT; i++)
     {
         if(wavework[i]>1.0)
             wavework[i]=1.0;
         if(wavework[i]<-1.0)
            wavework[i]=-1.0;
     }
- */ 
+    */ 
     /*
      * oscillator processing -> mix to voice
     */
@@ -973,8 +979,8 @@ int indx=0;
     // Try para mode - ok good
     if(SoundMode!=SND_MODE_POLY)
     {
-        out_l = KarlsenLPF(out_l,FiltCutoffMod+voicePlayer[0].f_control_sign*filterEG, filtReso,0);
-        out_r = KarlsenLPF(out_r,FiltCutoffMod+voicePlayer[0].f_control_sign*filterEG, filtReso,0);
+        out_l = KarlsenLPF(out_l,cf+voicePlayer[0].f_control_sign*filterEG, filtReso,0);
+        out_r = KarlsenLPF(out_r,cf+voicePlayer[0].f_control_sign*filterEG, filtReso,0);
         out_l *= 1-voicePlayer[0].panspread;
         out_r *= voicePlayer[0].panspread;
         
