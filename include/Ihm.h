@@ -21,6 +21,7 @@ IHM_EXTRN   int8_t  SoundNameInc10;
 
 IHM_EXTRN   char TabListNull[0][0];
 IHM_EXTRN   int16_t IntNull;
+IHM_EXTRN   int16_t IntCal;
 #ifdef __IHM__
 int FctNull(int val)
 {
@@ -152,6 +153,8 @@ int Fct_Ch_FilterTrig(int val);
 int Fct_Ch_AmpTrig(int val);
 int Fct_Ch_PitchTrig(int val);
 
+int Fct_Ch_Cal(int val);
+
 // To change the max for the AKWF selection -> Tab_Encoder[SECTION_BANK_MAX][POT_BANK_MAX]
 #define SECTION_BANK_MAX    1
 #define POT_BANK_MAX        6 
@@ -240,7 +243,7 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
     "PAN",  "REVERB PAN",   MIDI_CC_REVERB_PAN,    TYPE_DATA,  &TabListNull[0][0], 0, &WS.ReverbPan,    1,  0,      127,                    1,      Fct_Ch_RevPan,        FctNull,    FctNull,    FctNull,    FctNull,
     "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0, &IntNull,         1,  0,      127,                    1,      FctNull,              FctNull,    FctNull,    FctNull,    FctNull,
     "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0, &IntNull,         1,  0,      127,                    1,      FctNull,              FctNull,    FctNull,    FctNull,    FctNull,
-    "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0, &IntNull,         1,  0,      127,                    1,      FctNull,              FctNull,    FctNull,    FctNull,    FctNull,
+    "CAL",  "SCREEN CALIB", MIDI_CC_CAL,           TYPE_DATA,  &TabListNull[0][0], 0, &IntCal,          1,  0,      127,                    1,      Fct_Ch_Cal,           FctNull,    FctNull,    FctNull,    FctNull,
 
     // SECTION SYSTEM               
     /* Name                 MIDICC          TYPE        LIST                INDEX   VALUE             SIZE  MIN     MAX                     STEP    CHANGE      ON          OFF         HOLD        DCLK  */
@@ -321,6 +324,12 @@ IHM_EXTRN int Fct_Ch_PanSpread(int val);
 IHM_EXTRN int Fct_Ch_FilterLoop(int val);
 IHM_EXTRN int Fct_Ch_AmpLoop(int val);
 IHM_EXTRN int Fct_Ch_PitchLoop(int val);
+
+IHM_EXTRN int Fct_Ch_FilterTrig(int val);
+IHM_EXTRN int Fct_Ch_AmpTrig(int val);
+IHM_EXTRN int Fct_Ch_PitchTrig(int val);
+
+IHM_EXTRN int Fct_Ch_Cal(int val);
 
 #endif
 

@@ -275,7 +275,8 @@ void setup()
     xTaskCreatePinnedToCore(CoreTask0, "terminalTask", 8000, NULL,0, &Core0TaskHnd, 0);
 
     Nextion_Init();
-    
+
+        
     // SHOW SD CARD AND FIRMWARE VERSION
     if(sdcard)
     {

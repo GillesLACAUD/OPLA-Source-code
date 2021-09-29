@@ -1206,5 +1206,23 @@ int Fct_Ch_PitchTrig(int val)
         adsr_pit.trig=1;
 }
 
-
-
+uint8_t calib;
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+int Fct_Ch_Cal(int val)
+{
+    /*
+    if(calib==1)
+    {
+        //sprintf(messnex,"touch_j");
+        //Nextion_Send(messnex);
+    }
+    */
+    //calib=1;
+    //if(serialdebug)       
+    //    Serial.printf("CALIB %d\n",calib);
+    
+}
