@@ -258,14 +258,6 @@ struct oscillatorT *osc;
 /***************************************************/
 int Fct_Ch_WS2(int val)   
 {
-float value;    
-
-    value = val * NORM127MUL;
-    WaveShapping2=value;
-    WaveShapping2Mod = 0; 
-    OldWaveShapping2Mod=0;  // Force update waveform
-    OldWaveShapping2Mod = WaveShapping2Mod+0.5;
-
     if(serialdebug)
         Serial.printf("WS2:\n");
     return(0);
@@ -337,11 +329,7 @@ float value;
 /***************************************************/
 int Fct_Ch_SubOct(int val)
 {
-uint8_t note;
-
     SubTranspose = (float)val;
-    oscillatorT *osc;
-
     Update_Tune(TUNE_SUB);
 
     return(0);
@@ -956,6 +944,7 @@ float value;
     value = val * NORM127MUL;
     delayPan = value;
     DelayPanMod=delayPan;
+    return(0);
 }
 
 /***************************************************/
@@ -969,6 +958,7 @@ float value;
 
     value = val * NORM127MUL;
     Reverb_SetLevel(0,value/2);
+    return(0);
 }
 
 /***************************************************/
@@ -983,6 +973,7 @@ float value;
     value = val * NORM127MUL;
     reverbPan = value;
     RevPanMod=reverbPan;
+    return(0);
 }
 
 
@@ -1119,6 +1110,7 @@ float value;
     oscillatorT *osc;
     value = val * NORM127MUL;
     Update_Tune(TUNE_TRANSPOSE);
+    return(0);
 }
 
 /***************************************************/
@@ -1132,6 +1124,7 @@ int Fct_Ch_SVolume(int val)
         GeneralVolume = val * 0.01;
     else
         GeneralVolume = val * 0.02;
+    return(0);
 }
 
 /***************************************************/
@@ -1144,6 +1137,7 @@ int Fct_Ch_FilterLoop(int val)
     adsr_fil.loop=0;
     if(val>64)
         adsr_fil.loop=1;
+    return(0);
 }
 
 /***************************************************/
@@ -1156,6 +1150,7 @@ int Fct_Ch_AmpLoop(int val)
     adsr_vol.loop=0;
     if(val>64)
         adsr_vol.loop=1;
+    return(0);
 }
 
 /***************************************************/
@@ -1168,6 +1163,7 @@ int Fct_Ch_PitchLoop(int val)
     adsr_pit.loop=0;
     if(val>64)
         adsr_pit.loop=1;
+    return(0);
 }
 
 /***************************************************/
@@ -1180,6 +1176,7 @@ int Fct_Ch_FilterTrig(int val)
     adsr_fil.trig=0;
     if(val>64)
         adsr_fil.trig=1;
+    return(0);
 }
 
 /***************************************************/
@@ -1192,6 +1189,8 @@ int Fct_Ch_AmpTrig(int val)
     adsr_vol.trig=0;
     if(val>64)
         adsr_vol.trig=1;
+
+    return(0);
 }
 
 /***************************************************/
@@ -1204,6 +1203,8 @@ int Fct_Ch_PitchTrig(int val)
     adsr_pit.trig=0;
     if(val>64)
         adsr_pit.trig=1;
+
+    return(0);
 }
 
 uint8_t calib;
@@ -1214,15 +1215,15 @@ uint8_t calib;
 /***************************************************/
 int Fct_Ch_Cal(int val)
 {
-    /*
-    if(calib==1)
+    if(val==127)
     {
-        //sprintf(messnex,"touch_j");
-        //Nextion_Send(messnex);
+        sprintf(messnex,"touch_j");
+        Nextion_Send(messnex);
     }
-    */
-    //calib=1;
-    //if(serialdebug)       
-    //    Serial.printf("CALIB %d\n",calib);
-    
+    calib=1;
+    if(serialdebug)       
+       Serial.printf("CALIB %d\n",calib);
+
+    return(0);
+   
 }

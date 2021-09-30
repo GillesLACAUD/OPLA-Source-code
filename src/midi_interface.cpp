@@ -306,6 +306,12 @@ inline void HandleByteMsg(uint8_t *data)
         // Program changed
         case 0xC0:
             Serial.printf("PC %d\n",data[1]);
+            sprintf(messnex,"page2.b%d.bco=0",oldCurrentSound);
+            Nextion_Send(messnex);
+            sprintf(messnex,"page2.b%d.pco=2024",oldCurrentSound);
+            Nextion_Send(messnex);
+            oldCurrentSound=data[1];            
+
             SDCard_LoadSound(data[1]);
             break;
     }

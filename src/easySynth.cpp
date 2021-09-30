@@ -834,8 +834,10 @@ int indx=0;
                 }
                 break;
 
+                /*
                 case WAVE_AKWF:
                 break;
+                */
 
             }
         }

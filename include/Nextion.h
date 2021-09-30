@@ -17,7 +17,7 @@
 
 #define NEXTION_MAX_OVER_TIME   SAMPLE_RATE*10
 
-#define MAX_MESS_TASK0  25*2
+#define MAX_MESS_TASK0  30*2
 NEXTION_EXTRN  bool     NextionSendTask;
 NEXTION_EXTRN  char     messnextask[MAX_MESS_TASK0][60];		    // Buffer transmit
 NEXTION_EXTRN  char     messnexfree[MAX_MESS_TASK0];	    	    // 1 Buffer not free 0 Buffer free

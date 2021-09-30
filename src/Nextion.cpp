@@ -61,21 +61,10 @@ void Nextion_Init()
     Nextion_Send("rest");
     delay(1000);
 
-    //sprintf(messnex,"touch_j");
-	//Nextion_Send(messnex);
-
     sprintf(messnex,"page 1");
     Nextion_Send(messnex);
 
-    sprintf(messnex,"page0.Setup_Name.txt=%cESP32%c",0x22,0x22);
-    Nextion_Send(messnex);
-    sprintf(messnex,"page0.CCInfo.txt=%cAUDIO%c",0x22,0x22);
-    Nextion_Send(messnex);
-    sprintf(messnex,"page0.CCVal.txt=%cKIT%c",0x22,0x22);
-    Nextion_Send(messnex);
-
     Nextion_PrintLabel();
-
 }
 
 /***************************************************/
