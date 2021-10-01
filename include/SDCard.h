@@ -106,7 +106,7 @@ const Bank_AKWF	SampleDIR[AKWFMAX_BANK] =
 
 SDCARD_EXTRN    uint8_t SDCard_Init(void);
 SDCARD_EXTRN    void SDCard_SaveSound(uint8_t snd);
-SDCARD_EXTRN    void SDCard_LoadSound(uint8_t snd);
+SDCARD_EXTRN    void SDCard_LoadSound(uint8_t snd,uint8_t source);
 SDCARD_EXTRN    void SDCard_LoadSndName();                              // Load all the file in the memory
 SDCARD_EXTRN    void SDCard_ReadSndName(uint8_t s);                     // Read in the memory
 SDCARD_EXTRN    void SDCard_WriteSndName(uint8_t s);                    // Write in the memory

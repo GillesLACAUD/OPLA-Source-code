@@ -264,19 +264,27 @@ unsigned int sz=sizeof(WorkSound);
 /*                                                 */
 /*                                                 */
 /***************************************************/
-void SDCard_LoadSound(uint8_t snd)
+void SDCard_LoadSound(uint8_t snd,uint8_t source)
 {
 char path[30];
 uint16_t wr;
 unsigned int sz=sizeof(WorkSound);
+
+    if(source==1)
+    {
+        sprintf(messnex,"page2.b%d.bco=0",oldCurrentSound);
+        Nextion_Send(messnex);
+        sprintf(messnex,"page2.b%d.pco=2024",oldCurrentSound);
+        Nextion_Send(messnex);
+    }
 
     LastSoundNumber = snd;
     SoundNameInc10 =   LastSoundNumber/10;
     CurrentSound = snd-SoundNameInc10*10;
     oldCurrentSound = CurrentSound; 
 
-    //sprintf(messnex,"v4.pco=62222");
-    //Nextion_Send(messnex);
+    // Set the page
+    SDCard_Display10SndName();
 
     sprintf(path,"/sound/%d.snd",snd);
     File file = SD_MMC.open(path,"rb");
@@ -306,7 +314,13 @@ unsigned int sz=sizeof(WorkSound);
     sprintf(messnex,"page2.Setup_Number.txt=%c%02d%c",0x22,snd,0x22);
     Nextion_Send(messnex);
 
-    
+    if(source==1)
+    {
+        sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
+        Nextion_Send(messnex);
+        sprintf(messnex,"page2.b%d.pco=0",CurrentSound);
+        Nextion_Send(messnex);
+    }
 
     // Write the sound number in a file
     sprintf(path,"/sound/last.lst");
@@ -335,7 +349,7 @@ void SDCard_LoadLastSound()
     wr=file.read((uint8_t*)&snd,1);
     file.close();   
 
-    SDCard_LoadSound(snd);
+    SDCard_LoadSound(snd,1);
 }
 
 /***************************************************/
