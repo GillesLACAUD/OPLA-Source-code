@@ -241,9 +241,9 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
 
     "REV",  "REVERB LEVEL", MIDI_CC_REVERB_LEVEL,  TYPE_DATA,  &TabListNull[0][0], 0, &WS.ReverbLevel,  1,  0,      127,                    1,      Fct_Ch_Reverb,        FctNull,    FctNull,    FctNull,    FctNull,
     "PAN",  "REVERB PAN",   MIDI_CC_REVERB_PAN,    TYPE_DATA,  &TabListNull[0][0], 0, &WS.ReverbPan,    1,  0,      127,                    1,      Fct_Ch_RevPan,        FctNull,    FctNull,    FctNull,    FctNull,
-    "CAL",  "CALIB",        MIDI_CC_59,            TYPE_LIST,  &YesNo[0][0],       0, &IntCalib,        1,  0,      2,                      1,      Fct_Ch_Calib,         FctNull,    FctNull,    FctNull,    FctNull,
     "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0, &IntNull,         1,  0,      127,                    1,      FctNull,              FctNull,    FctNull,    FctNull,    FctNull,
     "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0, &IntNull,         1,  0,      127,                    1,      FctNull,              FctNull,    FctNull,    FctNull,    FctNull,
+    "CAL",  "SCREEN CAL",   MIDI_CC_59,            TYPE_LIST,  &YesNo[0][0],       0, &IntCalib,        1,  0,      2,                      1,      Fct_Ch_Calib,         FctNull,    FctNull,    FctNull,    FctNull,
     
 
     // SECTION SYSTEM               

@@ -1200,16 +1200,9 @@ int Fct_Ch_AmpTrig(int val)
 /***************************************************/
 int Fct_Ch_Calib(int val)
 {
-uint16_t tst;
-
     if(val>64)
     {
-        tst = 54;
-        tst /=25;
-        tst+=45;
-        tst*=89;
-
-        Nextion_Send(messnex);
+        Nextion_Send("touch_j");
     }
     return(0);
 }
