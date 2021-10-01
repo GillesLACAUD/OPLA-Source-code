@@ -1198,6 +1198,28 @@ int Fct_Ch_AmpTrig(int val)
 /*                                                 */
 /*                                                 */
 /***************************************************/
+int Fct_Ch_Calib(int val)
+{
+uint16_t tst;
+
+    if(val>64)
+    {
+        tst = 54;
+        tst /=25;
+        tst+=45;
+        tst*=89;
+
+        //Nextion_Send(messnex);
+    }
+    return(0);
+}
+
+
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
 int Fct_Ch_PitchTrig(int val)
 {
     adsr_pit.trig=0;
@@ -1207,23 +1229,4 @@ int Fct_Ch_PitchTrig(int val)
     return(0);
 }
 
-uint8_t calib;
-/***************************************************/
-/*                                                 */
-/*                                                 */
-/*                                                 */
-/***************************************************/
-int Fct_Ch_Cal(int val)
-{
-    if(val==127)
-    {
-        sprintf(messnex,"touch_j");
-        Nextion_Send(messnex);
-    }
-    calib=1;
-    if(serialdebug)       
-       Serial.printf("CALIB %d\n",calib);
 
-    return(0);
-   
-}

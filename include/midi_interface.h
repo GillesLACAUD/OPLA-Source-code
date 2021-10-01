@@ -103,7 +103,10 @@
 
 #define MIDI_CC_REVERB_LEVEL    55
 #define MIDI_CC_REVERB_PAN      56
-#define MIDI_CC_CAL             59
+#define MIDI_CC_57              57
+#define MIDI_CC_58              58
+#define MIDI_CC_59              59
+
 
 #define MIDI_CC_SOUND_MODE      60
 #define MIDI_CC_PB_RANGE        61
