@@ -1209,7 +1209,7 @@ uint16_t tst;
         tst+=45;
         tst*=89;
 
-        //Nextion_Send(messnex);
+        Nextion_Send(messnex);
     }
     return(0);
 }
