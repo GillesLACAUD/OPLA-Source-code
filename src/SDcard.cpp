@@ -5,6 +5,7 @@
 #include "typdedef.h"
 #include "easysynth.h"
 #include "ihm.h"
+#include "simple_delay.h"
 
 #include "Nextion.h"
 
@@ -270,6 +271,8 @@ char path[30];
 uint16_t wr;
 unsigned int sz=sizeof(WorkSound);
 
+    Delay_Reset();
+
     if(source==1)
     {
         sprintf(messnex,"page2.b%d.bco=0",oldCurrentSound);
@@ -327,7 +330,7 @@ unsigned int sz=sizeof(WorkSound);
     file = SD_MMC.open(path,"wb");
     wr=file.write((uint8_t*)&snd,1);
     file.close();    
-
+   
        
 }
 
