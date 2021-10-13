@@ -203,6 +203,7 @@ float filterEG=0;
 float filterKBtrack=0;
 float NoiseLevel = 0.0f;
 float WaveShapping1 = 0.0f;
+float WaveShapping2 = 0.0f;
 
 float pitchEG=0;
 float PitchMod = 0;
@@ -216,6 +217,8 @@ float Lfo2SpeedMod=0;
 float Lfo2AmtMod=0;
 float WaveShapping1Mod=0;
 float OldWaveShapping1Mod=0;
+float WaveShapping2Mod=0;
+float OldWaveShapping2Mod=0;
 
 
 float MixOsc = 1;
@@ -282,6 +285,8 @@ extern float filterKBtrack;
 extern float NoiseLevel;
 extern float WaveShapping1;
 extern float OldWaveShapping1Mod;
+extern float WaveShapping2;
+extern float OldWaveShapping2Mod;
 
 
 extern float pitchEG;
@@ -295,6 +300,7 @@ extern float Lfo1AmtMod;
 extern float Lfo2SpeedMod;
 extern float Lfo2AmtMod;
 extern float WaveShapping1Mod;
+extern float WaveShapping2Mod;
 
 
 extern float SubTranspose;

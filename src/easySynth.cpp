@@ -692,6 +692,7 @@ int indx=0;
     AmpMod=0;
     NoiseMod=0;
     WaveShapping1Mod=0;
+    WaveShapping2Mod=0;
 
     Lfo1AmtMod=0;
     Lfo2AmtMod=0;
@@ -729,7 +730,9 @@ int indx=0;
     float tmpphase[WAVEFORM_CNT];
     int dephase;
     
-
+    //------------------------------------------
+    // Rebuilt the wavework tab
+    //------------------------------------------
     selectedWaveForm = &wavework[0];
     
     if(selectedWaveForm == wavework)
@@ -852,6 +855,15 @@ int indx=0;
             }
         }
     }
+
+    // wave shaping2 on going ---- ????
+    tmp = 0.5;
+    trig=WAVEFORM_CNT - (float)WAVEFORM_CNT*tmp;
+    for (i = 0; i < trig; i++)
+    {
+        wavework[i] = wavework[i];
+    }
+
     /*
     // To much time ?
     sup = OldWaveShapping2Mod+0.02;

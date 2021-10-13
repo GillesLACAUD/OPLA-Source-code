@@ -258,8 +258,15 @@ struct oscillatorT *osc;
 /***************************************************/
 int Fct_Ch_WS2(int val)   
 {
+float value;    
+
+    value = val * NORM127MUL;
+    WaveShapping2=value;
+    WaveShapping2Mod = 0; 
+    OldWaveShapping2Mod=0;  // Force update waveform
+    OldWaveShapping2Mod = WaveShapping2Mod+0.5;
     if(serialdebug)
-        Serial.printf("WS2:\n");
+        Serial.printf("WS2: %f\n",WaveShapping2);
     return(0);
 }
 
