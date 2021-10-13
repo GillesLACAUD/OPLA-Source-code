@@ -263,7 +263,7 @@ struct oscillatorT *osc;
     s=0;
     for(int16_t i=0;i<254;i++)
     {
-        tabplot[i] = (uint8_t)((wavework[s]+1.0)*64);
+        tabplot[i] = (uint8_t)((waveAKWF[s]+1.0)*64);
         s+=4;
     }
 
@@ -283,7 +283,7 @@ struct oscillatorT *osc;
     Serial1.write(0xff);
     Serial1.write(0xff);
     Serial1.write(0xff);
-    selectedWaveForm = &wavework[0];
+    selectedWaveForm = &waveAKWF[0];
     for(uint8_t o=0;o<=osc_act;o+=3)
     {
         osc = &oscPlayer[o+0];

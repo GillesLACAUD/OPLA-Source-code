@@ -834,10 +834,20 @@ int indx=0;
                 }
                 break;
 
-                /*
                 case WAVE_AKWF:
+                trig=WAVEFORM_CNT - (float)WAVEFORM_CNT*tmp;
+                for (i = 0; i < trig; i++)
+                {
+                    wavework[i] = waveAKWF[i];
+                }
+                int j=0;
+                for (i = trig; i < WAVEFORM_CNT; i++)
+                {
+                    //wavework[i] = saw[j];
+                    //j++;
+                    wavework[i] = 0;
+                }
                 break;
-                */
 
             }
         }

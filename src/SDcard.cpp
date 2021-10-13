@@ -513,8 +513,8 @@ uint8_t *pt;
     {
         tmp16 = tabspl[j+1]<<8;
         tmp16 +=tabspl[j];
-        wavework[i] = (float)(tmp16)/32768.0f;
-        wavework[i+WAVEFORM_CNT/2] = wavework[i];
+        waveAKWF[i] = (float)(tmp16)/32768.0f;
+        waveAKWF[i+WAVEFORM_CNT/2] = waveAKWF[i];
         j+=2;
     }
     file.close();    

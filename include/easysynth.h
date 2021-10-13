@@ -157,8 +157,9 @@ float pulse[WAVEFORM_CNT];
 float tri[WAVEFORM_CNT];
 float noise[WAVEFORM_CNT];
 float silence[WAVEFORM_CNT];
+
 float wavework[WAVEFORM_CNT];
-float wavetrash[WAVEFORM_CNT];
+float waveAKWF[WAVEFORM_CNT];
 
 uint8_t selWaveForm1=0;
 uint8_t selWaveForm2=0;
@@ -246,7 +247,7 @@ extern float tri[WAVEFORM_CNT];
 extern float noise[WAVEFORM_CNT];
 extern float silence[WAVEFORM_CNT];
 extern float wavework[WAVEFORM_CNT];
-extern float wavetrash[WAVEFORM_CNT];
+extern float waveAKWF[WAVEFORM_CNT];
 
 
 extern uint8_t selWaveForm1;
