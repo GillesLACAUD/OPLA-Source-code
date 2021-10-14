@@ -428,6 +428,7 @@ static uint16_t cpttimer2;
             trigloadwave=false;
             SDCard_LoadWave(WS.OscBank+1,WS.AKWFWave+1);
             Nextion_Plot();
+            Fct_Ch_WS1(WS.WaveShapping1);
         }
         //Nextion_Process(); // in the task0
     }

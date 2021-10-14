@@ -187,8 +187,8 @@ char Dest_Name[DEST_TYPE_COUNT][MAX_LABEL] =
 /*
  * do not forget to enter the waveform pointer addresses here
  */
-float *waveFormLookUp[WAVEFORM_TYPE_COUNT] = {&sine[0], &saw[0], &square[0], &pulse[0], &tri[0], &noise[0], &silence[0],&wavework[0]};
-float *selectedWaveForm =  &wavework[0];
+float *waveFormLookUp[WAVEFORM_TYPE_COUNT] = {&sine[0], &saw[0], &square[0], &pulse[0], &tri[0], &noise[0], &silence[0],&waveAKWF[0]};
+float *selectedWaveForm =  &waveAKWF[0];
 float *selectedWaveForm2 = &sine[0];
 uint32_t osc_act = 0;
 uint32_t voc_act = 0;
@@ -249,8 +249,10 @@ extern float pulse[WAVEFORM_CNT];
 extern float tri[WAVEFORM_CNT];
 extern float noise[WAVEFORM_CNT];
 extern float silence[WAVEFORM_CNT];
-extern float wavework[WAVEFORM_CNT];
 extern float waveAKWF[WAVEFORM_CNT];
+
+extern float wavework[WAVEFORM_CNT];
+
 
 
 extern uint8_t selWaveForm1;
