@@ -1194,6 +1194,24 @@ float setvel;
             voice->f_phase = attack;  
     }
 
+    for(uint8_t n=0;n<WS.PolyMax;n++)
+    {
+        if(adsr_fil.trig==1)
+        {
+            voicePlayer[n].f_phase = attack;  
+            voicePlayer[n].f_control_sign = 0;
+        }
+        if(adsr_vol.trig==1)
+        {
+            voicePlayer[n].phase = attack;  
+            voicePlayer[n].control_sign = 0;
+        }
+        if(adsr_pit.trig==1)
+        {
+            voicePlayer[n].p_phase = attack;  
+            voicePlayer[n].p_control_sign = 0;
+        }
+    }
 
     // No voices
     if(voc_act==0)
