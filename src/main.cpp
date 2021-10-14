@@ -366,16 +366,52 @@ static uint16_t cpttimer2;
         else
             Lfo_cnt2=1024;
     }
+
+    // Reset all the mod
+    if (loop_count_u8 % 2 == 0)
+    {
+
+        FiltCutoffMod = 0;
+        PanMod=0;
+        AmpMod=0;
+        NoiseMod=0;
+        WaveShapping1Mod=0;
+        WaveShapping2Mod=0;
+
+        Lfo1AmtMod=0;
+        Lfo2AmtMod=0;
+
+        Lfo1SpeedMod = 0;
+        Lfo2SpeedMod = 0;
+        
+        RevAmtMod=0;
+        DelayAmtMod=0;
+    
+
+        ModWheel_Process();
+        AfterTouch_Process();
+        if(!Lfo1_Mutex)
+        {
+            Lfo1_Mutex=1;
+            Lfo_Process(&Lfo1);
+            Lfo1_Mutex=0;
+        }
+        if(!Lfo2_Mutex)
+        {
+            Lfo2_Mutex=1;
+            Lfo_Process(&Lfo2);
+            Lfo2_Mutex=0;
+        }
+    }
+
     if(i2s_write_sample_16ch2(sampleData32.sample32))
     {
         Synth_Process(&fl_sample, &fr_sample);
-        
-        
+
         if(SoundMode!=SND_MODE_POLY)
             Delay_Process(&fl_sample, &fr_sample);
         Reverb_Process( &fl_sample, &fr_sample, SAMPLE_BUFFER_SIZE );       
-        
-        
+       
         sampleData32.sample[0] = (int16_t)(fl_sample*32768.0f);
         sampleData32.sample[1] = (int16_t)(fr_sample*32768.0f);
     }

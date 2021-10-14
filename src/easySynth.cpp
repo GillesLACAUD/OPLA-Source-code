@@ -685,50 +685,12 @@ int indx=0;
     voiceSink[0] = 0;
     voiceSink[1] = 0;
 
-    // Reset all the mod
-    
-    FiltCutoffMod = 0;
-    PanMod=0;
-    AmpMod=0;
-    NoiseMod=0;
-    WaveShapping1Mod=0;
-    WaveShapping2Mod=0;
 
-    Lfo1AmtMod=0;
-    Lfo2AmtMod=0;
-
-    Lfo1SpeedMod = 0;
-    Lfo2SpeedMod = 0;
-    
-    RevAmtMod=0;
-    DelayAmtMod=0;
- 
-
-    ModWheel_Process();
-    AfterTouch_Process();
-    
-    
-    if(!Lfo1_Mutex)
-    {
-        Lfo1_Mutex=1;
-        Lfo_Process(&Lfo1);
-        Lfo1_Mutex=0;
-    }
-
-    if(!Lfo2_Mutex)
-    {
-        Lfo2_Mutex=1;
-        Lfo_Process(&Lfo2);
-        Lfo2_Mutex=0;
-    }
-    
     float sup;
     float inf;
     float tmp;
-    float slope;
+    float slope=0;
     int trig;
-    float tmpphase[WAVEFORM_CNT];
-    int dephase;
     
     //------------------------------------------
     // Rebuilt the wavework tab
@@ -857,12 +819,14 @@ int indx=0;
     }
 
     // wave shaping2 on going ---- ????
+    /*
     tmp = 0.5;
     trig=WAVEFORM_CNT - (float)WAVEFORM_CNT*tmp;
     for (i = 0; i < trig; i++)
     {
         wavework[i] = wavework[i];
     }
+    */
 
     /*
     // To much time ?

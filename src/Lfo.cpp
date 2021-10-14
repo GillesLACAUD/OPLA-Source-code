@@ -18,7 +18,7 @@ void Lfo_Process(stLfo* prlfo)
 float lfoamt=0;    
 uint16_t freq=9999;    
 static uint16_t sl1,sl2;
-
+    
     if(prlfo == &Lfo1)
     {
         prlfo->ui16_Cpt = Lfo_cnt1;
