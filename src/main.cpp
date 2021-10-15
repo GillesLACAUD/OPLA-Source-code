@@ -419,9 +419,9 @@ static uint16_t cpttimer2;
     if(i2s_write_sample_16ch2(sampleData32.sample32))
     {
         Synth_Process(&fl_sample, &fr_sample);
-        Delay_Process(&fl_sample, &fr_sample);
         if(SoundMode!=SND_MODE_POLY)
-            Reverb_Process( &fl_sample, &fr_sample, SAMPLE_BUFFER_SIZE );       
+            Delay_Process(&fl_sample, &fr_sample);
+        Reverb_Process( &fl_sample, &fr_sample, SAMPLE_BUFFER_SIZE );       
        
         sampleData32.sample[0] = (int16_t)(fl_sample*32768.0f);
         sampleData32.sample[1] = (int16_t)(fr_sample*32768.0f);

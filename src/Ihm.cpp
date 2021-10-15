@@ -102,7 +102,7 @@ int Fct_Ch_Noise(int val)
 float value;    
 
     value = val * NORM127MUL;
-    NoiseLevel = value*0.7;
+    NoiseLevel = value*0.5;
     if(serialdebug)
         Serial.printf("Noise Level: %f\n", NoiseLevel);
 

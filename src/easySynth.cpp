@@ -670,9 +670,9 @@ int cmp;
 int indx=0;
 
     nz = ((random(1024) / 512.0f) - 1.0f)*NoiseLevel*(1+NoiseMod);
-    /*
-     * generator simulation, rotate all wheels
-     */
+    if(NoiseType == NOISE_POST)
+        nz /=16;
+
     out_l = 0;
     out_r = 0;
 
@@ -692,131 +692,132 @@ int indx=0;
     float slope=0;
     int trig;
     
-    //------------------------------------------
-    // Rebuilt the wavework tab
-    //------------------------------------------
+    //-------------------------------------------------
+    // Rebuilt the wavework tab with WS1 vs waveform1
+	// OUT wavework tab
+    //-------------------------------------------------
     selectedWaveForm = &wavework[0];
-    
-    if(selectedWaveForm == wavework)
-    {
-        sup = OldWaveShapping1Mod+0.02;
-        inf = OldWaveShapping1Mod-0.02;    
-        if(WaveShapping1Mod > sup || WaveShapping1Mod < inf)
-        {
-            tmp = WaveShapping1+WaveShapping1Mod;
-            if(tmp>0.99)
-		        tmp = 0.99;
-            if(tmp<0)
-                tmp = 0;
-            OldWaveShapping1Mod = WaveShapping1Mod;
+	sup = OldWaveShapping1Mod+0.02;
+	inf = OldWaveShapping1Mod-0.02;    
+	if(WaveShapping1Mod > sup || WaveShapping1Mod < inf)
+	{
+		tmp = WaveShapping1+WaveShapping1Mod;
+		if(tmp>0.99)
+			tmp = 0.99;
+		if(tmp<0)
+			tmp = 0;
+		OldWaveShapping1Mod = WaveShapping1Mod;
 
-            switch(selWaveForm1)
-            {
+		switch(selWaveForm1)
+		{
 
-                case WAVE_SILENCE:
-                for (i = 0; i < WAVEFORM_CNT; i++)
-                {
-                    wavework[i] = 0;
-                }
-                break;
-                
-                // PWM
-                case WAVE_SQUARE:
-            	cmp = WAVEFORM_Q2-((int)(float)WAVEFORM_Q2*tmp);
-                for (i = 0; i < cmp; i++)
-                {
-                    wavework[i] = 1;
-                }
-                for (i = cmp; i < WAVEFORM_CNT; i++)
-                {
-                    wavework[i] = -1;
-                }
-                break;
+			case WAVE_SILENCE:
+			for (i = 0; i < WAVEFORM_CNT; i++)
+			{
+				wavework[i] = 0;
+			}
+			break;
+			
+			// PWM
+			case WAVE_SQUARE:
+			cmp = WAVEFORM_Q2-((int)(float)WAVEFORM_Q2*tmp);
+			for (i = 0; i < cmp; i++)
+			{
+				wavework[i] = 1;
+			}
+			for (i = cmp; i < WAVEFORM_CNT; i++)
+			{
+				wavework[i] = -1;
+			}
+			break;
 
-                case WAVE_PULSE:
-	            trig=WAVEFORM_Q4 - (int)((float)(WAVEFORM_Q4)*tmp);
-                if(trig!=WAVEFORM_Q4)
-                    slope=2/(float)(WAVEFORM_Q4-trig);
-                for (i = 0; i < trig; i++)
-                {
-                    wavework[i] = 1;
-                }
-                for (i = trig; i < WAVEFORM_Q4; i++)
-                {
-                    wavework[i] = 1-slope*(i-trig);
-                }
-                for (i = WAVEFORM_Q4; i < WAVEFORM_CNT; i++)
-                {
-                    wavework[i] = -1;
-                }
-                break;
+			case WAVE_PULSE:
+			trig=WAVEFORM_Q4 - (int)((float)(WAVEFORM_Q4)*tmp);
+			if(trig!=WAVEFORM_Q4)
+				slope=2/(float)(WAVEFORM_Q4-trig);
+			for (i = 0; i < trig; i++)
+			{
+				wavework[i] = 1;
+			}
+			for (i = trig; i < WAVEFORM_Q4; i++)
+			{
+				wavework[i] = 1-slope*(i-trig);
+			}
+			for (i = WAVEFORM_Q4; i < WAVEFORM_CNT; i++)
+			{
+				wavework[i] = -1;
+			}
+			break;
 
-                case WAVE_TRI:
-                // Tri to Saw
-                for (i = 0; i < WAVEFORM_CNT; i++)
-                {
-                    wavework[i] = tri[i]*(1-tmp)+saw[i]*tmp;
-                    if(wavework[i]>1.0)
-                        wavework[i]=1.0;
-                    if(wavework[i]<-1.0)
-                        wavework[i]=-1.0;
-                }
-                break;
+			case WAVE_TRI:
+			// Tri to Saw
+			for (i = 0; i < WAVEFORM_CNT; i++)
+			{
+				wavework[i] = tri[i]*(1-tmp)+saw[i]*tmp;
+				if(wavework[i]>1.0)
+					wavework[i]=1.0;
+				if(wavework[i]<-1.0)
+					wavework[i]=-1.0;
+			}
+			break;
 
-                case WAVE_NOISE:
-                // Noise to Saw
-                for (i = 0; i < WAVEFORM_CNT; i++)
-                {
-                    wavework[i] = noise[i]*(1-tmp)+saw[i]*tmp;      // Morphing
-                    if(wavework[i]>1.0)
-                        wavework[i]=1.0;
-                    if(wavework[i]<-1.0)
-                        wavework[i]=-1.0;
-                }
-                break;
-            
-                case WAVE_SINE:
-                // Multiply sine
-                cmp = 1+tmp*12;
-                for (i = 0; i < WAVEFORM_CNT; i++)
-                {
-                    wavework[i] = sine[indx];
-                    indx+=cmp;
-                    if(indx>WAVEFORM_CNT)
-                        indx=0;
-                }
-                break;
+			case WAVE_NOISE:
+			// Noise to Saw
+			for (i = 0; i < WAVEFORM_CNT; i++)
+			{
+				wavework[i] = noise[i]*(1-tmp)+saw[i]*tmp;      // Morphing
+				if(wavework[i]>1.0)
+					wavework[i]=1.0;
+				if(wavework[i]<-1.0)
+					wavework[i]=-1.0;
+			}
+			break;
+		
+			case WAVE_SINE:
+			// Multiply sine
+			cmp = 1+tmp*12;
+			for (i = 0; i < WAVEFORM_CNT; i++)
+			{
+				wavework[i] = sine[indx];
+				indx+=cmp;
+				if(indx>WAVEFORM_CNT)
+					indx=0;
+			}
+			break;
 
-                case WAVE_SAW:
-                // Saw to Sine
-                for (i = 0; i < WAVEFORM_CNT; i++)
-                {
-                    wavework[i] = saw[i]*(1-tmp)+sine[i]*tmp;      // Morphing
-                    if(wavework[i]>1.0)
-                        wavework[i]=1.0;
-                    if(wavework[i]<-1.0)
-                        wavework[i]=-1.0;
-                }
-                break;
+			case WAVE_SAW:
+			// Saw to Sine
+			for (i = 0; i < WAVEFORM_CNT; i++)
+			{
+				wavework[i] = saw[i]*(1-tmp)+sine[i]*tmp;      // Morphing
+				if(wavework[i]>1.0)
+					wavework[i]=1.0;
+				if(wavework[i]<-1.0)
+					wavework[i]=-1.0;
+			}
+			break;
 
-                case WAVE_AKWF:
-                trig=WAVEFORM_CNT - (float)WAVEFORM_CNT*tmp;
-                for (i = 0; i < trig; i++)
-                {
-                    wavework[i] = waveAKWF[i];
-                }
-                int j=0;
-                for (i = trig; i < WAVEFORM_CNT; i++)
-                {
-                    //wavework[i] = saw[j];
-                    //j++;
-                    wavework[i] = 0;
-                }
-                break;
+			case WAVE_AKWF:
+			trig=WAVEFORM_CNT - (float)WAVEFORM_CNT*tmp;
+			for (i = 0; i < trig; i++)
+			{
+				wavework[i] = waveAKWF[i];
+			}
+			int j=0;
+			for (i = trig; i < WAVEFORM_CNT; i++)
+			{
+				//wavework[i] = saw[j];
+				//j++;
+				wavework[i] = 0;
+			}
+			break;
 
-            }
-        }
-    }
+		}
+	}
+	//-------------------------------------------------
+    // Add Waveshapping2
+	// OUT wavework tab
+    //-------------------------------------------------
 
     // wave shaping2 on going ---- ????
     /*
@@ -853,9 +854,11 @@ int indx=0;
            wavework[i]=-1.0;
     }
     */ 
-    /*
-     * oscillator processing -> mix to voice
-    */
+	
+	//-------------------------------------------------
+    // Oscillator processing -> mix to voice
+	// OUT dest[0],dest[1] for left right
+    //-------------------------------------------------
     float sig;
     for (int v = 0; v < WS.PolyMax; v++) /* one loop is faster than two loops */
     {
@@ -882,10 +885,8 @@ int indx=0;
     }
     PitchMod = 0;
 
-    /*
-     * voice processing
-     */
-
+	
+    
     // Apply the filter Modulation
     FiltCutoffMod +=filtCutoff;
     if(FiltCutoffMod>1.0)
@@ -893,14 +894,23 @@ int indx=0;
     if(FiltCutoffMod<0.0)
         FiltCutoffMod = 0.0;
 
-    float cf;
-        
+    float cf; // Temp for the filter cut frequency
+    
+	//-------------------------------------------------
+    // Voice processing
+	// OUT dest[0],dest[1] for left right
+    //-------------------------------------------------    
     for (int i = 0; i < WS.PolyMax; i++) /* one loop is faster than two loops */
     {
         notePlayerT *voice = &voicePlayer[i];
         cf = FiltCutoffMod;
         if (voice->active)
         {
+			// Update the EG only 1 time on 4
+			// OUT
+			// voice->control_sign 		for the volume
+			// voice->f_control_sign	for the filter
+			// voice->p_control_sign	for the pitch	
             if (count % 4 == 0)
             {
                 voice_off = ADSR_Process(&adsr_vol, &voice->control_sign, &voice->phase);
@@ -930,27 +940,34 @@ int indx=0;
                 }
                 (void)ADSR_Process(&adsr_pit, &voice->p_control_sign, &voice->p_phase);
             }
-            /* add some noise to the voice */
+			
+            // Add some noise to the voice pre filter
             if(NoiseType == NOISE_PRE)
                 voice->lastSample[0] += nz*(1+NoiseMod);
-                
-            voice->lastSample[0] *= voice->control_sign*voice->avelocity;
 
-            // Apply the filter EG
-            cf += voice->f_control_sign*filterEG;
-            cf *=1+voice->fvelocity;
-            // Apply the kbtrack
-            cf *= 1+(voice->midiNote-64)*filterKBtrack;
+            
+            cf += voice->f_control_sign*filterEG;			// Apply EG Filter
+            cf *=1+voice->fvelocity;						// Apply Velocity Filter
+            cf *= 1+(voice->midiNote-64)*filterKBtrack;		// Apply Kbtrack
 
-            if(SoundMode!=SND_MODE_POLY)
-            {
-                voice->lastSample[0] /=8.0; //for para mode
-            }
-            else
-            {
-                voice->lastSample[0] /=8.0;
+			voice->lastSample[0] /=8.0; 
+			// Filter for each voice
+            if(SoundMode==SND_MODE_POLY)
+			{
                 voice->lastSample[0] = KarlsenLPF(voice->lastSample[0],cf, filtReso,i);
             }
+			
+            // Add some noise to the voice post filter
+            
+            if(NoiseType == NOISE_POST)
+                voice->lastSample[0] += nz*(1+NoiseMod);
+            
+
+			// Apply EG Amp
+            voice->lastSample[0] *= voice->control_sign*voice->avelocity;			
+			
+			
+			
             if(SoundMode==SND_MODE_POLY)
             {
                 out_l += voice->lastSample[0]*(1-voice->panspread);
@@ -964,7 +981,7 @@ int indx=0;
             voice->lastSample[0] = 0.0f;
         }
     }
-    // Try para mode - ok good
+    // Para or mono mode
     if(SoundMode!=SND_MODE_POLY)
     {
         out_l = KarlsenLPF(out_l,cf+voicePlayer[0].f_control_sign*filterEG, filtReso,0);
@@ -974,19 +991,9 @@ int indx=0;
         
     }
     
-    if(NoiseType == NOISE_POST && voc_act!=0)
-    {
-        ftmp = (nz*(1+NoiseMod))/32;
-        out_l += ftmp;
-        out_r += ftmp;
-    }
-        
-    //float multi = (1+AmpMod)*0.75f;
-    //float multi = (1+AmpMod)*2.0;   //fait des clics ???
     float multi = (1+AmpMod)*GeneralVolume;
     out_l *=multi;
     out_r *=multi;
-    //out_r =out_l;
     
     out_l *= (1+PanMod);
     out_r *= (1-PanMod);
@@ -997,6 +1004,7 @@ int indx=0;
     *left = out_l;
     *right = out_r;
 }
+
 /***************************************************/
 /*                                                 */
 /*                                                 */
