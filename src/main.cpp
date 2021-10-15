@@ -1,3 +1,15 @@
+//--------------------------------------------------------------------------
+// OPLA HANSY SYNTH 
+// V1.0     15.10.21 
+//
+//
+//
+//
+//
+//
+//--------------------------------------------------------------------------
+
+
 #include <arduino.h>
 #include "typdedef.h"
 
@@ -280,12 +292,12 @@ void setup()
     // SHOW SD CARD AND FIRMWARE VERSION
     if(sdcard)
     {
-        sprintf(messnex,"page0.b2.txt=%c>SDCARD HS%c%c>V1.0 29.09.21%c",0x22,0x0D,0x0A,0x22);
+        sprintf(messnex,"page0.b2.txt=%c>SDCARD HS%c%c>V1.0 15.10.21%c",0x22,0x0D,0x0A,0x22);
         Nextion_Send(messnex);
     }
     else
     {
-        sprintf(messnex,"page0.b2.txt=%c>SDCARD OK%c%c>V1.0 29.09.21%c",0x22,0x0D,0x0A,0x22);
+        sprintf(messnex,"page0.b2.txt=%c>SDCARD OK%c%c>V1.0 15.10.21%c",0x22,0x0D,0x0A,0x22);
         Nextion_Send(messnex);
         // Load all the names in the memory
         SDCard_LoadSndName();
