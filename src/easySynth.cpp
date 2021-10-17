@@ -950,6 +950,9 @@ int indx=0;
             cf *=1+voice->fvelocity;						// Apply Velocity Filter
             cf *= 1+(voice->midiNote-64)*filterKBtrack;		// Apply Kbtrack
 
+            // Apply EG Amp
+            //voice->lastSample[0] *= voice->control_sign*voice->avelocity;			
+
 			voice->lastSample[0] /=8.0; 
 			// Filter for each voice
             if(SoundMode==SND_MODE_POLY)

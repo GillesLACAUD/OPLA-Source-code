@@ -520,6 +520,7 @@ uint8_t cc;
         }
         SDCard_LoadWave(WS.OscBank+1,WS.AKWFWave+1);
         Nextion_Plot();
+        Fct_Ch_WS1(WS.WaveShapping1);
         break;
 
         // S Section Sound save load
