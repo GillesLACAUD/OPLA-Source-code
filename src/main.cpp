@@ -18,6 +18,7 @@
 //#include "AudioOutputI2S.h"
 #include "AudioOutputI2S.h"
 #include "AC101.h"
+#include "ES8388.h"
 #include <WiFi.h>
 #include <driver/i2s.h>
 
@@ -208,18 +209,40 @@ void setup()
     out = new AudioOutputI2S();
     out->SetPinout(IIS_SCLK /*bclkPin*/, IIS_LCLK /*wclkPin*/, IIS_DSIN /*doutPin*/);
     out->begin();
-    Serial.printf("AUDIO OUT I2C OK\n");
+    Serial.printf("AUDIO OUT I2S OK\n");
 
-    Serial.printf("Connect to AC101 codec... ");
+    Serial.printf("Try Connect to AC101 codec...\n");
+    uint8_t retry=0;
 	while (not ac.begin(IIC_DATA, IIC_CLK))
 	{
   	    Serial.printf("Failed!\n");
 		delay(1000);
+        retry++;
+        if(retry==2)
+            break;
+
 	}
-	Serial.printf("OK\n");
-    AC101_volume = 99;
-    ac.SetVolumeSpeaker(AC101_volume);
-	ac.SetVolumeHeadphone(AC101_volume);
+
+    Serial.printf("-------------- ES8388\n");
+    ES8388_Setup();
+    Serial.printf("-------------- INFINITE LOOP\n");
+    while(1);
+
+
+    if(!retry)
+    {
+	    Serial.printf("AC101 OK\n");
+        AC101_volume = 99;
+        ac.SetVolumeSpeaker(AC101_volume);
+	    ac.SetVolumeHeadphone(AC101_volume);
+    }
+    else
+    {
+        Serial.printf("Try Connect to ES8388 codec...\n");
+        ES8388_Setup();
+    }
+
+
  
     Serial.printf("Initialize Midi Module\n");
     Midi_Setup();
