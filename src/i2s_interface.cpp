@@ -11,7 +11,13 @@
  */
 //#define I2S_NODAC
 
+
 #include "i2s_interface.h"
+#include "Codec.h"
+#include <driver/i2s.h>
+
+#define SAMPLE_SIZE_16BIT
+const i2s_port_t i2s_port_number = I2S_NUM_0;
 
 #ifdef I2S_NODAC
 
@@ -74,6 +80,70 @@ bool i2s_write_sample_32ch2(uint64_t sample)
     }
 }
 
+bool i2s_write_stereo_samples(float *fl_sample, float *fr_sample)
+{
+#ifdef SAMPLE_SIZE_32BIT
+    static union sampleTUNT
+    {
+        uint64_t sample;
+        int32_t ch[2];
+    } sampleDataU;
+#endif
+#ifdef SAMPLE_SIZE_24BIT
+#if 0
+    static union sampleTUNT
+    {
+        uint8_t sample[8];
+        int32_t ch[2];
+    } sampleDataU;
+#else
+    static union sampleTUNT
+    {
+        int32_t ch[2];
+        uint8_t bytes[8];
+    } sampleDataU;
+#endif
+#endif
+#ifdef SAMPLE_SIZE_16BIT
+    static union sampleTUNT
+    {
+        uint32_t sample;
+        int16_t ch[2];
+    } sampleDataU;
+#endif
+
+    /*
+     * using RIGHT_LEFT format
+     */
+#ifdef SAMPLE_SIZE_16BIT
+    sampleDataU.ch[0] = int16_t(*fr_sample * 16383.0f); /* some bits missing here */
+    sampleDataU.ch[1] = int16_t(*fl_sample * 16383.0f);
+#endif
+#ifdef SAMPLE_SIZE_32BIT
+    sampleDataU.ch[0] = int32_t(*fr_sample * 1073741823.0f); /* some bits missing here */
+    sampleDataU.ch[1] = int32_t(*fl_sample * 1073741823.0f);
+#endif
+
+    static size_t bytes_written = 0;
+
+#ifdef SAMPLE_SIZE_16BIT
+    i2s_write(i2s_port_number, (const char *)&sampleDataU.sample, 4, &bytes_written, portMAX_DELAY);
+#endif
+#ifdef SAMPLE_SIZE_32BIT
+    i2s_write(i2s_port_number, (const char *)&sampleDataU.sample, 8, &bytes_written, portMAX_DELAY);
+#endif
+
+    if (bytes_written > 0)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+
 #endif
 
 
@@ -112,10 +182,10 @@ i2s_pin_config_t pins =
 #else
 i2s_pin_config_t pins =
 {
-    .bck_io_num = I2S_BCLK_PIN,
-    .ws_io_num =  I2S_WCLK_PIN,
-    .data_out_num = I2S_DOUT_PIN,
-    .data_in_num = I2S_PIN_NO_CHANGE
+    .bck_io_num = ESP32AudioCodec.i2s_blck,
+    .ws_io_num =  ESP32AudioCodec.i2s_wclk,
+    .data_out_num = ESP32AudioCodec.i2s_dout,
+    .data_in_num = ESP32AudioCodec.i2s_din
 };
 #endif
 
@@ -126,4 +196,9 @@ void setup_i2s()
     i2s_set_pin(I2S_NUM_0, &pins);
     i2s_set_sample_rates(i2s_num, SAMPLE_RATE);
     i2s_start(i2s_num);
+    if(ESP32AudioCodec.Codec_Id==Codec_ID_ES8388)
+    {
+        REG_WRITE(PIN_CTRL, 0xFFFFFFF0);
+        PIN_FUNC_SELECT(PERIPHS_IO_MUX_GPIO0_U, FUNC_GPIO0_CLK_OUT1);
+    }
 }

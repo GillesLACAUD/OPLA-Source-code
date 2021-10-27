@@ -323,7 +323,6 @@ extern uint8_t oldCurrentSound;
 
 #endif
 
-
 SYNTH_EXTRN struct filterCoeffT filterGlobalC;
 SYNTH_EXTRN struct filterProcT mainFilterL, mainFilterR;
 

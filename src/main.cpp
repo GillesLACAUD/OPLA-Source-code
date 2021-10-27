@@ -40,6 +40,9 @@
 #include "Reverb.h"
 #include "Ihm.h"
 
+#define __CODEC__
+#include "Codec.h"
+
 TaskHandle_t  Core0TaskHnd;
 
 float fl_sample, fr_sample;
@@ -205,45 +208,168 @@ void setup()
     Serial.printf("Initialize Synth Module\n");
     Synth_Init();
  
-   
-    out = new AudioOutputI2S();
-    out->SetPinout(IIS_SCLK /*bclkPin*/, IIS_LCLK /*wclkPin*/, IIS_DSIN /*doutPin*/);
-    out->begin();
-    Serial.printf("AUDIO OUT I2S OK\n");
+    
+    //---------------------------------------
+    // Scan I2C Codec Test
+    //---------------------------------------
+    byte error, address;
+    int nDevices;
 
-    Serial.printf("Try Connect to AC101 codec...\n");
-    uint8_t retry=0;
-	while (not ac.begin(IIC_DATA, IIC_CLK))
-	{
-  	    Serial.printf("Failed!\n");
-		delay(1000);
-        retry++;
-        if(retry==2)
-            break;
+    ESP32AudioCodec.i2c_port = Codec_I2C_NOTDEFINE;
+    
+    
+    Serial.println("----------------------------------------");
+    Serial.println("Scanning I2C bus 33 32");
+    Serial.println("----------------------------------------");
 
-	}
+    ESP32AudioCodec.i2c_sda=33;
+    ESP32AudioCodec.i2c_scl=32;
 
-    Serial.printf("-------------- ES8388\n");
-    ES8388_Setup();
-    Serial.printf("-------------- INFINITE LOOP\n");
-    while(1);
+    Wire.begin(ESP32AudioCodec.i2c_sda,ESP32AudioCodec.i2c_scl); 
 
-
-    if(!retry)
+    nDevices = 0;
+    for(address = 1; address < 127; address++ )
     {
-	    Serial.printf("AC101 OK\n");
+        Wire.beginTransmission(address);
+        error = Wire.endTransmission();
+    
+        if (error == 0)
+        {
+            Serial.print("I2C device found at address 0x");
+            Serial.print(address, HEX);
+            Serial.println("\n");
+            ESP32AudioCodec.i2c_addr = address;
+            ESP32AudioCodec.i2c_port = Codec_I2C_PORT0;
+        }
+        else if (error==4)
+        {
+            Serial.print("Unknown error at address 0x");
+            if (address<16)
+                Serial.print("0");
+            Serial.println(address,HEX);
+        }    
+    }
+    delay (250);
+
+    if(ESP32AudioCodec.i2c_port == Codec_I2C_NOTDEFINE)
+    {
+        
+        Serial.println("----------------------------------------");
+        Serial.println("Scanning ES-8388 address...");
+        Serial.println("----------------------------------------");
+
+        ESP32AudioCodec.i2c_sda=18;
+        ESP32AudioCodec.i2c_scl=23;
+
+        Wire.begin(ESP32AudioCodec.i2c_sda,ESP32AudioCodec.i2c_scl);         
+       
+        nDevices = 0;
+        for(address = 1; address < 127; address++ )
+        {
+            Wire.beginTransmission(address);
+            error = Wire.endTransmission();
+        
+            if (error == 0)
+            {
+                Serial.print("I2C device found at address 0x");
+                if (address<16)
+                    Serial.print("0");
+                Serial.print(address, HEX);
+                Serial.println("\n");
+                nDevices++;
+                ESP32AudioCodec.i2c_addr = address;
+                ESP32AudioCodec.i2c_port = Codec_I2C_PORT1;
+            }
+            else if (error==4)
+            {
+                Serial.print("Unknown error at address 0x");
+                if (address<16)
+                    Serial.print("0");
+                Serial.println(address,HEX);
+            }    
+        }
+    }
+    
+    // BIG ISSUE CODEC NOT FOUND
+    if(ESP32AudioCodec.i2c_port == Codec_I2C_NOTDEFINE)
+    {
+        while(1);
+    }
+
+    if(ESP32AudioCodec.i2c_addr==Codec_AC101_ADDR)
+    {
+        ESP32AudioCodec.Codec_Id = Codec_ID_AC101;
+        Serial.printf("Try Connect to AC101 codec...\n");
+    	while (not ac.begin(IIC_DATA, IIC_CLK))
+    	{
+  	        Serial.printf("Failed!\n");
+		    delay(1000);
+    	}
+        Serial.printf("AC101 OK\n");
         AC101_volume = 99;
         ac.SetVolumeSpeaker(AC101_volume);
-	    ac.SetVolumeHeadphone(AC101_volume);
+        ac.SetVolumeHeadphone(AC101_volume);
+
+        ESP32AudioCodec.i2s_blck=   27;
+        ESP32AudioCodec.i2s_wclk=   26;
+        ESP32AudioCodec.i2s_dout=   25;
+        ESP32AudioCodec.i2s_din=    35;
+        ESP32AudioCodec.i2s_mclk=   0;
     }
-    else
+
+
+    if(ESP32AudioCodec.i2c_addr==Codec_ES8388_ADDR)
     {
+        delay (250);
         Serial.printf("Try Connect to ES8388 codec...\n");
-        ES8388_Setup();
+        ESP32AudioCodec.i2s_blck=   27;
+        ESP32AudioCodec.i2s_wclk=   25;
+        
+        ESP32AudioCodec.i2s_dout=   26;     
+        ESP32AudioCodec.i2s_din=    35;     
+        ESP32AudioCodec.i2s_mclk=   0;
+        ES8388_rawSetup();
+        
     }
 
+    Serial.printf("-------------------BEGIN I2S PORT\n");
 
- 
+    out = new AudioOutputI2S();
+    out->SetPinout(ESP32AudioCodec.i2s_blck,ESP32AudioCodec.i2s_wclk,ESP32AudioCodec.i2s_dout);
+    out->begin();
+    Serial.printf("-------------------END INIT I2S PORT\n");
+    
+    if(0)
+    {
+        int16_t cpt=0;
+        int16_t cpt2=0;
+        while(1)
+        {
+            if(cpt<100)    
+            {
+                fl_sample=1; 
+                fr_sample=1; 
+                i2s_write_stereo_samples(&fl_sample, &fr_sample);
+            }
+            else
+            {
+                fl_sample=0; 
+                fr_sample=0; 
+                i2s_write_stereo_samples(&fl_sample, &fr_sample);
+            }
+            cpt++;
+            if(cpt==200)
+                cpt=0;
+
+            if(cpt2==5000)
+            {
+                //Serial.printf("Read Key3 %d\n",digitalRead(19));
+                cpt2=0;
+            }
+            cpt2++;
+        }
+    }
+
     Serial.printf("Initialize Midi Module\n");
     Midi_Setup();
 
@@ -289,8 +415,9 @@ void setup()
 
 
     Serial.printf("Firmware started successfully\n");
+    Serial.printf("\n");
 
-
+    
     Lfo_timer1 = timerBegin(LFO_ID1, 80, true);             // 80 Prescaler = 1MHertz 800 100KHertz
     timerAlarmWrite(Lfo_timer1,LFO_MAX_TIME,true);          // 1024 -> T=1s 2048 T=2s 16=2048/127 T=16ms = 32 Hertz
     timerAttachInterrupt(Lfo_timer1, &onTimer1, true);
@@ -334,7 +461,6 @@ void setup()
     Serial.printf("Midi Rx is %d\n",MidiRx);
     Nextion_PrintLabel();
     Nextion_PrintValues();
-
     //Synth_NoteOn(64-12);
 }
 
@@ -439,14 +565,20 @@ static uint16_t cpttimer2;
         }
     }
 
+    //if (i2s_write_stereo_samples(&fl_sample, &fr_sample))
     if(i2s_write_sample_16ch2(sampleData32.sample32))
     {
         Synth_Process(&fl_sample, &fr_sample);
         
         if(SoundMode!=SND_MODE_POLY)
-            Delay_Process(&fl_sample, &fr_sample);
-        
+        {
+            if(WS.DelayAmount !=0)
+                Delay_Process(&fl_sample, &fr_sample);
+        }
+        if(WS.ReverbLevel !=0)
+        {
             Reverb_Process( &fl_sample, &fr_sample, SAMPLE_BUFFER_SIZE );       
+        }
        
         sampleData32.sample[0] = (int16_t)(fl_sample*32768.0f);
         sampleData32.sample[1] = (int16_t)(fr_sample*32768.0f);
