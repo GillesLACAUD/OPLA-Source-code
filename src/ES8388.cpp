@@ -374,12 +374,12 @@ void ES8388_rawSetup()
     ES8388_WriteReg(ES8388_DACCONTROL17,0xE0);  // 0x80	0x50	0xB8	X	Reg 0x27	39	1001 0000: left DAC to left mixer enabled + LIN signal to left mixer gain is 0dB
     ES8388_WriteReg(ES8388_DACCONTROL20,0xE0);  // 0x80	0x50	0xB8	X	Reg 0x2A	42	1001 0000: same config as above but for right mixer
     ES8388_WriteReg(ES8388_DACCONTROL21,128);   // 0x80	0x80	0x80	-	Reg 0x2B	43	1000 0000: DACLRC and ADCLRC are same
-    ES8388_WriteReg(ES8388_DACCONTROL24,28);    // 0x1F	0x1E	0x1E	-	Reg 0x2E	46	0001 1110: DAC volume is 0dB (L)
-    ES8388_WriteReg(ES8388_DACCONTROL25,28);    // 0x1F	0x1E	0x1E	-	Reg 0x2F	47	0001 1110: DAC volume is 0dB (R)
+    ES8388_WriteReg(ES8388_DACCONTROL24,29);    // 0x1F	0x1E	0x1E	-	Reg 0x2E	46	0001 1110: DAC volume is 0dB (L)
+    ES8388_WriteReg(ES8388_DACCONTROL25,29);    // 0x1F	0x1E	0x1E	-	Reg 0x2F	47	0001 1110: DAC volume is 0dB (R)
 
-    ES8388_SetOUT1VOL(0,0.85);
-    ES8388_SetOUT2VOL(0,0.85);
-    es8388_read_all();
+    ES8388_SetOUT1VOL(0,0.95);
+    ES8388_SetOUT2VOL(0,0.95);
+    //es8388_read_all();
 
     REG_WRITE(PIN_CTRL, 0xFFFFFFF0);
     PIN_FUNC_SELECT(PERIPHS_IO_MUX_GPIO0_U, FUNC_GPIO0_CLK_OUT1);

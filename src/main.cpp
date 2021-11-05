@@ -195,6 +195,9 @@ void CoreTask0( void *parameter )
 /***************************************************/
 void setup()
  {
+char AffCodec[15]="Not Define";
+char AffVersion[15]="V1.0 15.10.21";
+
 
   // put your setup code here, to run once:
     delay(500);
@@ -227,6 +230,7 @@ void setup()
 
     Wire.begin(ESP32AudioCodec.i2c_sda,ESP32AudioCodec.i2c_scl); 
 
+    // TRY I2C Pin 33 32
     nDevices = 0;
     for(address = 1; address < 127; address++ )
     {
@@ -253,7 +257,7 @@ void setup()
 
     if(ESP32AudioCodec.i2c_port == Codec_I2C_NOTDEFINE)
     {
-        
+        // TRY I2C Pin 18 23
         Serial.println("----------------------------------------");
         Serial.println("Scanning ES-8388 address...");
         Serial.println("----------------------------------------");
@@ -306,6 +310,7 @@ void setup()
 		    delay(1000);
     	}
         Serial.printf("AC101 OK\n");
+        sprintf(AffCodec,"AC101");
         AC101_volume = 99;
         ac.SetVolumeSpeaker(AC101_volume);
         ac.SetVolumeHeadphone(AC101_volume);
@@ -322,6 +327,7 @@ void setup()
     {
         delay (250);
         Serial.printf("Try Connect to ES8388 codec...\n");
+        sprintf(AffCodec,"ES8388");
         ESP32AudioCodec.i2s_blck=   27;
         ESP32AudioCodec.i2s_wclk=   25;
         
@@ -442,12 +448,12 @@ void setup()
     // SHOW SD CARD AND FIRMWARE VERSION
     if(sdcard)
     {
-        sprintf(messnex,"page0.b2.txt=%c>SDCARD HS%c%c>V1.0 15.10.21%c",0x22,0x0D,0x0A,0x22);
+        sprintf(messnex,"page0.b2.txt=%c>SDCARD HS %s%c%c>%s%c",0x22,AffCodec,0x0D,0x0A,AffVersion,0x22);
         Nextion_Send(messnex);
     }
     else
     {
-        sprintf(messnex,"page0.b2.txt=%c>SDCARD OK%c%c>V1.0 15.10.21%c",0x22,0x0D,0x0A,0x22);
+        sprintf(messnex,"page0.b2.txt=%c>SDCARD OK %s%c%c>%s%c",0x22,AffCodec,0x0D,0x0A,AffVersion,0x22);
         Nextion_Send(messnex);
         // Load all the names in the memory
         SDCard_LoadSndName();
