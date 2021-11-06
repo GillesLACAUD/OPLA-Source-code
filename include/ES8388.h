@@ -248,6 +248,6 @@ ES8388_EXTRN void ES8388_SetIn2OoutVOL(uint8_t unused, float vol);
 ES8388_EXTRN void ES8388_SetOUT1VOL(uint8_t unused, float vol);
 ES8388_EXTRN void ES8388_SetOUT2VOL(uint8_t unused, float vol);
 ES8388_EXTRN void ES8388_Setup();
-ES8388_EXTRN void ES8388_rawSetup();
+ES8388_EXTRN void ES8388_rawSetup(uint8_t sda,uint8_t scl);
 ES8388_EXTRN int  ES8388_Start();
 

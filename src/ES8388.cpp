@@ -344,9 +344,9 @@ void ES8388_Setup()
 
 
 
-void ES8388_rawSetup()
+void ES8388_rawSetup(uint8_t sda,uint8_t scl)
 {
-    while (not ES8388_begin(ES8388_PIN_SDA, ES8388_PIN_SCL, 400000))
+    while (not ES8388_begin(sda,scl, 400000))
     {
         Serial.printf("Failed!\n");
         delay(1000);

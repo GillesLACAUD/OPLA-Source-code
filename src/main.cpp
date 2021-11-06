@@ -334,7 +334,7 @@ char AffVersion[15]="V1.0 15.10.21";
         ESP32AudioCodec.i2s_dout=   26;     
         ESP32AudioCodec.i2s_din=    35;     
         ESP32AudioCodec.i2s_mclk=   0;
-        ES8388_rawSetup();
+        ES8388_rawSetup(ESP32AudioCodec.i2c_sda,ESP32AudioCodec.i2c_scl);
         
     }
 
