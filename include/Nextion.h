@@ -12,6 +12,9 @@
 #define RXD_NEX 23 /* U2RRXD */
 #define TXD_NEX 18
 
+//#define RXD_NEX 21 /* Nextion ES8388 V1 */
+//#define TXD_NEX 19 /* Nextion ES8388 V1 */
+
 #define NEXTION_MAX_LABEL 10
 #define NEXTION_MAX_POT 10
 

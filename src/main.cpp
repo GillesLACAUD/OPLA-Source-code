@@ -48,7 +48,7 @@ TaskHandle_t  Core0TaskHnd;
 float fl_sample, fr_sample;
 
 //********************************************************************************
-// HARDWARE CONFIGURATION
+// HARDWARE CONFIGURATION WITH AC101
 //
 //                  00  DO NOT USE    
 //
@@ -79,6 +79,36 @@ float fl_sample, fr_sample;
 //                  34  SD DETECT
 //
 //********************************************************************************
+
+//********************************************************************************
+// CODEC AC101
+// ESP32AudioCodec.i2c_sda=     33;
+// ESP32AudioCodec.i2c_scl=     32;
+// ESP32AudioCodec.i2s_blck=    27;
+// ESP32AudioCodec.i2s_wclk=    26;
+// ESP32AudioCodec.i2s_dout=    25;
+// ESP32AudioCodec.i2s_din=     35;
+// ESP32AudioCodec.i2s_mclk=    0;
+//
+// CODEC ES8388 OLD VERSION
+// ESP32AudioCodec.i2c_sda=     18;         Same as Nextion RX
+// ESP32AudioCodec.i2c_scl=     23;         Same as Nextion TX
+// ESP32AudioCodec.i2s_blck=    5;
+// ESP32AudioCodec.i2s_wclk=    25;
+// ESP32AudioCodec.i2s_dout=    26;
+// ESP32AudioCodec.i2s_din=     35;
+// ESP32AudioCodec.i2s_mclk=    0;
+//
+// CODEC ES8388 NEW VERSION
+// ESP32AudioCodec.i2c_sda=     33;
+// ESP32AudioCodec.i2c_scl=     32;
+// ESP32AudioCodec.i2s_blck=    27;
+// ESP32AudioCodec.i2s_wclk=    25;
+// ESP32AudioCodec.i2s_dout=    26;     
+// ESP32AudioCodec.i2s_din=     35;     
+// ESP32AudioCodec.i2s_mclk=    0;
+//********************************************************************************
+
 
 //********************************************************************************
 // INTERFACE
@@ -195,8 +225,10 @@ void CoreTask0( void *parameter )
 /***************************************************/
 void setup()
  {
+     
 char AffCodec[15]="Not Define";
-char AffVersion[15]="V1.0 15.10.21";
+char AffVersion[30]="V10 131121";
+                    
 
 
   // put your setup code here, to run once:
@@ -239,7 +271,7 @@ char AffVersion[15]="V1.0 15.10.21";
     
         if (error == 0)
         {
-            Serial.print("I2C device found at address 0x");
+            Serial.print("33 32 I2C device found at address 0x");
             Serial.print(address, HEX);
             Serial.println("\n");
             ESP32AudioCodec.i2c_addr = address;
@@ -247,7 +279,7 @@ char AffVersion[15]="V1.0 15.10.21";
         }
         else if (error==4)
         {
-            Serial.print("Unknown error at address 0x");
+            Serial.print("33 32Unknown error at address 0x");
             if (address<16)
                 Serial.print("0");
             Serial.println(address,HEX);
@@ -259,7 +291,7 @@ char AffVersion[15]="V1.0 15.10.21";
     {
         // TRY I2C Pin 18 23
         Serial.println("----------------------------------------");
-        Serial.println("Scanning ES-8388 address...");
+        Serial.println("Scanning  I2C bus 18 23...");
         Serial.println("----------------------------------------");
 
         ESP32AudioCodec.i2c_sda=18;
@@ -275,7 +307,7 @@ char AffVersion[15]="V1.0 15.10.21";
         
             if (error == 0)
             {
-                Serial.print("I2C device found at address 0x");
+                Serial.print("18 23 I2C device found at address 0x");
                 if (address<16)
                     Serial.print("0");
                 Serial.print(address, HEX);
@@ -286,7 +318,7 @@ char AffVersion[15]="V1.0 15.10.21";
             }
             else if (error==4)
             {
-                Serial.print("Unknown error at address 0x");
+                Serial.print("18 23 Unknown error at address 0x");
                 if (address<16)
                     Serial.print("0");
                 Serial.println(address,HEX);
@@ -328,12 +360,26 @@ char AffVersion[15]="V1.0 15.10.21";
         delay (250);
         Serial.printf("Try Connect to ES8388 codec...\n");
         sprintf(AffCodec,"ES8388");
-        ESP32AudioCodec.i2s_blck=   27;
-        ESP32AudioCodec.i2s_wclk=   25;
-        
-        ESP32AudioCodec.i2s_dout=   26;     
-        ESP32AudioCodec.i2s_din=    35;     
-        ESP32AudioCodec.i2s_mclk=   0;
+        if(ESP32AudioCodec.i2c_sda==33)
+        {
+            Serial.printf("Try Connect to ES8388 codec...33 32\n");
+            sprintf(AffCodec,"ES8388V2");
+            ESP32AudioCodec.i2s_blck=   27;
+            ESP32AudioCodec.i2s_wclk=   25;
+            ESP32AudioCodec.i2s_dout=   26;     
+            ESP32AudioCodec.i2s_din=    35;     
+            ESP32AudioCodec.i2s_mclk=   0;
+        }
+        if(ESP32AudioCodec.i2c_sda==18)
+        {
+            Serial.printf("Try Connect to ES8388 codec...18 23\n");
+            sprintf(AffCodec,"ES8388V1");
+            ESP32AudioCodec.i2s_blck=    5;
+            ESP32AudioCodec.i2s_wclk=    25;
+            ESP32AudioCodec.i2s_dout=    26;
+            ESP32AudioCodec.i2s_din=     35;
+            ESP32AudioCodec.i2s_mclk=    0;
+        }
         ES8388_rawSetup(ESP32AudioCodec.i2c_sda,ESP32AudioCodec.i2c_scl);
         
     }
@@ -446,6 +492,9 @@ char AffVersion[15]="V1.0 15.10.21";
 
         
     // SHOW SD CARD AND FIRMWARE VERSION
+    sprintf(messnex,"page0.b2.txt_maxl=80");
+    Nextion_Send(messnex);
+
     if(sdcard)
     {
         sprintf(messnex,"page0.b2.txt=%c>SDCARD HS %s%c%c>%s%c",0x22,AffCodec,0x0D,0x0A,AffVersion,0x22);
