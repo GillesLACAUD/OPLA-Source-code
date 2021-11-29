@@ -133,6 +133,18 @@
 #define MIDI_CC_LFO2_AMT        78
 #define MIDI_CC_LFO2_SYNC       79
 
+#define MIDI_CC_ARP_1           40
+#define MIDI_CC_ARP_2           41
+#define MIDI_CC_ARP_3           42
+#define MIDI_CC_ARP_4           43
+#define MIDI_CC_ARP_5           44
+
+#define MIDI_CC_ARP_6           45
+#define MIDI_CC_ARP_7           46
+#define MIDI_CC_ARP_8           47
+#define MIDI_CC_ARP_9           48
+#define MIDI_CC_ARP_10          49
+
 
 /*
 
