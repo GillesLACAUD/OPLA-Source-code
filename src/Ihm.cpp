@@ -922,7 +922,39 @@ int Fct_Ch_DlAmount(int val)
 float value;    
 
     value = val * NORM127MUL;
-    Delay_SetLevel(value);     
+    Delay_SetLevel(value);   
+    if(val==0)
+    {
+        switch(SoundMode)
+        {
+            case SND_MODE_POLY:
+            break;
+
+            case SND_MODE_PARA:
+            WS.PolyMax=SND_MAX_PARA+1;
+            break;
+
+            case SND_MODE_MONO:
+            WS.PolyMax=SND_MAX_MONO+1;
+            break;
+        }
+    }
+    else
+    {
+        switch(SoundMode)
+        {
+            case SND_MODE_POLY:
+            break;
+
+            case SND_MODE_PARA:
+            WS.PolyMax=SND_MAX_PARA;
+            break;
+
+            case SND_MODE_MONO:
+            WS.PolyMax=SND_MAX_MONO;
+            break;
+        }
+    }
     return(0);
 }
 
@@ -1006,10 +1038,14 @@ float value;
 
         case SND_MODE_PARA:
         WS.PolyMax=SND_MAX_PARA;
+        if(WS.DelayAmount==0)
+            WS.PolyMax++;
         break;
 
         case SND_MODE_MONO:
         WS.PolyMax=SND_MAX_MONO;
+        if(WS.DelayAmount==0)
+            WS.PolyMax++;
         break;
     }
 

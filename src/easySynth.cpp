@@ -969,18 +969,9 @@ int indx=0;
 			// Apply EG Amp
             voice->lastSample[0] *= voice->control_sign*voice->avelocity;			
 			
-			
-			
-            if(SoundMode==SND_MODE_POLY)
-            {
-                out_l += voice->lastSample[0]*(1-voice->panspread);
-                out_r += voice->lastSample[0]*(voice->panspread);
-            }
-            else
-            {
-                out_l += voice->lastSample[0];
-                out_r += voice->lastSample[0];
-            }
+            out_l += voice->lastSample[0]*(1-voice->panspread);
+            out_r += voice->lastSample[0]*(voice->panspread);
+
             voice->lastSample[0] = 0.0f;
         }
     }
@@ -988,10 +979,7 @@ int indx=0;
     if(SoundMode!=SND_MODE_POLY)
     {
         out_l = KarlsenLPF(out_l,cf+voicePlayer[0].f_control_sign*filterEG, filtReso,0);
-        out_r = KarlsenLPF(out_r,cf+voicePlayer[0].f_control_sign*filterEG, filtReso,0);
-        out_l *= 1-voicePlayer[0].panspread;
-        out_r *= voicePlayer[0].panspread;
-        
+        out_r = KarlsenLPF(out_r,cf+voicePlayer[0].f_control_sign*filterEG, filtReso,1);
     }
     
     float multi = (1+AmpMod)*GeneralVolume;

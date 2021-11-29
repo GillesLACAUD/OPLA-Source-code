@@ -32,8 +32,8 @@ SYNTH_EXTRN uint32_t midi_note_to_add[MIDI_NOTE_CNT]; /* lookup to playback wave
 #define SND_MODE_MONO		2
 
 #define SND_MAX_POLY		4
-#define SND_MAX_PARA		4			// 6 if possible ????
-#define SND_MAX_MONO		4
+#define SND_MAX_PARA		4			// 5 without delay and with reverb
+#define SND_MAX_MONO		4			// 5 without delay and with reverb
 
 //----------------------------------------------------------
 // FILTER DEFINE
