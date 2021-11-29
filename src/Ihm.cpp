@@ -451,7 +451,6 @@ int Fct_Ch_FType(int val)
 {
 float value=0; 
 
-
     value = val * NORM127MUL;
     FilterType = (value) * (MAX_FLT_TYPE);
     if(serialdebug)       
@@ -1264,7 +1263,115 @@ int Fct_Ch_PitchTrig(int val)
     if(val>64)
         adsr_pit.trig=1;
 
+
+    return(0);
+
+}
+
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+int Fct_Ch_ArpOnOff(int val)
+{
+    if(val>64)
+        u8_ArpOn = 1;
+    else
+        u8_ArpOn= 0;
+    if(serialdebug)       
+        Serial.printf("ARP ON OFF: %d\n",u8_ArpOn);
+    return(0);        
+
+}
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+int Fct_Ch_ArpHold(int val) 
+{
+    if(val>64)
+        u8_ArpHold = 1;
+    else
+        u8_ArpHold = 0;
+    if(serialdebug)       
+        Serial.printf("ARP HOLD: %d\n",u8_ArpHold);
     return(0);
 }
+
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+int Fct_Ch_ArpSpeed(int val)
+{
+    WS.ArpSpeed = val;
+    if(serialdebug)       
+        Serial.printf("ARP SPEED: %d\n",WS.ArpSpeed);
+    return(0);
+}
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+int Fct_Ch_ArpDiv(int val)  
+{
+float value=0; 
+
+    value = val * NORM127MUL;
+    u8_ArpDiv = (value) * (MAXARPDIV);
+    if(serialdebug)       
+        Serial.printf("ARP DIV: %d\n",u8_ArpDiv);
+    return(0);
+}
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+int Fct_Ch_ArpMode(int val) 
+{
+float value=0; 
+
+    value = val * NORM127MUL;
+    u8_ArpMode = (value) * (MAXARPMODE);
+    if(serialdebug)       
+        Serial.printf("ARP MODE: %d\n",u8_ArpMode);
+    return(0);
+}
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+int Fct_Ch_ArpOct(int val)  
+{
+
+}
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+int Fct_Ch_ArpGate(int val) 
+{
+
+}
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+int Fct_Ch_ArpSwing(int val)
+{
+
+}
+
+
+
+
 
 

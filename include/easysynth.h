@@ -131,6 +131,11 @@ SYNTH_EXTRN uint8_t NoiseType;
 
 SYNTH_EXTRN uint8_t FlipPan;
 
+SYNTH_EXTRN uint8_t u8_ArpOn;
+SYNTH_EXTRN uint8_t u8_ArpHold;
+SYNTH_EXTRN uint8_t u8_ArpDiv;
+SYNTH_EXTRN uint8_t u8_ArpMode;
+
 
 #define MONO_MAX_KEEP_NOTE	20
 SYNTH_EXTRN uint8_t MonoIndexNote;
@@ -158,6 +163,7 @@ char ArpDiv[MAXARPDIV][5] =
 {"04","08","16","32","04T","08T","16T","32T"};
 char ArpMode[MAXARPMODE][5] = 
 {"UP","DWN","INC","EXC","RND","ORD","UP2","DW2"};
+
 
 float sine[WAVEFORM_CNT];
 float saw[WAVEFORM_CNT];
