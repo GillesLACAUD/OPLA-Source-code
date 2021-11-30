@@ -555,6 +555,16 @@ static uint16_t cpttimer2;
     overcpt++;
     Cptloadwave++;
 
+    // Arpegiator timer
+    if(u8_ArpOn)
+    {
+        if(Timer1ms_cnt > WS.ArpSpeed*10)
+        {
+            Serial.printf("ARP CLICK\n");
+            Timer1ms_cnt=0;
+        }
+    }
+
     if(overon && overcpt > NEXTION_MAX_OVER_TIME)
     {
        overon=false;

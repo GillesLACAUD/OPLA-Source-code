@@ -1275,6 +1275,7 @@ int Fct_Ch_PitchTrig(int val)
 /***************************************************/
 int Fct_Ch_ArpOnOff(int val)
 {
+    Timer1ms_cnt=0;
     if(val>64)
         u8_ArpOn = 1;
     else
@@ -1307,7 +1308,7 @@ int Fct_Ch_ArpHold(int val)
 /***************************************************/
 int Fct_Ch_ArpSpeed(int val)
 {
-    WS.ArpSpeed = val;
+    WS.ArpSpeed = 127-val;
     if(serialdebug)       
         Serial.printf("ARP SPEED: %d\n",WS.ArpSpeed);
     return(0);
