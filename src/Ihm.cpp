@@ -12,6 +12,7 @@
 #include "Modulator.h"
 #include "Nextion.h"
 #include "SDCard.h"
+#include "ArpSeq.h"
 
 uint8_t serialdebug=1;
 
@@ -1308,9 +1309,9 @@ int Fct_Ch_ArpHold(int val)
 /***************************************************/
 int Fct_Ch_ArpSpeed(int val)
 {
-    WS.ArpSpeed = 127-val;
+    u8_ArpSpeed = 127-val;
     if(serialdebug)       
-        Serial.printf("ARP SPEED: %d\n",WS.ArpSpeed);
+        Serial.printf("ARP SPEED: %d\n",u8_ArpSpeed);
     return(0);
 }
 /***************************************************/

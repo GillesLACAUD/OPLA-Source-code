@@ -39,6 +39,7 @@
 #include "Simple_Delay.h"
 #include "Reverb.h"
 #include "Ihm.h"
+#include "ArpSeq.h"
 
 #define __CODEC__
 #include "Codec.h"
@@ -556,11 +557,12 @@ static uint16_t cpttimer2;
     Cptloadwave++;
 
     // Arpegiator timer
-    if(u8_ArpOn)
+    if(u8_ArpOn && u8_ArpTrig)
     {
         if(Timer1ms_cnt > WS.ArpSpeed*10)
         {
-            Serial.printf("ARP CLICK\n");
+            //Serial.printf("ARP CLICK\n");
+            Arp_Play_Note();
             Timer1ms_cnt=0;
         }
     }

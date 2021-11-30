@@ -131,11 +131,6 @@ SYNTH_EXTRN uint8_t NoiseType;
 
 SYNTH_EXTRN uint8_t FlipPan;
 
-SYNTH_EXTRN uint8_t u8_ArpOn;
-SYNTH_EXTRN uint8_t u8_ArpHold;
-SYNTH_EXTRN uint8_t u8_ArpDiv;
-SYNTH_EXTRN uint8_t u8_ArpMode;
-
 
 #define MONO_MAX_KEEP_NOTE	20
 SYNTH_EXTRN uint8_t MonoIndexNote;

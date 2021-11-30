@@ -14,6 +14,7 @@
 #include "Modulator.h"
 #include "SDCard.h"
 #include "Ihm.h"
+#include "ArpSeq.h"
 
 /* constant to normalize midi value to 0.0 - 1.0f */
 #define NORM127MUL	0.007874f
@@ -51,6 +52,19 @@ uint8_t n=0;
     if(note)
     {
         FlipPan = !FlipPan;
+        if(u8_ArpOn)
+        {
+            //TODO wait xms to all key on
+            if(!u8_ArpNbKeyOn)
+            {
+                u8_ArpTrig=1;
+                u8_ArpCptStep=0;
+            }
+            u8_ArpNbKeyOn++;                        // Start at 1 (0 is not key press)
+            u8_ArpTabKeys[note]=u8_ArpNbKeyOn;
+            Arp_Filter_Note();
+            return;
+        }
         if(SoundMode !=SND_MODE_MONO)
             Synth_NoteOn(note,vel);
         else
@@ -102,6 +116,27 @@ inline void Midi_NoteOff(uint8_t note,uint8_t vel)
 {
 uint8_t n;
 
+    if(u8_ArpOn)
+    {
+        u8_ArpNbKeyOn--;
+        u8_ArpTabKeys[note]=0;
+        if(!u8_ArpNbKeyOn)
+        {
+            u8_ArpTrig=0;
+            // Off all note
+            for(uint8_t i=0;i<MAX_ARP_FLT_KEYS;i++)
+            {
+                if(SoundMode !=SND_MODE_MONO)
+                    Synth_NoteOff(u8_ArpTabFilterKeys[!u8_ArpCurrenttab][i]);
+                else
+                    Synth_MonoNoteOff(u8_ArpTabFilterKeys[!u8_ArpCurrenttab][i]);
+            }
+            u8_ArpCptStep=0;                
+        }
+        else
+            Arp_Filter_Note();
+        return;
+    }
     if(SoundMode !=SND_MODE_MONO)
         Synth_NoteOff(note);
     else
