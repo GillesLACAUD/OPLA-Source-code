@@ -193,6 +193,10 @@ void IRAM_ATTR onTimer1ms()
     //portENTER_CRITICAL_ISR(&timerMux_1ms);
     Timer1ms_cnt++;
     //portEXIT_CRITICAL_ISR(&timerMux_1ms);    
+    if(!u8_ArpTrig)
+    {
+        u8_ArpCptHitKey++;
+    }
 }
 
 void CoreTask0( void *parameter )
@@ -555,6 +559,17 @@ static uint16_t cpttimer2;
     loop_count_u8++;
     overcpt++;
     Cptloadwave++;
+
+    // ARP Wait xms to all key on 
+    if(u8_ArpCptHitKey>MAX_ARP_DELAY_HITKEYS && !u8_ArpTrig && u8_ArpNbKeyOn)
+    {
+        //Serial.printf("START ARP\n");
+        u8_ArpCptHitKey=0;
+        u8_ArpTrig=1;
+        u8_ArpCptStep=255;
+        Arp_Filter_Note();
+    }
+
 
     // Arpegiator timer
     if(u8_ArpOn && u8_ArpTrig)

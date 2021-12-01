@@ -13,13 +13,15 @@ ARP_EXTRN uint8_t u8_ArpHold;
 ARP_EXTRN uint8_t u8_ArpDiv;
 ARP_EXTRN uint8_t u8_ArpMode;
 
+#define MAX_ARP_DELAY_HITKEYS		25
+ARP_EXTRN volatile uint8_t u8_ArpCptHitKey;					            // Wait x ms before start seq to wait all hit keys
+
 #define MAX_ARP_KEYS		127
 #define MAX_ARP_FLT_KEYS	20
 ARP_EXTRN uint8_t u8_ArpTabKeys[MAX_ARP_KEYS];					// Store all the key on with an order
-ARP_EXTRN uint8_t u8_ArpTabFilterKeys[2][MAX_ARP_FLT_KEYS];	    // Place the key in order time or order low to high
-ARP_EXTRN uint8_t u8_ArpCurrenttab;							    // Current tab is playing other one to re order keys	
+ARP_EXTRN uint8_t u8_ArpTabFilterKeys[MAX_ARP_FLT_KEYS];	    // Place the key in order time or order low to high
 ARP_EXTRN uint8_t u8_ArpNbKeyOn;								// Cpt for nb key on
-ARP_EXTRN uint8_t u8_ArpCptStep;								// Cpt for current step
+ARP_EXTRN uint8_t u8_ArpCptStep;								// Cpt for current step playing
 ARP_EXTRN int8_t  u8_ArpWay;	
 
 #define ARP_MODE_UP         0

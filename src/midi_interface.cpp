@@ -54,15 +54,13 @@ uint8_t n=0;
         FlipPan = !FlipPan;
         if(u8_ArpOn)
         {
-            //TODO wait xms to all key on
             if(!u8_ArpNbKeyOn)
-            {
-                u8_ArpTrig=1;
-                u8_ArpCptStep=0;
-            }
+                u8_ArpCptHitKey=0;
+
             u8_ArpNbKeyOn++;                        // Start at 1 (0 is not key press)
+            //Serial.printf("Key on %d Timer %d\n",u8_ArpNbKeyOn,u8_ArpCptHitKey);
             u8_ArpTabKeys[note]=u8_ArpNbKeyOn;
-            Arp_Filter_Note();
+
             return;
         }
         if(SoundMode !=SND_MODE_MONO)
@@ -124,17 +122,15 @@ uint8_t n;
         {
             u8_ArpTrig=0;
             // Off all note
-            for(uint8_t i=0;i<MAX_ARP_FLT_KEYS;i++)
+            for(uint8_t i=0;i<=MAX_ARP_FLT_KEYS;i++)
             {
                 if(SoundMode !=SND_MODE_MONO)
-                    Synth_NoteOff(u8_ArpTabFilterKeys[!u8_ArpCurrenttab][i]);
+                    Synth_NoteOff(u8_ArpTabFilterKeys[i]);
                 else
-                    Synth_MonoNoteOff(u8_ArpTabFilterKeys[!u8_ArpCurrenttab][i]);
+                    Synth_MonoNoteOff(u8_ArpTabFilterKeys[i]);
             }
             u8_ArpCptStep=0;                
         }
-        else
-            Arp_Filter_Note();
         return;
     }
     if(SoundMode !=SND_MODE_MONO)
