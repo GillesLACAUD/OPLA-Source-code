@@ -1340,6 +1340,38 @@ float value=0;
 
     value = val * NORM127MUL;
     u8_ArpMode = (value) * (MAXARPMODE);
+
+    switch(u8_ArpMode)
+    {
+        case ARP_MODE_UP:       
+        i8_ArpWay= 1;
+        u8_ArpCptStep=0;
+        break;
+        case ARP_MODE_DWN:
+        i8_ArpWay=-1;
+        u8_ArpCptStep=u8_ArpNbKeyOn;
+        break;
+        case ARP_MODE_INC:      
+        i8_ArpWay= 1;
+        u8_ArpCptStep=0;
+        break;
+        case ARP_MODE_EXC:      
+        i8_ArpWay= 1;
+        break;
+        case ARP_MODE_RND:      
+        i8_ArpWay= 1;
+        break;
+        case ARP_MODE_ORDER:    
+        i8_ArpWay= 1;
+        break;    
+        case ARP_MODE_UP2:      
+        i8_ArpWay= 1;
+        break; 
+        case ARP_MODE_DWN2:     
+        i8_ArpWay=-1;
+        break;
+    }
+
     if(serialdebug)       
         Serial.printf("ARP MODE: %d\n",u8_ArpMode);
     return(0);

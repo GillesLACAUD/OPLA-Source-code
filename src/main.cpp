@@ -563,10 +563,16 @@ static uint16_t cpttimer2;
     // ARP Wait xms to all key on 
     if(u8_ArpCptHitKey>MAX_ARP_DELAY_HITKEYS && !u8_ArpTrig && u8_ArpNbKeyOn)
     {
-        //Serial.printf("START ARP\n");
         u8_ArpCptHitKey=0;
         u8_ArpTrig=1;
-        u8_ArpCptStep=255;
+        switch(u8_ArpMode)
+	    {
+            case ARP_MODE_UP:  u8_ArpCptStep=255;u8_ArpUpDwn=ARP_UP;i8_ArpWay=1;break;
+            case ARP_MODE_DWN: u8_ArpCptStep=u8_ArpNbKeyOn;u8_ArpUpDwn=ARP_DOWN;i8_ArpWay=-1;break;
+            case ARP_MODE_INC: u8_ArpCptStep=255;u8_ArpUpDwn=ARP_UP;i8_ArpWay=1;break;
+            case ARP_MODE_EXC: u8_ArpCptStep=255;u8_ArpUpDwn=ARP_UP;i8_ArpWay=1;break;
+        }
+        Serial.printf("START ARP Send %d\n",u8_ArpUpDwn);
         Arp_Filter_Note();
     }
 

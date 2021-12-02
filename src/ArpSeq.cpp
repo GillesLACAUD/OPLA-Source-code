@@ -54,7 +54,7 @@ uint8_t cpttarget=0;
 				return(0);
 		}
 	}
-    Arp_Filter_Print();
+    //Arp_Filter_Print();
     if(!u8_ArpNbKeyOn)
     {	
 		// PLay the first note
@@ -75,30 +75,92 @@ uint8_t cpttarget=0;
 // Play the new note
 uint8_t Arp_Play_Note()
 {
-	//PlayNote(u8_ArpTabFilterKeys[u8_ArpCptStep]);
-
     FlipPan = !FlipPan;
+    /*
     if(Arp_Debug)
     {
         Serial.printf("Cpt %03d Max %03d\n",u8_ArpCptStep,u8_ArpNbKeyOn);
     }
+    */
     if(SoundMode !=SND_MODE_MONO)
         Synth_NoteOff(u8_ArpTabFilterKeys[u8_ArpCptStep]);
     else
         Synth_MonoNoteOff(u8_ArpTabFilterKeys[u8_ArpCptStep]);
 
-    u8_ArpWay=1;
-	switch(WS.ArpMode)
+	switch(u8_ArpMode)
 	{
 		case ARP_MODE_UP:
-		u8_ArpCptStep+=u8_ArpWay;
+        u8_ArpCptStep+=i8_ArpWay;
 		if(u8_ArpCptStep>=u8_ArpNbKeyOn)
 		{
 			Arp_Filter_Note();
 			u8_ArpCptStep=0;
 		}
 		break;
+		case ARP_MODE_DWN:
+		if(u8_ArpCptStep==0)
+		{
+			Arp_Filter_Note();
+			u8_ArpCptStep=u8_ArpNbKeyOn;
+		}
+        u8_ArpCptStep+=i8_ArpWay;
+		break;        
+
+        case ARP_MODE_INC:
+        if(u8_ArpUpDwn==ARP_UP)
+        {
+            u8_ArpCptStep+=i8_ArpWay;
+		    if(u8_ArpCptStep>=u8_ArpNbKeyOn)
+		    {
+    			Arp_Filter_Note();
+                u8_ArpUpDwn=ARP_DOWN;
+                i8_ArpWay=-1;
+                u8_ArpCptStep+=i8_ArpWay;
+		    }
+        }
+        else
+        {
+            if(u8_ArpCptStep==255)
+		    {
+    			Arp_Filter_Note();
+                u8_ArpUpDwn=ARP_UP;
+                i8_ArpWay=+1;
+                u8_ArpCptStep=0;
+		    }
+            else
+                u8_ArpCptStep+=i8_ArpWay;
+        }
+        break;
+
+        case ARP_MODE_EXC:
+        if(u8_ArpUpDwn==ARP_UP)
+        {
+            u8_ArpCptStep+=i8_ArpWay;
+		    if(u8_ArpCptStep==u8_ArpNbKeyOn)
+		    {
+    			Arp_Filter_Note();
+                u8_ArpUpDwn=ARP_DOWN;
+                i8_ArpWay=-1;
+                u8_ArpCptStep +=i8_ArpWay;
+                u8_ArpCptStep +=i8_ArpWay;
+		    }
+        }
+        else
+        {
+            if(u8_ArpCptStep==0)
+		    {
+    			Arp_Filter_Note();
+                u8_ArpUpDwn=ARP_UP;
+                i8_ArpWay=+1;
+		    }
+            u8_ArpCptStep+=i8_ArpWay;
+        }
+        break;
 	}
+    if(Arp_Debug)
+    {
+        Serial.printf("Cpt %03d Key On %03d Max %03d\n",u8_ArpCptStep,u8_ArpTabFilterKeys[u8_ArpCptStep],u8_ArpNbKeyOn);
+    }
 
     if(SoundMode !=SND_MODE_MONO)
         Synth_NoteOn(u8_ArpTabFilterKeys[u8_ArpCptStep],90);

@@ -129,7 +129,7 @@ uint8_t n;
                 else
                     Synth_MonoNoteOff(u8_ArpTabFilterKeys[i]);
             }
-            u8_ArpCptStep=0;                
+            //u8_ArpCptStep=0;                
         }
         return;
     }
