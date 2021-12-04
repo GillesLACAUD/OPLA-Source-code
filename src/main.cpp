@@ -568,10 +568,13 @@ static uint16_t cpttimer2;
         switch(u8_ArpMode)
 	    {
             case ARP_MODE_UP:  u8_ArpCptStep=255;u8_ArpUpDwn=ARP_UP;i8_ArpWay=1;break;
+            case ARP_MODE_UP2:  u8_ArpCptStep=0;u8_ArpUpDwn=ARP_UP;i8_ArpWay=1;break;
             case ARP_MODE_DWN: u8_ArpCptStep=u8_ArpNbKeyOn;u8_ArpUpDwn=ARP_DOWN;i8_ArpWay=-1;break;
+            case ARP_MODE_DWN2: u8_ArpCptStep=u8_ArpNbKeyOn-1;u8_ArpUpDwn=ARP_DOWN;i8_ArpWay=-1;break;
             case ARP_MODE_INC: u8_ArpCptStep=255;u8_ArpUpDwn=ARP_UP;i8_ArpWay=1;break;
             case ARP_MODE_EXC: u8_ArpCptStep=255;u8_ArpUpDwn=ARP_UP;i8_ArpWay=1;break;
         }
+        u8_ArpRepeat=0;
         Serial.printf("START ARP Send %d\n",u8_ArpUpDwn);
         Arp_Filter_Note();
     }

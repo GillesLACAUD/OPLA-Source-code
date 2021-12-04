@@ -75,7 +75,6 @@ uint8_t cpttarget=0;
 // Play the new note
 uint8_t Arp_Play_Note()
 {
-static uint8_t repeat=0;    
     FlipPan = !FlipPan;
     /*
     if(Arp_Debug)
@@ -87,6 +86,7 @@ static uint8_t repeat=0;
         Synth_NoteOff(u8_ArpTabFilterKeys[u8_ArpCptStep]);
     else
         Synth_MonoNoteOff(u8_ArpTabFilterKeys[u8_ArpCptStep]);
+
 
 	switch(u8_ArpMode)
 	{
@@ -120,12 +120,12 @@ static uint8_t repeat=0;
     			Arp_Filter_Note();
                 i8_ArpWay=-1;
                 u8_ArpCptStep =u8_ArpNbKeyOn-1;
-                if(repeat==1)
+                if(u8_ArpRepeat==1)
                 {
-                    repeat=0;
+                    u8_ArpRepeat=0;
                     u8_ArpUpDwn=ARP_DOWN;
                 }
-                repeat++;
+                u8_ArpRepeat++;
 		    }
             else
                 u8_ArpCptStep+=i8_ArpWay;
@@ -137,12 +137,12 @@ static uint8_t repeat=0;
     			Arp_Filter_Note();
                 i8_ArpWay=+1;
                 u8_ArpCptStep=0;
-                if(repeat==1)
+                if(u8_ArpRepeat==1)
                 {
-                    repeat=0;
+                    u8_ArpRepeat=0;
                     u8_ArpUpDwn=ARP_UP;
                 }
-                repeat++;
+                u8_ArpRepeat++;
 		    }
             else
                 u8_ArpCptStep+=i8_ArpWay;
@@ -157,7 +157,7 @@ static uint8_t repeat=0;
     			Arp_Filter_Note();
                 u8_ArpUpDwn=ARP_DOWN;
                 i8_ArpWay=-1;
-                u8_ArpCptStep =u8_ArpNbKeyOn-1;
+                u8_ArpCptStep =u8_ArpNbKeyOn-2;
 		    }
             else
                 u8_ArpCptStep+=i8_ArpWay;
@@ -169,7 +169,7 @@ static uint8_t repeat=0;
     			Arp_Filter_Note();
                 u8_ArpUpDwn=ARP_UP;
                 i8_ArpWay=+1;
-                u8_ArpCptStep=0;
+                u8_ArpCptStep=1;
 		    }
             else
                 u8_ArpCptStep+=i8_ArpWay;
@@ -181,25 +181,46 @@ static uint8_t repeat=0;
         {
             Arp_Filter_Note();
             i8_ArpWay=+1;
-            u8_ArpCptStep =0;
-            if(repeat==1)
+            if(u8_ArpRepeat==2)
             {
-                repeat=0;
+                u8_ArpRepeat=0;
+                u8_ArpCptStep=0;
             }
-            repeat++;
+            u8_ArpRepeat++;
         }
         else
         {
-            if(repeat==1)
+            if(u8_ArpRepeat==2)
             {
-                repeat=0;
+                u8_ArpRepeat=0;
                 u8_ArpCptStep+=i8_ArpWay;
             }
-            repeat++;
+            u8_ArpRepeat++;
         }
 		break;
 
-
+		case ARP_MODE_DWN2:
+        if(u8_ArpCptStep<=0)
+        {
+            Arp_Filter_Note();
+            i8_ArpWay=-1;
+            if(u8_ArpRepeat==2)
+            {
+                u8_ArpRepeat=0;
+                u8_ArpCptStep=u8_ArpNbKeyOn-1;
+            }
+            u8_ArpRepeat++;
+        }
+        else
+        {
+            if(u8_ArpRepeat==2)
+            {
+                u8_ArpRepeat=0;
+                u8_ArpCptStep+=i8_ArpWay;
+            }
+            u8_ArpRepeat++;
+        }
+		break;        
 	}
     if(Arp_Debug)
     {

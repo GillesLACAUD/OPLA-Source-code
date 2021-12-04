@@ -28,6 +28,7 @@ ARP_EXTRN uint8_t u8_ArpNbKeyOn;								// Cpt for nb key on
 ARP_EXTRN int8_t  u8_ArpCptStep;								// Cpt for current step playing
 ARP_EXTRN uint8_t u8_ArpUpDwn;								    // Up or Down
 ARP_EXTRN int8_t  i8_ArpWay;	
+ARP_EXTRN int8_t  u8_ArpRepeat;	    							// 
 
 #define ARP_MODE_UP         0
 #define ARP_MODE_DWN        1
