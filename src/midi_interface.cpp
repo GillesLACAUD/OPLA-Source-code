@@ -60,6 +60,7 @@ uint8_t n=0;
             u8_ArpNbKeyOn++;                        // Start at 1 (0 is not key press)
             //Serial.printf("Key on %d Timer %d\n",u8_ArpNbKeyOn,u8_ArpCptHitKey);
             u8_ArpTabKeys[note]=u8_ArpNbKeyOn;
+            u8_ArpTabKeysVel[note]=vel;
 
             return;
         }

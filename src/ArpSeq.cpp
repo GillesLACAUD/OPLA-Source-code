@@ -6,7 +6,7 @@
 
 #include "easysynth.h"
 
-uint8_t Arp_Debug=1;
+uint8_t Arp_Debug=0;
 
 /***************************************************/
 /* Only for debug                                  */
@@ -40,7 +40,7 @@ uint8_t cpttarget=0;
 		if(u8_ArpTabKeys[cptparse])
 		{
 			// Arrange tab in order note
-			if(WS.ArpMode == ARP_MODE_ORDER)
+			if(u8_ArpMode == ARP_MODE_ORDER)
             {
 				u8_ArpTabFilterKeys[cpttarget] = u8_ArpTabKeys[cptparse];
             }
@@ -48,20 +48,21 @@ uint8_t cpttarget=0;
 			else
             {
 				u8_ArpTabFilterKeys[cpttarget] = cptparse;
+                u8_ArpTabFilterKeysVel[cpttarget]=u8_ArpTabKeysVel[cptparse];
             }
 			cpttarget++;
 			if(cpttarget>u8_ArpNbKeyOn)
 				return(0);
 		}
 	}
-    //Arp_Filter_Print();
+    Arp_Filter_Print();
     if(!u8_ArpNbKeyOn)
     {	
 		// PLay the first note
         if(SoundMode !=SND_MODE_MONO)
-            Synth_NoteOn(u8_ArpTabFilterKeys[u8_ArpCptStep],90);
+            Synth_NoteOn(u8_ArpTabFilterKeys[u8_ArpCptStep],u8_ArpTabFilterKeysVel[u8_ArpCptStep]);
         else
-            Synth_MonoNoteOn(u8_ArpTabFilterKeys[u8_ArpCptStep],90);
+            Synth_MonoNoteOn(u8_ArpTabFilterKeys[u8_ArpCptStep],u8_ArpTabFilterKeysVel[u8_ArpCptStep]);
     }
                 
     return(0);
@@ -91,6 +92,7 @@ uint8_t Arp_Play_Note()
 	switch(u8_ArpMode)
 	{
 		case ARP_MODE_UP:
+        case ARP_MODE_ORDER:
         if(u8_ArpUpDwn==ARP_UP)
         {
 		    if(u8_ArpCptStep>=u8_ArpNbKeyOn-1)
@@ -157,7 +159,7 @@ uint8_t Arp_Play_Note()
     			Arp_Filter_Note();
                 u8_ArpUpDwn=ARP_DOWN;
                 i8_ArpWay=-1;
-                u8_ArpCptStep =u8_ArpNbKeyOn-2;
+                u8_ArpCptStep =u8_ArpNbKeyOn-1;
 		    }
             else
                 u8_ArpCptStep+=i8_ArpWay;
@@ -228,9 +230,9 @@ uint8_t Arp_Play_Note()
     }
 
     if(SoundMode !=SND_MODE_MONO)
-        Synth_NoteOn(u8_ArpTabFilterKeys[u8_ArpCptStep],90);
+        Synth_NoteOn(u8_ArpTabFilterKeys[u8_ArpCptStep],u8_ArpTabFilterKeysVel[u8_ArpCptStep]);
     else
-        Synth_MonoNoteOn(u8_ArpTabFilterKeys[u8_ArpCptStep],90);
+        Synth_MonoNoteOn(u8_ArpTabFilterKeys[u8_ArpCptStep],u8_ArpTabFilterKeysVel[u8_ArpCptStep]);
 
     return(0);
 }
