@@ -6,7 +6,7 @@
 
 #include "easysynth.h"
 
-uint8_t Arp_Debug=0;
+uint8_t Arp_Debug=1;
 
 /***************************************************/
 /* Only for debug                                  */
@@ -42,7 +42,8 @@ uint8_t cpttarget=0;
 			// Arrange tab in order note
 			if(u8_ArpMode == ARP_MODE_ORDER)
             {
-				u8_ArpTabFilterKeys[cpttarget] = u8_ArpTabKeys[cptparse];
+				u8_ArpTabFilterKeys[u8_ArpTabKeys[cptparse]-1] = cptparse;
+                u8_ArpTabFilterKeysVel[u8_ArpTabKeys[cptparse]-1]=u8_ArpTabKeysVel[cptparse];
             }
 			// Arrange tab from lower to higher note
 			else
@@ -55,7 +56,7 @@ uint8_t cpttarget=0;
 				return(0);
 		}
 	}
-    Arp_Filter_Print();
+    //Arp_Filter_Print();
     if(!u8_ArpNbKeyOn)
     {	
 		// PLay the first note
