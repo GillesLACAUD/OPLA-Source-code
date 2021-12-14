@@ -61,7 +61,6 @@ uint8_t n=0;
             //Serial.printf("Key on %d Timer %d\n",u8_ArpNbKeyOn,u8_ArpCptHitKey);
             u8_ArpTabKeys[note]=u8_ArpNbKeyOn;
             u8_ArpTabKeysVel[note]=vel;
-
             return;
         }
         if(SoundMode !=SND_MODE_MONO)

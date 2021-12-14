@@ -584,7 +584,7 @@ static uint16_t cpttimer2;
     // Arpegiator timer
     if(u8_ArpOn && u8_ArpTrig)
     {
-        if(Timer1ms_cnt > WS.ArpSpeed*10)
+        if(Timer1ms_cnt > u32_ArpTime)
         {
             //Serial.printf("ARP CLICK\n");
             Arp_Play_Note();

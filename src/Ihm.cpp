@@ -1302,6 +1302,9 @@ int Fct_Ch_ArpHold(int val)
     return(0);
 }
 
+// 1/4T  2000 Min 1100 Mid 0250 Max     Delta 1800
+// 1/8T  0400     0200 Mid 0100         Delta 
+
 /***************************************************/
 /*                                                 */
 /*                                                 */
@@ -1309,9 +1312,11 @@ int Fct_Ch_ArpHold(int val)
 /***************************************************/
 int Fct_Ch_ArpSpeed(int val)
 {
-    u8_ArpSpeed = 127-val;
+    u8_ArpSpeed = val;
+    u32_ArpTime = (TabDiv[u8_ArpDiv][TABARPDIVDELTA]*(127-u8_ArpSpeed))/127 +  TabDiv[u8_ArpDiv][TABARPDIVMAX];
+    Timer1ms_cnt=0;
     if(serialdebug)       
-        Serial.printf("ARP SPEED: %d\n",u8_ArpSpeed);
+        Serial.printf("ARP SPEED: %d ARPTIME %d\n",u8_ArpSpeed,u32_ArpTime);
     return(0);
 }
 /***************************************************/
@@ -1322,11 +1327,16 @@ int Fct_Ch_ArpSpeed(int val)
 int Fct_Ch_ArpDiv(int val)  
 {
 float value=0; 
+uint8_t cas;
 
     value = val * NORM127MUL;
-    u8_ArpDiv = (value) * (MAXARPDIV);
+    u8_ArpDiv = (value) * (MAXARPDIV);    
+    u32_ArpTime = TabDiv[u8_ArpDiv][TABARPDIVDELTA]*(127-u8_ArpSpeed);
+    u32_ArpTime /=127;
+    u32_ArpTime +=TabDiv[u8_ArpDiv][TABARPDIVMAX];
+    Timer1ms_cnt=0;
     if(serialdebug)       
-        Serial.printf("ARP DIV: %d\n",u8_ArpDiv);
+        Serial.printf("ARP DIV: %d ARPTIME %d\n",u8_ArpDiv,u32_ArpTime);
     return(0);
 }
 /***************************************************/

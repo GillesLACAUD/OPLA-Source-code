@@ -6,12 +6,36 @@
 #define ARP_EXTRN   extern
 #endif
 
+#define TABARPDIVMIN        0
+#define TABARPDIVMAX        1
+#define TABARPDIVDELTA      2
+
+
+#ifdef __ARPSEQ__
+uint16_t TabDiv[8][3]={
+ // Min  Max  Delta    
+    2000,250, 2000-250,
+    1000,125, 1000-125,
+    500 , 65, 500-65,
+    250 , 32, 250-32,
+    2000,250, 2000-250,
+    2000,250, 2000-250,
+    2000,250, 2000-250,
+    2000,250, 2000-250,
+};
+#else
+extern uint16_t TabDiv[8][3];
+#endif
+
+
 ARP_EXTRN uint8_t u8_ArpTrig;
 ARP_EXTRN uint8_t u8_ArpSpeed;
 ARP_EXTRN uint8_t u8_ArpOn;
 ARP_EXTRN uint8_t u8_ArpHold;
 ARP_EXTRN uint8_t u8_ArpDiv;
 ARP_EXTRN uint8_t u8_ArpMode;
+
+ARP_EXTRN uint32_t u32_ArpTime;
 
 #define MAX_ARP_DELAY_HITKEYS		25
 ARP_EXTRN volatile uint8_t u8_ArpCptHitKey;					            // Wait x ms before start seq to wait all hit keys

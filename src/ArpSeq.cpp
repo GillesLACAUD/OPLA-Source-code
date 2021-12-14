@@ -77,6 +77,7 @@ uint8_t cpttarget=0;
 // Play the new note
 uint8_t Arp_Play_Note()
 {
+long rnd;    
     FlipPan = !FlipPan;
     /*
     if(Arp_Debug)
@@ -89,16 +90,22 @@ uint8_t Arp_Play_Note()
     else
         Synth_MonoNoteOff(u8_ArpTabFilterKeys[u8_ArpCptStep]);
 
+    Arp_Filter_Note();
 
 	switch(u8_ArpMode)
 	{
+        case ARP_MODE_RND:
+        rnd=random(u8_ArpNbKeyOn);
+        u8_ArpCptStep=(uint8_t)rnd;
+        break;        
+
 		case ARP_MODE_UP:
         case ARP_MODE_ORDER:
         if(u8_ArpUpDwn==ARP_UP)
         {
 		    if(u8_ArpCptStep>=u8_ArpNbKeyOn-1)
 		    {
-    			Arp_Filter_Note();
+    			//Arp_Filter_Note();
                 i8_ArpWay=+1;
                 u8_ArpCptStep=0;
 		    }
@@ -109,7 +116,7 @@ uint8_t Arp_Play_Note()
 		case ARP_MODE_DWN:
 		if(u8_ArpCptStep==0)
 		{
-			Arp_Filter_Note();
+			//Arp_Filter_Note();
 			u8_ArpCptStep=u8_ArpNbKeyOn;
 		}
         u8_ArpCptStep+=i8_ArpWay;
@@ -120,7 +127,7 @@ uint8_t Arp_Play_Note()
         {
 		    if(u8_ArpCptStep>=u8_ArpNbKeyOn-1)
 		    {
-    			Arp_Filter_Note();
+    			//Arp_Filter_Note();
                 i8_ArpWay=-1;
                 u8_ArpCptStep =u8_ArpNbKeyOn-1;
                 if(u8_ArpRepeat==1)
@@ -137,7 +144,7 @@ uint8_t Arp_Play_Note()
         {
             if(u8_ArpCptStep<=0)
 		    {
-    			Arp_Filter_Note();
+    			//Arp_Filter_Note();
                 i8_ArpWay=+1;
                 u8_ArpCptStep=0;
                 if(u8_ArpRepeat==1)
@@ -153,36 +160,43 @@ uint8_t Arp_Play_Note()
         break;
 
         case ARP_MODE_EXC:
-        if(u8_ArpUpDwn==ARP_UP)
+        if(u8_ArpNbKeyOn!=1)
         {
-		    if(u8_ArpCptStep>=u8_ArpNbKeyOn-1)
-		    {
-    			Arp_Filter_Note();
-                u8_ArpUpDwn=ARP_DOWN;
-                i8_ArpWay=-1;
-                u8_ArpCptStep =u8_ArpNbKeyOn-1;
-		    }
+            if(u8_ArpUpDwn==ARP_UP)
+            {
+                if(u8_ArpCptStep>=u8_ArpNbKeyOn-1)
+                {
+                    //Arp_Filter_Note();
+                    u8_ArpUpDwn=ARP_DOWN;
+                    i8_ArpWay=-1;
+                    u8_ArpCptStep =u8_ArpNbKeyOn-2;
+                }
+                else
+                {
+                    u8_ArpCptStep+=i8_ArpWay;
+                }
+            }
             else
-                u8_ArpCptStep+=i8_ArpWay;
+            {
+                if(u8_ArpCptStep<=0)
+                {
+                    //Arp_Filter_Note();
+                    u8_ArpUpDwn=ARP_UP;
+                    i8_ArpWay=+1;
+                    u8_ArpCptStep=1;
+                }
+                else
+                    u8_ArpCptStep+=i8_ArpWay;
+            }
         }
         else
-        {
-            if(u8_ArpCptStep<=0)
-		    {
-    			Arp_Filter_Note();
-                u8_ArpUpDwn=ARP_UP;
-                i8_ArpWay=+1;
-                u8_ArpCptStep=1;
-		    }
-            else
-                u8_ArpCptStep+=i8_ArpWay;
-        }
+            u8_ArpCptStep=0;
         break;
 
 		case ARP_MODE_UP2:
         if(u8_ArpCptStep>=u8_ArpNbKeyOn-1)
         {
-            Arp_Filter_Note();
+            //Arp_Filter_Note();
             i8_ArpWay=+1;
             if(u8_ArpRepeat==2)
             {
@@ -205,7 +219,7 @@ uint8_t Arp_Play_Note()
 		case ARP_MODE_DWN2:
         if(u8_ArpCptStep<=0)
         {
-            Arp_Filter_Note();
+            //Arp_Filter_Note();
             i8_ArpWay=-1;
             if(u8_ArpRepeat==2)
             {
@@ -227,7 +241,7 @@ uint8_t Arp_Play_Note()
 	}
     if(Arp_Debug)
     {
-        Serial.printf("Cpt %03d Send %d Key On %03d Max %03d\n",u8_ArpCptStep,u8_ArpUpDwn,u8_ArpTabFilterKeys[u8_ArpCptStep],u8_ArpNbKeyOn);
+        Serial.printf("Cpt %03d Mode %d Key On %03d Max %03d\n",u8_ArpCptStep,u8_ArpUpDwn,u8_ArpTabFilterKeys[u8_ArpCptStep],u8_ArpNbKeyOn);
     }
 
     if(SoundMode !=SND_MODE_MONO)
