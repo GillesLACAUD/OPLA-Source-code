@@ -74,22 +74,26 @@ uint8_t cpttarget=0;
 /*                                                 */
 /*                                                 */
 /***************************************************/
+// Stop the new note
+uint8_t Arp_Stop_Note()
+{
+    if(SoundMode !=SND_MODE_MONO)
+        Synth_NoteOff(u8_ArpTabFilterKeys[u8_ArpCptStep]);
+    else
+        Synth_MonoNoteOff(u8_ArpTabFilterKeys[u8_ArpCptStep]);
+}
+
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
 // Play the new note
 uint8_t Arp_Play_Note()
 {
 long rnd;    
     FlipPan = !FlipPan;
-    /*
-    if(Arp_Debug)
-    {
-        Serial.printf("Cpt %03d Max %03d\n",u8_ArpCptStep,u8_ArpNbKeyOn);
-    }
-    */
-    if(SoundMode !=SND_MODE_MONO)
-        Synth_NoteOff(u8_ArpTabFilterKeys[u8_ArpCptStep]);
-    else
-        Synth_MonoNoteOff(u8_ArpTabFilterKeys[u8_ArpCptStep]);
-
+    
     Arp_Filter_Note();
 
 	switch(u8_ArpMode)

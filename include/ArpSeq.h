@@ -19,9 +19,9 @@ uint16_t TabDiv[8][3]={
     500 , 65, 500-65,
     250 , 32, 250-32,
     2000,250, 2000-250,
-    2000,250, 2000-250,
-    2000,250, 2000-250,
-    2000,250, 2000-250,
+    1000,125, 1000-125,
+    500 , 65, 500-65,
+    250 , 32, 250-32,
 };
 #else
 extern uint16_t TabDiv[8][3];
@@ -36,6 +36,7 @@ ARP_EXTRN uint8_t u8_ArpDiv;
 ARP_EXTRN uint8_t u8_ArpMode;
 
 ARP_EXTRN uint32_t u32_ArpTime;
+ARP_EXTRN uint32_t u32_ArpTimeOff;
 
 #define MAX_ARP_DELAY_HITKEYS		25
 ARP_EXTRN volatile uint8_t u8_ArpCptHitKey;					            // Wait x ms before start seq to wait all hit keys
@@ -67,5 +68,6 @@ ARP_EXTRN int8_t  u8_ArpRepeat;	    							//
 
 ARP_EXTRN uint8_t Arp_Filter_Note();
 ARP_EXTRN uint8_t Arp_Play_Note();
+ARP_EXTRN uint8_t Arp_Stop_Note();
 ARP_EXTRN uint8_t Arp_Filter_Print();
 

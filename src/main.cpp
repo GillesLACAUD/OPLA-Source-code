@@ -552,6 +552,7 @@ void loop()
 {
 static uint16_t cpttimer1;    
 static uint16_t cpttimer2;    
+static uint8_t onetime;    
     // put your main code here, to run repeatedly:
 
     static uint8_t loop_count_u8 = 0;
@@ -584,11 +585,16 @@ static uint16_t cpttimer2;
     // Arpegiator timer
     if(u8_ArpOn && u8_ArpTrig)
     {
+        if(Timer1ms_cnt > u32_ArpTimeOff && onetime==0)
+        {
+            Arp_Stop_Note();
+            onetime=1;
+        }
         if(Timer1ms_cnt > u32_ArpTime)
         {
-            //Serial.printf("ARP CLICK\n");
             Arp_Play_Note();
             Timer1ms_cnt=0;
+            onetime=0;
         }
     }
 

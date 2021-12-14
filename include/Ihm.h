@@ -280,7 +280,7 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
     "MOD",  "ARP MODE",     MIDI_CC_ARP_MOD,        TYPE_LIST,  &ArpMode[0][0],      0,  &WS.ArpMode,         1,  0,      MAXARPMODE,       1,      Fct_Ch_ArpMode,        FctNull,    FctNull,    FctNull,    FctNull,
 
     "OCT",  "ARP OCT",      MIDI_CC_ARP_OCT,        TYPE_DATA,  &TabListNull[0][0],  0,  &WS.ArpOct,          1,  1,      3,                1,      Fct_Ch_ArpOct,         FctNull,    FctNull,    FctNull,    FctNull,
-    "GAT",  "ARP GATE",     MIDI_CC_ARP_GAT,        TYPE_DATA,  &TabListNull[0][0],  0,  &WS.ArpGate,         1,  0,      127,              1,      Fct_Ch_ArpGate,         FctNull,    FctNull,    FctNull,    FctNull,
+    "GAT",  "ARP GATE",     MIDI_CC_ARP_GAT,        TYPE_DATA,  &TabListNull[0][0],  0,  &WS.ArpGate,         1,  0,      100,              1,      Fct_Ch_ArpGate,         FctNull,    FctNull,    FctNull,    FctNull,
     "SWI",  "ARP SWING",    MIDI_CC_ARP_SWI,        TYPE_DATA,  &TabListNull[0][0],  0,  &WS.ArpSwing,        1,  0,      127,              1,      Fct_Ch_ArpSwing,          FctNull,    FctNull,    FctNull,    FctNull,
     "AR8",  "ARP ---",      MIDI_CC_ARP_9,          TYPE_DATA,  &TabListNull[0][0],  0,  &IntNull,            1,  0,      127,              1,      FctNull,          FctNull,    FctNull,    FctNull,    FctNull,
     "AR9",  "ARP ---",      MIDI_CC_ARP_10,         TYPE_DATA,  &TabListNull[0][0],  0,  &IntNull,            1,  1,      16,               1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
