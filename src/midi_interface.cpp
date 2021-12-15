@@ -113,11 +113,18 @@ uint8_t n=0;
 inline void Midi_NoteOff(uint8_t note,uint8_t vel)
 {
 uint8_t n;
+uint8_t offnumber;
 
     if(u8_ArpOn)
     {
         u8_ArpNbKeyOn--;
+        offnumber = u8_ArpTabKeys[note];
         u8_ArpTabKeys[note]=0;
+        for(uint8_t i=0;i<MAX_ARP_KEYS;i++)
+        {
+            if(u8_ArpTabKeys[i] >offnumber)
+                u8_ArpTabKeys[i]--;
+        }
         if(!u8_ArpNbKeyOn)
         {
             u8_ArpTrig=0;

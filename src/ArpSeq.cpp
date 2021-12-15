@@ -245,7 +245,7 @@ long rnd;
 	}
     if(Arp_Debug)
     {
-        Serial.printf("Cpt %03d Mode %d Key On %03d Max %03d\n",u8_ArpCptStep,u8_ArpUpDwn,u8_ArpTabFilterKeys[u8_ArpCptStep],u8_ArpNbKeyOn);
+        //Serial.printf("Cpt %03d Mode %d Key On %03d Max %03d\n",u8_ArpCptStep,u8_ArpUpDwn,u8_ArpTabFilterKeys[u8_ArpCptStep],u8_ArpNbKeyOn);
     }
 
     if(SoundMode !=SND_MODE_MONO)
