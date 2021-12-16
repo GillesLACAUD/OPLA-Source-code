@@ -54,11 +54,19 @@ uint8_t n=0;
         FlipPan = !FlipPan;
         if(u8_ArpOn)
         {
-            if(!u8_ArpNbKeyOn)
+            if(!u8_ArpNbKeyOn || u8_ArpHold)
+            {
                 u8_ArpCptHitKey=0;
-
+                u8_ArpTrig=0;
+                for(uint8_t i=0;i<MAX_ARP_KEYS;i++)
+                    u8_ArpTabKeys[i]=0;
+                if(u8_ArpHold && u8_ArpHoldRetrig)
+                {
+                    u8_ArpNbKeyOn=0;
+                    u8_ArpHoldRetrig=0;
+                }
+            }
             u8_ArpNbKeyOn++;                        // Start at 1 (0 is not key press)
-            //Serial.printf("Key on %d Timer %d\n",u8_ArpNbKeyOn,u8_ArpCptHitKey);
             u8_ArpTabKeys[note]=u8_ArpNbKeyOn;
             u8_ArpTabKeysVel[note]=vel;
             return;
@@ -115,28 +123,35 @@ inline void Midi_NoteOff(uint8_t note,uint8_t vel)
 uint8_t n;
 uint8_t offnumber;
 
+
     if(u8_ArpOn)
     {
-        u8_ArpNbKeyOn--;
-        offnumber = u8_ArpTabKeys[note];
-        u8_ArpTabKeys[note]=0;
-        for(uint8_t i=0;i<MAX_ARP_KEYS;i++)
+        if(u8_ArpHold)
         {
-            if(u8_ArpTabKeys[i] >offnumber)
-                u8_ArpTabKeys[i]--;
+            u8_ArpHoldRetrig=1;
         }
-        if(!u8_ArpNbKeyOn)
+        if(!u8_ArpHold)
         {
-            u8_ArpTrig=0;
-            // Off all note
-            for(uint8_t i=0;i<=MAX_ARP_FLT_KEYS;i++)
+            u8_ArpNbKeyOn--;
+            offnumber = u8_ArpTabKeys[note];
+            u8_ArpTabKeys[note]=0;
+            for(uint8_t i=0;i<MAX_ARP_KEYS;i++)
             {
-                if(SoundMode !=SND_MODE_MONO)
-                    Synth_NoteOff(u8_ArpTabFilterKeys[i]);
-                else
-                    Synth_MonoNoteOff(u8_ArpTabFilterKeys[i]);
+                if(u8_ArpTabKeys[i] >offnumber)
+                    u8_ArpTabKeys[i]--;
             }
-            //u8_ArpCptStep=0;                
+            if(!u8_ArpNbKeyOn)
+            {
+                u8_ArpTrig=0;
+                // Off all note
+                for(uint8_t i=0;i<=MAX_ARP_FLT_KEYS;i++)
+                {
+                    if(SoundMode !=SND_MODE_MONO)
+                        Synth_NoteOff(u8_ArpTabFilterKeys[i]);
+                    else
+                        Synth_MonoNoteOff(u8_ArpTabFilterKeys[i]);
+                }
+            }
         }
         return;
     }

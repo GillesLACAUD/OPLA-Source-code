@@ -12,12 +12,8 @@
 
 
 #ifdef __ARPSEQ__
-uint16_t TabDiv[8][3]={
+uint16_t TabDiv[4][3]={
  // Min  Max  Delta    
-    2000,250, 2000-250,
-    1000,125, 1000-125,
-    500 , 65, 500-65,
-    250 , 32, 250-32,
     2000,250, 2000-250,
     1000,125, 1000-125,
     500 , 65, 500-65,
@@ -32,6 +28,7 @@ ARP_EXTRN uint8_t u8_ArpTrig;
 ARP_EXTRN uint8_t u8_ArpSpeed;
 ARP_EXTRN uint8_t u8_ArpOn;
 ARP_EXTRN uint8_t u8_ArpHold;
+ARP_EXTRN uint8_t u8_ArpHoldRetrig;
 ARP_EXTRN uint8_t u8_ArpDiv;
 ARP_EXTRN uint8_t u8_ArpMode;
 

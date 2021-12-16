@@ -139,7 +139,7 @@ SYNTH_EXTRN uint8_t MonoKeepNote[MONO_MAX_KEEP_NOTE];
 SYNTH_EXTRN uint8_t MonoKeepVel[MONO_MAX_KEEP_NOTE];
 
 
-#define MAXARPDIV	8
+#define MAXARPDIV	4
 #define MAXARPMODE	8	
 
 /*
@@ -155,7 +155,7 @@ char YesNo[2][5] =
 {"NO","YES"};
 
 char ArpDiv[MAXARPDIV][5] = 
-{"04","08","16","32","04T","08T","16T","32T"};
+{"04","08","16","32"};
 char ArpMode[MAXARPMODE][5] = 
 {"UP","DWN","INC","EXC","RND","ORD","UP2","DW2"};
 

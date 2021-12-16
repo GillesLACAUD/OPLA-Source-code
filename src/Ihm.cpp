@@ -1325,7 +1325,6 @@ int Fct_Ch_ArpSpeed(int val)
 int Fct_Ch_ArpDiv(int val)  
 {
 float value=0; 
-uint8_t cas;
 
     value = val * NORM127MUL;
     u8_ArpDiv = (value) * (MAXARPDIV);    

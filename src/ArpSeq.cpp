@@ -56,7 +56,7 @@ uint8_t cpttarget=0;
 				return(0);
 		}
 	}
-    //Arp_Filter_Print();
+    Arp_Filter_Print();
     if(!u8_ArpNbKeyOn)
     {	
 		// PLay the first note
