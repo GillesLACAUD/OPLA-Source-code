@@ -39,6 +39,37 @@ void Midi_Dump()
 
 }
 
+void PrintnoteArp()
+{
+uint8_t i;
+
+    Serial.printf("NEXT--------------");
+    for(i=0;i<u8_ArpNextNbKeyOn;i++)    
+    {
+        Serial.printf("%02d-%03d ",i,st_TabNextArpKeys[i].note);
+    }
+    Serial.printf("\n");
+}
+
+void GetnoteoffArp(uint8_t note)
+{
+uint8_t i;    
+    // search the note
+    for(i=0;i<u8_ArpNbKeyOn;i++)    
+    {
+        if(st_TabArpKeys[i].note==note)
+        {
+            st_TabArpKeys[i].note=0;
+            break;
+        }
+    }
+    for(i=i;i<u8_ArpNbKeyOn;i++)
+    {
+        st_TabArpKeys[i].note = st_TabArpKeys[i+1].note;
+        st_TabArpKeys[i].vel = st_TabArpKeys[i+1].vel;
+    }    
+}
+
 /***************************************************/
 /*                                                 */
 /*                                                 */
@@ -54,21 +85,34 @@ uint8_t n=0;
         FlipPan = !FlipPan;
         if(u8_ArpOn)
         {
-            if(!u8_ArpNbKeyOn || u8_ArpHold)
+            if(!u8_ArpNbKeyOn)
             {
                 u8_ArpCptHitKey=0;
                 u8_ArpTrig=0;
-                for(uint8_t i=0;i<MAX_ARP_KEYS;i++)
-                    u8_ArpTabKeys[i]=0;
-                if(u8_ArpHold && u8_ArpHoldRetrig)
+            }
+            if(!u8_ArpHold)
+            {
+                st_TabArpKeys[u8_ArpNbKeyOn].note   = note;
+                st_TabArpKeys[u8_ArpNbKeyOn].vel    = vel;
+                u8_ArpNbKeyOn++;                            
+            }
+            else
+            {
+                if(!u8_ArpTrig)
                 {
-                    u8_ArpNbKeyOn=0;
-                    u8_ArpHoldRetrig=0;
+                    st_TabArpKeys[u8_ArpNbKeyOn].note   = note;
+                    st_TabArpKeys[u8_ArpNbKeyOn].vel    = vel;
+                    u8_ArpNbKeyOn++;                            
+                }
+                else
+                {
+                    u8_ArpNextTrig=1;
+                    st_TabNextArpKeys[u8_ArpNextNbKeyOn].note   = note;
+                    st_TabNextArpKeys[u8_ArpNextNbKeyOn].vel    = vel;
+                    u8_ArpNextNbKeyOn++;
+                    //PrintnoteArp();
                 }
             }
-            u8_ArpNbKeyOn++;                        // Start at 1 (0 is not key press)
-            u8_ArpTabKeys[note]=u8_ArpNbKeyOn;
-            u8_ArpTabKeysVel[note]=vel;
             return;
         }
         if(SoundMode !=SND_MODE_MONO)
@@ -113,6 +157,11 @@ uint8_t n=0;
     }
     //Serial.printf("--MonoCptNote  ON= %d Index %d\n",MonoCptNote,MonoIndexNote);                    
 }
+
+
+
+
+
 /***************************************************/
 /*                                                 */
 /*                                                 */
@@ -128,18 +177,14 @@ uint8_t offnumber;
     {
         if(u8_ArpHold)
         {
-            u8_ArpHoldRetrig=1;
+            //if(u8_ArpNextNbKeyOn)
+            //    u8_ArpNextNbKeyOn--;
         }
         if(!u8_ArpHold)
         {
-            u8_ArpNbKeyOn--;
-            offnumber = u8_ArpTabKeys[note];
-            u8_ArpTabKeys[note]=0;
-            for(uint8_t i=0;i<MAX_ARP_KEYS;i++)
-            {
-                if(u8_ArpTabKeys[i] >offnumber)
-                    u8_ArpTabKeys[i]--;
-            }
+            GetnoteoffArp(note);
+            if(u8_ArpNbKeyOn)
+                u8_ArpNbKeyOn--;
             if(!u8_ArpNbKeyOn)
             {
                 u8_ArpTrig=0;
@@ -153,6 +198,8 @@ uint8_t offnumber;
                 }
             }
         }
+        //else
+        //    PrintnoteArp();
         return;
     }
     if(SoundMode !=SND_MODE_MONO)

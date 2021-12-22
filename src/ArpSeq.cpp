@@ -24,6 +24,8 @@ uint8_t Arp_Filter_Print()
     return(0);
 }
 
+
+
 /***************************************************/
 /*                                                 */
 /*                                                 */
@@ -32,31 +34,43 @@ uint8_t Arp_Filter_Print()
 // Re arrange a new u8_ArpTabFilterKeys on every note on or off
 uint8_t Arp_Filter_Note()
 {
-uint8_t cptparse=0;	
-uint8_t cpttarget=0;	
-	// Parse the ArpTabKeys to build a new u8_ArpTabFilterKeys
-	for(cptparse=0;cptparse<MAX_ARP_KEYS;cptparse++)
-	{
-		if(u8_ArpTabKeys[cptparse])
-		{
-			// Arrange tab in order note
-			if(u8_ArpMode == ARP_MODE_ORDER)
+uint8_t i, j, tmp, index;    
+
+    if(u8_ArpHold && u8_ArpNextNbKeyOn)
+    {
+        for (i=0; i < u8_ArpNextNbKeyOn; i++)
+                st_TabArpKeys[i]=st_TabNextArpKeys[i];
+        u8_ArpNbKeyOn=u8_ArpNextNbKeyOn;
+        u8_ArpNextNbKeyOn=0;
+    }
+    for (i=0; i < u8_ArpNbKeyOn; i++)
+    {
+        u8_ArpTabFilterKeys[i] = st_TabArpKeys[i].note;
+        u8_ArpTabFilterKeysVel[i] = st_TabArpKeys[i].vel;
+    }
+
+
+    if(u8_ArpMode !=ARP_MODE_ORDER)
+    {
+        for (i=0; i < (u8_ArpNbKeyOn-1); i++)
+        {
+            index = i;
+            for (j=i+1; j < u8_ArpNbKeyOn; j++)
             {
-				u8_ArpTabFilterKeys[u8_ArpTabKeys[cptparse]-1] = cptparse;
-                u8_ArpTabFilterKeysVel[u8_ArpTabKeys[cptparse]-1]=u8_ArpTabKeysVel[cptparse];
+                if (u8_ArpTabFilterKeys[index] > u8_ArpTabFilterKeys[j])
+                index = j;
             }
-			// Arrange tab from lower to higher note
-			else
+            if (index != i)
             {
-				u8_ArpTabFilterKeys[cpttarget] = cptparse;
-                u8_ArpTabFilterKeysVel[cpttarget]=u8_ArpTabKeysVel[cptparse];
+                tmp = u8_ArpTabFilterKeys[i];
+                u8_ArpTabFilterKeys[i] = u8_ArpTabFilterKeys[index];
+                u8_ArpTabFilterKeysVel[i] = u8_ArpTabFilterKeysVel[index];
+                u8_ArpTabFilterKeys[index] = tmp;
             }
-			cpttarget++;
-			if(cpttarget>u8_ArpNbKeyOn)
-				return(0);
-		}
-	}
+        }
+    }
     Arp_Filter_Print();
+
     if(!u8_ArpNbKeyOn)
     {	
 		// PLay the first note
@@ -94,7 +108,7 @@ uint8_t Arp_Play_Note()
 long rnd;    
     FlipPan = !FlipPan;
     
-    Arp_Filter_Note();
+    //Arp_Filter_Note();
 
 	switch(u8_ArpMode)
 	{
@@ -109,7 +123,7 @@ long rnd;
         {
 		    if(u8_ArpCptStep>=u8_ArpNbKeyOn-1)
 		    {
-    			//Arp_Filter_Note();
+    			Arp_Filter_Note();
                 i8_ArpWay=+1;
                 u8_ArpCptStep=0;
 		    }
@@ -120,7 +134,7 @@ long rnd;
 		case ARP_MODE_DWN:
 		if(u8_ArpCptStep==0)
 		{
-			//Arp_Filter_Note();
+			Arp_Filter_Note();
 			u8_ArpCptStep=u8_ArpNbKeyOn;
 		}
         u8_ArpCptStep+=i8_ArpWay;
@@ -131,7 +145,7 @@ long rnd;
         {
 		    if(u8_ArpCptStep>=u8_ArpNbKeyOn-1)
 		    {
-    			//Arp_Filter_Note();
+    			Arp_Filter_Note();
                 i8_ArpWay=-1;
                 u8_ArpCptStep =u8_ArpNbKeyOn-1;
                 if(u8_ArpRepeat==1)
@@ -148,7 +162,7 @@ long rnd;
         {
             if(u8_ArpCptStep<=0)
 		    {
-    			//Arp_Filter_Note();
+    			Arp_Filter_Note();
                 i8_ArpWay=+1;
                 u8_ArpCptStep=0;
                 if(u8_ArpRepeat==1)
@@ -170,7 +184,7 @@ long rnd;
             {
                 if(u8_ArpCptStep>=u8_ArpNbKeyOn-1)
                 {
-                    //Arp_Filter_Note();
+                    Arp_Filter_Note();
                     u8_ArpUpDwn=ARP_DOWN;
                     i8_ArpWay=-1;
                     u8_ArpCptStep =u8_ArpNbKeyOn-2;
@@ -184,7 +198,7 @@ long rnd;
             {
                 if(u8_ArpCptStep<=0)
                 {
-                    //Arp_Filter_Note();
+                    Arp_Filter_Note();
                     u8_ArpUpDwn=ARP_UP;
                     i8_ArpWay=+1;
                     u8_ArpCptStep=1;
@@ -200,7 +214,7 @@ long rnd;
 		case ARP_MODE_UP2:
         if(u8_ArpCptStep>=u8_ArpNbKeyOn-1)
         {
-            //Arp_Filter_Note();
+            Arp_Filter_Note();
             i8_ArpWay=+1;
             if(u8_ArpRepeat==2)
             {
@@ -223,7 +237,7 @@ long rnd;
 		case ARP_MODE_DWN2:
         if(u8_ArpCptStep<=0)
         {
-            //Arp_Filter_Note();
+            Arp_Filter_Note();
             i8_ArpWay=-1;
             if(u8_ArpRepeat==2)
             {

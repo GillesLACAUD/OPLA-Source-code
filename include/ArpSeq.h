@@ -23,6 +23,13 @@ uint16_t TabDiv[4][3]={
 extern uint16_t TabDiv[8][3];
 #endif
 
+struct Arpnote
+{
+    uint8_t note;
+    uint8_t vel;
+};
+
+
 
 ARP_EXTRN uint8_t u8_ArpTrig;
 ARP_EXTRN uint8_t u8_ArpSpeed;
@@ -31,6 +38,8 @@ ARP_EXTRN uint8_t u8_ArpHold;
 ARP_EXTRN uint8_t u8_ArpHoldRetrig;
 ARP_EXTRN uint8_t u8_ArpDiv;
 ARP_EXTRN uint8_t u8_ArpMode;
+ARP_EXTRN uint8_t u8_ArpNextTrig;
+ARP_EXTRN uint8_t u8_ArpNextNbKeyOn;
 
 ARP_EXTRN uint32_t u32_ArpTime;
 ARP_EXTRN uint32_t u32_ArpTimeOff;
@@ -44,8 +53,9 @@ ARP_EXTRN volatile uint8_t u8_ArpCptHitKey;					            // Wait x ms before 
 #define ARP_UP              0
 #define ARP_DOWN            1
 
-ARP_EXTRN uint8_t u8_ArpTabKeys[MAX_ARP_KEYS];					// Store all the key on with an order
-ARP_EXTRN uint8_t u8_ArpTabKeysVel[MAX_ARP_KEYS];				// Store all the key velocity 
+ARP_EXTRN Arpnote   st_TabArpKeys[MAX_ARP_FLT_KEYS];
+ARP_EXTRN Arpnote   st_TabNextArpKeys[MAX_ARP_FLT_KEYS];
+
 ARP_EXTRN uint8_t u8_ArpTabFilterKeys[MAX_ARP_FLT_KEYS];	    // Place the key in order
 ARP_EXTRN uint8_t u8_ArpTabFilterKeysVel[MAX_ARP_FLT_KEYS];	    // Place the key in order
 ARP_EXTRN uint8_t u8_ArpNbKeyOn;								// Cpt for nb key on
