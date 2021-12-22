@@ -38,6 +38,8 @@ ARP_EXTRN uint8_t u8_ArpHold;
 ARP_EXTRN uint8_t u8_ArpHoldRetrig;
 ARP_EXTRN uint8_t u8_ArpDiv;
 ARP_EXTRN uint8_t u8_ArpMode;
+ARP_EXTRN uint8_t u8_ArpNewMode;
+ARP_EXTRN uint8_t u8_ArpTrigMode;
 ARP_EXTRN uint8_t u8_ArpNextTrig;
 ARP_EXTRN uint8_t u8_ArpNextNbKeyOn;
 
