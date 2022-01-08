@@ -43,6 +43,7 @@ ARP_EXTRN uint8_t u8_ArpTrigMode;
 ARP_EXTRN uint8_t u8_ArpNextTrig;
 ARP_EXTRN uint8_t u8_ArpNextNbKeyOn;
 
+ARP_EXTRN float    ArpSwing;
 ARP_EXTRN uint32_t u32_ArpTime;
 ARP_EXTRN uint32_t u32_ArpTimeOff;
 

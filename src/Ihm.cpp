@@ -1400,7 +1400,9 @@ int Fct_Ch_ArpGate(int val)
 /***************************************************/
 int Fct_Ch_ArpSwing(int val)
 {
-
+    ArpSwing = (float)WS.ArpSwing/127.0;
+    if(serialdebug)       
+        Serial.printf("ARP SWING: %d\n",WS.ArpSwing);
 }
 
 

@@ -583,18 +583,23 @@ static uint8_t onetime;
 
 
     // Arpegiator timer
+    static int8_t toogle_swing=1;
     if(u8_ArpOn && u8_ArpTrig)
     {
-        if(Timer1ms_cnt > u32_ArpTimeOff && onetime==0)
+        if(Timer1ms_cnt > u32_ArpTimeOff*(1+toogle_swing*ArpSwing) && onetime==0)
         {
             Arp_Stop_Note();
             onetime=1;
         }
-        if(Timer1ms_cnt > u32_ArpTime)
+        if(Timer1ms_cnt > u32_ArpTime*(1+toogle_swing*ArpSwing))
         {
             Arp_Play_Note();
             Timer1ms_cnt=0;
             onetime=0;
+            if(toogle_swing==1)
+            toogle_swing=-1;
+            else
+            toogle_swing=1;
         }
     }
 
