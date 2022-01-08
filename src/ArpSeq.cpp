@@ -69,7 +69,7 @@ uint8_t i, j, tmp, index;
             }
         }
     }
-    Arp_Filter_Print();
+    //Arp_Filter_Print();
 
     if(!u8_ArpNbKeyOn)
     {	

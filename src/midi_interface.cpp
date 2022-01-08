@@ -80,6 +80,7 @@ inline void Midi_NoteOn(uint8_t note,uint8_t vel)
 uint8_t slotav=0;
 uint8_t n=0;
 
+    Midi_KeyOn++;
     if(note)
     {
         FlipPan = !FlipPan;
@@ -172,6 +173,8 @@ inline void Midi_NoteOff(uint8_t note,uint8_t vel)
 uint8_t n;
 uint8_t offnumber;
 
+    if(Midi_KeyOn)
+        Midi_KeyOn--;
 
     if(u8_ArpOn)
     {

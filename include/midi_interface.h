@@ -3,8 +3,9 @@
 #ifdef __MIDI__
 #define MIDI_EXTRN
 #else
-#define MIDI_EXTRN 
+#define MIDI_EXTRN  extern 
 #endif
+
 
 /*
  * look for midi interface using 1N136
@@ -146,36 +147,6 @@
 #define MIDI_CC_ARP_10          49
 
 
-/*
-
-// Receipt a midi CC
-// Know the section
-// Search the corresponding pot of the Midi CC
-// .....
-
-
-char ListNull[0][0];
-
-char Wave[7][10] = 
-{"SIN","SAW","SQU","PUL","TRI","NOI","NOT"};
-
-Def_Section Tab_Section[SECTION_MAX] = 
-{
-    SECTION_OSC,
-    0           ,"OSC"          ,&Wave[0][0]       ,MIDI_CC_WAVE1,
-    1           ,"DET"          ,&ListNull[0][0]   ,MIDI_CC_DETUNE,
-    2           ,"SUB"          ,&ListNull[0][0]   ,MIDI_CC_SUBOSC,
-    3           ,"NOI"          ,&ListNull[0][0]   ,MIDI_CC_NOISE,
-
-
-
-};
-*/
-
-
-/* use define to dump midi data */
-//#define DUMP_SERIAL2_TO_SERIAL
-
 /* constant to normalize midi value to 0.0 - 1.0f */
 #define MAXPOT	    127
 #define NORM127MUL	0.0078740157f
@@ -189,3 +160,4 @@ MIDI_EXTRN inline void HandleShortMsg(uint8_t *data);
 MIDI_EXTRN inline void HandleRealTimeMsg(uint8_t realtime);
 MIDI_EXTRN void Midi_Setup();
 MIDI_EXTRN void Midi_Process();
+

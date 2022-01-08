@@ -15,7 +15,7 @@
 #include "ArpSeq.h"
 
 uint8_t serialdebug=1;
-
+extern uint8_t Midi_KeyOn;
 //--------------------------------------------------
 // OSC
 //--------------------------------------------------
@@ -1280,7 +1280,10 @@ int Fct_Ch_ArpOnOff(int val)
     if(val>64)
         u8_ArpOn = 1;
     else
+    {
         u8_ArpOn= 0;
+        Arp_Stop_Note();
+    }
     if(serialdebug)       
         Serial.printf("ARP ON OFF: %d\n",u8_ArpOn);
     return(0);        
@@ -1296,7 +1299,20 @@ int Fct_Ch_ArpHold(int val)
     if(val>64)
         u8_ArpHold = 1;
     else
+    {
         u8_ArpHold = 0;
+        if(u8_ArpOn && u8_ArpTrig)
+        {
+            Serial.printf("Midi Key On %d\n",Midi_KeyOn);
+        }
+        if(!Midi_KeyOn)
+        {
+            u8_ArpNbKeyOn=0;
+            u8_ArpNextNbKeyOn=0;
+            u8_ArpTrig=0;
+            Arp_Stop_Note();
+        }
+    }
     if(serialdebug)       
         Serial.printf("ARP HOLD: %d\n",u8_ArpHold);
     return(0);
