@@ -1328,7 +1328,7 @@ int Fct_Ch_ArpSpeed(int val)
     u8_ArpSpeed = val;
     u32_ArpTime = (TabDiv[u8_ArpDiv][TABARPDIVDELTA]*(127-u8_ArpSpeed))/127 +  TabDiv[u8_ArpDiv][TABARPDIVMAX];
     u32_ArpTimeOff = (u32_ArpTime*WS.ArpGate)/100;
-    Timer1ms_cnt=0;
+    //Timer1ms_cnt=0;
     if(serialdebug)       
         Serial.printf("ARP SPEED: %d ARPTIME %d\n",u8_ArpSpeed,u32_ArpTime);
     return(0);
@@ -1348,7 +1348,7 @@ float value=0;
     u32_ArpTime /=127;
     u32_ArpTime +=TabDiv[u8_ArpDiv][TABARPDIVMAX];
     u32_ArpTimeOff = (u32_ArpTime*WS.ArpGate)/100;
-    Timer1ms_cnt=0;
+    //Timer1ms_cnt=0;
     if(serialdebug)       
         Serial.printf("ARP DIV: %d ARPTIME %d\n",u8_ArpDiv,u32_ArpTime);
     return(0);
