@@ -828,22 +828,25 @@ int indx=0;
         wavework[i] = wavework[i];
     }
     */
-
-    /*
     // To much time ?
-    sup = OldWaveShapping2Mod+0.02;
-    inf = OldWaveShapping2Mod-0.02;  
+    /*
+    sup = OldWaveShapping2Mod+0.10;
+    inf = OldWaveShapping2Mod-0.10;  
     trig = WAVEFORM_CNT*(1-WaveShapping2Mod);
     if(WaveShapping2Mod > sup || WaveShapping2Mod < inf)
     {
+        OldWaveShapping2Mod = WaveShapping2Mod;
         for (i = 0; i < trig; i++)
         {
+            wavework[i] = 0;
         }
         for (i = trig; i < WAVEFORM_CNT; i++)
         {
         }
+        
     }
     */
+
 
     /*
     for (i = 0; i < WAVEFORM_CNT; i++)

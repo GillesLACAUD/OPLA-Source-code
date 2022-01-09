@@ -12,9 +12,10 @@
 #include "Modulator.h"
 #include "Nextion.h"
 #include "SDCard.h"
+#include "ArpSeq.h"
 
 uint8_t serialdebug=1;
-
+extern uint8_t Midi_KeyOn;
 //--------------------------------------------------
 // OSC
 //--------------------------------------------------
@@ -450,7 +451,6 @@ int Fct_Ch_FVelo(int val)
 int Fct_Ch_FType(int val) 
 {
 float value=0; 
-
 
     value = val * NORM127MUL;
     FilterType = (value) * (MAX_FLT_TYPE);
@@ -1264,7 +1264,149 @@ int Fct_Ch_PitchTrig(int val)
     if(val>64)
         adsr_pit.trig=1;
 
+
+    return(0);
+
+}
+
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+int Fct_Ch_ArpOnOff(int val)
+{
+    Timer1ms_cnt=0;
+    if(val>64)
+        u8_ArpOn = 1;
+    else
+    {
+        u8_ArpOn= 0;
+        Arp_Stop_Note();
+    }
+    if(serialdebug)       
+        Serial.printf("ARP ON OFF: %d\n",u8_ArpOn);
+    return(0);        
+
+}
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+int Fct_Ch_ArpHold(int val) 
+{
+    if(val>64)
+        u8_ArpHold = 1;
+    else
+    {
+        u8_ArpHold = 0;
+        if(u8_ArpOn && u8_ArpTrig)
+        {
+            Serial.printf("Midi Key On %d\n",Midi_KeyOn);
+        }
+        if(!Midi_KeyOn)
+        {
+            u8_ArpNbKeyOn=0;
+            u8_ArpNextNbKeyOn=0;
+            u8_ArpTrig=0;
+            Arp_Stop_Note();
+        }
+    }
+    if(serialdebug)       
+        Serial.printf("ARP HOLD: %d\n",u8_ArpHold);
     return(0);
 }
+
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+int Fct_Ch_ArpSpeed(int val)
+{
+    u8_ArpSpeed = val;
+    u32_ArpTime = (TabDiv[u8_ArpDiv][TABARPDIVDELTA]*(127-u8_ArpSpeed))/127 +  TabDiv[u8_ArpDiv][TABARPDIVMAX];
+    u32_ArpTimeOff = (u32_ArpTime*WS.ArpGate)/100;
+    //Timer1ms_cnt=0;
+    if(serialdebug)       
+        Serial.printf("ARP SPEED: %d ARPTIME %d\n",u8_ArpSpeed,u32_ArpTime);
+    return(0);
+}
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+int Fct_Ch_ArpDiv(int val)  
+{
+float value=0; 
+
+    value = val * NORM127MUL;
+    u8_ArpDiv = (value) * (MAXARPDIV);    
+    u32_ArpTime = TabDiv[u8_ArpDiv][TABARPDIVDELTA]*(127-u8_ArpSpeed);
+    u32_ArpTime /=127;
+    u32_ArpTime +=TabDiv[u8_ArpDiv][TABARPDIVMAX];
+    u32_ArpTimeOff = (u32_ArpTime*WS.ArpGate)/100;
+    //Timer1ms_cnt=0;
+    if(serialdebug)       
+        Serial.printf("ARP DIV: %d ARPTIME %d\n",u8_ArpDiv,u32_ArpTime);
+    return(0);
+}
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+int Fct_Ch_ArpMode(int val) 
+{
+float value=0; 
+
+    value = val * NORM127MUL;
+    u8_ArpMode = (value) * (MAXARPMODE);
+    if(u8_ArpMode !=u8_ArpNewMode)
+    {
+        u8_ArpTrigMode=1;
+    }
+
+    if(serialdebug)       
+        Serial.printf("ARP MODE: %d\n",u8_ArpMode);
+    return(0);
+}
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+int Fct_Ch_ArpOct(int val)  
+{
+
+}
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+int Fct_Ch_ArpGate(int val) 
+{
+    u32_ArpTimeOff = (u32_ArpTime*WS.ArpGate)/100;
+    if(serialdebug)       
+        Serial.printf("ARP GATE: %d\n",WS.ArpGate);
+}
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+int Fct_Ch_ArpSwing(int val)
+{
+    ArpSwing = (float)WS.ArpSwing/127.0;
+    if(serialdebug)       
+        Serial.printf("ARP SWING: %d\n",WS.ArpSwing);
+}
+
+
+
+
 
 

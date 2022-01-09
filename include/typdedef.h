@@ -83,7 +83,17 @@ struct WorkSound
     int16_t AmpTrig;             // Add 25.09.21
     int16_t PitchTrig;           // Add 25.09.21
 
-    int16_t Reserved[40];
+    // Add 29.11.21
+    int16_t ArpOnOff;
+    int16_t ArpHold;
+    int16_t ArpSpeed;
+    int16_t ArpDiv;
+    int16_t ArpMode;
+    int16_t ArpOct;
+    int16_t ArpGate;
+    int16_t ArpSwing;
+
+    int16_t Reserved[40-7];
       
 };
 

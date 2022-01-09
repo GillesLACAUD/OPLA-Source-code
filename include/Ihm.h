@@ -13,6 +13,8 @@
 #define TYPE_DATA	0
 #define TYPE_LIST	1
 
+IHM_EXTRN unsigned char Midi_KeyOn;
+
 IHM_EXTRN   uint8_t gui_Section;
 IHM_EXTRN   uint8_t gui_Param;
 IHM_EXTRN   uint8_t gui_Value;
@@ -51,7 +53,7 @@ typedef struct
   int 		    (*ptrfunctBPDoubleClick) (int);
 } Encoder_Data;
 
-#define MAX_SECTION     7
+#define MAX_SECTION     7+1     // Add +1 for the arpegiator 29.11.21
 #define MAX_ENCODER     10
 
 #define SECTION_OSC     0
@@ -71,6 +73,7 @@ char Tab_Section_Name[MAX_SECTION][20]=
     "LFO",
     "FX",
     "SYSTEM",
+    "ARP",
 };
 
 
@@ -154,6 +157,15 @@ int Fct_Ch_AmpTrig(int val);
 int Fct_Ch_PitchTrig(int val);
 
 int Fct_Ch_Calib(int val);
+
+int Fct_Ch_ArpOnOff(int val);
+int Fct_Ch_ArpHold(int val); 
+int Fct_Ch_ArpSpeed(int val);
+int Fct_Ch_ArpDiv(int val);  
+int Fct_Ch_ArpMode(int val); 
+int Fct_Ch_ArpOct(int val);  
+int Fct_Ch_ArpGate(int val); 
+int Fct_Ch_ArpSwing(int val);
 
 // To change the max for the AKWF selection -> Tab_Encoder[SECTION_BANK_MAX][POT_BANK_MAX]
 #define SECTION_BANK_MAX    1
@@ -259,6 +271,22 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
     "AFD",  "AT DEST",      MIDI_CC_AT_DEST,       TYPE_LIST,  &ModName[0][0],      0,  &WS.ATDest,     1,  0,      MOD_MAX,                1,      Fct_Ch_ATDest,         FctNull,    FctNull,    FctNull,    FctNull,
     "AFA",  "AT AMT",       MIDI_CC_AT_AMT,        TYPE_DATA,  &TabListNull[0][0],  0,  &WS.ATAmt,      1,  0,      127,                    1,      Fct_Ch_ATAmt,          FctNull,    FctNull,    FctNull,    FctNull,
     "MRX",  "MIDI RX",      MIDI_CC_MIDI_RX,       TYPE_DATA,  &TabListNull[0][0],  0,  &MidiRx,        1,  1,      16,                     1,      Fct_Ch_MidiRx,         FctNull,    FctNull,    FctNull,    FctNull,
+
+    // SECTION ARPEGIATOR   
+
+    /* Name                 MIDICC                  TYPE        LIST                INDEX   VALUE             SIZE  MIN     MAX                     STEP    CHANGE      ON          OFF         HOLD        DCLK  */
+    " ON",  "ARP ON/OFF",   MIDI_CC_ARP_ON,         TYPE_LIST,  &YesNo[0][0],        0,  &WS.ArpOnOff,        1,  0,      2,                1,      Fct_Ch_ArpOnOff,      FctNull,    FctNull,    FctNull,    FctNull,
+    "HLD",  "ARP HOLD",     MIDI_CC_ARP_HLD,        TYPE_LIST,  &YesNo[0][0],        0,  &WS.ArpHold,         1,  0,      2,                1,      Fct_Ch_ArpHold,        FctNull,    FctNull,    FctNull,    FctNull,
+    "SPE",  "ARP SPEED",    MIDI_CC_ARP_SPE,        TYPE_DATA,  &TabListNull[0][0],  0,  &WS.ArpSpeed,        1,  0,      127,              1,      Fct_Ch_ArpSpeed,         FctNull,    FctNull,    FctNull,    FctNull,
+    "DIV",  "ARP DIV",      MIDI_CC_ARP_DIV,        TYPE_LIST,  &ArpDiv[0][0],       0,  &WS.ArpDiv,          1,  0,      MAXARPDIV,        1,      Fct_Ch_ArpDiv,      FctNull,    FctNull,    FctNull,    FctNull,
+    "MOD",  "ARP MODE",     MIDI_CC_ARP_MOD,        TYPE_LIST,  &ArpMode[0][0],      0,  &WS.ArpMode,         1,  0,      MAXARPMODE,       1,      Fct_Ch_ArpMode,        FctNull,    FctNull,    FctNull,    FctNull,
+
+    "---",  "ARP ---",      MIDI_CC_ARP_OCT,        TYPE_DATA,  &TabListNull[0][0],  0,  &WS.ArpOct,          1,  1,      3,                1,      Fct_Ch_ArpOct,         FctNull,    FctNull,    FctNull,    FctNull,
+    "GAT",  "ARP GATE",     MIDI_CC_ARP_GAT,        TYPE_DATA,  &TabListNull[0][0],  0,  &WS.ArpGate,         1,  0,      100,              1,      Fct_Ch_ArpGate,         FctNull,    FctNull,    FctNull,    FctNull,
+    "SWI",  "ARP SWING",    MIDI_CC_ARP_SWI,        TYPE_DATA,  &TabListNull[0][0],  0,  &WS.ArpSwing,        1,  0,      127,              1,      Fct_Ch_ArpSwing,          FctNull,    FctNull,    FctNull,    FctNull,
+    "---",  "ARP ---",      MIDI_CC_ARP_9,          TYPE_DATA,  &TabListNull[0][0],  0,  &IntNull,            1,  0,      127,              1,      FctNull,          FctNull,    FctNull,    FctNull,    FctNull,
+    "---",  "ARP ---",      MIDI_CC_ARP_10,         TYPE_DATA,  &TabListNull[0][0],  0,  &IntNull,            1,  1,      16,               1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
+
 
 
 };

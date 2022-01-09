@@ -14,6 +14,7 @@
 #include "Modulator.h"
 #include "SDCard.h"
 #include "Ihm.h"
+#include "ArpSeq.h"
 
 /* constant to normalize midi value to 0.0 - 1.0f */
 #define NORM127MUL	0.007874f
@@ -38,6 +39,37 @@ void Midi_Dump()
 
 }
 
+void PrintnoteArp()
+{
+uint8_t i;
+
+    Serial.printf("NEXT--------------");
+    for(i=0;i<u8_ArpNextNbKeyOn;i++)    
+    {
+        Serial.printf("%02d-%03d ",i,st_TabNextArpKeys[i].note);
+    }
+    Serial.printf("\n");
+}
+
+void GetnoteoffArp(uint8_t note)
+{
+uint8_t i;    
+    // search the note
+    for(i=0;i<u8_ArpNbKeyOn;i++)    
+    {
+        if(st_TabArpKeys[i].note==note)
+        {
+            st_TabArpKeys[i].note=0;
+            break;
+        }
+    }
+    for(i=i;i<u8_ArpNbKeyOn;i++)
+    {
+        st_TabArpKeys[i].note = st_TabArpKeys[i+1].note;
+        st_TabArpKeys[i].vel = st_TabArpKeys[i+1].vel;
+    }    
+}
+
 /***************************************************/
 /*                                                 */
 /*                                                 */
@@ -48,9 +80,42 @@ inline void Midi_NoteOn(uint8_t note,uint8_t vel)
 uint8_t slotav=0;
 uint8_t n=0;
 
+    Midi_KeyOn++;
     if(note)
     {
         FlipPan = !FlipPan;
+        if(u8_ArpOn)
+        {
+            if(!u8_ArpNbKeyOn)
+            {
+                u8_ArpCptHitKey=0;
+                u8_ArpTrig=0;
+            }
+            if(!u8_ArpHold)
+            {
+                st_TabArpKeys[u8_ArpNbKeyOn].note   = note;
+                st_TabArpKeys[u8_ArpNbKeyOn].vel    = vel;
+                u8_ArpNbKeyOn++;                            
+            }
+            else
+            {
+                if(!u8_ArpTrig)
+                {
+                    st_TabArpKeys[u8_ArpNbKeyOn].note   = note;
+                    st_TabArpKeys[u8_ArpNbKeyOn].vel    = vel;
+                    u8_ArpNbKeyOn++;                            
+                }
+                else
+                {
+                    u8_ArpNextTrig=1;
+                    st_TabNextArpKeys[u8_ArpNextNbKeyOn].note   = note;
+                    st_TabNextArpKeys[u8_ArpNextNbKeyOn].vel    = vel;
+                    u8_ArpNextNbKeyOn++;
+                    //PrintnoteArp();
+                }
+            }
+            return;
+        }
         if(SoundMode !=SND_MODE_MONO)
             Synth_NoteOn(note,vel);
         else
@@ -93,6 +158,11 @@ uint8_t n=0;
     }
     //Serial.printf("--MonoCptNote  ON= %d Index %d\n",MonoCptNote,MonoIndexNote);                    
 }
+
+
+
+
+
 /***************************************************/
 /*                                                 */
 /*                                                 */
@@ -101,7 +171,40 @@ uint8_t n=0;
 inline void Midi_NoteOff(uint8_t note,uint8_t vel)
 {
 uint8_t n;
+uint8_t offnumber;
 
+    if(Midi_KeyOn)
+        Midi_KeyOn--;
+
+    if(u8_ArpOn)
+    {
+        if(u8_ArpHold)
+        {
+            //if(u8_ArpNextNbKeyOn)
+            //    u8_ArpNextNbKeyOn--;
+        }
+        if(!u8_ArpHold)
+        {
+            GetnoteoffArp(note);
+            if(u8_ArpNbKeyOn)
+                u8_ArpNbKeyOn--;
+            if(!u8_ArpNbKeyOn)
+            {
+                u8_ArpTrig=0;
+                // Off all note
+                for(uint8_t i=0;i<=MAX_ARP_FLT_KEYS;i++)
+                {
+                    if(SoundMode !=SND_MODE_MONO)
+                        Synth_NoteOff(u8_ArpTabFilterKeys[i]);
+                    else
+                        Synth_MonoNoteOff(u8_ArpTabFilterKeys[i]);
+                }
+            }
+        }
+        //else
+        //    PrintnoteArp();
+        return;
+    }
     if(SoundMode !=SND_MODE_MONO)
         Synth_NoteOff(note);
     else

@@ -138,6 +138,10 @@ SYNTH_EXTRN uint8_t MonoCptNote;
 SYNTH_EXTRN uint8_t MonoKeepNote[MONO_MAX_KEEP_NOTE];
 SYNTH_EXTRN uint8_t MonoKeepVel[MONO_MAX_KEEP_NOTE];
 
+
+#define MAXARPDIV	4
+#define MAXARPMODE	8	
+
 /*
  * add here your waveforms
  */
@@ -149,6 +153,12 @@ char Noise_Name[NOISE_TYPE_COUNT][5] =
 
 char YesNo[2][5] = 
 {"NO","YES"};
+
+char ArpDiv[MAXARPDIV][5] = 
+{"04","08","16","32"};
+char ArpMode[MAXARPMODE][5] = 
+{"UP","DWN","INC","EXC","RND","ORD","UP2","DW2"};
+
 
 float sine[WAVEFORM_CNT];
 float saw[WAVEFORM_CNT];
@@ -241,6 +251,8 @@ extern char Wave_Name[WAVEFORM_TYPE_COUNT][MAX_LABEL];
 extern char Wave_SubName[WAVEFORM_SUB_COUNT][MAX_LABEL];
 extern char Dest_Name[DEST_TYPE_COUNT][MAX_LABEL];
 extern char Sound_Mode[3][MAX_LABEL];
+extern char ArpDiv[MAXARPDIV][5]; 
+extern char ArpMode[MAXARPMODE][5];
 
 extern float sine[WAVEFORM_CNT];
 extern float saw[WAVEFORM_CNT];
@@ -252,6 +264,7 @@ extern float silence[WAVEFORM_CNT];
 extern float waveAKWF[WAVEFORM_CNT];
 
 extern float wavework[WAVEFORM_CNT];
+
 
 
 

@@ -39,6 +39,7 @@
 #include "Simple_Delay.h"
 #include "Reverb.h"
 #include "Ihm.h"
+#include "ArpSeq.h"
 
 #define __CODEC__
 #include "Codec.h"
@@ -192,6 +193,10 @@ void IRAM_ATTR onTimer1ms()
     //portENTER_CRITICAL_ISR(&timerMux_1ms);
     Timer1ms_cnt++;
     //portEXIT_CRITICAL_ISR(&timerMux_1ms);    
+    if(!u8_ArpTrig)
+    {
+        u8_ArpCptHitKey++;
+    }
 }
 
 void CoreTask0( void *parameter )
@@ -547,6 +552,7 @@ void loop()
 {
 static uint16_t cpttimer1;    
 static uint16_t cpttimer2;    
+static uint8_t onetime;    
     // put your main code here, to run repeatedly:
 
     static uint8_t loop_count_u8 = 0;
@@ -554,6 +560,48 @@ static uint16_t cpttimer2;
     loop_count_u8++;
     overcpt++;
     Cptloadwave++;
+
+    // ARP Wait xms to all key on 
+    if(u8_ArpCptHitKey>MAX_ARP_DELAY_HITKEYS && !u8_ArpTrig && u8_ArpNbKeyOn)
+    {
+        u8_ArpCptHitKey=0;
+        u8_ArpTrig=1;
+        switch(u8_ArpMode)
+	    {
+            case ARP_MODE_UP:  u8_ArpCptStep=255;u8_ArpUpDwn=ARP_UP;i8_ArpWay=1;break;
+            case ARP_MODE_ORDER:  u8_ArpCptStep=255;u8_ArpUpDwn=ARP_UP;i8_ArpWay=1;break;
+            case ARP_MODE_UP2:  u8_ArpCptStep=0;u8_ArpUpDwn=ARP_UP;i8_ArpWay=1;break;
+            case ARP_MODE_DWN: u8_ArpCptStep=u8_ArpNbKeyOn;u8_ArpUpDwn=ARP_DOWN;i8_ArpWay=-1;break;
+            case ARP_MODE_DWN2: u8_ArpCptStep=u8_ArpNbKeyOn-1;u8_ArpUpDwn=ARP_DOWN;i8_ArpWay=-1;break;
+            case ARP_MODE_INC: u8_ArpCptStep=255;u8_ArpUpDwn=ARP_UP;i8_ArpWay=1;break;
+            case ARP_MODE_EXC: u8_ArpCptStep=255;u8_ArpUpDwn=ARP_UP;i8_ArpWay=1;break;
+        }
+        u8_ArpRepeat=0;
+        Serial.printf("START ARP Send %d\n",u8_ArpUpDwn);
+        Arp_Filter_Note();
+    }
+
+
+    // Arpegiator timer
+    static float toogle_swing=0.5;
+    if(u8_ArpOn && u8_ArpTrig)
+    {
+        if(Timer1ms_cnt > u32_ArpTimeOff*(1+toogle_swing*ArpSwing) && onetime==0)
+        {
+            Arp_Stop_Note();
+            onetime=1;
+        }
+        if(Timer1ms_cnt > u32_ArpTime*(1+toogle_swing*ArpSwing))
+        {
+            Arp_Play_Note();
+            Timer1ms_cnt=0;
+            onetime=0;
+            if(toogle_swing==0.5)
+            toogle_swing=-0.5;
+            else
+            toogle_swing=0.5;
+        }
+    }
 
     if(overon && overcpt > NEXTION_MAX_OVER_TIME)
     {
