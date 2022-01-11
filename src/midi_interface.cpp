@@ -17,7 +17,7 @@
 #include "ArpSeq.h"
 
 /* constant to normalize midi value to 0.0 - 1.0f */
-#define NORM127MUL	0.007874f
+#define NORM127MUL	0.007874f7
 /***************************************************/
 /*                                                 */
 /*                                                 */
@@ -117,7 +117,9 @@ uint8_t n=0;
             return;
         }
         if(SoundMode !=SND_MODE_MONO)
+        {
             Synth_NoteOn(note,vel);
+        }
         else
         {
             Synth_MonoNoteOn(note,vel);
@@ -505,12 +507,14 @@ void Midi_Process()
             Msg=incomingByte & 0xF0;
             
             mrx=incomingByte & 0x0F;
+            
             if((mrx+1)!=MidiRx)
             {
+                //Serial.printf("Midi Receive %d Set %d\n",mrx+1,MidiRx);
+                inMsgIndex=-1;
                 return;
             }
-            
-
+            inMsgIndex=0;
             switch(Msg)
             {
                 case 0xD0:
@@ -540,6 +544,7 @@ void Midi_Process()
 
         if (lenMsg==2 && inMsgIndex >= 2)
         {
+            Serial.printf("Midi OK\n");
             HandleByteMsg(inMsg);
             inMsgIndex = 0;
         }
@@ -548,6 +553,7 @@ void Midi_Process()
             #ifdef DUMP_SERIAL2_TO_SERIAL
             Serial.printf(">%02x %02x %02x\n", inMsg[0], inMsg[1], inMsg[2]);
             #endif
+            Serial.printf("Midi OK\n");
             HandleShortMsg(inMsg);
             inMsgIndex = 0;
         }

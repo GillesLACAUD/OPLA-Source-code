@@ -1140,6 +1140,8 @@ int Fct_Ch_MidiRx(int val)
 {
     if(!IsLoadSound)
         SDCard_SaveMidiRx();
+    if(serialdebug)       
+        Serial.printf("MIDI RX: %d\n",MidiRx);        
     return(0);
 }
 
