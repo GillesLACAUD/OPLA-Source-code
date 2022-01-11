@@ -501,7 +501,7 @@ void Midi_Process()
             HandleRealTimeMsg(incomingByte);
             return;
         }
-
+        
         if(incomingByte & 0x80)
         {
             Msg=incomingByte & 0xF0;
