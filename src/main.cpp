@@ -232,7 +232,7 @@ void setup()
  {
      
 char AffCodec[15]="Not Define";
-char AffVersion[30]="V11 291121";
+char AffVersion[30]="V12 110122";
                     
 
 

@@ -483,7 +483,7 @@ void Midi_Process()
     static uint8_t inMsgIndex = 0;
     static uint8_t lenMsg=3;
     static uint8_t Msg;
-    uint8_t mrx;
+    static uint8_t mrx;
 
     //Choose Serial1 or Serial2 as required
 
@@ -510,7 +510,7 @@ void Midi_Process()
             
             if((mrx+1)!=MidiRx)
             {
-                //Serial.printf("Midi Receive %d Set %d\n",mrx+1,MidiRx);
+                Serial.printf("Midi Receive %d Set %d\n",mrx+1,MidiRx);
                 inMsgIndex=-1;
                 return;
             }
@@ -531,6 +531,11 @@ void Midi_Process()
             }
         }
 
+        if((mrx+1)!=MidiRx)
+        {
+            return;
+        }
+
         if (inMsgIndex == 0)
         {
             if ((incomingByte & 0x80) != 0x80)
@@ -544,7 +549,7 @@ void Midi_Process()
 
         if (lenMsg==2 && inMsgIndex >= 2)
         {
-            Serial.printf("Midi OK\n");
+            Serial.printf("Midi OK Byte\n");
             HandleByteMsg(inMsg);
             inMsgIndex = 0;
         }
@@ -553,7 +558,7 @@ void Midi_Process()
             #ifdef DUMP_SERIAL2_TO_SERIAL
             Serial.printf(">%02x %02x %02x\n", inMsg[0], inMsg[1], inMsg[2]);
             #endif
-            Serial.printf("Midi OK\n");
+            Serial.printf("Midi OK Short \n");
             HandleShortMsg(inMsg);
             inMsgIndex = 0;
         }
