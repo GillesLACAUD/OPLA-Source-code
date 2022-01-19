@@ -315,6 +315,7 @@ int16_t bend;
 inline void Midi_ControlChange(uint8_t channel, uint8_t data1, uint8_t data2)
 {
 uint8_t notassign=0;
+static uint8_t olddata1;
 
     // Mod Wheel
     if(data1 == 1)
@@ -324,7 +325,7 @@ uint8_t notassign=0;
         return;            
     }
 
-    if(!overon)
+    if(!overon || (olddata1!=data1))
     {
        overon = true;
        notassign=Nextion_PrintCC(data1,data2,0);
@@ -350,6 +351,7 @@ uint8_t notassign=0;
         //sprintf(messnex,"page1.CCPot.val=0");
         //Nextion_Send(messnex);
     }
+    olddata1=data1;
     
 
 }
