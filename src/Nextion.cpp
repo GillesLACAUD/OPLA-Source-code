@@ -112,10 +112,11 @@ void Nextion_Process()
 /*                                                 */
 /*                                                 */
 /***************************************************/
-void Nextion_PrintCC(uint8_t cc,int data,uint8_t source)
+uint8_t Nextion_PrintCC(uint8_t cc,int data,uint8_t source)
 {
 static uint8_t oldcc;    
 uint8_t s,e;
+static uint8_t notassign=0;
 
     //-------------------------------------------
     // Update the overview panel
@@ -143,13 +144,17 @@ uint8_t s,e;
                 {
                     if(Tab_Encoder[s][e].MidiCC==cc)
                     {
-                        sprintf(messnex,"page1.CCInfo.txt=%c%s%c",0x22,Tab_Encoder[s][e].LgName,0x22);
+                        //sprintf(messnex,"page1.CCInfo.txt=%c%s%c",0x22,Tab_Encoder[s][e].LgName,0x22);
+                        sprintf(messnex,"page1.CCInfo.txt=%c%03d %s%c",0x22,cc,Tab_Encoder[gui_Section][gui_Param].LgName,0x22);
                         //Serial.printf("CC %03d Section %d pot %d Name %s\n",cc,s,e,Tab_Encoder[s][e].LgName);
                         gui_Section = s;    // Update the section
+                        notassign=0;
                         goto trouve;
                     }
                 }           
             }
+            sprintf(messnex,"page1.CCInfo.txt=%c%03d %s%c",0x22,cc,"NOT ASSIGN",0x22);
+            notassign=1;
         }
         trouve:
         Nextion_Send(messnex);  
@@ -176,7 +181,8 @@ uint8_t s,e;
             e=0x55;
             s=0x55;
         }
-    }   
+    } 
+    return(notassign);
 }
 
 

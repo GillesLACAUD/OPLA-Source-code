@@ -39,7 +39,7 @@ NEXTION_EXTRN unsigned char Nextion_Cmd_Receive;
 NEXTION_EXTRN unsigned char Nextion_Send(char *ptmess);
 NEXTION_EXTRN void Nextion_Init();
 NEXTION_EXTRN void Nextion_Process();
-NEXTION_EXTRN void Nextion_PrintCC(uint8_t cc,int data,uint8_t source);
+NEXTION_EXTRN uint8_t Nextion_PrintCC(uint8_t cc,int data,uint8_t source);
 
 NEXTION_EXTRN void Nextion_PrintLabel();
 NEXTION_EXTRN void Nextion_PrintValues();

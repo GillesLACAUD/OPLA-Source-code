@@ -314,6 +314,7 @@ int16_t bend;
 /***************************************************/
 inline void Midi_ControlChange(uint8_t channel, uint8_t data1, uint8_t data2)
 {
+uint8_t notassign=0;
 
     // Mod Wheel
     if(data1 == 1)
@@ -325,8 +326,8 @@ inline void Midi_ControlChange(uint8_t channel, uint8_t data1, uint8_t data2)
 
     if(!overon)
     {
-        overon = true;
-       Nextion_PrintCC(data1,data2,0);
+       overon = true;
+       notassign=Nextion_PrintCC(data1,data2,0);
        if(data1==MIDI_CC_BK || data1==MIDI_CC_WA)
         sprintf(messnex,"page 4");
        else
@@ -335,11 +336,22 @@ inline void Midi_ControlChange(uint8_t channel, uint8_t data1, uint8_t data2)
        
     }
     overcpt=0;
-    // get the new value data2 midi to data2 min/max 
     int ret=Synth_SetRotary(data1,data2);
-    Nextion_PotValue(data2);
-    Nextion_PrintCC(data1,ret,0);
+    notassign=Nextion_PrintCC(data1,ret,0);
+    if(!notassign)
+    {
+        // get the new value data2 midi to data2 min/max 
+        Nextion_PotValue(data2);
+    }
+    else
+    {
+        sprintf(messnex,"page1.CCVal.txt=%c---%c",0x22,0x22);
+        Nextion_Send(messnex);
+        //sprintf(messnex,"page1.CCPot.val=0");
+        //Nextion_Send(messnex);
+    }
     
+
 }
 
 // Sysex Midi clock and Real time
@@ -510,7 +522,7 @@ void Midi_Process()
             
             if((mrx+1)!=MidiRx)
             {
-                Serial.printf("Midi Receive %d Set %d\n",mrx+1,MidiRx);
+                //Serial.printf("Midi Receive %d Set %d\n",mrx+1,MidiRx);
                 inMsgIndex=-1;
                 return;
             }
@@ -549,7 +561,7 @@ void Midi_Process()
 
         if (lenMsg==2 && inMsgIndex >= 2)
         {
-            Serial.printf("Midi OK Byte\n");
+            //Serial.printf("Midi OK Byte\n");
             HandleByteMsg(inMsg);
             inMsgIndex = 0;
         }
@@ -558,7 +570,7 @@ void Midi_Process()
             #ifdef DUMP_SERIAL2_TO_SERIAL
             Serial.printf(">%02x %02x %02x\n", inMsg[0], inMsg[1], inMsg[2]);
             #endif
-            Serial.printf("Midi OK Short \n");
+            //Serial.printf("Midi OK Short \n");
             HandleShortMsg(inMsg);
             inMsgIndex = 0;
         }
