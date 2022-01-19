@@ -154,6 +154,9 @@ int Fct_Ch_Bank(int val)
     sprintf(messnex,"page3.WA.txt=%c%03d%c",0x22,WS.AKWFWave,0x22);
     Nextion_Send(messnex);
 
+    sprintf(messnex,"page3.BKPOT.val=%d",WS.OscBank);
+    Nextion_Send(messnex);
+
     if(serialdebug)
         Serial.printf("BANK: %d Max %d MIDI CC %d\n", WS.OscBank,Tab_Encoder[2][6].MaxData,Tab_Encoder[2][6].MidiCC);
 
