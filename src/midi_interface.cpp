@@ -428,6 +428,7 @@ inline void HandleByteMsg(uint8_t *data)
             if(data[1]<100)
             {
                 SDCard_LoadSound(data[1],1);
+                Nextion_PrintValues();
                 Serial.printf("Program Change %d\n",data[1]);
             }
             break;
