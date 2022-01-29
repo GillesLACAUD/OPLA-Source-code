@@ -119,6 +119,7 @@ SYNTH_EXTRN uint32_t midi_note_to_add[MIDI_NOTE_CNT]; /* lookup to playback wave
 //----------------------------------------------------------
 
 SYNTH_EXTRN int16_t		MidiRx;
+SYNTH_EXTRN int16_t		BackDelay;
 
 SYNTH_EXTRN WorkSound	WS;
 

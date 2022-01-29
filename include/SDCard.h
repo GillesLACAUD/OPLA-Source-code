@@ -116,6 +116,7 @@ SDCARD_EXTRN    void SDCard_LoadLastSound();
 
 SDCARD_EXTRN    void SDCard_SaveMidiRx();                              	// Write Midi Rx
 SDCARD_EXTRN    void SDCard_LoadMidiRx();                              	// Read Midi Rx
+SDCARD_EXTRN    void SDCard_LoadBackDelay();							// Load back Delay
 
 SDCARD_EXTRN    void SDCard_LoadWave(uint8_t bk,uint8_t wa);
 

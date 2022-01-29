@@ -519,6 +519,8 @@ char AffVersion[30]="V13 200122";
     SDCard_LoadLastSound();
     SDCard_LoadMidiRx();
     Serial.printf("Midi Rx is %d\n",MidiRx);
+    SDCard_LoadBackDelay();
+    Serial.printf("BackDelay is %d\n",BackDelay);
     Nextion_PrintLabel();
     Nextion_PrintValues();
     //Synth_NoteOn(64-12);

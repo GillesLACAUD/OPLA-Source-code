@@ -389,6 +389,31 @@ void SDCard_LoadMidiRx()
     file.close();   
 }
 
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+void SDCard_LoadBackDelay()
+{
+    char path[30];
+    uint16_t rd;
+    // Read the Midirx in a file
+    sprintf(path,"/System/BackDelay.cfg");
+    File file = SD_MMC.open(path,"rb");
+    if(file)
+    {
+        rd=file.read((uint8_t*)&BackDelay,1);
+        file.close();   
+    }
+    else
+    {
+        BackDelay=10;
+    }
+}
+
+
+
 
 /***************************************************/
 /*                                                 */
