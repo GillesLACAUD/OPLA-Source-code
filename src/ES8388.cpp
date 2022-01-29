@@ -340,6 +340,8 @@ void ES8388_Setup()
     /* enable es8388 PA */
     //es8388_pa_power(true);
     //return res;
+    // Add for audio input
+
 }
 
 
@@ -379,7 +381,12 @@ void ES8388_rawSetup(uint8_t sda,uint8_t scl)
 
     ES8388_SetOUT1VOL(0,0.95);
     ES8388_SetOUT2VOL(0,0.95);
-    //es8388_read_all();
+
+    // Set input2 to output
+    // Input line IN2 0101 0000 = 0x50
+    ES8388_WriteReg(ES8388_ADCCONTROL2,0x50); 
+    // Output Mix 0000 1001
+    ES8388_WriteReg(ES8388_DACCONTROL16,0x09);
 
     REG_WRITE(PIN_CTRL, 0xFFFFFFF0);
     PIN_FUNC_SELECT(PERIPHS_IO_MUX_GPIO0_U, FUNC_GPIO0_CLK_OUT1);

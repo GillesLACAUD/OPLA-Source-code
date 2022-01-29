@@ -671,6 +671,12 @@ static uint8_t onetime;
     }
 
     //if (i2s_write_stereo_samples(&fl_sample, &fr_sample))
+    /*
+    i2s_read_stereo_samples_buff(&fl_sample,&fr_sample,SAMPLE_BUFFER_SIZE);
+    sampleData32.sample[0] = (int16_t)(fl_sample*32768.0f);
+    sampleData32.sample[1] = (int16_t)(fr_sample*32768.0f);
+    */
+
     if(i2s_write_sample_16ch2(sampleData32.sample32))
     {
         Synth_Process(&fl_sample, &fr_sample);
