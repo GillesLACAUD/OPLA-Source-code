@@ -1529,7 +1529,55 @@ float factor;
         }           
     }
     return(val);
+}
 
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+int Synth_GetandSet(uint8_t rotary,int val,int signe)
+{
+uint8_t s=0,e=0;
+uint8_t range;
+float factor;
+int16_t newval;
+
+    // Search the CC
+
+    for(s=0;s<MAX_SECTION;s++)
+    {
+        for(e=0;e<MAX_ENCODER;e++)
+        {
+            if(Tab_Encoder[s][e].MidiCC==rotary)
+            {
+                *Tab_Encoder[s][e].Data +=signe*val;
+                newval = *Tab_Encoder[s][e].Data;
+                if(newval>127)
+                    newval=127;
+                if(newval<0)
+                    newval=0;
+                if(Tab_Encoder[s][e].Type==TYPE_LIST)
+                {
+                    if(newval==MAXPOT)
+                        newval=MAXPOT-1;
+                    float value = newval * NORM127MUL;
+                    Tab_Encoder[s][e].Index= (value) * (Tab_Encoder[s][e].MaxData);
+                }
+                else
+                {
+                    range = Tab_Encoder[s][e].MaxData-Tab_Encoder[s][e].MinData;
+                    factor = (float)range/127;
+                    newval = Tab_Encoder[s][e].MinData + (int)((float)newval*factor);
+                }
+                *Tab_Encoder[s][e].Data=(int16_t)newval;   // Keep the value
+                Tab_Encoder[s][e].ptrfunctValueChange(newval);
+                e=0x55;
+                s=0x55;
+            }
+        }           
+    }
+    return(newval);
 }
 
 

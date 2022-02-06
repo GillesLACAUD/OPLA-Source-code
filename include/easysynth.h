@@ -15,7 +15,7 @@ SYNTH_EXTRN uint32_t midi_note_to_add[MIDI_NOTE_CNT]; /* lookup to playback wave
  */
 #define MAX_LABEL           5
 #define DEST_TYPE_COUNT	    12
-#define MIDI_MODE_MAX	    3
+#define MIDI_MODE_MAX	    4
 
 //----------------------------------------------------------
 // SOUND MODE AND POLY DEFINE
@@ -119,11 +119,18 @@ SYNTH_EXTRN uint32_t midi_note_to_add[MIDI_NOTE_CNT]; /* lookup to playback wave
 // END DEFINE
 //----------------------------------------------------------
 
+#define MIDI_MODE_ABS		0
+#define MIDI_MODE_NRPN		1
+#define MIDI_MODE_REL1		2	
+#define MIDI_MODE_REL2		3
+
 SYNTH_EXTRN int16_t	MidiRx;
 SYNTH_EXTRN int16_t MidiMode;          // Absolu,NRPN,Relativ
 SYNTH_EXTRN int16_t MidiRelCC;         // Code for the relatif mode
 SYNTH_EXTRN int16_t MidiRelMin;        // Relatif mode minimum
 SYNTH_EXTRN int16_t MidiRelMax;        // Relatif mode max
+
+SYNTH_EXTRN uint8_t RealMidiMode;
 
 
 SYNTH_EXTRN int16_t	BackDelay;
@@ -203,7 +210,7 @@ char Dest_Name[DEST_TYPE_COUNT][MAX_LABEL] =
 {"AMP","CUT","PIT","NOI","PAN","WS1","LxS","LxA","RPA","DPA","RAM","DAM"};
 
 char Midi_Mode[MIDI_MODE_MAX][MAX_LABEL] =
-{"ABS","NRPN","REL"};
+{"ABS","NRPN","REL1","REL2"};
 
 /*
  * do not forget to enter the waveform pointer addresses here
@@ -370,6 +377,7 @@ SYNTH_EXTRN void Synth_MonoNoteOn(uint8_t note,uint8_t vel);
 SYNTH_EXTRN void Synth_MonoNoteOff(uint8_t note);
 
 SYNTH_EXTRN int Synth_SetRotary(uint8_t rotary, int val);
+SYNTH_EXTRN int Synth_GetandSet(uint8_t rotary,int val,int signe);
 
 SYNTH_EXTRN void Update_Tune(uint8_t type);
 

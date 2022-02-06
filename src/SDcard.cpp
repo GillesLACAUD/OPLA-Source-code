@@ -396,6 +396,11 @@ void SDCard_LoadMidiRx()
     rd=file.read((uint8_t*)&MidiRelMin,1);        
     rd=file.read((uint8_t*)&MidiRelMax,1);
     Serial.printf("Load file midirx.cfg\n");
+
+    float temp;
+    temp=((float)MidiMode/127)*MIDI_MODE_MAX;
+    RealMidiMode=temp;    
+
    file.close();   
 }
 

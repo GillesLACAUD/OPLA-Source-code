@@ -1155,10 +1155,16 @@ int Fct_Ch_MidiRx(int val)
 /***************************************************/
 int Fct_Ch_MidiMode(int val) 
 {
+float temp;    
     if(!IsLoadSound)
         SDCard_SaveMidiRx();
     if(serialdebug)       
-        Serial.printf("MIDI MODE: %d\n",MidiMode);    
+        Serial.printf("MIDI MODE: %d\n",MidiMode); 
+
+    temp=((float)MidiMode/127)*MIDI_MODE_MAX;
+
+    RealMidiMode=temp;    
+    
     return(0);
 }
 

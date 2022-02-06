@@ -316,7 +316,13 @@ inline void Midi_ControlChange(uint8_t channel, uint8_t data1, uint8_t data2)
 {
 uint8_t notassign=0;
 static uint8_t olddata1;
+static uint8_t RelCC=0;
+static uint8_t RelPhase=0;
+static uint8_t incdecval=0;
+int ret;
+int newval;
 
+    
     // Mod Wheel
     if(data1 == 1)
     {
@@ -328,7 +334,16 @@ static uint8_t olddata1;
     if(!overon || (olddata1!=data1))
     {
        overon = true;
-       notassign=Nextion_PrintCC(data1,data2,0);
+       if(RealMidiMode==MIDI_MODE_REL1)
+       {
+            newval=Synth_GetandSet(data1,0,1);
+            notassign=Nextion_PrintCC(data1,newval,0);
+            Nextion_PotValue(newval);
+       }
+       else
+       {
+            notassign=Nextion_PrintCC(data1,data2,0);
+       }
        if(data1==MIDI_CC_BK || data1==MIDI_CC_WA)
         sprintf(messnex,"page 4");
        else
@@ -337,22 +352,85 @@ static uint8_t olddata1;
        
     }
     overcpt=0;
-    int ret=Synth_SetRotary(data1,data2);
-    notassign=Nextion_PrintCC(data1,ret,0);
-    if(!notassign)
+
+    //Serial.printf("Mode Midi %d\n",RealMidiMode);
+
+    switch(RealMidiMode)
     {
-        // get the new value data2 midi to data2 min/max 
-        Nextion_PotValue(data2);
+        case MIDI_MODE_ABS:	
+        ret=Synth_SetRotary(data1,data2);
+        notassign=Nextion_PrintCC(data1,ret,0);
+        if(!notassign)
+        {
+            // get the new value data2 midi to data2 min/max 
+            Nextion_PotValue(data2);
+        }
+        else
+        {
+            sprintf(messnex,"page1.CCVal.txt=%c---%c",0x22,0x22);
+            Nextion_Send(messnex);
+            //sprintf(messnex,"page1.CCPot.val=0");
+            //Nextion_Send(messnex);
+        }
+        olddata1=data1;        
+        break;
+        case MIDI_MODE_NRPN:
+        break;
+        case MIDI_MODE_REL1:
+        // Get the CC to change
+        switch(RelPhase)
+        {
+            case 0:
+            if(data2==MidiRelCC)
+            {
+                RelCC=data1;
+                RelPhase=1;
+                //Serial.printf("Rel1 Detect val trig Midi CC %d\n",RelCC);
+            }
+            break;
+            case 1:
+            if(data1==RelCC)            
+            {
+                Serial.printf("Phase 2 data2 %d\n",data2);
+                if(data2 <= MidiRelMin)
+                {
+                    incdecval= 1+(MidiRelMin-data2);
+                    //Serial.printf("--- Dec CC %d with %d\n",MidiRelCC,incdecval);
+                    newval=Synth_GetandSet(RelCC,incdecval,-1);
+                }
+                if(data2 >= MidiRelMax)
+                {
+                    incdecval= 1+(data2-MidiRelMax);
+                    //Serial.printf("--- Inc CC %d with %d\n",MidiRelCC,incdecval);
+                    newval=Synth_GetandSet(RelCC,incdecval,1);
+                }
+                RelPhase=0;
+                olddata1=data1;   
+                notassign=Nextion_PrintCC(data1,newval,0);
+                if(!notassign)
+                {
+                    // get the new value data2 midi to data2 min/max 
+                    Nextion_PotValue(newval);
+                }
+                else
+                {
+                    sprintf(messnex,"page1.CCVal.txt=%c---%c",0x22,0x22);
+                    Nextion_Send(messnex);
+                    //sprintf(messnex,"page1.CCPot.val=0");
+                    //Nextion_Send(messnex);
+                }
+            }
+            break;
+        }
+        break;
+        case MIDI_MODE_REL2:
+        olddata1=data1;   
+        break;
+        default:
+        olddata1=data1;   
+        break;
+
     }
-    else
-    {
-        sprintf(messnex,"page1.CCVal.txt=%c---%c",0x22,0x22);
-        Nextion_Send(messnex);
-        //sprintf(messnex,"page1.CCPot.val=0");
-        //Nextion_Send(messnex);
-    }
-    olddata1=data1;
-    
 
 }
 
