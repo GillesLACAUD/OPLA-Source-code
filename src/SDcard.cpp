@@ -370,6 +370,10 @@ void SDCard_SaveMidiRx()
     sprintf(path,"/System/midirx.cfg");
     File file = SD_MMC.open(path,"wb+");
     wr=file.write((uint8_t*)&MidiRx,1);
+    wr=file.write((uint8_t*)&MidiMode,1);
+    wr=file.write((uint8_t*)&MidiRelCC,1);
+    wr=file.write((uint8_t*)&MidiRelMin,1);        
+    wr=file.write((uint8_t*)&MidiRelMax,1);
     file.close();   
 }
 
@@ -386,7 +390,16 @@ void SDCard_LoadMidiRx()
     sprintf(path,"/System/midirx.cfg");
     File file = SD_MMC.open(path,"rb");
     rd=file.read((uint8_t*)&MidiRx,1);
-    file.close();   
+    rd=file.write((uint8_t*)&MidiMode,1);
+    if(rd==0)
+        MidiMode=0;
+    else
+    {
+        rd=file.write((uint8_t*)&MidiRelCC,1);
+        rd=file.write((uint8_t*)&MidiRelMin,1);        
+        rd=file.write((uint8_t*)&MidiRelMax,1);
+    }
+   file.close();   
 }
 
 /***************************************************/

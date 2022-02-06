@@ -146,6 +146,11 @@
 #define MIDI_CC_ARP_9           48
 #define MIDI_CC_ARP_10          49
 
+#define MIDI_CC_MIDIMODE        200
+#define MIDI_CC_MIDIRELCC       201
+#define MIDI_CC_MIDIRELMIN      202
+#define MIDI_CC_MIDIRELMAX      203
+
 // Relativ 1 MINILAB Arturia
 // Inc 0xBn 0xcc 0x64 + 0xBn 0xcc 0x65
 // Dec 0xBn 0xcc 0x64 + 0xBn 0xcc 0x63

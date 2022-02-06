@@ -72,8 +72,10 @@ char Tab_Section_Name[MAX_SECTION][20]=
     "ENV GENERATOR",
     "LFO",
     "FX",
-    "SYSTEM",
     "ARP",
+    "SYSTEM",
+    "MIDI",
+    
 };
 
 
@@ -295,10 +297,10 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
     // SECTION MIDI               
     /* Name                 MIDICC          TYPE        LIST                INDEX   VALUE             SIZE  MIN     MAX                     STEP    CHANGE      ON          OFF         HOLD        DCLK  */
     "MRX",  "MIDI RX",      MIDI_CC_MIDI_RX,       TYPE_DATA,  &TabListNull[0][0],  0,  &MidiRx,        1,  1,      16,                     1,      Fct_Ch_MidiRx,         FctNull,    FctNull,    FctNull,    FctNull,
-    "MOD",  "MIDI MODE",    0xFE,                  TYPE_DATA,  &Midi_Mode[0][0],    0,  &MidiMode,      1,  1,      MIDI_MODE_MAX,          1,      Fct_Ch_MidiMode,       FctNull,    FctNull,    FctNull,    FctNull,
-    "RCC",  "RELATIC CC",   0xFE,                  TYPE_DATA,  &TabListNull[0][0],  0,  &MidiRelCC,     1,  1,      127,                    1,      Fct_Ch_MidiRelCC,      FctNull,    FctNull,    FctNull,    FctNull,
-    "MIN",  "RELATIV MIN",  0xFE,                  TYPE_DATA,  &TabListNull[0][0],  0,  &MidiRelMin,    1,  1,      127,                    1,      Fct_Ch_MidiRelMin,      FctNull,    FctNull,    FctNull,    FctNull,
-    "MAX",  "RELATIV MAX",  0xFE,                  TYPE_DATA,  &TabListNull[0][0],  0,  &MidiRelMax,    1,  1,      127,                    1,      Fct_Ch_MidiRelMax,      FctNull,    FctNull,    FctNull,    FctNull,
+    "MOD",  "MIDI MODE",    MIDI_CC_MIDIMODE,      TYPE_LIST,  &Midi_Mode[0][0],    0,  &MidiMode,      1,  1,      MIDI_MODE_MAX,          1,      Fct_Ch_MidiMode,       FctNull,    FctNull,    FctNull,    FctNull,
+    "RCC",  "RELATIC CC",   MIDI_CC_MIDIRELCC,     TYPE_DATA,  &TabListNull[0][0],  0,  &MidiRelCC,     1,  0,      127,                    1,      Fct_Ch_MidiRelCC,      FctNull,    FctNull,    FctNull,    FctNull,
+    "MIN",  "RELATIV MIN",  MIDI_CC_MIDIRELMIN,    TYPE_DATA,  &TabListNull[0][0],  0,  &MidiRelMin,    1,  0,      127,                    1,      Fct_Ch_MidiRelMin,      FctNull,    FctNull,    FctNull,    FctNull,
+    "MAX",  "RELATIV MAX",  MIDI_CC_MIDIRELMAX,    TYPE_DATA,  &TabListNull[0][0],  0,  &MidiRelMax,    1,  0,      127,                    1,      Fct_Ch_MidiRelMax,      FctNull,    FctNull,    FctNull,    FctNull,
 
     "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0, &IntNull,         1,  0,      127,                    1,      FctNull,              FctNull,    FctNull,    FctNull,    FctNull,
     "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0, &IntNull,         1,  0,      127,                    1,      FctNull,              FctNull,    FctNull,    FctNull,    FctNull,

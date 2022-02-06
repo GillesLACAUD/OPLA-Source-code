@@ -1144,7 +1144,7 @@ int Fct_Ch_MidiRx(int val)
     if(!IsLoadSound)
         SDCard_SaveMidiRx();
     if(serialdebug)       
-        Serial.printf("MIDI RX: %d\n",MidiRx);        
+        Serial.printf("MIDI RX: %d\n",MidiRx);    
     return(0);
 }
 
@@ -1155,7 +1155,11 @@ int Fct_Ch_MidiRx(int val)
 /***************************************************/
 int Fct_Ch_MidiMode(int val) 
 {
-
+    if(!IsLoadSound)
+        SDCard_SaveMidiRx();
+    if(serialdebug)       
+        Serial.printf("MIDI MODE: %d\n",MidiMode);    
+    return(0);
 }
 
 /***************************************************/
@@ -1165,7 +1169,11 @@ int Fct_Ch_MidiMode(int val)
 /***************************************************/
 int Fct_Ch_MidiRelCC(int val)
 {
-    
+        if(!IsLoadSound)
+            SDCard_SaveMidiRx();
+        if(serialdebug)       
+            Serial.printf("MIDI REL CC: %d\n",MidiRelCC);    
+        return(0);    
 }
 
 /***************************************************/
@@ -1175,7 +1183,11 @@ int Fct_Ch_MidiRelCC(int val)
 /***************************************************/
 int Fct_Ch_MidiRelMin(int val)
 {
-    
+    if(!IsLoadSound)
+        SDCard_SaveMidiRx();
+    if(serialdebug)       
+        Serial.printf("MIDI RelMin: %d\n",MidiRelMin);    
+    return(0);   
 }
 
 /***************************************************/
@@ -1185,7 +1197,11 @@ int Fct_Ch_MidiRelMin(int val)
 /***************************************************/
 int Fct_Ch_MidiRelMax(int val)
 {
-    
+    if(!IsLoadSound)
+        SDCard_SaveMidiRx();
+    if(serialdebug)       
+        Serial.printf("MIDI RelMax: %d\n",MidiRelMax);    
+    return(0);
 }
 
 /***************************************************/
