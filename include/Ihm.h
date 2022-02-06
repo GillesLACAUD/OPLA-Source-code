@@ -53,7 +53,7 @@ typedef struct
   int 		    (*ptrfunctBPDoubleClick) (int);
 } Encoder_Data;
 
-#define MAX_SECTION     7+1     // Add +1 for the arpegiator 29.11.21
+#define MAX_SECTION     7+1+1     // Add +1 for the arpegiator 29.11.21 +1 Add Midi
 #define MAX_ENCODER     10
 
 #define SECTION_OSC     0
@@ -167,6 +167,12 @@ int Fct_Ch_ArpOct(int val);
 int Fct_Ch_ArpGate(int val); 
 int Fct_Ch_ArpSwing(int val);
 
+int Fct_Ch_MidiMode(int val); 
+int Fct_Ch_MidiRelCC(int val);
+int Fct_Ch_MidiRelMin(int val);
+int Fct_Ch_MidiRelMax(int val);
+
+
 // To change the max for the AKWF selection -> Tab_Encoder[SECTION_BANK_MAX][POT_BANK_MAX]
 #define SECTION_BANK_MAX    1
 #define POT_BANK_MAX        6 
@@ -257,22 +263,7 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
     "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0, &IntNull,         1,  0,      127,                    1,      FctNull,              FctNull,    FctNull,    FctNull,    FctNull,
     "CAL",  "SCREEN CAL",   MIDI_CC_59,            TYPE_LIST,  &YesNo[0][0],       0, &IntCalib,        1,  0,      2,                      1,      Fct_Ch_Calib,         FctNull,    FctNull,    FctNull,    FctNull,
     
-
-    // SECTION SYSTEM               
-    /* Name                 MIDICC          TYPE        LIST                INDEX   VALUE             SIZE  MIN     MAX                     STEP    CHANGE      ON          OFF         HOLD        DCLK  */
-    "MOD",  "SOUND MODE",   MIDI_CC_SOUND_MODE,    TYPE_LIST,  &Sound_Mode[0][0],   0,  &WS.SoundMode,  1,  0,      MAX_SND_MODE,           1,      Fct_Ch_SoundMode,      FctNull,    FctNull,    FctNull,    FctNull,
-    "PBR",  "PB RANGE",     MIDI_CC_PB_RANGE,      TYPE_DATA,  &TabListNull[0][0],  0,  &WS.PBRange,    1,  0,      12,                     1,      Fct_Ch_PBRange,        FctNull,    FctNull,    FctNull,    FctNull,
-    "SPE",  "SPREAD",       MIDI_CC_SPREAD,        TYPE_DATA,  &TabListNull[0][0],  0,  &WS.Spread,     1,  0,      127,                    1,      Fct_Ch_Spread,         FctNull,    FctNull,    FctNull,    FctNull,
-    "TRP",  "TRANSPOSE",    MIDI_CC_OCTAVE,        TYPE_DATA,  &TabListNull[0][0],  0,  &WS.Transpose,  1,  -24,    24,                     1,      Fct_Ch_Transpose,      FctNull,    FctNull,    FctNull,    FctNull,
-    "VOL",  "SOUND VOLUME", MIDI_CC_SVOLUME,       TYPE_DATA,  &TabListNull[0][0],  0,  &WS.SVolume,    1,  0,      127,                    1,      Fct_Ch_SVolume,        FctNull,    FctNull,    FctNull,    FctNull,
-
-    "MWD",  "MW DEST",      MIDI_CC_MD_DEST,       TYPE_LIST,  &ModName[0][0],      0,  &WS.MWDest,     1,  0,      MOD_MAX,                1,      Fct_Ch_MDDest,         FctNull,    FctNull,    FctNull,    FctNull,
-    "MWA",  "MW AMT",       MIDI_CC_MD_AMT,        TYPE_DATA,  &TabListNull[0][0],  0,  &WS.MWAmt,      1,  0,      127,                    1,      Fct_Ch_MDAmt,          FctNull,    FctNull,    FctNull,    FctNull,
-    "AFD",  "AT DEST",      MIDI_CC_AT_DEST,       TYPE_LIST,  &ModName[0][0],      0,  &WS.ATDest,     1,  0,      MOD_MAX,                1,      Fct_Ch_ATDest,         FctNull,    FctNull,    FctNull,    FctNull,
-    "AFA",  "AT AMT",       MIDI_CC_AT_AMT,        TYPE_DATA,  &TabListNull[0][0],  0,  &WS.ATAmt,      1,  0,      127,                    1,      Fct_Ch_ATAmt,          FctNull,    FctNull,    FctNull,    FctNull,
-    "MRX",  "MIDI RX",      MIDI_CC_MIDI_RX,       TYPE_DATA,  &TabListNull[0][0],  0,  &MidiRx,        1,  1,      16,                     1,      Fct_Ch_MidiRx,         FctNull,    FctNull,    FctNull,    FctNull,
-
-    // SECTION ARPEGIATOR   
+  // SECTION ARPEGIATOR   
 
     /* Name                 MIDICC                  TYPE        LIST                INDEX   VALUE             SIZE  MIN     MAX                     STEP    CHANGE      ON          OFF         HOLD        DCLK  */
     " ON",  "ARP ON/OFF",   MIDI_CC_ARP_ON,         TYPE_LIST,  &YesNo[0][0],        0,  &WS.ArpOnOff,        1,  0,      2,                1,      Fct_Ch_ArpOnOff,      FctNull,    FctNull,    FctNull,    FctNull,
@@ -287,7 +278,33 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
     "---",  "ARP ---",      MIDI_CC_ARP_9,          TYPE_DATA,  &TabListNull[0][0],  0,  &IntNull,            1,  0,      127,              1,      FctNull,          FctNull,    FctNull,    FctNull,    FctNull,
     "---",  "ARP ---",      MIDI_CC_ARP_10,         TYPE_DATA,  &TabListNull[0][0],  0,  &IntNull,            1,  1,      16,               1,      FctNull,         FctNull,    FctNull,    FctNull,    FctNull,
 
+    // SECTION SYSTEM               
+    /* Name                 MIDICC          TYPE        LIST                INDEX   VALUE             SIZE  MIN     MAX                     STEP    CHANGE      ON          OFF         HOLD        DCLK  */
+    "MOD",  "SOUND MODE",   MIDI_CC_SOUND_MODE,    TYPE_LIST,  &Sound_Mode[0][0],   0,  &WS.SoundMode,  1,  0,      MAX_SND_MODE,           1,      Fct_Ch_SoundMode,      FctNull,    FctNull,    FctNull,    FctNull,
+    "PBR",  "PB RANGE",     MIDI_CC_PB_RANGE,      TYPE_DATA,  &TabListNull[0][0],  0,  &WS.PBRange,    1,  0,      12,                     1,      Fct_Ch_PBRange,        FctNull,    FctNull,    FctNull,    FctNull,
+    "SPE",  "SPREAD",       MIDI_CC_SPREAD,        TYPE_DATA,  &TabListNull[0][0],  0,  &WS.Spread,     1,  0,      127,                    1,      Fct_Ch_Spread,         FctNull,    FctNull,    FctNull,    FctNull,
+    "TRP",  "TRANSPOSE",    MIDI_CC_OCTAVE,        TYPE_DATA,  &TabListNull[0][0],  0,  &WS.Transpose,  1,  -24,    24,                     1,      Fct_Ch_Transpose,      FctNull,    FctNull,    FctNull,    FctNull,
+    "VOL",  "SOUND VOLUME", MIDI_CC_SVOLUME,       TYPE_DATA,  &TabListNull[0][0],  0,  &WS.SVolume,    1,  0,      127,                    1,      Fct_Ch_SVolume,        FctNull,    FctNull,    FctNull,    FctNull,
 
+    "MWD",  "MW DEST",      MIDI_CC_MD_DEST,       TYPE_LIST,  &ModName[0][0],      0,  &WS.MWDest,     1,  0,      MOD_MAX,                1,      Fct_Ch_MDDest,         FctNull,    FctNull,    FctNull,    FctNull,
+    "MWA",  "MW AMT",       MIDI_CC_MD_AMT,        TYPE_DATA,  &TabListNull[0][0],  0,  &WS.MWAmt,      1,  0,      127,                    1,      Fct_Ch_MDAmt,          FctNull,    FctNull,    FctNull,    FctNull,
+    "AFD",  "AT DEST",      MIDI_CC_AT_DEST,       TYPE_LIST,  &ModName[0][0],      0,  &WS.ATDest,     1,  0,      MOD_MAX,                1,      Fct_Ch_ATDest,         FctNull,    FctNull,    FctNull,    FctNull,
+    "AFA",  "AT AMT",       MIDI_CC_AT_AMT,        TYPE_DATA,  &TabListNull[0][0],  0,  &WS.ATAmt,      1,  0,      127,                    1,      Fct_Ch_ATAmt,          FctNull,    FctNull,    FctNull,    FctNull,
+    "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0, &IntNull,         1,  0,      127,                    1,      FctNull,              FctNull,    FctNull,    FctNull,    FctNull,
+    
+    // SECTION MIDI               
+    /* Name                 MIDICC          TYPE        LIST                INDEX   VALUE             SIZE  MIN     MAX                     STEP    CHANGE      ON          OFF         HOLD        DCLK  */
+    "MRX",  "MIDI RX",      MIDI_CC_MIDI_RX,       TYPE_DATA,  &TabListNull[0][0],  0,  &MidiRx,        1,  1,      16,                     1,      Fct_Ch_MidiRx,         FctNull,    FctNull,    FctNull,    FctNull,
+    "MOD",  "MIDI MODE",    0xFE,                  TYPE_DATA,  &Midi_Mode[0][0],    0,  &MidiMode,      1,  1,      MIDI_MODE_MAX,          1,      Fct_Ch_MidiMode,       FctNull,    FctNull,    FctNull,    FctNull,
+    "RCC",  "RELATIC CC",   0xFE,                  TYPE_DATA,  &TabListNull[0][0],  0,  &MidiRelCC,     1,  1,      127,                    1,      Fct_Ch_MidiRelCC,      FctNull,    FctNull,    FctNull,    FctNull,
+    "MIN",  "RELATIV MIN",  0xFE,                  TYPE_DATA,  &TabListNull[0][0],  0,  &MidiRelMin,    1,  1,      127,                    1,      Fct_Ch_MidiRelMin,      FctNull,    FctNull,    FctNull,    FctNull,
+    "MAX",  "RELATIV MAX",  0xFE,                  TYPE_DATA,  &TabListNull[0][0],  0,  &MidiRelMax,    1,  1,      127,                    1,      Fct_Ch_MidiRelMax,      FctNull,    FctNull,    FctNull,    FctNull,
+
+    "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0, &IntNull,         1,  0,      127,                    1,      FctNull,              FctNull,    FctNull,    FctNull,    FctNull,
+    "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0, &IntNull,         1,  0,      127,                    1,      FctNull,              FctNull,    FctNull,    FctNull,    FctNull,
+    "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0, &IntNull,         1,  0,      127,                    1,      FctNull,              FctNull,    FctNull,    FctNull,    FctNull,
+    "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0, &IntNull,         1,  0,      127,                    1,      FctNull,              FctNull,    FctNull,    FctNull,    FctNull,
+    "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0, &IntNull,         1,  0,      127,                    1,      FctNull,              FctNull,    FctNull,    FctNull,    FctNull
 
 };
 #else

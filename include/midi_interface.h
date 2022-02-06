@@ -146,6 +146,36 @@
 #define MIDI_CC_ARP_9           48
 #define MIDI_CC_ARP_10          49
 
+// Relativ 1 MINILAB Arturia
+// Inc 0xBn 0xcc 0x64 + 0xBn 0xcc 0x65
+// Dec 0xBn 0xcc 0x64 + 0xBn 0xcc 0x63
+
+// Relativ 2 MINILAB Arturia
+// Inc 0xBn 0xcc 0x00 + 0xBn 0xcc 0x01
+// Dec 0xBn 0xcc 0x00 + 0xBn 0xcc 0x127
+
+// Relativ 3 MINILAB Arturia
+// Inc 0xBn 0xcc 0x00 + 0xBn 0xcc 0x01
+// Dec 0xBn 0xcc 0x00 + 0xBn 0xcc 0x127
+
+// For the NRPN messages
+// 0xBn 0x63 0x00   Select MSB CC
+// 0xBn 0x62 0xCC   Select LSB CC
+// 0xBn 0x60 0x00   Inc the seleted CC - Value not used
+// 0xBn 0x61 0x00   Dec the seleted CC - Value not used
+
+#define MIDI_CC_NRPN_MSB        99
+#define MIDI_CC_NRPN_LSB        98
+
+#define MIDI_CC_NRPN_VALMSB     6
+#define MIDI_CC_NRPN_VALLSB     38
+
+#define MIDI_CC_NRPN_INC        96
+#define MIDI_CC_NRPN_DEC        97
+
+#define MIDI_CC_NRPN_RESET      37
+#define MIDI_CC_NRPN_RESET      36
+
 
 /* constant to normalize midi value to 0.0 - 1.0f */
 #define MAXPOT	    127

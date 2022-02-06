@@ -15,6 +15,7 @@ SYNTH_EXTRN uint32_t midi_note_to_add[MIDI_NOTE_CNT]; /* lookup to playback wave
  */
 #define MAX_LABEL           5
 #define DEST_TYPE_COUNT	    12
+#define MIDI_MODE_MAX	    3
 
 //----------------------------------------------------------
 // SOUND MODE AND POLY DEFINE
@@ -118,8 +119,14 @@ SYNTH_EXTRN uint32_t midi_note_to_add[MIDI_NOTE_CNT]; /* lookup to playback wave
 // END DEFINE
 //----------------------------------------------------------
 
-SYNTH_EXTRN int16_t		MidiRx;
-SYNTH_EXTRN int16_t		BackDelay;
+SYNTH_EXTRN int16_t	MidiRx;
+SYNTH_EXTRN int16_t MidiMode;          // Absolu,NRPN,Relativ
+SYNTH_EXTRN int16_t MidiRelCC;         // Code for the relatif mode
+SYNTH_EXTRN int16_t MidiRelMin;        // Relatif mode minimum
+SYNTH_EXTRN int16_t MidiRelMax;        // Relatif mode max
+
+
+SYNTH_EXTRN int16_t	BackDelay;
 
 SYNTH_EXTRN WorkSound	WS;
 
@@ -195,6 +202,9 @@ char Wave_SubName[WAVEFORM_SUB_COUNT][MAX_LABEL] =
 char Dest_Name[DEST_TYPE_COUNT][MAX_LABEL] = 
 {"AMP","CUT","PIT","NOI","PAN","WS1","LxS","LxA","RPA","DPA","RAM","DAM"};
 
+char Midi_Mode[MIDI_MODE_MAX][MAX_LABEL] =
+{"ABS","NRPN","REL"};
+
 /*
  * do not forget to enter the waveform pointer addresses here
  */
@@ -244,7 +254,7 @@ float FilterVel=1.0;
 float GeneralVolume=1.0;
 
 #else
-
+extern char Midi_Mode[MIDI_MODE_MAX][MAX_LABEL];
 extern char Noise_Name[NOISE_TYPE_COUNT][5];
 extern char YesNo[2][5];
 extern char Filter_Type[MAX_FLT_TYPE][MAX_LABEL];
