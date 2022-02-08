@@ -319,6 +319,7 @@ static uint8_t olddata1;
 static uint8_t RelCC=0;
 static uint8_t RelPhase=0;
 static uint8_t incdecval=0;
+uint8_t updateval=0;
 int ret;
 int newval;
 
@@ -330,7 +331,6 @@ int newval;
         //Serial.printf("MW %d",data2);
         return;            
     }
-
     if(!overon || (olddata1!=data1))
     {
        overon = true;
@@ -352,6 +352,7 @@ int newval;
        
     }
     overcpt=0;
+    
 
     //Serial.printf("Mode Midi %d\n",RealMidiMode);
 
@@ -375,6 +376,48 @@ int newval;
         olddata1=data1;        
         break;
         case MIDI_MODE_NRPN:
+        switch(data1)
+        {
+            case 0x63:                          // CC MSB
+            break;                    
+            case 0x62:                          // CC LSB
+            RelCC=data2;
+            Serial.printf("NRPN CC %02d\n",RelCC);
+            break;        
+            case 0x06:                          // Value MSB
+            break;                    
+            case 0x26:                          // Value MSB
+            newval = data2;
+            updateval=1;
+            Serial.printf("NRPN Val %02d\n",newval);
+            break;                    
+            case 0x60:                          // Inc Value
+            newval=Synth_GetandSet(RelCC,1,1);
+            Serial.printf("NRPN Val %02d\n",newval);
+            updateval=1;
+            break;               
+            case 0x61:                         // Dec Value
+            newval=Synth_GetandSet(RelCC,1,-1);
+            Serial.printf("NRPN Val %02d\n",newval);
+            updateval=1;
+            break;               
+        }
+        if(updateval)
+        {
+            updateval=0;
+            olddata1=data1;   
+            notassign=Nextion_PrintCC(RelCC,newval,0);
+            Serial.printf("----- Assign %01d %02d %02d\n",notassign,RelCC,newval);
+            if(!notassign)
+            {
+                Nextion_PotValue(newval);
+            }
+            else
+            {
+                sprintf(messnex,"page1.CCVal.txt=%c---%c",0x22,0x22);
+                Nextion_Send(messnex);
+            }
+        }
         break;
         case MIDI_MODE_REL1:
         // Get the CC to change

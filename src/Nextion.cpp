@@ -146,7 +146,7 @@ static uint8_t notassign=0;
                     {
                         //sprintf(messnex,"page1.CCInfo.txt=%c%s%c",0x22,Tab_Encoder[s][e].LgName,0x22);
                         sprintf(messnex,"page1.CCInfo.txt=%c%03d %s%c",0x22,cc,Tab_Encoder[s][e].LgName,0x22);
-                        //Serial.printf("CC %03d Section %d pot %d Name %s\n",cc,s,e,Tab_Encoder[s][e].LgName);
+                        Serial.printf("ENCODER FIND\n");
                         gui_Section = s;    // Update the section
                         notassign=0;
                         goto trouve;
