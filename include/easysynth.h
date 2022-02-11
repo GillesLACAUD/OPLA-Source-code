@@ -210,7 +210,7 @@ char Dest_Name[DEST_TYPE_COUNT][MAX_LABEL] =
 {"AMP","CUT","PIT","NOI","PAN","WS1","LxS","LxA","RPA","DPA","RAM","DAM"};
 
 char Midi_Mode[MIDI_MODE_MAX][MAX_LABEL] =
-{"ABS","NRPN","REL1","REL2"};
+{"ABS","NRP","RL1","RL2"};
 
 /*
  * do not forget to enter the waveform pointer addresses here
