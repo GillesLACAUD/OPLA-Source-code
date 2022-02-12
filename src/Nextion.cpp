@@ -28,6 +28,7 @@ uint8_t m=0;
             {
                 sprintf(messnextask[m],ptmess);    
                 messnexfree[m]=1;
+                //Serial.printf("MESS %d %s\n",m,messnextask[m]);
                 m=88;
             }
         }
@@ -144,9 +145,8 @@ static uint8_t notassign=0;
                 {
                     if(Tab_Encoder[s][e].MidiCC==cc)
                     {
-                        //sprintf(messnex,"page1.CCInfo.txt=%c%s%c",0x22,Tab_Encoder[s][e].LgName,0x22);
                         sprintf(messnex,"page1.CCInfo.txt=%c%03d %s%c",0x22,cc,Tab_Encoder[s][e].LgName,0x22);
-                        Serial.printf("ENCODER FIND\n");
+                        //Serial.printf("ENCODER FIND %s\n",messnex);
                         gui_Section = s;    // Update the section
                         notassign=0;
                         goto trouve;
@@ -157,6 +157,7 @@ static uint8_t notassign=0;
             notassign=1;
         }
         trouve:
+        //Serial.printf("ENCODER FIND %s\n",messnex);
         Nextion_Send(messnex);  
     }
     oldcc = cc;
