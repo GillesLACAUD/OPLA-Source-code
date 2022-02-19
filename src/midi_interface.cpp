@@ -339,15 +339,12 @@ void ChangePot(uint8_t cc,uint8_t va)
 /***************************************************/
 void Midi_ControlChange(uint8_t channel, uint8_t data1, uint8_t data2)
 {
-
-static uint8_t RelCC=0;
-static uint8_t OldRelCC=0;
+static uint8_t RelCC=0;         // Get the CC 
+static uint8_t BoolNewVal=0;    // A new val is present
+static int newval;
+int ret;
 static uint8_t RelPhase=0;
 static uint8_t incdecval=0;
-uint8_t updateval=0;
-int ret;
-static int newval;
-static uint8_t GetNRPNOk=0;
 
     // Mod Wheel
     if(data1 == 1)
@@ -356,48 +353,65 @@ static uint8_t GetNRPNOk=0;
         return;            
     }
 
-    //Serial.printf("Serial Mode %d",RealMidiMode);
-
-    if((!overon || (OldRelCC!=RelCC)) && RelCC !=0)
+    overcpt=0;
+    //----------------------------------------------
+    // ABSOLUT MODE
+    //----------------------------------------------
+    if(RealMidiMode==MIDI_MODE_ABS)
     {
-       overon = true;
-
-       if(RealMidiMode==MIDI_MODE_ABS)
-       {
+        if(!overon)
+        {
+            overon = true;
             RelCC=data1;
             Nextion_PrintCC(data1,data2,0);
             ChangePage(RelCC);
-       }
-
-       if(RealMidiMode==MIDI_MODE_REL1)
-       {
-            newval=Synth_GetandSet(RelCC,0,1);
-            Nextion_PrintCC(RelCC,newval,0);
-            Nextion_PotValue(newval);
-            ChangePage(RelCC);
-       }
-       if(RealMidiMode==MIDI_MODE_NRPN)
-       {
-            if(GetNRPNOk==1)
-            {
-                Nextion_PrintCC(RelCC,newval,0);
-                Nextion_PotValue(newval);
-                GetNRPNOk=0;
-                ChangePage(RelCC);
-            }
-       }
-    }
-    overcpt=0;
-     
-    if(RealMidiMode==MIDI_MODE_ABS)
-    {
+        }
         RelCC=data1;
-        ret=Synth_SetRotary(data1,data2);
+        ret =Synth_SetRotary(data1,data2);
         ChangePot(RelCC,ret);
-        OldRelCC=RelCC;
         return;    
     }
-
+    //----------------------------------------------
+    // NRPN MODE
+    //----------------------------------------------
+    if(RealMidiMode==MIDI_MODE_NRPN)
+    {
+        if(data1==0x62)                          // CC LSB
+        {
+            RelCC=data2;
+        }
+        if(data1==0x26)                          // Value LSB
+        {
+            newval = data2;
+            BoolNewVal=1;
+        }
+        if(data1==0x60)                          // Inc Value
+        {
+            newval=Synth_GetandSet(RelCC,1,1);
+            BoolNewVal=1;
+        }
+        if(data1==0x61)                         // Dec Value
+        {
+            newval=Synth_GetandSet(RelCC,1,-1);
+            BoolNewVal=1;
+        }
+        if(BoolNewVal==1)
+        {
+            Synth_SetRotary(RelCC,newval);
+            Nextion_PrintCC(RelCC,newval,0);
+            ChangePot(RelCC,newval);
+            BoolNewVal=0;
+            if(!overon)
+            {
+                overon = true;
+                ChangePage(RelCC);
+            }
+        }
+        return;    
+    }
+    //----------------------------------------------
+    // REL MODE
+    //----------------------------------------------
     if(RealMidiMode==MIDI_MODE_REL1)
     {
         // Get the CC to change
@@ -408,7 +422,7 @@ static uint8_t GetNRPNOk=0;
             {
                 RelCC=data1;
                 RelPhase=1;
-                OldRelCC=RelCC;
+                //Serial.printf("REL MODE CC OK\n");
             }
             break;
             case 1:
@@ -427,44 +441,15 @@ static uint8_t GetNRPNOk=0;
                 RelPhase=0;
                 ChangePot(data1,newval);
             }
+            if(!overon)
+            {
+                overon = true;
+                ChangePage(RelCC);
+            }
+            break;
         }
-        return;    
+        return;            
     }
-    if(RealMidiMode==MIDI_MODE_NRPN)
-    {
-        if(data1==0x62)                          // CC LSB
-        {
-            //Serial.printf("OK 0x62\n");
-            RelCC=data2;
-            OldRelCC=RelCC+1;
-        }
-        if(data1==0x26)                          // Value MSB
-        {
-            newval = data2;
-            updateval=1;
-        }
-        if(data1==0x60)                          // Inc Value
-        {
-            newval=Synth_GetandSet(RelCC,1,1);
-            updateval=1;
-        }
-        if(data1==0x61)                         // Dec Value
-        {
-            newval=Synth_GetandSet(RelCC,1,-1);
-            updateval=1;
-        }
-        if(updateval)
-        {
-            updateval=0;
-            GetNRPNOk=1;
-            ChangePot(RelCC,newval);
-            Midi_ControlChange(channel,RelCC,newval);
-            OldRelCC=RelCC;
-        }
-        return;    
-    }
-    OldRelCC=RelCC;
-    return;    
 }
 
 // Sysex Midi clock and Real time
