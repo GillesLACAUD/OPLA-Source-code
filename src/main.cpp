@@ -369,6 +369,7 @@ char AffVersion[30]="V15 130222";
         {
             Serial.printf("Try Connect to ES8388 codec...33 32\n");
             sprintf(AffCodec,"ES8388V2");
+            Serial.printf("ES8388V2 OK\n");
             ESP32AudioCodec.i2s_blck=   27;
             ESP32AudioCodec.i2s_wclk=   25;
             ESP32AudioCodec.i2s_dout=   26;     
@@ -379,6 +380,7 @@ char AffVersion[30]="V15 130222";
         {
             Serial.printf("Try Connect to ES8388 codec...18 23\n");
             sprintf(AffCodec,"ES8388V1");
+            Serial.printf("ES8388V1 BAD\n");
             ESP32AudioCodec.i2s_blck=    5;
             ESP32AudioCodec.i2s_wclk=    25;
             ESP32AudioCodec.i2s_dout=    26;

@@ -115,7 +115,7 @@ void Nextion_Process()
 /***************************************************/
 uint8_t Nextion_PrintCC(uint8_t cc,int data,uint8_t source)
 {
-static uint8_t oldcc;    
+static uint8_t oldcc=0xFF;    
 uint8_t s,e;
 static uint8_t notassign=0;
 

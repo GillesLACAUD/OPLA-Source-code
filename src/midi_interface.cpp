@@ -339,12 +339,136 @@ void ChangePot(uint8_t cc,uint8_t va)
 /***************************************************/
 void Midi_ControlChange(uint8_t channel, uint8_t data1, uint8_t data2)
 {
-
-static uint8_t RelCC=0;
-static uint8_t OldRelCC=0;
+static uint8_t RelCC=0;         // Get the CC 
+static uint8_t BoolNewVal=0;    // A new val is present
+static int newval;
+int ret;
 static uint8_t RelPhase=0;
 static uint8_t incdecval=0;
-uint8_t updateval=0;
+
+    // Mod Wheel
+    if(data1 == 1)
+    {
+        ModWheelValue = (float)data2/128.0;
+        return;            
+    }
+
+    overcpt=0;
+    //----------------------------------------------
+    // ABSOLUT MODE
+    //----------------------------------------------
+    if(RealMidiMode==MIDI_MODE_ABS)
+    {
+        if(!overon)
+        {
+            overon = true;
+            RelCC=data1;
+            Nextion_PrintCC(data1,data2,0);
+            ChangePage(RelCC);
+        }
+        RelCC=data1;
+        ret =Synth_SetRotary(data1,data2);
+        ChangePot(RelCC,ret);
+        return;    
+    }
+    //----------------------------------------------
+    // NRPN MODE
+    //----------------------------------------------
+    if(RealMidiMode==MIDI_MODE_NRPN)
+    {
+        if(data1==0x62)                          // CC LSB
+        {
+            RelCC=data2;
+        }
+        if(data1==0x26)                          // Value LSB
+        {
+            newval = data2;
+            BoolNewVal=1;
+        }
+        if(data1==0x60)                          // Inc Value
+        {
+            newval=Synth_GetandSet(RelCC,1,1);
+            BoolNewVal=1;
+        }
+        if(data1==0x61)                         // Dec Value
+        {
+            newval=Synth_GetandSet(RelCC,1,-1);
+            BoolNewVal=1;
+        }
+        if(BoolNewVal==1)
+        {
+            Synth_SetRotary(RelCC,newval);
+            Nextion_PrintCC(RelCC,newval,0);
+            ChangePot(RelCC,newval);
+            BoolNewVal=0;
+            if(!overon)
+            {
+                overon = true;
+                ChangePage(RelCC);
+            }
+        }
+        return;    
+    }
+    //----------------------------------------------
+    // REL MODE
+    //----------------------------------------------
+    if(RealMidiMode==MIDI_MODE_REL1)
+    {
+        // Get the CC to change
+        switch(RelPhase)
+        {
+            case 0:
+            if(data2==MidiRelCC)
+            {
+                RelCC=data1;
+                RelPhase=1;
+                //Serial.printf("REL MODE CC OK\n");
+            }
+            break;
+            case 1:
+            if(data1==RelCC)            
+            {
+                if(data2 <= MidiRelMin)
+                {
+                    incdecval= 1+(MidiRelMin-data2);
+                    newval=Synth_GetandSet(RelCC,incdecval,-1);
+                }
+                if(data2 >= MidiRelMax)
+                {
+                    incdecval= 1+(data2-MidiRelMax);
+                    newval=Synth_GetandSet(RelCC,incdecval,1);
+                }
+                RelPhase=0;
+                ChangePot(data1,newval);
+            }
+            if(!overon)
+            {
+                overon = true;
+                ChangePage(RelCC);
+            }
+            break;
+        }
+        return;            
+    }
+}
+
+
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+void OldMidi_ControlChange(uint8_t channel, uint8_t data1, uint8_t data2)
+{
+
+static uint8_t BoolNewCC=0;     // A new CC is present
+static uint8_t BoolNewVal=0;    // A new val is present
+
+static uint8_t RelCC=0;     // Get the CC
+static uint8_t OldRelCC=0;  // Memory CC
+
+static uint8_t RelPhase=0;
+static uint8_t incdecval=0;
 int ret;
 static int newval;
 static uint8_t GetNRPNOk=0;
@@ -378,12 +502,18 @@ static uint8_t GetNRPNOk=0;
        }
        if(RealMidiMode==MIDI_MODE_NRPN)
        {
-            if(GetNRPNOk==1)
+            if(BoolNewVal)           
+            //if(1)           
             {
+                OldRelCC=RelCC;
+                BoolNewCC = 0;
+                BoolNewVal = 0;
+                Serial.printf("AFFICHE OLD CC %02X CC %02X Val %02X\n",OldRelCC,RelCC,newval);
                 Nextion_PrintCC(RelCC,newval,0);
                 Nextion_PotValue(newval);
                 GetNRPNOk=0;
                 ChangePage(RelCC);
+                OldRelCC=RelCC;
             }
        }
     }
@@ -434,32 +564,35 @@ static uint8_t GetNRPNOk=0;
     {
         if(data1==0x62)                          // CC LSB
         {
-            //Serial.printf("OK 0x62\n");
             RelCC=data2;
-            OldRelCC=RelCC+1;
+            OldRelCC=data2+5;
+            BoolNewCC = 1;
         }
         if(data1==0x26)                          // Value MSB
         {
             newval = data2;
-            updateval=1;
+            BoolNewVal=1;
         }
         if(data1==0x60)                          // Inc Value
         {
             newval=Synth_GetandSet(RelCC,1,1);
-            updateval=1;
+            BoolNewVal=1;
         }
         if(data1==0x61)                         // Dec Value
         {
             newval=Synth_GetandSet(RelCC,1,-1);
-            updateval=1;
+            BoolNewVal=1;
         }
-        if(updateval)
+        if(BoolNewVal==1)
         {
-            updateval=0;
-            GetNRPNOk=1;
+            if(overon)
+            {
+                BoolNewVal=0;
+                OldRelCC=RelCC+5;
+            }
+            Serial.printf("CC %02X Val %02X\n",RelCC,newval);
             ChangePot(RelCC,newval);
             Midi_ControlChange(channel,RelCC,newval);
-            OldRelCC=RelCC;
         }
         return;    
     }
