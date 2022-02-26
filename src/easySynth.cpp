@@ -1481,6 +1481,35 @@ void Synth_MonoNoteOff(uint8_t note)
    
 }
 
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+int Synth_Change(uint8_t s,uint8_t e, int val)
+{
+uint8_t range;
+float factor;    
+
+    *Tab_Encoder[s][e].Data=val;   // New value between -24 and +12   
+    if(Tab_Encoder[s][e].Type==TYPE_LIST)
+    {
+        if(val==MAXPOT)
+            val=MAXPOT-1;
+        float value = val * NORM127MUL;
+        Tab_Encoder[s][e].Index= (value) * (Tab_Encoder[s][e].Step);
+    }
+    else
+    {
+    
+        range = Tab_Encoder[s][e].MaxData-Tab_Encoder[s][e].MinData;
+        factor = (float)range/127;
+        val = Tab_Encoder[s][e].MinData + (int)((float)val*factor);
+        //Serial.printf("New2 %d\n",val);
+    }
+    Tab_Encoder[s][e].ptrfunctValueChange(val);
+    return(val);
+}
 
 /***************************************************/
 /*                                                 */
@@ -1490,8 +1519,6 @@ void Synth_MonoNoteOff(uint8_t note)
 int Synth_SetRotary(uint8_t rotary, int val)
 {
 uint8_t s=0,e=0;
-uint8_t range;
-float factor;
 
     // Search the CC
 
@@ -1501,28 +1528,8 @@ float factor;
         {
             if(Tab_Encoder[s][e].MidiCC==rotary)
             {
-                if(Tab_Encoder[s][e].Type==TYPE_LIST)
-                {
-                    if(val==MAXPOT)
-                        val=MAXPOT-1;
-                    float value = val * NORM127MUL;
-                    Tab_Encoder[s][e].Index= (value) * (Tab_Encoder[s][e].MaxData);
-                    //Serial.printf("List type val %d value %5.2f Index %d ->",val,value,Tab_Encoder[s][e].Index);
-                }
-                // 0-127 to min max data -> 0 = Min data 127 = Max data
-                // -24 to +12   range = 36
-                // factor = 0,283
-                // val = 0   -> -24
-                // val = 64  -> -6
-                // val = 127 -> 12
-                else
-                {
-                    range = Tab_Encoder[s][e].MaxData-Tab_Encoder[s][e].MinData;
-                    factor = (float)range/127;
-                    val = Tab_Encoder[s][e].MinData + (int)((float)val*factor);
-                }
-                *Tab_Encoder[s][e].Data=(int16_t)val;   // Keep the value    
-                Tab_Encoder[s][e].ptrfunctValueChange(val);
+                //Serial.printf("New1 %d\n",val);
+                val=Synth_Change(s,e,val);
                 e=0x55;
                 s=0x55;
             }
@@ -1536,12 +1543,13 @@ float factor;
 /*                                                 */
 /*                                                 */
 /***************************************************/
-int Synth_GetandSet(uint8_t rotary,int val,int signe)
+int Synth_GetandSet(uint8_t rotary,int16_t val,int16_t signe)
 {
 uint8_t s=0,e=0;
+int16_t newval=0;
 uint8_t range;
 float factor;
-int16_t newval;
+int16_t tmp;
 
     // Search the CC
 
@@ -1551,27 +1559,15 @@ int16_t newval;
         {
             if(Tab_Encoder[s][e].MidiCC==rotary)
             {
-                *Tab_Encoder[s][e].Data +=signe*val;
-                newval = *Tab_Encoder[s][e].Data;
-                if(newval>127)
-                    newval=127;
+                newval=(int16_t)(*(Tab_Encoder[s][e].Data));
+                newval+=signe*val;
+                if(newval>MAXPOT)
+                    newval=MAXPOT;
                 if(newval<0)
                     newval=0;
-                if(Tab_Encoder[s][e].Type==TYPE_LIST)
-                {
-                    if(newval==MAXPOT)
-                        newval=MAXPOT-1;
-                    float value = newval * NORM127MUL;
-                    Tab_Encoder[s][e].Index= (value) * (Tab_Encoder[s][e].MaxData);
-                }
-                else
-                {
-                    range = Tab_Encoder[s][e].MaxData-Tab_Encoder[s][e].MinData;
-                    factor = (float)range/127;
-                    newval = Tab_Encoder[s][e].MinData + (int)((float)newval*factor);
-                }
-                *Tab_Encoder[s][e].Data=(int16_t)newval;   // Keep the value
-                Tab_Encoder[s][e].ptrfunctValueChange(newval);
+                *(Tab_Encoder[s][e].Data)=(int16_t)newval;
+                //Serial.printf("New1 %d\n",newval);
+                newval=Synth_Change(s,e,newval);
                 e=0x55;
                 s=0x55;
             }
@@ -1582,15 +1578,54 @@ int16_t newval;
 
 
 
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+int OldSynth_GetandSet(uint8_t rotary,int16_t val,int16_t signe)
+{
+uint8_t s=0,e=0;
+int16_t newval=0;
+uint8_t range;
+float factor;
+int16_t tmp;
 
+    // Search the CC
 
+    for(s=0;s<MAX_SECTION;s++)
+    {
+        for(e=0;e<MAX_ENCODER;e++)
+        {
+            if(Tab_Encoder[s][e].MidiCC==rotary)
+            {
+                newval=(int16_t)(*(Tab_Encoder[s][e].Data));
+                newval+=signe*val;
+                if(newval>MAXPOT)
+                    newval=MAXPOT;
+                if(newval<0)
+                    newval=0;
+                *(Tab_Encoder[s][e].Data)=(int16_t)newval;
 
-
-
-
-
-
-
-
-
+                if(Tab_Encoder[s][e].Type==TYPE_LIST)
+                {
+                    if(newval==MAXPOT)
+                        newval=MAXPOT-1;
+                    float value = newval * NORM127MUL;
+                    //Tab_Encoder[s][e].Index= (value) * (Tab_Encoder[s][e].MaxData);
+                }
+                else
+                {
+                    range = Tab_Encoder[s][e].MaxData-Tab_Encoder[s][e].MinData;
+                    factor = (float)range/127;
+                    newval = Tab_Encoder[s][e].MinData + (int)((float)newval*factor);
+                }
+                Tab_Encoder[s][e].ptrfunctValueChange(newval);
+                e=0x55;
+                s=0x55;
+            }
+        }           
+    }
+    return(newval);
+}
 

@@ -14,7 +14,7 @@
 #include "SDCard.h"
 #include "ArpSeq.h"
 
-uint8_t serialdebug=1;
+uint8_t serialdebug=0;
 extern uint8_t Midi_KeyOn;
 //--------------------------------------------------
 // OSC
@@ -29,6 +29,7 @@ int Fct_Ch_OscWave(int val)
 {
 float value;
 struct oscillatorT *osc;
+static uint8_t keepwav=0;
 
     value = val * NORM127MUL;
     selWaveForm1 = (value) * (WAVEFORM_TYPE_COUNT);
@@ -41,10 +42,11 @@ struct oscillatorT *osc;
         osc = &oscPlayer[o+1];
         osc->waveForm = selectedWaveForm;
     }
-    if(selWaveForm1==WAVE_AKWF)
+    if(selWaveForm1==WAVE_AKWF && keepwav !=WAVE_AKWF)
     {
         trigloadwave=1;
     }
+    keepwav=selWaveForm1;
 
     // Force update
     OldWaveShapping1Mod += 0.03;

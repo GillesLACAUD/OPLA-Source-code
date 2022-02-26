@@ -148,6 +148,7 @@ static uint8_t notassign=0;
                         sprintf(messnex,"page1.CCInfo.txt=%c%03d %s%c",0x22,cc,Tab_Encoder[s][e].LgName,0x22);
                         //Serial.printf("ENCODER FIND %s\n",messnex);
                         gui_Section = s;    // Update the section
+                        gui_Param = e;
                         notassign=0;
                         goto trouve;
                     }
@@ -186,7 +187,6 @@ static uint8_t notassign=0;
     return(notassign);
 }
 
-
 /***************************************************/
 /*                                                 */
 /*                                                 */
@@ -213,21 +213,26 @@ void Nextion_PrintValues()
 {
 char msec[30];
 int tmp;
+uint8_t range;
+float factor;
+int16_t newval=0;
   
     for(uint8_t l=0;l<NEXTION_MAX_LABEL;l++)
     {
         if(Tab_Encoder[gui_Section][l].Type==TYPE_DATA)
         {
-            sprintf(msec,"%03d",*Tab_Encoder[gui_Section][l].Data);   
+            newval = *Tab_Encoder[gui_Section][l].Data;
+            range = Tab_Encoder[gui_Section][l].MaxData-Tab_Encoder[gui_Section][l].MinData;
+            factor = (float)range/127;
+            newval = Tab_Encoder[gui_Section][l].MinData + (int)((float)newval*factor);
+            sprintf(msec,"%03d",newval);   
             Nextion_PotTxt(l,msec);
         }
         else
         {
-            tmp = (*Tab_Encoder[gui_Section][l].Data)*Tab_Encoder[gui_Section][l].MaxData*NORM127MUL;
+            tmp = (*Tab_Encoder[gui_Section][l].Data)*Tab_Encoder[gui_Section][l].Step*NORM127MUL;
             Tab_Encoder[gui_Section][l].Index = tmp;
             sprintf(msec,"%s",Tab_Encoder[gui_Section][l].ptTabList+MAX_LABEL*Tab_Encoder[gui_Section][l].Index);
-            //Serial.printf("Index %d tmp %d\n",Tab_Encoder[gui_Section][l].Index,tmp);
-            //sprintf(msec,"%s",Tab_Encoder[gui_Section][l].ptTabList+MAX_LABEL*(*Tab_Encoder[gui_Section][l].Data));
             Nextion_PotTxt(l,msec);
         }
     }
@@ -623,9 +628,9 @@ uint8_t cc;
         }
         overcpt=0;
         gui_Value = Nextion_Mess[3];
-        //Serial.printf("VALUE Pot number %d value %03d\n",gui_Param,gui_Value);
         cc = Tab_Encoder[gui_Section][gui_Param].MidiCC;
         ret=Synth_SetRotary(cc,gui_Value);
+        //Serial.printf("VALUE Pot number %d value %03d Ret %03d\n",gui_Param,gui_Value,ret);
         Nextion_PotValue(gui_Value);
         Nextion_PrintCC(cc,ret,0);
         break;
@@ -654,8 +659,9 @@ uint8_t cc;
         cc = Tab_Encoder[gui_Section][gui_Param].MidiCC;
         if(cc !=0xFF)
         {
+            ret=Synth_SetRotary(cc,*Tab_Encoder[gui_Section][gui_Param].Data);
             Nextion_PotValue(*Tab_Encoder[gui_Section][gui_Param].Data);
-            Nextion_PrintCC(cc,*Tab_Encoder[gui_Section][gui_Param].Data,1);
+            Nextion_PrintCC(cc,ret,1);
             sprintf(messnex,"page 2");
             Nextion_Send(messnex);
             //delay(2);

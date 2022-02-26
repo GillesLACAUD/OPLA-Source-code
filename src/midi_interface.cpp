@@ -316,12 +316,22 @@ void ChangePage(uint8_t cc)
     Nextion_Send(messnex);            
 }
 
-void ChangePot(uint8_t cc,uint8_t va)
+void IRAM_ATTR ChangePot(uint8_t cc,int16_t va)
 {
+uint16_t size;
+int16_t tmp;
+
     uint8_t notassign=0;
     notassign=Nextion_PrintCC(cc,va,0);
     if(!notassign)
     {
+        if(Tab_Encoder[gui_Section][gui_Param].Type==TYPE_DATA)
+        {
+            size=(Tab_Encoder[gui_Section][gui_Param].MaxData - Tab_Encoder[gui_Section][gui_Param].MinData);
+            va = va-Tab_Encoder[gui_Section][gui_Param].MinData;
+            va *= 127;
+            va /=size;
+        }
         Nextion_PotValue(va);
     }
     else
@@ -330,7 +340,6 @@ void ChangePot(uint8_t cc,uint8_t va)
         Nextion_Send(messnex);
     }
 }
-
 
 /***************************************************/
 /*                                                 */
@@ -354,6 +363,15 @@ static uint8_t incdecval=0;
     }
 
     overcpt=0;
+
+    //----------------------------------------------
+    // OFF MODE
+    //----------------------------------------------
+    if(RealMidiMode==MIDI_MODE_OFF)
+    {
+        return;
+    }
+
     //----------------------------------------------
     // ABSOLUT MODE
     //----------------------------------------------
@@ -397,8 +415,6 @@ static uint8_t incdecval=0;
         }
         if(BoolNewVal==1)
         {
-            Synth_SetRotary(RelCC,newval);
-            Nextion_PrintCC(RelCC,newval,0);
             ChangePot(RelCC,newval);
             BoolNewVal=0;
             if(!overon)
@@ -422,7 +438,6 @@ static uint8_t incdecval=0;
             {
                 RelCC=data1;
                 RelPhase=1;
-                //Serial.printf("REL MODE CC OK\n");
             }
             break;
             case 1:
@@ -500,6 +515,12 @@ uint8_t incomingByte;
     break;
     
     case MIDI_STOP:
+    break;
+
+    case MIDI_SONGPOS:
+    break;
+
+    case MIDI_SONGSELECT:
     break;
     
   }
@@ -579,6 +600,7 @@ void Midi_Setup()
     pinMode(RXD2, INPUT_PULLUP);  /* 25: GPIO 16, u2_RXD */
 }
 
+//#define DUMP_SERIAL2_TO_SERIAL
 /***************************************************/
 /*                                                 */
 /*                                                 */
@@ -603,12 +625,16 @@ void Midi_Process()
         uint8_t incomingByte = Serial2.read();
 
         #ifdef DUMP_SERIAL2_TO_SERIAL 
-        Serial.printf("%02x\n", incomingByte);
+        if(incomingByte != 0xFE)
+            Serial.printf("%02x\n", incomingByte);
         #endif
 
         /* System or real time messages */
         if ((incomingByte >= 0xF0))
         {
+            // Active sensing and time clock
+            if(incomingByte!=0xFE && incomingByte!=0xF8)
+                inMsg[0]=0xFF;
             HandleRealTimeMsg(incomingByte);
             return;
         }
@@ -621,7 +647,6 @@ void Midi_Process()
             
             if((mrx+1)!=MidiRx)
             {
-                //Serial.printf("Midi Receive %d Set %d\n",mrx+1,MidiRx);
                 inMsgIndex=-1;
                 return;
             }
@@ -660,7 +685,6 @@ void Midi_Process()
 
         if (lenMsg==2 && inMsgIndex >= 2)
         {
-            //Serial.printf("Midi OK Byte\n");
             HandleByteMsg(inMsg);
             inMsgIndex = 0;
         }
@@ -669,11 +693,9 @@ void Midi_Process()
             #ifdef DUMP_SERIAL2_TO_SERIAL
             Serial.printf(">%02x %02x %02x\n", inMsg[0], inMsg[1], inMsg[2]);
             #endif
-            //Serial.printf("Midi OK Short \n");
             HandleShortMsg(inMsg);
             inMsgIndex = 0;
         }
-
         /*
          * reset watchdog to allow new bytes to be received
          */
