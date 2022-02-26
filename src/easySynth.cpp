@@ -1536,12 +1536,13 @@ float factor;
 /*                                                 */
 /*                                                 */
 /***************************************************/
-int Synth_GetandSet(uint8_t rotary,int val,int signe)
+int Synth_GetandSet(uint8_t rotary,int16_t val,int16_t signe)
 {
 uint8_t s=0,e=0;
+int16_t newval=0;
 uint8_t range;
 float factor;
-int16_t newval;
+int16_t tmp;
 
     // Search the CC
 
@@ -1551,12 +1552,15 @@ int16_t newval;
         {
             if(Tab_Encoder[s][e].MidiCC==rotary)
             {
-                *Tab_Encoder[s][e].Data +=signe*val;
-                newval = *Tab_Encoder[s][e].Data;
-                if(newval>127)
-                    newval=127;
+                newval=(int16_t)(*(Tab_Encoder[s][e].Data));
+                newval+=signe*val;
+                if(newval>MAXPOT)
+                    newval=MAXPOT;
                 if(newval<0)
                     newval=0;
+                *(Tab_Encoder[s][e].Data)=(int16_t)newval;
+                //printf("val %d\n",*(Tab_Encoder[s][e].Data));
+
                 if(Tab_Encoder[s][e].Type==TYPE_LIST)
                 {
                     if(newval==MAXPOT)
@@ -1570,7 +1574,6 @@ int16_t newval;
                     factor = (float)range/127;
                     newval = Tab_Encoder[s][e].MinData + (int)((float)newval*factor);
                 }
-                *Tab_Encoder[s][e].Data=(int16_t)newval;   // Keep the value
                 Tab_Encoder[s][e].ptrfunctValueChange(newval);
                 e=0x55;
                 s=0x55;
@@ -1579,18 +1582,3 @@ int16_t newval;
     }
     return(newval);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

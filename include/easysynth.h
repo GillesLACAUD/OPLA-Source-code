@@ -377,7 +377,7 @@ SYNTH_EXTRN void Synth_MonoNoteOn(uint8_t note,uint8_t vel);
 SYNTH_EXTRN void Synth_MonoNoteOff(uint8_t note);
 
 SYNTH_EXTRN int Synth_SetRotary(uint8_t rotary, int val);
-SYNTH_EXTRN int Synth_GetandSet(uint8_t rotary,int val,int signe);
+SYNTH_EXTRN int Synth_GetandSet(uint8_t rotary,int16_t val,int16_t signe);
 
 SYNTH_EXTRN void Update_Tune(uint8_t type);
 
