@@ -14,7 +14,7 @@
 #include "SDCard.h"
 #include "ArpSeq.h"
 
-uint8_t serialdebug=1;
+uint8_t serialdebug=0;
 extern uint8_t Midi_KeyOn;
 //--------------------------------------------------
 // OSC
