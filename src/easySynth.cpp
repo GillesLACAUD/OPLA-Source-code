@@ -1495,7 +1495,7 @@ float factor;
     if(Tab_Encoder[s][e].Type==TYPE_LIST)
     {
         if(val==MAXPOT)
-            val=MAXPOT-1;
+            val=MAXPOT-Tab_Encoder[s][e].Step/2;
         float value = val * NORM127MUL;
         Tab_Encoder[s][e].Index= (value) * (Tab_Encoder[s][e].Step);
     }
@@ -1562,7 +1562,7 @@ int16_t tmp;
                 newval=(int16_t)(*(Tab_Encoder[s][e].Data));
                 newval+=signe*val;
                 if(newval>MAXPOT)
-                    newval=MAXPOT;
+                    newval=MAXPOT-Tab_Encoder[s][e].Step/2;
                 if(newval<0)
                     newval=0;
                 *(Tab_Encoder[s][e].Data)=(int16_t)newval;
