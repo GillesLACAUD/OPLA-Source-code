@@ -626,7 +626,8 @@ void Midi_Process()
         /* System or real time messages */
         if ((incomingByte >= 0xF0))
         {
-            if(incomingByte!=0xFE)
+            // Active sensing and time clock
+            if(incomingByte!=0xFE && incomingByte!=0xF8)
                 inMsg[0]=0xFF;
             HandleRealTimeMsg(incomingByte);
             return;
