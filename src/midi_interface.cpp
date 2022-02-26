@@ -316,10 +316,10 @@ void ChangePage(uint8_t cc)
     Nextion_Send(messnex);            
 }
 
-void ChangePot(uint8_t cc,int8_t va)
+void IRAM_ATTR ChangePot(uint8_t cc,int16_t va)
 {
 uint16_t size;
-float rap;
+int16_t tmp;
 
     uint8_t notassign=0;
     notassign=Nextion_PrintCC(cc,va,0);
@@ -329,8 +329,8 @@ float rap;
         {
             size=(Tab_Encoder[gui_Section][gui_Param].MaxData - Tab_Encoder[gui_Section][gui_Param].MinData);
             va = va-Tab_Encoder[gui_Section][gui_Param].MinData;
-            rap = 127.0/size;
-            va *= rap;
+            va *= 127;
+            va /=size;
         }
         Nextion_PotValue(va);
     }

@@ -186,6 +186,7 @@
 #define MAXPOT	    127
 #define NORM127MUL	0.0078740157f
 
+MIDI_EXTRN void IRAM_ATTR ChangePot(uint8_t cc,int16_t va);
 MIDI_EXTRN void ChangePage(uint8_t cc);
 MIDI_EXTRN void Midi_Dump();
 MIDI_EXTRN inline void Midi_NoteOn(uint8_t note,uint8_t vel);

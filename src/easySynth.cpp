@@ -1559,12 +1559,11 @@ int16_t tmp;
                 if(newval<0)
                     newval=0;
                 *(Tab_Encoder[s][e].Data)=(int16_t)newval;
-                //printf("val %d\n",*(Tab_Encoder[s][e].Data));
 
                 if(Tab_Encoder[s][e].Type==TYPE_LIST)
                 {
                     if(newval==MAXPOT)
-                        newval=MAXPOT-1;
+                        newval=MAXPOT-2;
                     float value = newval * NORM127MUL;
                     Tab_Encoder[s][e].Index= (value) * (Tab_Encoder[s][e].MaxData);
                 }
