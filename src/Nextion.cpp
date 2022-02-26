@@ -148,6 +148,7 @@ static uint8_t notassign=0;
                         sprintf(messnex,"page1.CCInfo.txt=%c%03d %s%c",0x22,cc,Tab_Encoder[s][e].LgName,0x22);
                         //Serial.printf("ENCODER FIND %s\n",messnex);
                         gui_Section = s;    // Update the section
+                        gui_Param = e;
                         notassign=0;
                         goto trouve;
                     }
@@ -185,7 +186,6 @@ static uint8_t notassign=0;
     } 
     return(notassign);
 }
-
 
 /***************************************************/
 /*                                                 */
