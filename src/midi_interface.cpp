@@ -316,12 +316,22 @@ void ChangePage(uint8_t cc)
     Nextion_Send(messnex);            
 }
 
-void ChangePot(uint8_t cc,uint8_t va)
+void ChangePot(uint8_t cc,int8_t va)
 {
+uint16_t size;
+float rap;
+
     uint8_t notassign=0;
     notassign=Nextion_PrintCC(cc,va,0);
     if(!notassign)
     {
+        if(Tab_Encoder[gui_Section][gui_Param].Type==TYPE_DATA)
+        {
+            size=(Tab_Encoder[gui_Section][gui_Param].MaxData - Tab_Encoder[gui_Section][gui_Param].MinData);
+            va = va-Tab_Encoder[gui_Section][gui_Param].MinData;
+            rap = 127.0/size;
+            va *= rap;
+        }
         Nextion_PotValue(va);
     }
     else
@@ -330,7 +340,6 @@ void ChangePot(uint8_t cc,uint8_t va)
         Nextion_Send(messnex);
     }
 }
-
 
 /***************************************************/
 /*                                                 */
