@@ -354,6 +354,15 @@ static uint8_t incdecval=0;
     }
 
     overcpt=0;
+
+    //----------------------------------------------
+    // OFF MODE
+    //----------------------------------------------
+    if(RealMidiMode==MIDI_MODE_OFF)
+    {
+        return;
+    }
+
     //----------------------------------------------
     // ABSOLUT MODE
     //----------------------------------------------
@@ -501,6 +510,12 @@ uint8_t incomingByte;
     
     case MIDI_STOP:
     break;
+
+    case MIDI_SONGPOS:
+    break;
+
+    case MIDI_SONGSELECT:
+    break;
     
   }
 }
@@ -579,6 +594,7 @@ void Midi_Setup()
     pinMode(RXD2, INPUT_PULLUP);  /* 25: GPIO 16, u2_RXD */
 }
 
+//#define DUMP_SERIAL2_TO_SERIAL
 /***************************************************/
 /*                                                 */
 /*                                                 */
@@ -603,12 +619,15 @@ void Midi_Process()
         uint8_t incomingByte = Serial2.read();
 
         #ifdef DUMP_SERIAL2_TO_SERIAL 
-        Serial.printf("%02x\n", incomingByte);
+        if(incomingByte != 0xFE)
+            Serial.printf("%02x\n", incomingByte);
         #endif
 
         /* System or real time messages */
         if ((incomingByte >= 0xF0))
         {
+            if(incomingByte!=0xFE)
+                inMsg[0]=0xFF;
             HandleRealTimeMsg(incomingByte);
             return;
         }
@@ -621,7 +640,6 @@ void Midi_Process()
             
             if((mrx+1)!=MidiRx)
             {
-                //Serial.printf("Midi Receive %d Set %d\n",mrx+1,MidiRx);
                 inMsgIndex=-1;
                 return;
             }
@@ -660,7 +678,6 @@ void Midi_Process()
 
         if (lenMsg==2 && inMsgIndex >= 2)
         {
-            //Serial.printf("Midi OK Byte\n");
             HandleByteMsg(inMsg);
             inMsgIndex = 0;
         }
@@ -669,11 +686,9 @@ void Midi_Process()
             #ifdef DUMP_SERIAL2_TO_SERIAL
             Serial.printf(">%02x %02x %02x\n", inMsg[0], inMsg[1], inMsg[2]);
             #endif
-            //Serial.printf("Midi OK Short \n");
             HandleShortMsg(inMsg);
             inMsgIndex = 0;
         }
-
         /*
          * reset watchdog to allow new bytes to be received
          */

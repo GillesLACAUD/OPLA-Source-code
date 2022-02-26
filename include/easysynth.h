@@ -122,7 +122,7 @@ SYNTH_EXTRN uint32_t midi_note_to_add[MIDI_NOTE_CNT]; /* lookup to playback wave
 #define MIDI_MODE_ABS		0
 #define MIDI_MODE_NRPN		1
 #define MIDI_MODE_REL1		2	
-#define MIDI_MODE_REL2		3
+#define MIDI_MODE_OFF		3
 
 SYNTH_EXTRN int16_t	MidiRx;
 SYNTH_EXTRN int16_t MidiMode;          // Absolu,NRPN,Relativ
@@ -210,7 +210,7 @@ char Dest_Name[DEST_TYPE_COUNT][MAX_LABEL] =
 {"AMP","CUT","PIT","NOI","PAN","WS1","LxS","LxA","RPA","DPA","RAM","DAM"};
 
 char Midi_Mode[MIDI_MODE_MAX][MAX_LABEL] =
-{"ABS","NRP","RL1","RL2"};
+{"ABS","NRP","RL1","OFF"};
 
 /*
  * do not forget to enter the waveform pointer addresses here
