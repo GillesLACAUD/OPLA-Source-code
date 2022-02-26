@@ -270,6 +270,9 @@ void SDCard_LoadSound(uint8_t snd,uint8_t source)
 char path[30];
 uint16_t wr;
 unsigned int sz=sizeof(WorkSound);
+uint8_t range;
+float factor; 
+int val;   
 
     Delay_Reset();
 
@@ -300,7 +303,19 @@ unsigned int sz=sizeof(WorkSound);
     {
         for(uint8_t e=0;e<MAX_ENCODER;e++)
         {
-            Tab_Encoder[s][e].ptrfunctValueChange((int)*Tab_Encoder[s][e].Data);
+            val = *Tab_Encoder[s][e].Data;
+            if(Tab_Encoder[s][e].Type==TYPE_LIST)
+            {
+            }
+            else
+            {
+                range = Tab_Encoder[s][e].MaxData-Tab_Encoder[s][e].MinData;
+                factor = (float)range/127;
+                val = Tab_Encoder[s][e].MinData + (int)((float)val*factor);
+            }
+            Tab_Encoder[s][e].ptrfunctValueChange(val);
+            //Tab_Encoder[s][e].ptrfunctValueChange((int)*Tab_Encoder[s][e].Data);
+            
         }
     }
     IsLoadSound = 0;
