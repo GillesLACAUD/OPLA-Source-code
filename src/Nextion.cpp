@@ -225,20 +225,14 @@ int16_t newval=0;
             range = Tab_Encoder[gui_Section][l].MaxData-Tab_Encoder[gui_Section][l].MinData;
             factor = (float)range/127;
             newval = Tab_Encoder[gui_Section][l].MinData + (int)((float)newval*factor);
-            //sprintf(msec,"%03d",newval);  
-            //Serial.printf("Max %d Mix %d Val %d\n",Tab_Encoder[gui_Section][l].MaxData,Tab_Encoder[gui_Section][l].MinData,newval);
-            //sprintf(msec,"%03d",*Tab_Encoder[gui_Section][l].Data);   
             sprintf(msec,"%03d",newval);   
             Nextion_PotTxt(l,msec);
         }
         else
         {
-            Serial.printf("P %d val %d",l,*Tab_Encoder[gui_Section][l].Data);
             tmp = (*Tab_Encoder[gui_Section][l].Data)*Tab_Encoder[gui_Section][l].Step*NORM127MUL;
             Tab_Encoder[gui_Section][l].Index = tmp;
             sprintf(msec,"%s",Tab_Encoder[gui_Section][l].ptTabList+MAX_LABEL*Tab_Encoder[gui_Section][l].Index);
-            //Serial.printf("Index %d tmp %d\n",Tab_Encoder[gui_Section][l].Index,tmp);
-            //sprintf(msec,"%s",Tab_Encoder[gui_Section][l].ptTabList+MAX_LABEL*(*Tab_Encoder[gui_Section][l].Data));
             Nextion_PotTxt(l,msec);
         }
     }

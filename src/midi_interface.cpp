@@ -415,8 +415,6 @@ static uint8_t incdecval=0;
         }
         if(BoolNewVal==1)
         {
-            //Synth_SetRotary(RelCC,newval);
-            Nextion_PrintCC(RelCC,newval,0);
             ChangePot(RelCC,newval);
             BoolNewVal=0;
             if(!overon)
