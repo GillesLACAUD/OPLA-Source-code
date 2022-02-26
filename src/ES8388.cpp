@@ -277,7 +277,7 @@ int ES8388_Start()
     res |= ES8388_WriteReg(ES8388_DACCONTROL21, 0xC0);  //enable adc
     res |= ES8388_WriteReg(ES8388_CHIPPOWER, 0xF0);     //start state machine
     res |= ES8388_WriteReg(ES8388_CHIPPOWER, 0x00);     //start state machine
-    res |= ES8388_WriteReg(ES8388_ADCPOWER, 0x00);      //power up adc and line in
+    //res |= ES8388_WriteReg(ES8388_ADCPOWER, 0x00);      //power up adc and line in
 
     res |= ES8388_WriteReg(ES8388_DACCONTROL4, 0x00);
     res |= ES8388_WriteReg(ES8388_DACCONTROL5, 0x00);
@@ -357,11 +357,13 @@ void ES8388_rawSetup(uint8_t sda,uint8_t scl)
     ES8388_WriteReg(ES8388_CONTROL2,80); 	    // 0x50	0x50	0x40	X	Reg 0x01	01	0101 0000: chip control settings
     ES8388_WriteReg(ES8388_CHIPPOWER,0); 	    // 0x00	0x00	0x00	-	Reg 0x02	02 	0000 0000: chip power management
     ES8388_WriteReg(ES8388_ADCPOWER,0); 	    // 0x08	0x00	0x00	-	Reg 0x03	03	0000 0000: Activating ADC
+    ES8388_WriteReg(ES8388_ADCPOWER,0xFF); 
     ES8388_WriteReg(ES8388_DACPOWER,60); 	    // 0x30	0x3C	0x3C	-	Reg 0x04	04	0011 1100: Activating DAC
     ES8388_WriteReg(ES8388_MASTERMODE,0);       // 0x00	0x00	0x00	-	Reg 0x08	08	0000 0000: slave serial port mode 
 
     // ADC CONFIG
     ES8388_WriteReg(ES8388_ADCCONTROL1,136);    // 0xBB	0x88	0x88 	-	Reg 0x09	09	1000 1000: mic preamps gains
+    ES8388_WriteReg(ES8388_ADCCONTROL1,0);    // 0xBB	0x88	0x88 	-	Reg 0x09	09	1000 1000: mic preamps gains
     ES8388_WriteReg(ES8388_ADCCONTROL4,12); 	// 0x0C	0x0C	0x0C 	-	Reg 0x0C	12	0000 1100: settings i2s config (16 bits)
     ES8388_WriteReg(ES8388_ADCCONTROL5,2); 	    // 0x02	0x02	0x02	-	Reg 0x0D	13	0000 0010: ADC MCLK at 256 fo ADC
     ES8388_WriteReg(ES8388_ADCCONTROL8,0); 	    // 0x00	0x00	-	        Reg 0x10	16	0000 0000: Digital volume control attenuates the signal in 0.5 dB incremental at 0dB for ADC L
@@ -385,8 +387,10 @@ void ES8388_rawSetup(uint8_t sda,uint8_t scl)
     // Set input2 to output
     // Input line IN2 0101 0000 = 0x50
     ES8388_WriteReg(ES8388_ADCCONTROL2,0x50); 
-    // Output Mix 0000 1001
+    // Output Mix 0000 1001 L adn R IN2
     ES8388_WriteReg(ES8388_DACCONTROL16,0x09);
+    // Output Mix 0000 0000 L adn R IN1
+    ES8388_WriteReg(ES8388_DACCONTROL16,0x00);    // Mute input 
 
     REG_WRITE(PIN_CTRL, 0xFFFFFFF0);
     PIN_FUNC_SELECT(PERIPHS_IO_MUX_GPIO0_U, FUNC_GPIO0_CLK_OUT1);
