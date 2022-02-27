@@ -306,6 +306,13 @@ int val;
             val = *Tab_Encoder[s][e].Data;
             if(Tab_Encoder[s][e].Type==TYPE_LIST)
             {
+                
+                //if(val==MAXPOT)
+                //    val=MAXPOT-1;
+                /*                    
+                float value = val * NORM127MUL;
+                Tab_Encoder[s][e].Index= (value) * (Tab_Encoder[s][e].Step);                
+                */
             }
             else
             {

@@ -15,7 +15,7 @@
 #include "ArpSeq.h"
 #include "Distortion.h"
 
-uint8_t serialdebug=0;
+uint8_t serialdebug=1;
 extern uint8_t Midi_KeyOn;
 //--------------------------------------------------
 // OSC
@@ -1030,10 +1030,13 @@ float value;
 /***************************************************/
 int Fct_Ch_Decimator(int val)
 {
-float value;    
+uint8_t range;
+float factor;   
+
+    Decimator = val;
 
     if(serialdebug)       
-        Serial.printf("Decimator : %d\n",WS.Decimator);
+        Serial.printf("Decimator : %d\n",Decimator);
     return(0);
 
 }
@@ -1045,12 +1048,8 @@ float value;
 /***************************************************/
 int Fct_Ch_WDDecimator(int val)
 {
-float value;    
-
-    value = val * 0.01;
-    wetdrydec= value;
     if(serialdebug)       
-        Serial.printf("Decimator WD: %d %f\n",WS.WDDecimator,wetdrydec);
+        Serial.printf("Decimator WD: %d\n",WS.WDDecimator);
     return(0);
 }
 /***************************************************/
