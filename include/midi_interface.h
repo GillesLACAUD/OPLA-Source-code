@@ -101,13 +101,13 @@
 #define MIDI_CC_DEL_LEVEL       51
 #define MIDI_CC_DEL_FEEDBACK    52
 #define MIDI_CC_DEL_PP          53      // Ping pong
+#define MIDI_CC_DIST            54      // DISTORSTION
 
 #define MIDI_CC_REVERB_LEVEL    55
 #define MIDI_CC_REVERB_PAN      56
-#define MIDI_CC_57              57
-#define MIDI_CC_58              58
-#define MIDI_CC_59              59
-
+#define MIDI_CC_DECIMATOR       57      // Decimator
+#define MIDI_CC_WDDECIM         58      // Wet dry decimator
+#define MIDI_CC_PANDECIM        59      // Pan decimator
 
 #define MIDI_CC_SOUND_MODE      60
 #define MIDI_CC_PB_RANGE        61
