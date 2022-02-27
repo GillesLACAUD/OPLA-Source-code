@@ -93,8 +93,17 @@ struct WorkSound
     int16_t ArpGate;
     int16_t ArpSwing;
 
-    int16_t Reserved[40-7];
-      
+    // Add 19.02.22
+    int16_t Decimator;
+    int16_t WDDecimator;
+    int16_t PanDecimator;
+
+    int16_t SoundVersion;       // To detect the different sound file version (i.e more lfo dest for version >0)
+
+    // Add 21.02.22
+    int16_t Distortion;
+
+    int16_t Reserved[30-2];
 };
 
 
