@@ -696,7 +696,9 @@ static uint8_t onetime;
             }
         }
         else
+        {
             Distortion(&fl_sample, &fr_sample);
+        }
             
         if(WS.ReverbLevel !=0)
         {
