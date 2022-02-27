@@ -1022,6 +1022,64 @@ float value;
     return(0);
 }
 
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+int Fct_Ch_Decimator(int val)
+{
+float value;    
+
+    if(serialdebug)       
+        Serial.printf("Decimator : %d\n",WS.Decimator);
+    return(0);
+
+}
+
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+int Fct_Ch_WDDecimator(int val)
+{
+float value;    
+
+    value = val * 0.01;
+    wetdrydec= value;
+    if(serialdebug)       
+        Serial.printf("Decimator WD: %d %f\n",WS.WDDecimator,wetdrydec);
+    return(0);
+}
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+int Fct_Ch_PanDecimator(int val)
+{
+    return(0);
+}
+
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+int Fct_Ch_Distortion(int val)
+{
+    /*
+    float dis;
+
+    dis = (float)WS.Distortion;
+    if(serialdebug)       
+        Serial.printf("Distortion %d %f\n",WS.Distortion,dis);
+    */
+    return(0);
+}
+
+
 
 /***************************************************/
 /*                                                 */
