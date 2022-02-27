@@ -24,6 +24,7 @@ IHM_EXTRN   int8_t  SoundNameInc10;
 IHM_EXTRN   char TabListNull[0][0];
 IHM_EXTRN   int16_t IntNull;
 IHM_EXTRN   int16_t IntCalib;
+IHM_EXTRN   int16_t IntAudioIn;
 #ifdef __IHM__
 int FctNull(int val)
 {
@@ -155,6 +156,7 @@ int Fct_Ch_AmpTrig(int val);
 int Fct_Ch_PitchTrig(int val);
 
 int Fct_Ch_Calib(int val);
+int Fct_Ch_AudioIn(int val);
 
 int Fct_Ch_ArpOnOff(int val);
 int Fct_Ch_ArpHold(int val); 
@@ -307,8 +309,8 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
     "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0, &IntNull,         1,  0,      127,1,                      FctNull,             
     "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0, &IntNull,         1,  0,      127,1,                      FctNull,             
     "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0, &IntNull,         1,  0,      127,1,                      FctNull,             
-    "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0, &IntNull,         1,  0,      127,1,                      FctNull,             
-    "CAL",  "SCREEN CAL",   MIDI_CC_CAL,           TYPE_LIST,  &YesNo[0][0],       0, &IntCalib,        1,  0,      127,2,                      Fct_Ch_Calib,        
+    "AIN",  "AUDION IN",    MIDI_CC_AIN,           TYPE_LIST,  &YesNo[0][0],       0, &IntCalib,        1,  0,      127,2,                      Fct_Ch_AudioIn,        
+    "CAL",  "SCREEN CAL",   MIDI_CC_CAL,           TYPE_LIST,  &YesNo[0][0],       0, &IntAudioIn,        1,  0,      127,2,                      Fct_Ch_Calib,        
 };
 #else
 IHM_EXTRN char Tab_Section_Name[MAX_SECTION][20];

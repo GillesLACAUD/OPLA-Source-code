@@ -14,6 +14,7 @@
 #include "SDCard.h"
 #include "ArpSeq.h"
 #include "Distortion.h"
+#include "ES8388.h"
 
 uint8_t serialdebug=1;
 extern uint8_t Midi_KeyOn;
@@ -1376,6 +1377,38 @@ int Fct_Ch_Calib(int val)
     {
         Nextion_Send("touch_j");
     }
+    return(0);
+}
+
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+int Fct_Ch_AudioIn(int val)
+{
+static uint8_t aud=0;
+
+    if(val>64)
+    {
+        if(!aud)
+        {
+            ES8388_WriteReg(ES8388_DACCONTROL16,0x09);
+            aud=1;
+        }
+    }
+    else
+    {
+        if(aud)
+        {
+            ES8388_WriteReg(ES8388_DACCONTROL16,0x00); 
+            aud=0;
+        }
+    }
+    if(serialdebug)       
+        Serial.printf("AUDIO IN: %d\n",aud);    
+
+    //SDCard_SaveMidiRx();
     return(0);
 }
 

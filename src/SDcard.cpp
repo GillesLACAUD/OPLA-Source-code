@@ -396,6 +396,9 @@ void SDCard_SaveMidiRx()
     wr=file.write((uint8_t*)&MidiRelCC,1);
     wr=file.write((uint8_t*)&MidiRelMin,1);        
     wr=file.write((uint8_t*)&MidiRelMax,1);
+
+    //wr=file.write((uint8_t*)&IntAudioIn,1);
+
     Serial.printf("Save file midirx.cfg\n");
     file.close();   
 }
@@ -417,6 +420,10 @@ void SDCard_LoadMidiRx()
     rd=file.read((uint8_t*)&MidiRelCC,1);
     rd=file.read((uint8_t*)&MidiRelMin,1);        
     rd=file.read((uint8_t*)&MidiRelMax,1);
+
+    //rd=file.read((uint8_t*)&IntAudioIn,1);
+    
+
     Serial.printf("Load file midirx.cfg\n");
 
     float temp;
