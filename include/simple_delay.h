@@ -41,7 +41,7 @@ DELAY_EXTRN float DelayAmtMod;
 
 DELAY_EXTRN void Delay_Init();
 DELAY_EXTRN void Delay_Reset();
-DELAY_EXTRN void Delay_Process(float *signal_l, float *signal_r);
+DELAY_EXTRN void IRAM_ATTR Delay_Process(float *signal_l, float *signal_r);
 DELAY_EXTRN void Delay_SetFeedback(float value);
 DELAY_EXTRN void Delay_SetLevel(float value);
 DELAY_EXTRN void Delay_SetLength(float value);

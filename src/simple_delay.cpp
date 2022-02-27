@@ -48,7 +48,7 @@ void Delay_Reset(void)
     Serial.printf("Delay Reset Done\n");
 }
 
-void Delay_Process(float *signal_l, float *signal_r)
+void IRAM_ATTR Delay_Process(float *signal_l, float *signal_r)
 {
 
     delayLine_l[delayIn] = *signal_l;

@@ -68,4 +68,4 @@ extern float *selectedWaveLfo1;
 extern float *selectedWaveLfo2;
 #endif
 
-LFO_EXTRN void Lfo_Process(stLfo* prlfo);
+LFO_EXTRN void IRAM_ATTR Lfo_Process(stLfo* prlfo);

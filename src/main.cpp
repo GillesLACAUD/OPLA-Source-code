@@ -688,13 +688,13 @@ static uint8_t onetime;
     if(i2s_write_sample_16ch2(sampleData32.sample32))
     {
         Synth_Process(&fl_sample, &fr_sample);
-        
+        //Distortion(&fl_sample, &fr_sample);
         if(SoundMode!=SND_MODE_POLY)
         {
-            if(WS.DelayAmount !=0)
-            {
-                Delay_Process(&fl_sample, &fr_sample);
-            }
+            if(WS.DelayAmount==0)
+               Distortion(&fl_sample, &fr_sample);
+            else
+               Delay_Process(&fl_sample, &fr_sample);
         }
         else
         {

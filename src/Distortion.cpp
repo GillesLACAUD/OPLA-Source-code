@@ -12,7 +12,7 @@
 /*                                                 */
 /*                                                 */
 /***************************************************/
-void Distortion(float* sol,float* sor)
+void IRAM_ATTR Distortion(float* sol,float* sor)
 {
 int32_t l1,r1;          // Wet signal
 int32_t dl,dr;          // Disto

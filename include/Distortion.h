@@ -9,4 +9,4 @@
 
 DISTO_EXTRN uint8_t Decimator;
 
-DISTO_EXTRN void Distortion(float* sol,float* sor);
+DISTO_EXTRN void IRAM_ATTR Distortion(float* sol,float* sor);

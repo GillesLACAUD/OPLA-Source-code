@@ -13,7 +13,7 @@
 /*                                                 */
 /*                                                 */
 /***************************************************/
-void Lfo_Process(stLfo* prlfo)
+void IRAM_ATTR Lfo_Process(stLfo* prlfo)
 {
 float lfoamt=0;    
 uint16_t freq=9999;    
