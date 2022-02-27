@@ -170,6 +170,12 @@ int Fct_Ch_MidiRelCC(int val);
 int Fct_Ch_MidiRelMin(int val);
 int Fct_Ch_MidiRelMax(int val);
 
+int Fct_Ch_PanDecimator(int val);
+int Fct_Ch_Decimator(int val);
+int Fct_Ch_WDDecimator(int val);
+
+int Fct_Ch_Distortion(int val);
+
 
 // To change the max for the AKWF selection -> Tab_Encoder[SECTION_BANK_MAX][POT_BANK_MAX]
 #define SECTION_BANK_MAX    1
@@ -253,13 +259,13 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
     "AMT",  "DELAY AMOUNT", MIDI_CC_DEL_LEVEL,     TYPE_DATA,  &TabListNull[0][0], 0, &WS.DelayAmount,  1,  0,      127,1,                    Fct_Ch_DlAmount,      
     "FEE",  "DELAY FEEBACK",MIDI_CC_DEL_FEEDBACK,  TYPE_DATA,  &TabListNull[0][0], 0, &WS.DelayFeedback,1,  0,      127,1,                    Fct_Ch_DlFeed,        
     "PAN",  "DELAY PAN",    MIDI_CC_DEL_PP,        TYPE_DATA,  &TabListNull[0][0], 0, &WS.DelayPP,      1,  0,      127,1,                    Fct_Ch_DlPP,          
-    "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0, &IntNull,         1,  0,      127,1,                    FctNull,              
+    "DIS",  "DISTORSION",   MIDI_CC_DIST,          TYPE_DATA,  &TabListNull[0][0], 0, &WS.Distortion,   1,  1,      127,1,                    Fct_Ch_Distortion,              
 
     "REV",  "REVERB LEVEL", MIDI_CC_REVERB_LEVEL,  TYPE_DATA,  &TabListNull[0][0], 0, &WS.ReverbLevel,  1,  0,      127,1,                    Fct_Ch_Reverb,        
     "PAN",  "REVERB PAN",   MIDI_CC_REVERB_PAN,    TYPE_DATA,  &TabListNull[0][0], 0, &WS.ReverbPan,    1,  0,      127,1,                    Fct_Ch_RevPan,        
-    "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0, &IntNull,         1,  0,      127,1,                    FctNull,              
-    "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0, &IntNull,         1,  0,      127,1,                    FctNull,              
-    "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0, &IntNull,         1,  0,      127,1,                    FctNull,              
+    "DEC",  "DECIMATOR",    MIDI_CC_DECIMATOR,     TYPE_DATA,  &TabListNull[0][0], 0, &WS.Decimator,    1,  1,      12,1,                     Fct_Ch_Decimator,     
+    "WDR",  "WET-DRY DEC",  MIDI_CC_WDDECIM,       TYPE_DATA,  &TabListNull[0][0], 0, &WS.WDDecimator,  1,  0,      100,1,                    Fct_Ch_WDDecimator,              
+    "PAN",  "PAN DEC",      MIDI_CC_PANDECIM,      TYPE_DATA,  &TabListNull[0][0], 0, &WS.PanDecimator, 1,  0,      127,1,                    Fct_Ch_PanDecimator,              
     
   // SECTION ARPEGIATOR   
 
