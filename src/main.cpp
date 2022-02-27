@@ -522,11 +522,16 @@ char AffVersion[30]="V15 130222";
     SDCard_LoadLastSound();
     SDCard_LoadMidiRx();
 
+    if(IntAudioIn>64)
+        ES8388_WriteReg(ES8388_DACCONTROL16,0x09);
+
+
     Serial.printf("Midi Rx is      %d\n",MidiRx);
     Serial.printf("Midi Mode is    %d\n",MidiMode);
     Serial.printf("Midi Rel CC is  %d\n",MidiRelCC);
     Serial.printf("Midi Rel Min is %d\n",MidiRelMin);
     Serial.printf("Midi Rel Max is %d\n",MidiRelMax);
+    Serial.printf("Audio In is     %d\n",IntAudioIn);
 
     SDCard_LoadBackDelay();
     Serial.printf("BackDelay is %d\n",BackDelay);
@@ -685,29 +690,33 @@ static uint8_t onetime;
     sampleData32.sample[0] = (int16_t)(fl_sample*32768.0f);
     sampleData32.sample[1] = (int16_t)(fr_sample*32768.0f);
     */
-    if(i2s_write_sample_16ch2(sampleData32.sample32))
+    if(!StopAudioOut)
     {
-        Synth_Process(&fl_sample, &fr_sample);
-        //Distortion(&fl_sample, &fr_sample);
-        if(SoundMode!=SND_MODE_POLY)
+        if(i2s_write_sample_16ch2(sampleData32.sample32))
         {
-            if(WS.DelayAmount==0)
-               Distortion(&fl_sample, &fr_sample);
+            Synth_Process(&fl_sample, &fr_sample);
+            //Distortion(&fl_sample, &fr_sample);
+            if(SoundMode!=SND_MODE_POLY)
+            {
+                if(WS.DelayAmount==0)
+                Distortion(&fl_sample, &fr_sample);
+                else
+                Delay_Process(&fl_sample, &fr_sample);
+            }
             else
-               Delay_Process(&fl_sample, &fr_sample);
+            {
+                Distortion(&fl_sample, &fr_sample);
+            }
+                
+            if(WS.ReverbLevel !=0)
+            {
+                Reverb_Process( &fl_sample, &fr_sample, SAMPLE_BUFFER_SIZE );       
+            }
+            sampleData32.sample[0] = (int16_t)(fl_sample*32768.0f);
+            sampleData32.sample[1] = (int16_t)(fr_sample*32768.0f);
         }
-        else
-        {
-            Distortion(&fl_sample, &fr_sample);
-        }
-            
-        if(WS.ReverbLevel !=0)
-        {
-            Reverb_Process( &fl_sample, &fr_sample, SAMPLE_BUFFER_SIZE );       
-        }
-        sampleData32.sample[0] = (int16_t)(fl_sample*32768.0f);
-        sampleData32.sample[1] = (int16_t)(fr_sample*32768.0f);
     }
+
 
 
 

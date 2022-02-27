@@ -1388,12 +1388,16 @@ int Fct_Ch_Calib(int val)
 int Fct_Ch_AudioIn(int val)
 {
 static uint8_t aud=0;
+uint8_t valr=0xDE;
 
+    StopAudioOut=1;
+    IntAudioIn=val;
     if(val>64)
     {
         if(!aud)
         {
             ES8388_WriteReg(ES8388_DACCONTROL16,0x09);
+            SDCard_SaveMidiRx();
             aud=1;
         }
     }
@@ -1401,14 +1405,15 @@ static uint8_t aud=0;
     {
         if(aud)
         {
-            ES8388_WriteReg(ES8388_DACCONTROL16,0x00); 
+            ES8388_WriteReg(ES8388_DACCONTROL16,0x00);
+            SDCard_SaveMidiRx();
             aud=0;
         }
     }
+    StopAudioOut=0;
     if(serialdebug)       
-        Serial.printf("AUDIO IN: %d\n",aud);    
+        Serial.printf("AUDIO IN: %d\n",IntAudioIn);    
 
-    //SDCard_SaveMidiRx();
     return(0);
 }
 

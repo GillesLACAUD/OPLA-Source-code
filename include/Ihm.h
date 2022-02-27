@@ -25,6 +25,7 @@ IHM_EXTRN   char TabListNull[0][0];
 IHM_EXTRN   int16_t IntNull;
 IHM_EXTRN   int16_t IntCalib;
 IHM_EXTRN   int16_t IntAudioIn;
+IHM_EXTRN   int16_t StopAudioOut;
 #ifdef __IHM__
 int FctNull(int val)
 {
@@ -309,8 +310,8 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
     "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0, &IntNull,         1,  0,      127,1,                      FctNull,             
     "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0, &IntNull,         1,  0,      127,1,                      FctNull,             
     "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0, &IntNull,         1,  0,      127,1,                      FctNull,             
-    "AIN",  "AUDION IN",    MIDI_CC_AIN,           TYPE_LIST,  &YesNo[0][0],       0, &IntCalib,        1,  0,      127,2,                      Fct_Ch_AudioIn,        
-    "CAL",  "SCREEN CAL",   MIDI_CC_CAL,           TYPE_LIST,  &YesNo[0][0],       0, &IntAudioIn,        1,  0,      127,2,                      Fct_Ch_Calib,        
+    "AIN",  "AUDIO IN",     MIDI_CC_AIN,           TYPE_LIST,  &YesNo[0][0],       0, &IntCalib,        1,  0,      127,2,                      Fct_Ch_AudioIn,        
+    "CAL",  "SCREEN CAL",   MIDI_CC_CAL,           TYPE_LIST,  &YesNo[0][0],       0, &IntAudioIn,      1,  0,      127,2,                      Fct_Ch_Calib,        
 };
 #else
 IHM_EXTRN char Tab_Section_Name[MAX_SECTION][20];
