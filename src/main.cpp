@@ -40,6 +40,7 @@
 #include "Reverb.h"
 #include "Ihm.h"
 #include "ArpSeq.h"
+#include "Distortion.h"
 
 #define __CODEC__
 #include "Codec.h"

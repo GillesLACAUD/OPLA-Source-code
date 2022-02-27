@@ -13,6 +13,7 @@
 #include "Nextion.h"
 #include "SDCard.h"
 #include "ArpSeq.h"
+#include "Distortion.h"
 
 uint8_t serialdebug=0;
 extern uint8_t Midi_KeyOn;

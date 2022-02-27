@@ -308,7 +308,7 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
     "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0, &IntNull,         1,  0,      127,1,                      FctNull,             
     "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0, &IntNull,         1,  0,      127,1,                      FctNull,             
     "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0, &IntNull,         1,  0,      127,1,                      FctNull,             
-    "CAL",  "SCREEN CAL",   MIDI_CC_59,            TYPE_LIST,  &YesNo[0][0],       0, &IntCalib,        1,  0,      127,2,                      Fct_Ch_Calib,        
+    "CAL",  "SCREEN CAL",   MIDI_CC_CAL,           TYPE_LIST,  &YesNo[0][0],       0, &IntCalib,        1,  0,      127,2,                      Fct_Ch_Calib,        
 };
 #else
 IHM_EXTRN char Tab_Section_Name[MAX_SECTION][20];
