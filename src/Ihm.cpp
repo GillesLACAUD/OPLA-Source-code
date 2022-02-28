@@ -121,6 +121,7 @@ float value;
 /***************************************************/
 int Fct_Ch_Bank(int val) 
 {
+    gui_WaveBank = val;
     if(selWaveForm1!=WAVE_AKWF)
         return(0);
   
@@ -137,32 +138,33 @@ int Fct_Ch_Bank(int val)
     // No plot screen when load sound
     if(!IsLoadSound)
     {
-        sprintf(messnex,"page3.BK.txt=%c%03d%c",0x22,WS.OscBank,0x22);
+        sprintf(messnex,"page3.BK.txt=%c%03d%c",0x22,gui_WaveBank,0x22);
         Nextion_Send(messnex);
     }
    
-    sprintf(messnex,"page3.BKNAME.txt=%c%s%c",0x22,SampleDIR[WS.OscBank].name,0x22);
+    sprintf(messnex,"page3.BKNAME.txt=%c%s%c",0x22,SampleDIR[gui_WaveBank].name,0x22);
     Nextion_Send(messnex);      
-    Tab_Encoder[SECTION_BANK_MAX][POT_BANK_MAX].MaxData=SampleDIR[WS.OscBank].nbr-1;  // Chg the max for the MIDI CC  
+    Tab_Encoder[SECTION_BANK_MAX][POT_BANK_MAX].MaxData=SampleDIR[gui_WaveBank].nbr-1;  // Chg the max for the MIDI CC  
 
-
-
-    sprintf(messnex,"page3.WAPOT.maxval=%d",SampleDIR[WS.OscBank].nbr-1);
+    sprintf(messnex,"page3.WAPOT.maxval=%d",SampleDIR[gui_WaveBank].nbr-1);
     Nextion_Send(messnex);
 
     if(!IsLoadSound)
+    {
         WS.AKWFWave=0;
+        gui_WaveNumber=0;
+    }
 
-    sprintf(messnex,"page3.WAPOT.val=%d",WS.AKWFWave);
+    sprintf(messnex,"page3.WAPOT.val=%d",gui_WaveNumber);
     Nextion_Send(messnex);
-    sprintf(messnex,"page3.WA.txt=%c%03d%c",0x22,WS.AKWFWave,0x22);
+    sprintf(messnex,"page3.WA.txt=%c%03d%c",0x22,gui_WaveNumber,0x22);
     Nextion_Send(messnex);
 
-    sprintf(messnex,"page3.BKPOT.val=%d",WS.OscBank);
+    sprintf(messnex,"page3.BKPOT.val=%d",gui_WaveBank);
     Nextion_Send(messnex);
 
     if(serialdebug)
-        Serial.printf("BANK: %d Max %d MIDI CC %d\n", WS.OscBank,Tab_Encoder[2][6].MaxData,Tab_Encoder[2][6].MidiCC);
+        Serial.printf("BANK: %d Max %d MIDI CC %d\n", gui_WaveBank,Tab_Encoder[2][6].MaxData,Tab_Encoder[2][6].MidiCC);
 
     return(0);
 }
@@ -174,6 +176,7 @@ int Fct_Ch_Bank(int val)
 /***************************************************/
 int Fct_Ch_Wave(int val) 
 {
+    gui_WaveNumber=val;
     if(selWaveForm1!=WAVE_AKWF)
         return(0);
     if(!trigloadwave)
@@ -193,11 +196,11 @@ int Fct_Ch_Wave(int val)
         
     //}
     if(serialdebug)
-        Serial.printf("WAVE: %d\n", WS.AKWFWave);
+        Serial.printf("WAVE: %d\n",gui_WaveNumber);
 
-    sprintf(messnex,"page3.WAPOT.val=%d",WS.AKWFWave);
+    sprintf(messnex,"page3.WAPOT.val=%d",gui_WaveNumber);
     Nextion_Send(messnex);
-    sprintf(messnex,"page3.WA.txt=%c%03d%c",0x22,WS.AKWFWave,0x22);
+    sprintf(messnex,"page3.WA.txt=%c%03d%c",0x22,gui_WaveNumber,0x22);
     Nextion_Send(messnex);
 
     return(0);

@@ -26,6 +26,10 @@ IHM_EXTRN   int16_t IntNull;
 IHM_EXTRN   int16_t IntCalib;
 IHM_EXTRN   int16_t IntAudioIn;
 IHM_EXTRN   int16_t StopAudioOut;
+
+IHM_EXTRN   uint8_t gui_WaveBank;
+IHM_EXTRN   uint8_t gui_WaveNumber;
+
 #ifdef __IHM__
 int FctNull(int val)
 {

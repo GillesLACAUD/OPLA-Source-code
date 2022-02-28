@@ -233,7 +233,7 @@ void setup()
  {
      
 char AffCodec[15]="Not Define";
-char AffVersion[30]="V15 130222";
+char AffVersion[30]="V15 xxxxxx";
                     
 
 
@@ -730,7 +730,7 @@ static uint8_t onetime;
         if(trigloadwave && Cptloadwave > LOADWAVE_MAX_OVER_TIME)
         {
             trigloadwave=false;
-            SDCard_LoadWave(WS.OscBank+1,WS.AKWFWave+1);
+            SDCard_LoadWave(gui_WaveBank+1,gui_WaveNumber+1);
             Nextion_Plot();
             Fct_Ch_WS1(WS.WaveShapping1);
         }

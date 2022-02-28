@@ -400,7 +400,7 @@ static uint8_t incdecval=0;
         }
         if(data1==0x26)                          // Value LSB
         {
-            newval = data2;
+            newval =Synth_SetRotary(RelCC,data2);
             BoolNewVal=1;
         }
         if(data1==0x60)                          // Inc Value

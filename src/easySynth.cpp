@@ -1502,10 +1502,10 @@ float factor;
     else
     {
     
-        range = Tab_Encoder[s][e].MaxData-Tab_Encoder[s][e].MinData;
-        factor = (float)range/127;
-        val = Tab_Encoder[s][e].MinData + (int)((float)val*factor);
-        //Serial.printf("New2 %d\n",val);
+        range = Tab_Encoder[s][e].MaxData-Tab_Encoder[s][e].MinData;    
+        factor = (float)range/127;                                      
+        val = Tab_Encoder[s][e].MinData + (int)((float)val*factor);     
+        Serial.printf("New2 %d\n",val);
     }
     Tab_Encoder[s][e].ptrfunctValueChange(val);
     return(val);

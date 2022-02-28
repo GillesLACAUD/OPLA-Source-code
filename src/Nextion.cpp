@@ -232,6 +232,8 @@ int16_t newval=0;
         {
             tmp = (*Tab_Encoder[gui_Section][l].Data)*Tab_Encoder[gui_Section][l].Step*NORM127MUL;
             Tab_Encoder[gui_Section][l].Index = tmp;
+            if(Tab_Encoder[gui_Section][l].Index>=Tab_Encoder[gui_Section][l].Step)
+                Tab_Encoder[gui_Section][l].Index=Tab_Encoder[gui_Section][l].Step-1;
             sprintf(msec,"%s",Tab_Encoder[gui_Section][l].ptTabList+MAX_LABEL*Tab_Encoder[gui_Section][l].Index);
             Nextion_PotTxt(l,msec);
         }
@@ -311,6 +313,17 @@ struct oscillatorT *osc;
 /*                                                 */
 /*                                                 */
 /***************************************************/
+void Nextion_UpdateBank()
+{
+
+}
+
+
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
 void Nextion_Parse()
 {
 int val;
@@ -374,17 +387,17 @@ uint8_t cc;
         case 0x44:
          if(selWaveForm1 == WAVE_AKWF)
         {
-            sprintf(messnex,"page3.BK.txt=%c%03d%c",0x22,WS.OscBank,0x22);
+            sprintf(messnex,"page3.BK.txt=%c%03d%c",0x22,gui_WaveBank,0x22);
             Nextion_Send(messnex);
-            sprintf(messnex,"page3.WA.txt=%c%03d%c",0x22,WS.AKWFWave,0x22);
-            Nextion_Send(messnex);
-
-            sprintf(messnex,"page3.BKPOT.val=%d",WS.OscBank);
-            Nextion_Send(messnex);
-            sprintf(messnex,"page3.WAPOT.val=%d",WS.AKWFWave);
+            sprintf(messnex,"page3.WA.txt=%c%03d%c",0x22,gui_WaveNumber,0x22);
             Nextion_Send(messnex);
 
-            sprintf(messnex,"page3.BKNAME.txt=%c%s%c",0x22,SampleDIR[WS.OscBank].name,0x22);
+            sprintf(messnex,"page3.BKPOT.val=%d",gui_WaveBank);
+            Nextion_Send(messnex);
+            sprintf(messnex,"page3.WAPOT.val=%d",gui_WaveNumber);
+            Nextion_Send(messnex);
+
+            sprintf(messnex,"page3.BKNAME.txt=%c%s%c",0x22,SampleDIR[gui_WaveBank].name,0x22);
             Nextion_Send(messnex);
            
 
@@ -408,37 +421,45 @@ uint8_t cc;
         overon = true;
         if(Nextion_Mess[2]==0  || Nextion_Mess[2]==2)      // Bank
         {
-            WS.OscBank = Nextion_Mess[3];
-            sprintf(messnex,"page3.BK.txt=%c%03d%c",0x22,WS.OscBank,0x22);
+            gui_WaveBank = Nextion_Mess[3];
+            sprintf(messnex,"page3.BK.txt=%c%03d%c",0x22,gui_WaveBank,0x22);
             Nextion_Send(messnex);
 
-            sprintf(messnex,"page3.BKNAME.txt=%c%s%c",0x22,SampleDIR[WS.OscBank].name,0x22);
+            sprintf(messnex,"page3.BKNAME.txt=%c%s%c",0x22,SampleDIR[gui_WaveBank].name,0x22);
             Nextion_Send(messnex);
-            sprintf(messnex,"page3.WAPOT.maxval=%d",SampleDIR[WS.OscBank].nbr-1);
+            sprintf(messnex,"page3.WAPOT.maxval=%d",SampleDIR[gui_WaveBank].nbr-1);
             Nextion_Send(messnex);
 
-            Tab_Encoder[1][6].MaxData=SampleDIR[WS.OscBank].nbr-1;  // Chg the max for the MIDI CC
+            Tab_Encoder[1][6].MaxData=SampleDIR[gui_WaveBank].nbr-1;  // Chg the max for the MIDI CC
 
-            sprintf(messnex,"page3.BKPOT.val=%d",WS.OscBank);
+            sprintf(messnex,"page3.BKPOT.val=%d",gui_WaveBank);
             Nextion_Send(messnex);
             WS.AKWFWave=0;
-            sprintf(messnex,"page3.WAPOT.val=%d",WS.AKWFWave);
+            gui_WaveNumber=0;
+            sprintf(messnex,"page3.WAPOT.val=%d",gui_WaveNumber);
             Nextion_Send(messnex);
-            sprintf(messnex,"page3.WA.txt=%c%03d%c",0x22,WS.AKWFWave,0x22);
+            sprintf(messnex,"page3.WA.txt=%c%03d%c",0x22,gui_WaveNumber,0x22);
             Nextion_Send(messnex);
         }
         if(Nextion_Mess[2]==1  || Nextion_Mess[2]==3)      // Wave
         {
-            WS.AKWFWave = Nextion_Mess[3];
-            sprintf(messnex,"page3.WA.txt=%c%03d%c",0x22,WS.AKWFWave,0x22);
+            gui_WaveNumber = Nextion_Mess[3];
+            sprintf(messnex,"page3.WA.txt=%c%03d%c",0x22,gui_WaveNumber,0x22);
             Nextion_Send(messnex);
         }
         // Draw the wave on the release
         if(Nextion_Mess[2]==0 || Nextion_Mess[2]==1)
         {
-            SDCard_LoadWave(WS.OscBank+1,WS.AKWFWave+1);
+            SDCard_LoadWave(gui_WaveBank+1,gui_WaveNumber+1);
             Nextion_Plot();
         }
+        // Write again to fix a bug
+        sprintf(messnex,"page3.BKNAME.txt=%c%s%c",0x22,SampleDIR[gui_WaveBank].name,0x22);
+        Nextion_Send(messnex);
+        sprintf(messnex,"page3.BK.txt=%c%03d%c",0x22,gui_WaveBank,0x22);
+        Nextion_Send(messnex);
+        sprintf(messnex,"page3.WA.txt=%c%03d%c",0x22,gui_WaveNumber,0x22);
+        Nextion_Send(messnex);        
         break;
 
         // X Select Sound
@@ -470,69 +491,82 @@ uint8_t cc;
         // Bank dec
         if(Nextion_Mess[2]==0)
         {
-            if(WS.OscBank>0)
-                WS.OscBank--;
-            sprintf(messnex,"page3.BK.txt=%c%03d%c",0x22,WS.OscBank,0x22);
+            if(gui_WaveBank>0)
+                gui_WaveBank--;
+            sprintf(messnex,"page3.BKNAME.txt=%c%s%c",0x22,SampleDIR[gui_WaveBank].name,0x22);
             Nextion_Send(messnex);
-
-            sprintf(messnex,"page3.BKNAME.txt=%c%s%c",0x22,SampleDIR[WS.OscBank].name,0x22);
+            sprintf(messnex,"page3.BK.txt=%c%03d%c",0x22,gui_WaveBank,0x22);
             Nextion_Send(messnex);
-            sprintf(messnex,"page3.WAPOT.maxval=%d",SampleDIR[WS.OscBank].nbr-1);
+            sprintf(messnex,"page3.WAPOT.maxval=%d",SampleDIR[gui_WaveBank].nbr-1);
             Nextion_Send(messnex);
-            Tab_Encoder[1][6].MaxData=SampleDIR[WS.OscBank].nbr-1;  // Chg the max for the MIDI CC
-            sprintf(messnex,"page3.BKPOT.val=%d",WS.OscBank);
+            Tab_Encoder[1][6].MaxData=SampleDIR[gui_WaveBank].nbr-1;  // Chg the max for the MIDI CC
+            sprintf(messnex,"page3.BKPOT.val=%d",gui_WaveBank);
             Nextion_Send(messnex);
             WS.AKWFWave=0;
-            sprintf(messnex,"page3.WAPOT.val=%d",WS.AKWFWave);
+            gui_WaveNumber=0;
+            sprintf(messnex,"page3.WAPOT.val=%d",gui_WaveNumber);
             Nextion_Send(messnex);
-            sprintf(messnex,"page3.WA.txt=%c%03d%c",0x22,WS.AKWFWave,0x22);
+            sprintf(messnex,"page3.WA.txt=%c%03d%c",0x22,gui_WaveNumber,0x22);
             Nextion_Send(messnex);
         }
         // Bank inc
         if(Nextion_Mess[2]==1)
         {
-            if(WS.OscBank<AKWFMAX_BANK-1)
-                WS.OscBank++;
-            sprintf(messnex,"page3.BK.txt=%c%03d%c",0x22,WS.OscBank,0x22);
+            if(gui_WaveBank<AKWFMAX_BANK-1)
+                gui_WaveBank++;
+            sprintf(messnex,"page3.BKNAME.txt=%c%s%c",0x22,SampleDIR[gui_WaveBank].name,0x22);
             Nextion_Send(messnex);
-
-            sprintf(messnex,"page3.BKNAME.txt=%c%s%c",0x22,SampleDIR[WS.OscBank].name,0x22);
+            sprintf(messnex,"page3.BK.txt=%c%03d%c",0x22,gui_WaveBank,0x22);
             Nextion_Send(messnex);
-            sprintf(messnex,"page3.WAPOT.maxval=%d",SampleDIR[WS.OscBank].nbr-1);
+            sprintf(messnex,"page3.WAPOT.maxval=%d",SampleDIR[gui_WaveBank].nbr-1);
             Nextion_Send(messnex);
-            Tab_Encoder[1][6].MaxData=SampleDIR[WS.OscBank].nbr-1;  // Chg the max for the MIDI CC
-            sprintf(messnex,"page3.BKPOT.val=%d",WS.OscBank);
+            Tab_Encoder[1][6].MaxData=SampleDIR[gui_WaveBank].nbr-1;  // Chg the max for the MIDI CC
+            sprintf(messnex,"page3.BKPOT.val=%d",gui_WaveBank);
             Nextion_Send(messnex);
             WS.AKWFWave=0;
-            sprintf(messnex,"page3.WAPOT.val=%d",WS.AKWFWave);
+            gui_WaveNumber=0;
+            sprintf(messnex,"page3.WAPOT.val=%d",gui_WaveNumber);
             Nextion_Send(messnex);
-            sprintf(messnex,"page3.WA.txt=%c%03d%c",0x22,WS.AKWFWave,0x22);
+            sprintf(messnex,"page3.WA.txt=%c%03d%c",0x22,gui_WaveNumber,0x22);
             Nextion_Send(messnex);
-
         }
         // wave dec
         if(Nextion_Mess[2]==2)
         {
-            if(WS.AKWFWave>0)
-                WS.AKWFWave--;
-            sprintf(messnex,"page3.WA.txt=%c%03d%c",0x22,WS.AKWFWave,0x22);
+            if(gui_WaveNumber>0)
+                gui_WaveNumber--;
+            sprintf(messnex,"page3.WA.txt=%c%03d%c",0x22,gui_WaveNumber,0x22);
             Nextion_Send(messnex);
-            sprintf(messnex,"page3.WAPOT.val=%d",WS.AKWFWave);
+            sprintf(messnex,"page3.WAPOT.val=%d",gui_WaveNumber);
             Nextion_Send(messnex);
         }
         // wave inc
         if(Nextion_Mess[2]==3)
         {
-            if(WS.AKWFWave<SampleDIR[WS.OscBank].nbr-1)
-                WS.AKWFWave++;
-            sprintf(messnex,"page3.WA.txt=%c%03d%c",0x22,WS.AKWFWave,0x22);
+            if(gui_WaveNumber<SampleDIR[gui_WaveBank].nbr-1)
+                gui_WaveNumber++;
+            sprintf(messnex,"page3.WA.txt=%c%03d%c",0x22,gui_WaveNumber,0x22);
             Nextion_Send(messnex);      
-            sprintf(messnex,"page3.WAPOT.val=%d",WS.AKWFWave);
+            sprintf(messnex,"page3.WAPOT.val=%d",gui_WaveNumber);
             Nextion_Send(messnex);      
         }
-        SDCard_LoadWave(WS.OscBank+1,WS.AKWFWave+1);
+        SDCard_LoadWave(gui_WaveBank+1,gui_WaveNumber+1);
         Nextion_Plot();
         Fct_Ch_WS1(WS.WaveShapping1);
+        // Write again to fix a bug
+        sprintf(messnex,"page3.BKNAME.txt=%c%s%c",0x22,SampleDIR[gui_WaveBank].name,0x22);
+        Nextion_Send(messnex);
+        sprintf(messnex,"page3.BK.txt=%c%03d%c",0x22,gui_WaveBank,0x22);
+        Nextion_Send(messnex);
+        sprintf(messnex,"page3.WAPOT.maxval=%d",SampleDIR[gui_WaveBank].nbr-1);
+        Nextion_Send(messnex);
+        Tab_Encoder[1][6].MaxData=SampleDIR[gui_WaveBank].nbr-1;  // Chg the max for the MIDI CC
+        sprintf(messnex,"page3.BKPOT.val=%d",gui_WaveBank);
+        Nextion_Send(messnex);
+        sprintf(messnex,"page3.WAPOT.val=%d",gui_WaveNumber);
+        Nextion_Send(messnex);
+        sprintf(messnex,"page3.WA.txt=%c%03d%c",0x22,gui_WaveNumber,0x22);
+        Nextion_Send(messnex);
         break;
 
         // S Section Sound save load
