@@ -54,9 +54,9 @@ float rdec;
 
             dl=(dl*2)/127;
             dr=(dr*2)/127;
-       
-            dl =(dl*WS.PanDecimator)/64;          // Dist with pan
-            dr =(dr*(127-WS.PanDecimator))/64;    // Dist with pan
+
+            dl =(dl*(127-WS.PanDecimator))/64;  // Dist with pan
+            dr =(dr*WS.PanDecimator)/64;        // Dist with pan
         }
         if(Decimator >1)
         {
@@ -78,7 +78,7 @@ float rdec;
         l1 +=((dl+cl)*WS.WDDecimator)/127;
 
         r1 = (r1*(127-WS.WDDecimator))/127;
-        r1 +=((dl+cl)*WS.WDDecimator)/127;
+        r1 +=((dr+cr)*WS.WDDecimator)/127;
 
         ldec= (float)l1*0.00003051758125f;
         rdec= (float)r1*0.00003051758125f;
