@@ -18,6 +18,38 @@
 
 uint8_t serialdebug=1;
 extern uint8_t Midi_KeyOn;
+
+
+
+// value to full scale
+int16_t valtofs(int16_t val,int8_t min,int8_t max,int16_t fs)
+{
+	int16_t ret;
+	ret = val;
+	ret -= min;
+	ret *=fs;
+	ret /= (max-min);
+	// Place the new val just under the next value
+	ret +=fs/(max-min);
+	ret--;
+	return(ret);
+}
+
+// full scale to value
+int16_t fstoval(int16_t val,int8_t min,int8_t max,int16_t fs)
+{
+	int16_t ret;
+
+	ret = val;
+	ret *=(max-min);
+	ret /=fs;
+	ret +=min;
+	return(ret);
+}
+
+
+
+
 //--------------------------------------------------
 // OSC
 //--------------------------------------------------

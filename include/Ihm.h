@@ -59,11 +59,14 @@ typedef struct
 #define MAX_ENCODER     10
 
 #define SECTION_OSC     0
-#define SECTION_FILTER  1
-#define SECTION_EG      2
-#define SECTION_LFO     3
-#define SECTION_FX      4
-#define SECTION_SYSTEM  5
+#define SECTION_NOISE   1
+#define SECTION_FILTER  2
+#define SECTION_EG      3
+#define SECTION_LFO     4
+#define SECTION_FX      5
+#define SECTION_ARP     6
+#define SECTION_SYSTEM  7
+#define SECTION_MIDI    8
 
 #ifdef __IHM__
 char Tab_Section_Name[MAX_SECTION][20]=
@@ -320,6 +323,9 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
 #else
 IHM_EXTRN char Tab_Section_Name[MAX_SECTION][20];
 IHM_EXTRN Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER];
+
+IHM_EXTRN int16_t valtofs(int16_t val,int8_t min,int8_t max,int16_t fs);
+IHM_EXTRN int16_t fstoval(int16_t val,int8_t min,int8_t max,int16_t fs);
 
 IHM_EXTRN int Fct_Ch_OscWave(int val);
 IHM_EXTRN int Fct_Ch_SubWave(int val);
