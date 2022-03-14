@@ -221,10 +221,7 @@ int16_t newval=0;
     {
         if(Tab_Encoder[gui_Section][l].Type==TYPE_DATA)
         {
-            newval = *Tab_Encoder[gui_Section][l].Data;
-            range = Tab_Encoder[gui_Section][l].MaxData-Tab_Encoder[gui_Section][l].MinData;
-            factor = (float)range/127;
-            newval = Tab_Encoder[gui_Section][l].MinData + (int)((float)newval*factor);
+            newval=fstoval(*Tab_Encoder[gui_Section][l].Data,Tab_Encoder[gui_Section][l].MinData,Tab_Encoder[gui_Section][l].MaxData,127);
             sprintf(msec,"%03d",newval);   
             Nextion_PotTxt(l,msec);
         }

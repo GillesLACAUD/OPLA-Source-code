@@ -1160,11 +1160,9 @@ float value;
 /***************************************************/
 int Fct_Ch_PBRange(int val)
 {
-float value;    
-
-    value = val * NORM127MUL;
+    GlobalPB = fstoval(WS.PBRange,0,12,127);
     if(serialdebug)       
-        Serial.printf("PB Range: %d\n",WS.PBRange);
+        Serial.printf("PB Range: %d\n",GlobalPB);
     return(0);
 }
 
@@ -1238,7 +1236,10 @@ float value;
 int Fct_Ch_MidiRx(int val)
 {
     if(!IsLoadSound)
+    {
+        MidiRx = valtofs(WSMidiRx,1,16,127);
         SDCard_SaveMidiRx();
+    }
     if(serialdebug)       
         Serial.printf("MIDI RX: %d\n",MidiRx);    
     return(0);
@@ -1317,7 +1318,11 @@ float value;
 
     oscillatorT *osc;
     value = val * NORM127MUL;
+    GlobalTranspose = fstoval(WS.Transpose,-24,24,127);
     Update_Tune(TUNE_TRANSPOSE);
+    if(serialdebug)       
+        Serial.printf("Global Transpose: %d\n",GlobalTranspose);    
+
     return(0);
 }
 
@@ -1445,9 +1450,10 @@ uint8_t valr=0xDE;
             aud=0;
         }
     }
-    StopAudioOut=0;
     if(serialdebug)       
-        Serial.printf("AUDIO IN: %d\n",IntAudioIn);    
+        Serial.printf("AUDIO IN: %d ON\n",IntAudioIn);  
+    StopAudioOut=0;
+    
 
     return(0);
 }

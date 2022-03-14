@@ -256,9 +256,12 @@ unsigned int sz=sizeof(WorkSound);
 
     for(uint8_t s=0;s<MAX_SECTION;s++)
     {
-        for(uint8_t e=0;e<MAX_ENCODER;e++)
+        if(s != SECTION_MIDI)
         {
-            *Tab_Encoder[s][e].Data = fstoval(*Tab_Encoder[s][e].Data,Tab_Encoder[s][e].MinData,Tab_Encoder[s][e].MaxData,127);
+            for(uint8_t e=0;e<MAX_ENCODER;e++)
+            {
+                *Tab_Encoder[s][e].Data = fstoval(*Tab_Encoder[s][e].Data,Tab_Encoder[s][e].MinData,Tab_Encoder[s][e].MaxData,127);
+            }
         }
     }
 
@@ -271,9 +274,12 @@ unsigned int sz=sizeof(WorkSound);
 
     for(uint8_t s=0;s<MAX_SECTION;s++)
     {
-        for(uint8_t e=0;e<MAX_ENCODER;e++)
+        if(s != SECTION_MIDI)
         {
-            *Tab_Encoder[s][e].Data= valtofs(*Tab_Encoder[s][e].Data,Tab_Encoder[s][e].MinData,Tab_Encoder[s][e].MaxData,127);
+            for(uint8_t e=0;e<MAX_ENCODER;e++)
+            {
+                *Tab_Encoder[s][e].Data= valtofs(*Tab_Encoder[s][e].Data,Tab_Encoder[s][e].MinData,Tab_Encoder[s][e].MaxData,127);
+            }
         }
     }
 
@@ -308,7 +314,7 @@ int valrd;
     oldCurrentSound = CurrentSound; 
 
     // Set the page
-    SDCard_Display10SndName();
+    //SDCard_Display10SndName();
 
     sprintf(path,"/sound/%d.snd",snd);
     File file = SD_MMC.open(path,"rb");
@@ -319,28 +325,21 @@ int valrd;
     IsLoadSound = 1;
     for(uint8_t s=0;s<MAX_SECTION;s++)
     {
-        for(uint8_t e=0;e<MAX_ENCODER;e++)
+        if(s != SECTION_MIDI)
         {
-            // Read the absoluit value  -24 to 24 for transpose
-            val = *Tab_Encoder[s][e].Data;
-            if(Tab_Encoder[s][e].Type==TYPE_LIST)
+            for(uint8_t e=0;e<MAX_ENCODER;e++)
             {
-                
-                //if(val==MAXPOT)
-                //    val=MAXPOT-1;
-                /*                    
-                float value = val * NORM127MUL;
-                Tab_Encoder[s][e].Index= (value) * (Tab_Encoder[s][e].Step);                
-                */
+                // Read the absoluit value  -24 to 24 for transpose
+                val = *Tab_Encoder[s][e].Data;
+                if(Tab_Encoder[s][e].Type==TYPE_DATA)
+                {
+                    valrd = *Tab_Encoder[s][e].Data;
+                    *Tab_Encoder[s][e].Data= valtofs(*Tab_Encoder[s][e].Data,Tab_Encoder[s][e].MinData,Tab_Encoder[s][e].MaxData,127);
+                    val = fstoval(*Tab_Encoder[s][e].Data,Tab_Encoder[s][e].MinData,Tab_Encoder[s][e].MaxData,127);
+                    //Serial.printf("S %02d E %02d Min %04d Max %04d Read %04d Fs %04d Val %04d\r\n",s,e,Tab_Encoder[s][e].MinData,Tab_Encoder[s][e].MaxData,valrd,*Tab_Encoder[s][e].Data,val);
+                }
+                Tab_Encoder[s][e].ptrfunctValueChange(val);
             }
-            else
-            {
-                valrd = *Tab_Encoder[s][e].Data;
-                *Tab_Encoder[s][e].Data= valtofs(*Tab_Encoder[s][e].Data,Tab_Encoder[s][e].MinData,Tab_Encoder[s][e].MaxData,127);
-                val = fstoval(*Tab_Encoder[s][e].Data,Tab_Encoder[s][e].MinData,Tab_Encoder[s][e].MaxData,127);
-                Serial.printf("S %02d E %02d Min %04d Max %04d Read %04d Fs %04d Val %04d\r\n",s,e,Tab_Encoder[s][e].MinData,Tab_Encoder[s][e].MaxData,valrd,*Tab_Encoder[s][e].Data,val);
-            }
-            //Tab_Encoder[s][e].ptrfunctValueChange(val);
         }
     }
     IsLoadSound = 0;
@@ -408,11 +407,7 @@ void SDCard_SaveMidiRx()
     uint16_t wr;
     // Write the Midirx in a file
 
-    uint8_t s=SECTION_MIDI;
-    for(uint8_t e=0;e<MAX_ENCODER;e++)
-    {
-         *Tab_Encoder[s][e].Data = fstoval(*Tab_Encoder[s][e].Data,Tab_Encoder[s][e].MinData,Tab_Encoder[s][e].MaxData,127);
-    }
+    MidiRx = fstoval(WSMidiRx,1,16,127);
 
     sprintf(path,"/System/midirx.cfg");
     File file = SD_MMC.open(path,"wb+");
@@ -421,16 +416,21 @@ void SDCard_SaveMidiRx()
     wr=file.write((uint8_t*)&MidiRelCC,1);
     wr=file.write((uint8_t*)&MidiRelMin,1);        
     wr=file.write((uint8_t*)&MidiRelMax,1);
-
     wr=file.write((uint8_t*)&IntAudioIn,1);
+    
 
     Serial.printf("Save file midirx.cfg\n");
-    file.close();   
 
-    for(uint8_t e=0;e<MAX_ENCODER;e++)
-    {
-        *Tab_Encoder[s][e].Data= valtofs(*Tab_Encoder[s][e].Data,Tab_Encoder[s][e].MinData,Tab_Encoder[s][e].MaxData,127);
-    }
+    /*
+    Serial.printf("Midi Rx is      %d\n",MidiRx);
+    Serial.printf("Midi Mode is    %d\n",MidiMode);
+    Serial.printf("Midi Rel CC is  %d\n",MidiRelCC);
+    Serial.printf("Midi Rel Min is %d\n",MidiRelMin);
+    Serial.printf("Midi Rel Max is %d\n",MidiRelMax);
+    Serial.printf("Audio In is     %d\n",IntAudioIn);
+    */
+
+    file.close();   
 }
 
 /***************************************************/
@@ -449,7 +449,6 @@ int valrd;
     sprintf(path,"/System/midirx.cfg");
     File file = SD_MMC.open(path,"rb");
     rd=file.read((uint8_t*)&MidiRx,1);
-    Serial.printf("---------------------------------Midi Rx is      %d\n",MidiRx);
     rd=file.read((uint8_t*)&MidiMode,1);
     rd=file.read((uint8_t*)&MidiRelCC,1);
     rd=file.read((uint8_t*)&MidiRelMin,1);        
@@ -457,24 +456,10 @@ int valrd;
 
     rd=file.read((uint8_t*)&IntAudioIn,1);
 
-/*
-    uint8_t s=SECTION_MIDI;
-    for(uint8_t e=0;e<MAX_ENCODER;e++)
-    {
-        val = *Tab_Encoder[s][e].Data;
-        if(Tab_Encoder[s][e].Type==TYPE_LIST)
-        {
-        }
-        else
-        {
-            valrd = *Tab_Encoder[s][e].Data;
-            *Tab_Encoder[s][e].Data= valtofs(*Tab_Encoder[s][e].Data,Tab_Encoder[s][e].MinData,Tab_Encoder[s][e].MaxData,127);
-            val = fstoval(*Tab_Encoder[s][e].Data,Tab_Encoder[s][e].MinData,Tab_Encoder[s][e].MaxData,127);
-            Serial.printf("S %02d E %02d Min %04d Max %04d Read %04d Fs %04d Val %04d\r\n",s,e,Tab_Encoder[s][e].MinData,Tab_Encoder[s][e].MaxData,valrd,*Tab_Encoder[s][e].Data,val);
-        }
-    }
-    */
+    WSMidiRx = valtofs(MidiRx,1,16,127);
+
     Serial.printf("Load file midirx.cfg\n");
+    Fct_Ch_AudioIn(IntAudioIn);
 
     float temp;
     temp=((float)MidiMode/127)*MIDI_MODE_MAX;

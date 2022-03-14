@@ -30,9 +30,13 @@ IHM_EXTRN   int16_t StopAudioOut;
 IHM_EXTRN   uint8_t gui_WaveBank;
 IHM_EXTRN   uint8_t gui_WaveNumber;
 
+IHM_EXTRN   int16_t WSMidiRx;
+
 #ifdef __IHM__
 int FctNull(int val)
 {
+  IntNull=0;
+  val=0;
   return val;
 }
 #else
@@ -179,6 +183,7 @@ int Fct_Ch_MidiMode(int val);
 int Fct_Ch_MidiRelCC(int val);
 int Fct_Ch_MidiRelMin(int val);
 int Fct_Ch_MidiRelMax(int val);
+int Fct_Ch_AudioIn(int val);
 
 int Fct_Ch_PanDecimator(int val);
 int Fct_Ch_Decimator(int val);
@@ -308,7 +313,7 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
     
     // SECTION MIDI               
     /* Name                 MIDICC          TYPE        LIST                INDEX   VALUE             SIZE  MIN     MAX                     STEP    CHANGE */                    
-    "MRX",  "MIDI RX",      MIDI_CC_MIDI_RX,       TYPE_DATA,  &TabListNull[0][0],  0,  &MidiRx,        1,  1,      16,1,                       Fct_Ch_MidiRx,       
+    "MRX",  "MIDI RX",      MIDI_CC_MIDI_RX,       TYPE_DATA,  &TabListNull[0][0],  0,  &WSMidiRx,      1,  1,      16,1,                       Fct_Ch_MidiRx,       
     "MOD",  "MIDI MODE",    MIDI_CC_MIDIMODE,      TYPE_LIST,  &Midi_Mode[0][0],    0,  &MidiMode,      1,  1,      127,MIDI_MODE_MAX,          Fct_Ch_MidiMode,     
     "RCC",  "RELATIC CC",   MIDI_CC_MIDIRELCC,     TYPE_DATA,  &TabListNull[0][0],  0,  &MidiRelCC,     1,  0,      127,1,                      Fct_Ch_MidiRelCC,    
     "MIN",  "RELATIV MIN",  MIDI_CC_MIDIRELMIN,    TYPE_DATA,  &TabListNull[0][0],  0,  &MidiRelMin,    1,  0,      127,1,                      Fct_Ch_MidiRelMin,   
@@ -317,8 +322,8 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
     "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0, &IntNull,         1,  0,      127,1,                      FctNull,             
     "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0, &IntNull,         1,  0,      127,1,                      FctNull,             
     "---",  "---",          0xFF,                  TYPE_DATA,  &TabListNull[0][0], 0, &IntNull,         1,  0,      127,1,                      FctNull,             
-    "AIN",  "AUDIO IN",     MIDI_CC_AIN,           TYPE_LIST,  &YesNo[0][0],       0, &IntCalib,        1,  0,      127,2,                      Fct_Ch_AudioIn,        
-    "CAL",  "SCREEN CAL",   MIDI_CC_CAL,           TYPE_LIST,  &YesNo[0][0],       0, &IntAudioIn,      1,  0,      127,2,                      Fct_Ch_Calib,        
+    "AIN",  "AUDIO IN",     MIDI_CC_AIN,           TYPE_LIST,  &YesNo[0][0],       0, &IntAudioIn,      1,  0,      127,2,                      Fct_Ch_AudioIn,        
+    "CAL",  "SCREEN CAL",   MIDI_CC_CAL,           TYPE_LIST,  &YesNo[0][0],       0, &IntCalib,        1,  0,      127,2,                      Fct_Ch_Calib,        
 };
 #else
 IHM_EXTRN char Tab_Section_Name[MAX_SECTION][20];
@@ -386,6 +391,8 @@ IHM_EXTRN int Fct_Ch_PanSpread(int val);
 IHM_EXTRN int Fct_Ch_FilterLoop(int val);
 IHM_EXTRN int Fct_Ch_AmpLoop(int val);
 IHM_EXTRN int Fct_Ch_PitchLoop(int val);
+
+IHM_EXTRN int Fct_Ch_AudioIn(int val);
 
 
 #endif

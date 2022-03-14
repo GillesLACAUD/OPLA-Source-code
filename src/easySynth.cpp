@@ -496,7 +496,7 @@ uint8_t oldnote;
             if (voicePlayer[i].active)
             {
                 osc = &oscPlayer[2+i*3];                // 2 -> The thirth OSC is the sub
-                note = voicePlayer[i].midiNote+WS.Transpose;
+                note = voicePlayer[i].midiNote+GlobalTranspose;
                 osc->addVal = midi_note_to_add[note+(int8_t)SubTranspose]*(1.0+subdetune*0.9);
             }
         }        
@@ -507,7 +507,7 @@ uint8_t oldnote;
             if (voicePlayer[v].active)
             {
                 note = voicePlayer[v].midiNote;
-                voicePlayer[v].midiNote=note+WS.Transpose;
+                voicePlayer[v].midiNote=note+GlobalTranspose;
                 // Detune OSC1
                 osc = &oscPlayer[v*3+0];
                 tmp= midi_note_to_add[note]*(1.0+oscdetune);
@@ -527,7 +527,7 @@ uint8_t oldnote;
         {
             if (voicePlayer[v].active)
             {
-                note = voicePlayer[v].midiNote+WS.Transpose;
+                note = voicePlayer[v].midiNote+GlobalTranspose;
                 // Detune OSC1
                 osc = &oscPlayer[v*3+0];
                 tmp= midi_note_to_add[note]*(1.0+oscdetune);

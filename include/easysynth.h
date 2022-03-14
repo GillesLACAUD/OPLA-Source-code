@@ -252,6 +252,9 @@ float OldWaveShapping2Mod=0;
 float MixOsc = 1;
 float MixSub = 1;
 float SubTranspose = -12.0;
+int8_t GlobalTranspose = 0;
+uint8_t GlobalPB = 0;
+
 
 float pitchBendValue = 0.0f;
 float pitchMultiplier = 1.0f;
@@ -293,6 +296,10 @@ extern uint8_t globalrank;
 
 extern float oscdetune;
 extern float subdetune;
+extern int8_t GlobalTranspose;
+extern uint8_t GlobalPB;
+
+extern uint8_t GlobalAudioIn;
 
 /*
  * do not forget to enter the waveform pointer addresses here
