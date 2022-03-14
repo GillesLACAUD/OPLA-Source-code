@@ -1,4 +1,24 @@
 ----------------------------------------------------------------------------------------------
+V15 (09.03.22) 
+
+- Add New effects Distortion and Decimator
+- Pan and Wet Dry common to Disto and Decimator
+- Not available for all mode or with Delay Fx
+
+- Add Relatif mode for the CC ( see Arturia Minilab user manual)
+- Add NRPN manager for absolut and inc/dec Values
+- New screen MIDI+MISC for all the Midi in settings
+	- MIDI RX
+	- MIDI Mode (Absolut/NRPN/Relatif1/Relatif2)
+	- MIDI Relatif CC
+	- MIDI Relatif Min
+	- MIDI Relatif Max
+	- Screen Calibration
+
+- Bug Fix Midi Real Time Message Song Pos, Song Select
+	
+
+----------------------------------------------------------------------------------------------
 V15_rc1 (13.02.22) - WARNING Release candidate/non official firmware
 - Add Relatif mode for the CC ( see Arturia Minilab user manual)
 - Add NRPN manager for absolut and inc/dec Values
