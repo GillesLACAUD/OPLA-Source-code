@@ -194,6 +194,62 @@ static uint8_t notassign=0;
 /***************************************************/
 void Nextion_PrintLabel()
 {
+#define ORANGE 64512
+#define BLUE   2047
+#define GREEN  2016
+
+    switch(gui_Section)
+    {
+        case SECTION_FX:
+        // Delay
+        sprintf(messnex,"page0.la0.pco=%d",ORANGE);
+        Nextion_Send(messnex);
+        sprintf(messnex,"page0.la1.pco=%d",ORANGE);
+        Nextion_Send(messnex);
+        sprintf(messnex,"page0.la2.pco=%d",ORANGE);
+        Nextion_Send(messnex);
+        sprintf(messnex,"page0.la3.pco=%d",ORANGE);
+        Nextion_Send(messnex);
+
+        // Reverb
+        sprintf(messnex,"page0.la5.pco=%d",BLUE);
+        Nextion_Send(messnex);
+        sprintf(messnex,"page0.la6.pco=%d",BLUE);
+        Nextion_Send(messnex);
+        break;
+
+        case SECTION_NOISE:
+        // Loop
+        sprintf(messnex,"page0.la2.pco=%d",ORANGE);
+        Nextion_Send(messnex);
+        sprintf(messnex,"page0.la3.pco=%d",ORANGE);
+        Nextion_Send(messnex);
+        sprintf(messnex,"page0.la4.pco=%d",ORANGE);
+        Nextion_Send(messnex);
+
+        sprintf(messnex,"page0.la7.pco=%d",ORANGE);
+        Nextion_Send(messnex);
+        sprintf(messnex,"page0.la8.pco=%d",ORANGE);
+        Nextion_Send(messnex);
+        sprintf(messnex,"page0.la9.pco=%d",ORANGE);
+        Nextion_Send(messnex);
+
+        sprintf(messnex,"page0.la5.pco=%d",BLUE);
+        Nextion_Send(messnex);
+        sprintf(messnex,"page0.la6.pco=%d",BLUE);
+        Nextion_Send(messnex);
+        break;
+
+        default:
+        for(uint8_t j=0;j<10;j++)
+        {
+            sprintf(messnex,"page0.la%d.pco=%d",j,GREEN);
+            Nextion_Send(messnex);
+        }
+        break;
+    }
+
+
     sprintf(messnex,"page0.ts0.txt=%c%s%c",0x22,Tab_Section_Name[gui_Section],0x22);
     Nextion_Send(messnex);
 
