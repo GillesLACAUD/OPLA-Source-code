@@ -517,6 +517,11 @@ uint8_t cc;
 
         // X Select Sound
 		case 0x58:
+        if(!nbclick)
+        {
+            doubleclick=0;
+            nbclick++;
+        }
         CurrentSound=Nextion_Mess[2];
         if(oldCurrentSound!=CurrentSound)
         {
@@ -534,6 +539,18 @@ uint8_t cc;
             //SDCard_LoadSound(CurrentSound+SoundNameInc10*10);
             //Nextion_PrintValues();
 
+        }
+        else
+        {
+            // double click here
+            if(nbclick==1 && doubleclick < 100)
+            {
+                sprintf(messnex,"page2.b%d.bco=63584",CurrentSound);
+                Nextion_Send(messnex);
+                // Insert here init sound
+            }
+            nbclick=0;
+            nbclick=0;
         }
         break;
         
@@ -671,6 +688,8 @@ uint8_t cc;
         // 10 previous
         if(Nextion_Mess[2]==5)
         {
+            sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
+            Nextion_Send(messnex);
             SoundNameInc10--;
             if(SoundNameInc10<0)
                 SoundNameInc10=9;
@@ -679,6 +698,8 @@ uint8_t cc;
         // 10 next
         if(Nextion_Mess[2]==6)
         {
+            sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
+            Nextion_Send(messnex);
             SoundNameInc10++;
             if(SoundNameInc10==10)
                 SoundNameInc10=0;

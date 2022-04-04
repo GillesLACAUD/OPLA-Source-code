@@ -575,6 +575,7 @@ static uint8_t onetime;
 
     loop_count_u8++;
     overcpt++;
+    doubleclick++;
     Cptloadwave++;
 
     // ARP Wait xms to all key on 
