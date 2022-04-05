@@ -383,6 +383,7 @@ int val;
 int cas;
 int ret;
 uint8_t cc;
+static uint8_t init_snd=0;
 
 
     // NEXTION SIDE
@@ -521,6 +522,7 @@ uint8_t cc;
         {
             doubleclick=0;
             nbclick++;
+            init_snd=0;
         }
         CurrentSound=Nextion_Mess[2];
         if(oldCurrentSound!=CurrentSound)
@@ -547,7 +549,7 @@ uint8_t cc;
             {
                 sprintf(messnex,"page2.b%d.bco=63584",CurrentSound);
                 Nextion_Send(messnex);
-                // Insert here init sound
+                init_snd=1;
             }
             nbclick=0;
             nbclick=0;
@@ -676,14 +678,30 @@ uint8_t cc;
         // Load
         if(Nextion_Mess[2]==3)
         {
-            sprintf(messnex,"page2.b%d.bco=32000",CurrentSound);
-            Nextion_Send(messnex);
-            delay(250);
-            Nextion_Send(messnex);
-            SDCard_LoadSound(CurrentSound+SoundNameInc10*10,0);
-            sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
-            Nextion_Send(messnex);
-            Nextion_PrintValues();
+            if(init_snd)
+            {
+                sprintf(messnex,"page2.b%d.txt=%cINIT%c",CurrentSound,0x22,0x22);
+                Nextion_Send(messnex);
+                // Save name sound
+                strcpy((char*)SndName,"INIT");
+                SDCard_WriteSndName(CurrentSound+SoundNameInc10*10);
+                // Load init Sound -> it is the sound number 200
+                SDCard_LoadSound(200,0);
+                // Save init Sound to Current sound
+                SDCard_SaveSound(CurrentSound+SoundNameInc10*10);
+                init_snd = 0;
+            }
+            else
+            {
+                sprintf(messnex,"page2.b%d.bco=32000",CurrentSound);
+                Nextion_Send(messnex);
+                delay(250);
+                Nextion_Send(messnex);
+                SDCard_LoadSound(CurrentSound+SoundNameInc10*10,0);
+                sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
+                Nextion_Send(messnex);
+                Nextion_PrintValues();
+            }
         }
         // 10 previous
         if(Nextion_Mess[2]==5)
