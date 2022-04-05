@@ -519,7 +519,7 @@ uint8_t* ptname;
 
     ptname = tabname+s*SDCARD_NAME_SIZE;
     memcpy(ptname,SndName,SDCARD_NAME_SIZE);
-    Serial.printf("New Name %s",SndName);
+    Serial.printf("New Name %s\r\n",SndName);
 
 }
 

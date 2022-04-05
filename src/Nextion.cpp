@@ -684,11 +684,19 @@ static uint8_t init_snd=0;
                 Nextion_Send(messnex);
                 // Save name sound
                 strcpy((char*)SndName,"INIT");
+                uint8_t sn,ten;
+                sn=CurrentSound;
+                ten=SoundNameInc10;
                 SDCard_WriteSndName(CurrentSound+SoundNameInc10*10);
+                SDCard_SaveSndName();
                 // Load init Sound -> it is the sound number 200
                 SDCard_LoadSound(200,0);
+                CurrentSound=sn;
+                oldCurrentSound=sn;
+                SoundNameInc10=ten;
                 // Save init Sound to Current sound
                 SDCard_SaveSound(CurrentSound+SoundNameInc10*10);
+                SDCard_LoadSound(CurrentSound+SoundNameInc10*10,0);
                 init_snd = 0;
             }
             else
@@ -809,3 +817,5 @@ static uint8_t init_snd=0;
 
 	}
 }
+
+// 8 M Bytes -> 4 M Samples (16bit mono) -> 4*1024*1024 -> 100 seconds for Fs=44100
