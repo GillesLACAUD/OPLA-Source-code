@@ -329,7 +329,7 @@ int valrd;
         {
             for(uint8_t e=0;e<MAX_ENCODER;e++)
             {
-                // Read the absoluit value  -24 to 24 for transpose
+                // Read the absolut value  -24 to 24 for transpose
                 val = *Tab_Encoder[s][e].Data;
                 if(Tab_Encoder[s][e].Type==TYPE_DATA)
                 {

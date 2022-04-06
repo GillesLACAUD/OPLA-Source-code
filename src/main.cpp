@@ -233,7 +233,7 @@ void setup()
  {
      
 char AffCodec[15]="Not Define";
-char AffVersion[30]="V15 090322";
+char AffVersion[30]="V16 xxxxxx";
                     
 
 
@@ -521,6 +521,21 @@ char AffVersion[30]="V15 090322";
 
     SDCard_LoadLastSound();
     SDCard_LoadMidiRx();
+
+    // Patch to init the ARP
+    /*
+    for(uint8_t sn=0;sn<100;sn++)
+    {
+        SDCard_LoadSound(sn,1);
+        *Tab_Encoder[SECTION_ARP][2].Data=100;
+        *Tab_Encoder[SECTION_ARP][3].Data=100;
+        *Tab_Encoder[SECTION_ARP][5].Data=0;
+        *Tab_Encoder[SECTION_ARP][6].Data=110;
+        *Tab_Encoder[SECTION_ARP][8].Data=0;
+        *Tab_Encoder[SECTION_ARP][9].Data=0;
+        SDCard_SaveSound(sn);
+    }
+    */
 
     if(IntAudioIn>64)
         ES8388_WriteReg(ES8388_DACCONTROL16,0x09);
