@@ -113,13 +113,13 @@
 #define MIDI_CC_PB_RANGE        61
 #define MIDI_CC_SPREAD          62
 #define MIDI_CC_OCTAVE          63
-#define MIDI_CC_SVOLUME         64
+#define MIDI_CC_SVOLUME         69
 
 #define MIDI_CC_MD_DEST         65
 #define MIDI_CC_MD_AMT          66
 #define MIDI_CC_AT_DEST         67
 #define MIDI_CC_AT_AMT          68
-#define MIDI_CC_MIDI_RX         69
+#define MIDI_CC_MIDI_RX         210
 
 
 #define MIDI_CC_LFO1_SPEED      70
