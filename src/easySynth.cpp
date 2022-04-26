@@ -19,7 +19,7 @@
 #include "Lfo.h"
 #include "AC101.h"
 #include "Ihm.h"
-#include "Reverb.h"
+#include "reverb.h"
 #include "Nextion.h"
 #include "Modulator.h"
 

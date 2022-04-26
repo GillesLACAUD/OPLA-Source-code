@@ -4,7 +4,7 @@
 
 #include "typdedef.h"
 #include "easysynth.h"
-#include "ihm.h"
+#include "Ihm.h"
 #include "simple_delay.h"
 
 #include "Nextion.h"

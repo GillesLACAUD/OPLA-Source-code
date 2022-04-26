@@ -10,7 +10,7 @@
 //--------------------------------------------------------------------------
 
 
-#include <arduino.h>
+#include <Arduino.h>
 #include "typdedef.h"
 
 //#include "AudioFileSourcePROGMEM.h"
@@ -36,8 +36,8 @@
 #include "Nextion.h"
 #include "Lfo.h"
 #include "SDCard.h"
-#include "Simple_Delay.h"
-#include "Reverb.h"
+#include "simple_delay.h"
+#include "reverb.h"
 #include "Ihm.h"
 #include "ArpSeq.h"
 #include "Distortion.h"
