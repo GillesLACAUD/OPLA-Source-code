@@ -233,7 +233,7 @@ void setup()
  {
      
 char AffCodec[15]="Not Define";
-char AffVersion[30]="V16 xxxxxx";
+char AffVersion[30]="V16 060422";
                     
 
 
@@ -528,9 +528,9 @@ char AffVersion[30]="V16 xxxxxx";
     {
         SDCard_LoadSound(sn,1);
         *Tab_Encoder[SECTION_ARP][2].Data=100;
-        *Tab_Encoder[SECTION_ARP][3].Data=100;
+        *Tab_Encoder[SECTION_ARP][3].Data=80;
         *Tab_Encoder[SECTION_ARP][5].Data=0;
-        *Tab_Encoder[SECTION_ARP][6].Data=110;
+        *Tab_Encoder[SECTION_ARP][6].Data=80;
         *Tab_Encoder[SECTION_ARP][8].Data=0;
         *Tab_Encoder[SECTION_ARP][9].Data=0;
         SDCard_SaveSound(sn);
