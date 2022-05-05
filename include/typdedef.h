@@ -103,7 +103,18 @@ struct WorkSound
     // Add 21.02.22
     int16_t Distortion;
 
-    int16_t Reserved[30-2];
+    // Add 05.05.22
+    char    GraWave[16];            // Name of the wav file to load
+    int16_t GraBegin;               // Begin of the first grain in the file in  %
+    int16_t GraBeginFine;           // Begin of the first fine tune
+    int16_t GraSpace;               // Space between the grains
+    int16_t GraSize;                // Size of a grain max GRA_MAX_SIZE
+    int16_t GraDensity;             // Number of grain Max GRAIN_MAX 1 Mini
+    int16_t GraSizeAttack;          // Attack  
+    int16_t GraSizeSustain;         // Sustain
+    int16_t GraOverlap;             // Space between 2 EG Grains in % of Gra_Size
+
+    int16_t Reserved[13];
 };
 
 

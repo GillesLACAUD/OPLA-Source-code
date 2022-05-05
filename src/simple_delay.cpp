@@ -11,9 +11,8 @@
 
 void Delay_Init(void)
 {
-
-    psramInit();
-    Serial.printf("---- BEFORE PS_MALLOC ----\n");
+  
+    Serial.printf("---- BEFORE DELAY MALLOC ----\n");
     Serial.printf("Total PSRAM: %d\n", ESP.getPsramSize());
     Serial.printf("Free PSRAM: %d\n", ESP.getFreePsram());
 
@@ -30,7 +29,7 @@ void Delay_Init(void)
         while(1);
     }
 
-    Serial.printf("---- AFTER PS_MALLOC ----\n");
+    Serial.printf("---- AFTER DELAY MALLOC ----\n");
     Serial.printf("Total PSRAM: %d\n", ESP.getPsramSize());
     Serial.printf("Free PSRAM: %d\n", ESP.getFreePsram());
 

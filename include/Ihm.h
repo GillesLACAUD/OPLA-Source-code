@@ -191,6 +191,14 @@ int Fct_Ch_WDDecimator(int val);
 
 int Fct_Ch_Distortion(int val);
 
+int Fct_Ch_GraBegin(int val);
+int Fct_Ch_GraFine(int val);
+int Fct_Ch_GraSpace(int val);
+int Fct_Ch_GraSize(int val);
+int Fct_Ch_GraDensity(int val);
+int Fct_Ch_GraAttack(int val);
+int Fct_Ch_GraSustain(int val);
+int Fct_Ch_GraOverlap(int val);
 
 // To change the max for the AKWF selection -> Tab_Encoder[SECTION_BANK_MAX][POT_BANK_MAX]
 #define SECTION_BANK_MAX    1
@@ -200,17 +208,18 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
 {
     // SECTION OSC
     /* Name                 MIDICC          TYPE        LIST                INDEX   VALUE             SIZE  MIN     MAX                     STEP    CHANGE  */           
-    "OSC",  "OSC-WAVEFORM", MIDI_CC_WAVE1,  TYPE_LIST,  &Wave_Name[0][0],   0,      &WS.OscWave,      1,    0,      127,WAVEFORM_TYPE_COUNT,  Fct_Ch_OscWave,       
-    "MIX",  "OSC-VOLUME",   MIDI_CC_OSCVOL, TYPE_DATA,  &TabListNull[0][0], 0,      &WS.OscVolume,    1,    0,      127,1,                    Fct_Ch_OscMix,        
-    "DET",  "DETUNE",       MIDI_CC_DETUNE, TYPE_DATA,  &TabListNull[0][0], 0,      &WS.OscDetune,    1,    0,      127,1,                    Fct_Ch_Detune,        
-    "WS1",  "WAVE SHAPE1",  MIDI_CC_WS1,    TYPE_DATA,  &TabListNull[0][0], 0,      &WS.WaveShapping1,1,    0,      127,1,                    Fct_Ch_WS1,           
-    "WS2",  "WAVE SHAPE2",  MIDI_CC_WS2,    TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,         1,    0,      127,1,                    FctNull,              
-    
-    "SUB",  "SUB WAVEFORM", MIDI_CC_SUBOSC, TYPE_LIST,  &Wave_SubName[0][0],0,      &WS.SubWave,      1,    0,      127,WAVEFORM_SUB_COUNT,   Fct_Ch_SubWave,       
-    "MIX",  "SUB VOLUME",   MIDI_CC_SUBVOL, TYPE_DATA,  &TabListNull[0][0], 0,      &WS.SubVolume,    1,    0,      127,1,                    Fct_Ch_SubMix,        
-    "DET",  "SUB DETUNE",   MIDI_CC_SUBDET, TYPE_DATA,  &TabListNull[0][0], 0,      &WS.SubDetune,    1,    0,      127,1,                    Fct_Ch_SubDetune,     
-    "TRA",  "TRANSPOSE",    MIDI_CC_SUBTR,  TYPE_DATA,  &TabListNull[0][0], 0,      &WS.SubTranspose, 1,    -24,    12, 1,                    Fct_Ch_SubOct,        
-    "PAN",  "PAN SPREAD",   MIDI_CC_PANSPR, TYPE_DATA,  &TabListNull[0][0], 0,      &WS.PanSpread,    1,    0,      127,1,                    Fct_Ch_PanSpread,     
+    //"WAV",  "WAVE FILE",      MIDI_CC_WAVE1,  TYPE_LIST,  &TabListNull[0][0], 0,    &IntNull,         1,    0,      127,1,                    Fct_Ch_OscWave,       
+    "BEG",  "GRAIN BEGIN",    MIDI_CC_OSCVOL, TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraBegin,       1,    0,      127,1,                    Fct_Ch_GraBegin,        
+    "FIN",  "GRAIN FINE",     MIDI_CC_DETUNE, TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraBeginFine,   1,    0,      127,1,                    Fct_Ch_GraFine,        
+    "SPA",  "GRAIN SPACE",    MIDI_CC_WS1,    TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraSpace,       1,    0,      127,1,                    Fct_Ch_GraSpace,           
+    "SIZ",  "GRAIN SIZE",     0xFF,           TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraSize,        1,    0,      127,1,                    Fct_Ch_GraSize,           
+    "DEN",  "GRAIN DENSITY",  MIDI_CC_WS2,    TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraSize,        1,    0,      127,1,                    Fct_Ch_GraDensity,              
+
+    "ATT",  "GRAIN ATTACK",   MIDI_CC_SUBOSC, TYPE_LIST,  &Wave_SubName[0][0],0,    &WS.GraSizeAttack,  1,    0,      127,1,                    Fct_Ch_GraAttack,       
+    "SUS",  "GRAIN SUSTAIN",  MIDI_CC_SUBVOL, TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraSizeSustain, 1,    0,      127,1,                    Fct_Ch_GraSustain,        
+    "OV",   "GRAIN OVERLAP",  MIDI_CC_SUBDET, TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraOverlap,     1,    0,      127,1,                    Fct_Ch_GraOverlap,     
+    "---",  "---",            0xFF,           TYPE_DATA,  &TabListNull[0][0], 0,    &IntNull,           1,    0,      127,1,                    FctNull,              
+    "---",  "---",            0xFF,           TYPE_DATA,  &TabListNull[0][0], 0,    &IntNull,           1,    0,      127,1,                    FctNull,              
     
     "NOIS", "NOISE TYPE",   MIDI_CC_NTYPE,  TYPE_LIST,  &Noise_Name[0][0],  0,      &WS.NoiseType,    1,    0,      127,NOISE_TYPE_COUNT,     Fct_Ch_NoiseType,     
     "MIX",  "NOISE VOLUME", MIDI_CC_NOISE,  TYPE_DATA,  &TabListNull[0][0], 0,      &WS.NoiseLevel,   1,    0,      127,1,                    Fct_Ch_Noise,         

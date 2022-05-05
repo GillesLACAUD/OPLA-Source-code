@@ -37,6 +37,7 @@
 #include "Lfo.h"
 #include "SDCard.h"
 #include "Simple_Delay.h"
+#include "Granular.h"
 #include "Reverb.h"
 #include "Ihm.h"
 #include "ArpSeq.h"
@@ -224,6 +225,8 @@ void CoreTask0( void *parameter )
     }
 }
 
+uint32_t    Gra_BufferSize;     // Size of the buffer grain max GRA_BUFFER_SIZE
+
 /***************************************************/
 /*                                                 */
 /*                                                 */
@@ -233,7 +236,7 @@ void setup()
  {
      
 char AffCodec[15]="Not Define";
-char AffVersion[30]="V16 xxxxxx";
+char AffVersion[30]="V01 GRA";
                     
 
 
@@ -447,8 +450,200 @@ char AffVersion[30]="V16 xxxxxx";
     Serial.printf("ESP.getHeapSize() %d\n", ESP.getHeapSize());
     Serial.printf("ESP.getMaxAllocHeap() %d\n", ESP.getMaxAllocHeap());
 
+    psramInit();
     Delay_Init();
     Reverb_Setup();
+    //------------------------------------------------------------------------
+    // TEST GRANULAR
+    //------------------------------------------------------------------------
+    Granular_Init();
+    Maxplay=Granular_LoadWave("Solo Guit.wav");
+    Cptplay=0;
+    // Init grains
+    Gra_Begin=0x10000;
+    Gra_Space=0x5000;
+    for(uint8_t g=0;g<GRAIN_MAX;g++)
+    {
+        str_tabgrain[g].u32_beginpos = Gra_Begin+g*Gra_Space;
+        str_tabgrain[g].u32_size = 441;  // 100ms
+        str_tabgrain[g].u8_ident = g; 
+    }
+    // Add Grains - fill the playing buffer
+    int16_t* ptdst;
+    int16_t* ptsrc;
+    ptdst=ptGraPlayingBuffer;
+    ptsrc=ptGraMemory;
+    ptkeep=ptGraPlayingBuffer;
+
+    // Copy Memory to play buffer
+    /*
+    for(uint32_t s=0;s<GRA_BUFFER_SIZE;s++)
+    {
+        *ptdst=*ptsrc;
+        ptdst++;
+        ptsrc++;
+    }
+    */
+    int32_t     val;
+    int16_t*    pt;
+
+    // TODO
+    // GRAIN SPACE EN %  de la longueur totale
+    // LECTUEE EN REVERSE
+    // REVOIR LE COMPTEUR CPTPLAY
+
+       
+    
+    Gra_Size            = GRA_MAX_SIZE;        // MAX GRA_MAX_SIZE
+    Gra_OverlapPc        = 20;
+    Gra_SizeAttack      = 1*Gra_Size/10;
+    Gra_SizeSustain     = 9*Gra_Size/10;
+    Gra_OverlapSpl      = (Gra_Size*Gra_OverlapPc)/100;
+    Gra_BufferSize      = Gra_Size+(Gra_Density-1)*Gra_Space;
+
+    // Init the playing buffer
+    memset(ptGraPlayingBuffer,0,Gra_BufferSize*2);
+
+    // DUMP VALUES
+    Serial.printf("Gra_Size              %06d\r\n",Gra_Size);
+    Serial.printf("Gra_SpacePourcent     %06d\r\n",Gra_OverlapPc);
+    Serial.printf("Gra_SpaceSample       %06d\r\n",Gra_OverlapSpl);
+    Serial.printf("Gra_SizeAttack        %06d\r\n",Gra_SizeAttack);
+    Serial.printf("Gra_SizeSustain       %06d\r\n",Gra_SizeSustain);
+    Serial.printf("Gra_Space             %06d\r\n",Gra_Space);
+    Serial.printf("Gra_BufferSize        %06d\r\n",Gra_BufferSize);
+    Serial.printf("MAX Gra_BufferSize    %06d\r\n",GRA_MAX_SIZE*GRAIN_MAX);
+
+    uint32_t s=0;
+
+    if(0)
+    {
+        // TEST ALGO EG ASR
+        // Fill with 100
+        Gra_Size = 100;
+        //Gra_SizeAttack  = Gra_Size/3;
+        //Gra_SizeSustain = 2*Gra_Size/3;
+        Gra_SizeAttack  = 0;
+        Gra_SizeSustain = 0;
+
+        for(uint32_t s=0;s<100;s++)
+        {
+            *ptsrc = 10000;
+            *ptdst = *ptsrc;
+            ptsrc++;
+            ptdst++;
+
+        }
+        ptdst=ptGraPlayingBuffer;
+        ptsrc=ptGraMemory;
+        uint32_t s=0;
+        uint8_t tab_shift[100];
+        Gra_Density=1;
+        for(;s<Gra_SizeAttack;s++)
+        {
+            val=0;
+            for(uint8_t g=0;g<Gra_Density;g++)
+            {
+                pt = ptsrc+str_tabgrain[g].u32_beginpos+s;
+                if(pt<ptsrc+GRA_MEMORY_SIZE)
+                    val+=(*pt)>>16-(s/(Gra_SizeAttack/16));
+            }
+            val /=Gra_Density;
+            *ptdst=(uint16_t)val;
+            ptdst++;
+        }
+        for(;s<Gra_SizeSustain;s++)
+        {
+            val=0;
+            for(uint8_t g=0;g<Gra_Density;g++)
+            {
+                pt = ptsrc+str_tabgrain[g].u32_beginpos+s;
+                if(pt<ptsrc+GRA_MEMORY_SIZE)
+                    val+=(*pt);
+            }
+            val /=Gra_Density;
+            *ptdst=(uint16_t)val;
+            ptdst++;
+        }
+        for(;s<=Gra_Size;s++)
+        {
+            val=0;
+            for(uint8_t g=0;g<Gra_Density;g++)
+            {
+                pt = ptsrc+str_tabgrain[g].u32_beginpos+s;
+                if(pt<ptsrc+GRA_MEMORY_SIZE)
+                    val+=(*pt)>>(s-Gra_SizeSustain)/((Gra_Size-Gra_SizeSustain)/16);
+            }
+            val /=Gra_Density;
+            *ptdst=(uint16_t)val;
+            ptdst++;
+        }    
+        ptdst=ptGraPlayingBuffer;
+        for(uint32_t s=0;s<100;s++)
+        {
+            Serial.printf("%02d %04d \r\n",s,*ptdst);
+            ptdst++;
+        }
+        while(1);
+    }
+
+   /*
+    for(uint32_t s=0;s<GRA_BUFFER_SIZE;s++)
+    {
+        val=0;
+        for(uint8_t g=0;g<Gra_Density;g++)
+        {
+            pt = ptsrc+str_tabgrain[g].u32_beginpos+s;
+            if(pt<ptGraMemory+GRA_MEMORY_SIZE)
+            {
+                val+=(*pt);
+            }
+        }
+        val /=Gra_Density;
+        *ptdst=(uint16_t)val;
+        ptdst++;
+    }
+    */
+
+
+    for(;s<Gra_SizeAttack;s++)
+    {
+        for(uint8_t g=0;g<Gra_Density;g++)
+        {
+            pt = ptsrc+str_tabgrain[g].u32_beginpos+s;
+            if(pt<ptsrc+GRA_MEMORY_SIZE)
+                *(ptdst+g*Gra_OverlapSpl)+=(*pt/Gra_Density)>>(16-((s)/(Gra_SizeAttack/16)));
+        }
+        ptdst++;
+    }
+    for(;s<Gra_SizeSustain;s++)
+    {
+        for(uint8_t g=0;g<Gra_Density;g++)
+        {
+            pt = ptsrc+str_tabgrain[g].u32_beginpos+s;
+            if(pt<ptsrc+GRA_MEMORY_SIZE)
+                *(ptdst+g*Gra_OverlapSpl)+=(*pt/Gra_Density);
+        }
+        ptdst++;
+    }
+    for(;s<=Gra_Size;s++)
+    {
+        val=0;
+        for(uint8_t g=0;g<Gra_Density;g++)
+        {
+            pt = ptsrc+str_tabgrain[g].u32_beginpos+s;
+            if(pt<ptsrc+GRA_MEMORY_SIZE)
+                *(ptdst+g*Gra_OverlapSpl)+=(*pt/Gra_Density)>>(((s-Gra_SizeSustain)/(Gra_SizeSustain/16)));
+        }
+        ptdst++;
+    }    
+
+    Serial.printf("TOTAL BUFFER WRITE %06d\r\n",(ptdst+(Gra_Density-1)*Gra_Space)-ptGraPlayingBuffer);
+    //------------------------------------------------------------------------
+    // END TEST GRANULAR
+    //------------------------------------------------------------------------
+
+    
 
     Serial.printf("ESP.getFreeHeap() %d\n", ESP.getFreeHeap());
     Serial.printf("ESP.getMinFreeHeap() %d\n", ESP.getMinFreeHeap());
@@ -528,9 +723,9 @@ char AffVersion[30]="V16 xxxxxx";
     {
         SDCard_LoadSound(sn,1);
         *Tab_Encoder[SECTION_ARP][2].Data=100;
-        *Tab_Encoder[SECTION_ARP][3].Data=100;
+        *Tab_Encoder[SECTION_ARP][3].Data=80;
         *Tab_Encoder[SECTION_ARP][5].Data=0;
-        *Tab_Encoder[SECTION_ARP][6].Data=110;
+        *Tab_Encoder[SECTION_ARP][6].Data=80;
         *Tab_Encoder[SECTION_ARP][8].Data=0;
         *Tab_Encoder[SECTION_ARP][9].Data=0;
         SDCard_SaveSound(sn);
@@ -547,6 +742,8 @@ char AffVersion[30]="V16 xxxxxx";
     Serial.printf("Midi Rel Min is %d\n",MidiRelMin);
     Serial.printf("Midi Rel Max is %d\n",MidiRelMax);
     Serial.printf("Audio In is     %d\n",IntAudioIn);
+
+
 
     SDCard_LoadBackDelay();
     Serial.printf("BackDelay is %d\n",BackDelay);
@@ -710,8 +907,10 @@ static uint8_t onetime;
     {
         if(i2s_write_sample_16ch2(sampleData32.sample32))
         {
+            
             Synth_Process(&fl_sample, &fr_sample);
-            //Distortion(&fl_sample, &fr_sample);
+
+            /* NO FX FOR NOW 01.05.22
             if(SoundMode!=SND_MODE_POLY)
             {
                 if(WS.DelayAmount==0)
@@ -723,13 +922,56 @@ static uint8_t onetime;
             {
                 Distortion(&fl_sample, &fr_sample);
             }
-                
-            if(WS.ReverbLevel !=0)
+            */
+            if(1)
             {
+                /* Play memory buffer*/
+                if(0)
+                {
+                    if(Cptplay==GRA_MEMORY_SIZE)
+                    {
+                        Cptplay=0;
+                        ptkeep=ptGraMemory;
+                    }
+                    sampleData32.sample[0] = (*ptkeep);
+                    sampleData32.sample[0] /=10;
+                    ptkeep++;
+                    Cptplay++;
+                    sampleData32.sample[1] = (*ptkeep);
+                    sampleData32.sample[1] /=10;
+                    ptkeep++;
+                    Cptplay++;
+                }
+                /* Play playing buffer*/
+                if(1)
+                {
+                    if(Cptplay>=Gra_BufferSize)
+                    {
+                        Cptplay=0;
+                        ptkeep=ptGraPlayingBuffer;
+                        //Serial.printf(".");
+                    }                    
+                    sampleData32.sample[0] = (*ptkeep);
+                    sampleData32.sample[0] /=5;
+                    ptkeep++;
+                    Cptplay++;
+                    sampleData32.sample[1] = (*ptkeep);
+                    sampleData32.sample[1] /=5;
+                    ptkeep++;
+                    Cptplay++;
+                }
+                fl_sample = (float)(sampleData32.sample[0])/32768.0f;
+                fr_sample = (float)(sampleData32.sample[1])/32768.0f;
+
                 Reverb_Process( &fl_sample, &fr_sample, SAMPLE_BUFFER_SIZE );       
+
+                
             }
-            sampleData32.sample[0] = (int16_t)(fl_sample*32768.0f);
-            sampleData32.sample[1] = (int16_t)(fr_sample*32768.0f);
+            else
+            {
+                sampleData32.sample[0] = (int16_t)(fl_sample*32768.0f);
+                sampleData32.sample[1] = (int16_t)(fr_sample*32768.0f);
+            }
         }
     }
 
