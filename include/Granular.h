@@ -46,6 +46,10 @@ typedef struct
 	
 }str_Grain;
 
+GRANULAR_EXTRN uint8_t Gra_Ask_Process;
+
+GRANULAR_EXTRN uint32_t Gra_Maxplay;		// Size of the wav file load max  GRA_MEMORY_SIZE
+GRANULAR_EXTRN uint32_t Gra_BufferSize;     // Size of the buffer grain max GRA_BUFFER_SIZE
 GRANULAR_EXTRN uint32_t Gra_Begin;
 GRANULAR_EXTRN uint32_t Gra_Space;
 GRANULAR_EXTRN uint32_t Gra_Size;           // Size of a grain max GRA_MAX_SIZE
@@ -60,14 +64,19 @@ GRANULAR_EXTRN uint32_t Gra_OverlapSpl;     // Space between 2 Grains in sample
 GRANULAR_EXTRN str_Grain	str_tabgrain[GRAIN_MAX];
 
 GRANULAR_EXTRN uint32_t     Cptplay;
-GRANULAR_EXTRN uint32_t     Maxplay;
 
-GRANULAR_EXTRN int16_t*    ptkeep;
-GRANULAR_EXTRN int16_t*    ptGraMemory;
-GRANULAR_EXTRN int16_t*    ptGraWorkingBuffer;
-GRANULAR_EXTRN int16_t*    ptGraPlayingBuffer;
+
+GRANULAR_EXTRN int16_t*    	ptkeep;
+GRANULAR_EXTRN int16_t*    	ptGraMemory;
+GRANULAR_EXTRN int16_t*    	ptGraWorkingBuffer;
+GRANULAR_EXTRN int16_t*    	ptGraPlayingBuffer;
+GRANULAR_EXTRN int16_t* 	ptdst;
+GRANULAR_EXTRN int16_t* 	ptsrc;
+
 
 GRANULAR_EXTRN void     Granular_Init(void);
 GRANULAR_EXTRN void     Granular_Reset(void);
 GRANULAR_EXTRN uint32_t Granular_LoadWave(char* name);
+GRANULAR_EXTRN void 	Granular_Process(void);
+GRANULAR_EXTRN void 	Granular_Dump(void);
 

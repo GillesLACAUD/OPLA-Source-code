@@ -209,7 +209,7 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
     // SECTION OSC
     /* Name                 MIDICC          TYPE        LIST                INDEX   VALUE             SIZE  MIN     MAX                     STEP    CHANGE  */           
     //"WAV",  "WAVE FILE",      MIDI_CC_WAVE1,  TYPE_LIST,  &TabListNull[0][0], 0,    &IntNull,         1,    0,      127,1,                    Fct_Ch_OscWave,       
-    "BEG",  "GRAIN BEGIN",    MIDI_CC_OSCVOL, TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraBegin,       1,    0,      127,1,                    Fct_Ch_GraBegin,        
+    "BEG",  "GRAIN BEGIN",    MIDI_CC_OSCVOL, TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraBegin,       1,    0,      100,1,                    Fct_Ch_GraBegin,        
     "FIN",  "GRAIN FINE",     MIDI_CC_DETUNE, TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraBeginFine,   1,    0,      127,1,                    Fct_Ch_GraFine,        
     "SPA",  "GRAIN SPACE",    MIDI_CC_WS1,    TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraSpace,       1,    0,      127,1,                    Fct_Ch_GraSpace,           
     "SIZ",  "GRAIN SIZE",     0xFF,           TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraSize,        1,    0,      127,1,                    Fct_Ch_GraSize,           

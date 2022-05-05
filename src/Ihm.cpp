@@ -21,8 +21,6 @@
 uint8_t serialdebug=0;
 extern uint8_t Midi_KeyOn;
 
-
-
 // value to full scale
 int16_t valtofs(int16_t val,int8_t min,int8_t max,int16_t fs)
 {
@@ -61,12 +59,16 @@ int16_t fstoval(int16_t val,int8_t min,int8_t max,int16_t fs)
 /***************************************************/
 int Fct_Ch_GraBegin(int val)
 {
-float value;
-
-    value = val * NORM127MUL;
-    Gra_Begin = 0;
-    if(serialdebug)
-        Serial.printf("Grain Begin: %d\n",val);
+    if(!Gra_Ask_Process)
+    {
+        Gra_Begin = ((Gra_Maxplay-Gra_BufferSize)*val)/100;
+        //Granular_Process();
+        if(serialdebug)
+        {
+            Serial.printf("Grain Begin: Pourcent %d spl %06X\n",val,Gra_Begin);
+        }
+        Gra_Ask_Process=1;
+    }
 }
 
 /***************************************************/

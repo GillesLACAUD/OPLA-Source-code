@@ -104,4 +104,188 @@ GRANULAR_EXTRN int16_t*    pt;
 
 }
 
+/***************************************************/
+/* Only for debug                                  */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+void Granular_Dump(void)
+{
+    Serial.printf("Gra_MaxPlay           %06X\r\n",Gra_Maxplay);
+    Serial.printf("Gra_Size              %06d\r\n",Gra_Size);
+    Serial.printf("Gra_Density           %06d\r\n",Gra_Density);
+    Serial.printf("Gra_SpacePourcent     %06d\r\n",Gra_OverlapPc);
+    Serial.printf("Gra_SpaceSample       %06d\r\n",Gra_OverlapSpl);
+    Serial.printf("Gra_SizeAttack        %06d\r\n",Gra_SizeAttack);
+    Serial.printf("Gra_SizeSustain       %06d\r\n",Gra_SizeSustain);
+    Serial.printf("Gra_Space             %06d\r\n",Gra_Space);
+    Serial.printf("Gra_BufferSize        %06d\r\n",Gra_BufferSize);
+    Serial.printf("MAX Gra_BufferSize    %06d\r\n",GRA_MAX_SIZE*GRAIN_MAX);
+}
 
+
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+void Granular_Process(void)
+{
+int16_t*    pt;    
+
+    uint32_t s=0;    
+    // Init grains
+    for(uint8_t g=0;g<Gra_Density;g++)
+    {
+        str_tabgrain[g].u32_beginpos = Gra_Begin+g*Gra_Space;
+        str_tabgrain[g].u32_size = 441;  // 100ms
+        str_tabgrain[g].u8_ident = g; 
+    }    
+    // Add Grains - fill the playing buffer
+    int16_t* ptdst;
+    int16_t* ptsrc;
+    ptdst=ptGraPlayingBuffer;
+    ptsrc=ptGraMemory;
+    ptkeep=ptGraPlayingBuffer;
+
+    // Copy Memory to play buffer
+    /*
+    for(uint32_t s=0;s<GRA_BUFFER_SIZE;s++)
+    {
+        *ptdst=*ptsrc;
+        ptdst++;
+        ptsrc++;
+    }
+    */
+
+    // TODO
+    // GRAIN SPACE EN %  de la longueur totale
+    // LECTUEE EN REVERSE
+    // REVOIR LE COMPTEUR CPTPLAY
+
+    Gra_Size            = GRA_MAX_SIZE;        // MAX GRA_MAX_SIZE
+    Gra_OverlapPc        = 100;
+    Gra_SizeAttack      = 1*Gra_Size/10;
+    Gra_SizeSustain     = 9*Gra_Size/10;
+    Gra_OverlapSpl      = (Gra_Size*Gra_OverlapPc)/100;
+    Gra_BufferSize      = Gra_Size+(Gra_Density-1)*Gra_OverlapSpl;
+
+    // Init the playing buffer
+    memset(ptGraPlayingBuffer,0,Gra_BufferSize*2);
+
+    //Granular_Dump();
+
+    for(;s<Gra_SizeAttack;s++)
+    {
+        for(uint8_t g=0;g<Gra_Density;g++)
+        {
+            pt = ptsrc+str_tabgrain[g].u32_beginpos+s;
+            if(pt<ptsrc+GRA_MEMORY_SIZE)
+                *(ptdst+g*Gra_OverlapSpl)+=(*pt/Gra_Density)>>(16-((s)/(Gra_SizeAttack/16)));
+        }
+        ptdst++;
+    }
+    for(;s<Gra_SizeSustain;s++)
+    {
+        for(uint8_t g=0;g<Gra_Density;g++)
+        {
+            pt = ptsrc+str_tabgrain[g].u32_beginpos+s;
+            if(pt<ptsrc+GRA_MEMORY_SIZE)
+                *(ptdst+g*Gra_OverlapSpl)+=(*pt/Gra_Density);
+        }
+        ptdst++;
+    }
+    for(;s<=Gra_Size;s++)
+    {
+        for(uint8_t g=0;g<Gra_Density;g++)
+        {
+            pt = ptsrc+str_tabgrain[g].u32_beginpos+s;
+            if(pt<ptsrc+GRA_MEMORY_SIZE)
+                *(ptdst+g*Gra_OverlapSpl)+=(*pt/Gra_Density)>>(((s-Gra_SizeSustain)/(Gra_SizeSustain/16)));
+        }
+        ptdst++;
+    }    
+    //Serial.printf("TOTAL BUFFER WRITE %06d\r\n",(ptdst+(Gra_Density-1)*Gra_Space)-ptGraPlayingBuffer);
+}
+
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+void Granular_Trash(void)
+{
+int32_t     val;
+int16_t*    pt;
+
+    if(0)
+    {
+        // TEST ALGO EG ASR
+        // Fill with 100
+        Gra_Size = 100;
+        //Gra_SizeAttack  = Gra_Size/3;
+        //Gra_SizeSustain = 2*Gra_Size/3;
+        Gra_SizeAttack  = 0;
+        Gra_SizeSustain = 0;
+
+        for(uint32_t s=0;s<100;s++)
+        {
+            *ptsrc = 10000;
+            *ptdst = *ptsrc;
+            ptsrc++;
+            ptdst++;
+
+        }
+        ptdst=ptGraPlayingBuffer;
+        ptsrc=ptGraMemory;
+        uint32_t s=0;
+        uint8_t tab_shift[100];
+        Gra_Density=1;
+        for(;s<Gra_SizeAttack;s++)
+        {
+            val=0;
+            for(uint8_t g=0;g<Gra_Density;g++)
+            {
+                pt = ptsrc+str_tabgrain[g].u32_beginpos+s;
+                if(pt<ptsrc+GRA_MEMORY_SIZE)
+                    val+=(*pt)>>16-(s/(Gra_SizeAttack/16));
+            }
+            val /=Gra_Density;
+            *ptdst=(uint16_t)val;
+            ptdst++;
+        }
+        for(;s<Gra_SizeSustain;s++)
+        {
+            val=0;
+            for(uint8_t g=0;g<Gra_Density;g++)
+            {
+                pt = ptsrc+str_tabgrain[g].u32_beginpos+s;
+                if(pt<ptsrc+GRA_MEMORY_SIZE)
+                    val+=(*pt);
+            }
+            val /=Gra_Density;
+            *ptdst=(uint16_t)val;
+            ptdst++;
+        }
+        for(;s<=Gra_Size;s++)
+        {
+            val=0;
+            for(uint8_t g=0;g<Gra_Density;g++)
+            {
+                pt = ptsrc+str_tabgrain[g].u32_beginpos+s;
+                if(pt<ptsrc+GRA_MEMORY_SIZE)
+                    val+=(*pt)>>(s-Gra_SizeSustain)/((Gra_Size-Gra_SizeSustain)/16);
+            }
+            val /=Gra_Density;
+            *ptdst=(uint16_t)val;
+            ptdst++;
+        }    
+        ptdst=ptGraPlayingBuffer;
+        for(uint32_t s=0;s<100;s++)
+        {
+            Serial.printf("%02d %04d \r\n",s,*ptdst);
+            ptdst++;
+        }
+        while(1);
+    }
+}
