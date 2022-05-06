@@ -61,7 +61,7 @@ int Fct_Ch_GraBegin(int val)
 {
     if(!Gra_Ask_Process)
     {
-        Gra_Begin = ((Gra_Maxplay-Gra_BufferSize)*val)/100;
+        //Gra_Begin = ((Gra_Maxplay-Gra_BufferSize)*val)/100;
         //Granular_Process();
         if(serialdebug)
         {

@@ -219,6 +219,8 @@ void CoreTask0( void *parameter )
             }
         }
         Nextion_Process();
+
+         //ECRITE DANS l4AUTRE BUFFER
         if(Gra_Ask_Process)
         {
             Granular_Process();
@@ -761,15 +763,15 @@ static uint8_t onetime;
                     if(Cptplay==GRA_MEMORY_SIZE)
                     {
                         Cptplay=0;
-                        ptkeep=ptGraMemory;
+                        ptPlay=ptGraMemory;
                     }
-                    sampleData32.sample[0] = (*ptkeep);
+                    sampleData32.sample[0] = (*ptPlay);
                     sampleData32.sample[0] /=10;
-                    ptkeep++;
+                    ptPlay++;
                     Cptplay++;
-                    sampleData32.sample[1] = (*ptkeep);
+                    sampleData32.sample[1] = (*ptPlay);
                     sampleData32.sample[1] /=10;
-                    ptkeep++;
+                    ptPlay++;
                     Cptplay++;
                 }
                 /* Play playing buffer*/
@@ -778,16 +780,16 @@ static uint8_t onetime;
                     if(Cptplay>=Gra_BufferSize)
                     {
                         Cptplay=0;
-                        ptkeep=ptGraPlayingBuffer;
+                        ptPlay=ptGraPlayingBuffer;
                         //Serial.printf(".");
                     }                    
-                    sampleData32.sample[0] = (*ptkeep);
+                    sampleData32.sample[0] = (*ptPlay);
                     sampleData32.sample[0] /=5;
-                    ptkeep++;
+                    ptPlay++;
                     Cptplay++;
-                    sampleData32.sample[1] = (*ptkeep);
+                    sampleData32.sample[1] = (*ptPlay);
                     sampleData32.sample[1] /=5;
-                    ptkeep++;
+                    ptPlay++;
                     Cptplay++;
                 }
                 fl_sample = (float)(sampleData32.sample[0])/32768.0f;

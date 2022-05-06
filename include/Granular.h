@@ -66,7 +66,7 @@ GRANULAR_EXTRN str_Grain	str_tabgrain[GRAIN_MAX];
 GRANULAR_EXTRN uint32_t     Cptplay;
 
 
-GRANULAR_EXTRN int16_t*    	ptkeep;
+GRANULAR_EXTRN int16_t*    	ptPlay;
 GRANULAR_EXTRN int16_t*    	ptGraMemory;
 GRANULAR_EXTRN int16_t*    	ptGraWorkingBuffer;
 GRANULAR_EXTRN int16_t*    	ptGraPlayingBuffer;
