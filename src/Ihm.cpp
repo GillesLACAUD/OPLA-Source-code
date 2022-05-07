@@ -18,7 +18,7 @@
 
 #include "ES8388.h"
 
-uint8_t serialdebug=0;
+uint8_t serialdebug=1;
 extern uint8_t Midi_KeyOn;
 
 // value to full scale
@@ -59,7 +59,7 @@ int16_t fstoval(int16_t val,int8_t min,int8_t max,int16_t fs)
 /***************************************************/
 int Fct_Ch_GraBegin(int val)
 {
-    if(!Gra_Ask_Process)
+    if(!Gra_Ask_RefreshPlaying)
     {
         //Gra_Begin = ((Gra_Maxplay-Gra_BufferSize)*val)/100;
         //Granular_Process();
@@ -67,7 +67,7 @@ int Fct_Ch_GraBegin(int val)
         {
             Serial.printf("Grain Begin: Pourcent %d spl %06X\n",val,Gra_Begin);
         }
-        Gra_Ask_Process=1;
+        Gra_Ask_RefreshPlaying=1;
     }
 }
 
@@ -110,6 +110,18 @@ int Fct_Ch_GraSize(int val)
 /***************************************************/
 int Fct_Ch_GraDensity(int val)
 {
+    if(!Gra_Ask_RefreshPlaying)
+    {
+        Gra_Density = val;
+        if(serialdebug)
+        {
+            Serial.printf("Grain Density: %d\n",Gra_Density);
+        }
+        Granular_Process();
+        Gra_Ask_RefreshPlaying=1;
+        ptGrain=ptGraGrain;
+        CptGrain=0;
+    } 
 }
 
 /***************************************************/

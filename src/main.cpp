@@ -219,13 +219,6 @@ void CoreTask0( void *parameter )
             }
         }
         Nextion_Process();
-
-         //ECRITE DANS l4AUTRE BUFFER
-        if(Gra_Ask_Process)
-        {
-            Granular_Process();
-            Gra_Ask_Process=0;
-        }
         /* this seems necessary to trigger the watchdog */
         delay(5);
         yield();
@@ -458,24 +451,7 @@ char AffVersion[30]="V01 GRA";
     psramInit();
     Delay_Init();
     Reverb_Setup();
-    //------------------------------------------------------------------------
-    // TEST GRANULAR
-    //------------------------------------------------------------------------
-    Granular_Init();
-    Gra_Maxplay=Granular_LoadWave("Solo Guit.wav");
-
-    // Fake init
-    Gra_Begin=0x10000;
-    Gra_Space=0x5000;
-    Gra_Density=10;
-    Gra_Ask_Process=1;
-    Granular_Dump();
-
-    //------------------------------------------------------------------------
-    // END TEST GRANULAR
-    //------------------------------------------------------------------------
-
-    
+   
 
     Serial.printf("ESP.getFreeHeap() %d\n", ESP.getFreeHeap());
     Serial.printf("ESP.getMinFreeHeap() %d\n", ESP.getMinFreeHeap());
@@ -525,6 +501,8 @@ char AffVersion[30]="V01 GRA";
 
     Nextion_Init();
 
+    delay(1000);
+
         
     // SHOW SD CARD AND FIRMWARE VERSION
     sprintf(messnex,"page0.b2.txt_maxl=80");
@@ -548,6 +526,24 @@ char AffVersion[30]="V01 GRA";
 
     SDCard_LoadLastSound();
     SDCard_LoadMidiRx();
+
+    //------------------------------------------------------------------------
+    // TEST GRANULAR
+    //------------------------------------------------------------------------
+    Granular_Init();
+    Gra_Maxplay=Granular_LoadWave("Solo Guit.wav");
+    Granular_Process();
+    Granular_Dump();
+    Gra_Ask_RefreshPlaying=1; // Ask to refresh playing buffer
+    ptGrain=ptGraGrain;
+    CptGrain=0;
+
+    //------------------------------------------------------------------------
+    // END TEST GRANULAR
+    //------------------------------------------------------------------------
+
+
+
 
     // Patch to init the ARP
     /*
@@ -602,6 +598,7 @@ bool i2s_write_sample_16ch2(uint32_t samplebis)
         return false;
     }
 }
+
 
 /***************************************************/
 /*                                                 */
@@ -740,7 +737,7 @@ static uint8_t onetime;
         if(i2s_write_sample_16ch2(sampleData32.sample32))
         {
             
-            Synth_Process(&fl_sample, &fr_sample);
+            //Synth_Process(&fl_sample, &fr_sample);
 
             /* NO FX FOR NOW 01.05.22
             if(SoundMode!=SND_MODE_POLY)
@@ -757,14 +754,53 @@ static uint8_t onetime;
             */
             if(1)
             {
-                /* Play memory buffer*/
+                /* Play memory buffer x second of the wav file */
                 if(0)
                 {
                     if(Cptplay==GRA_MEMORY_SIZE)
                     {
                         Cptplay=0;
-                        ptPlay=ptGraMemory;
+                        ptWave=ptGraMemory;
                     }
+                    sampleData32.sample[0] = (*ptWave);
+                    sampleData32.sample[0] /=10;
+                    ptWave++;
+                    Cptplay++;
+                    sampleData32.sample[1] = (*ptWave);
+                    sampleData32.sample[1] /=10;
+                    ptWave++;
+                    Cptplay++;
+                }
+                /* Refresh playing buffer*/
+                if(Gra_Ask_RefreshPlaying)
+                {
+                    if(CptGrain>Gra_Size)
+                    {
+                        CptGrain=0;
+                        Gra_Ask_RefreshPlaying=0;
+                        ptGrain=ptGraGrain;
+                        Serial.printf("R");
+                    }   
+                    for(uint8_t g=0;g<Gra_Density;g++) 
+                    {
+                        *(ptGrain+g*Gra_OverlapSpl)=0;
+                    }
+                    for(uint8_t g=0;g<Gra_Density;g++) 
+                    {
+                        *(ptGrain+g*Gra_OverlapSpl)+=*(ptWave+str_tabgrain[g].u32_beginpos+CptGrain);
+                    }
+                    ptGrain++;
+                    CptGrain++;
+                }
+
+                /* Play playing buffer*/
+                if(1)
+                {
+                   if(Cptplay>=Gra_BufferSize)
+                    {
+                        Cptplay=0;
+                        ptPlay=ptGraPlayingBuffer;
+                    }  
                     sampleData32.sample[0] = (*ptPlay);
                     sampleData32.sample[0] /=10;
                     ptPlay++;
@@ -775,27 +811,107 @@ static uint8_t onetime;
                     Cptplay++;
                 }
                 /* Play playing buffer*/
-                if(1)
+                if(0)
                 {
+                    if(0)
+                    {
+                        // Left
+                        for(uint8_t g=0;g<Gra_Density;g++) 
+                        {
+                            *(ptdst+g*Gra_OverlapSpl)=0;
+                        }
+                        for(uint8_t g=0;g<Gra_Density;g++) 
+                        {
+                            *(ptdst+g*Gra_OverlapSpl)+=*(ptsrc+str_tabgrain[g].u32_beginpos+Cptplay);
+                        }
+                        sampleData32.sample[0] = *ptdst;          
+                        sampleData32.sample[0] /= 5;
+                        ptdst++;
+                        Cptplay++;
+                        // Right
+                        for(uint8_t g=0;g<Gra_Density;g++) 
+                        {
+                            *(ptdst+g*Gra_OverlapSpl)=0;
+                        }
+                        for(uint8_t g=0;g<Gra_Density;g++) 
+                        {
+                            *(ptdst+g*Gra_OverlapSpl)=*(ptsrc+str_tabgrain[g].u32_beginpos+Cptplay);
+                        }
+                        sampleData32.sample[1] = *ptdst;        
+                        sampleData32.sample[1] /= 5;
+                        ptdst++;
+                        Cptplay++;
+                    }
+
+                    // Play the Playing buffer
                     if(Cptplay>=Gra_BufferSize)
                     {
                         Cptplay=0;
                         ptPlay=ptGraPlayingBuffer;
-                        //Serial.printf(".");
-                    }                    
-                    sampleData32.sample[0] = (*ptPlay);
-                    sampleData32.sample[0] /=5;
-                    ptPlay++;
-                    Cptplay++;
-                    sampleData32.sample[1] = (*ptPlay);
-                    sampleData32.sample[1] /=5;
-                    ptPlay++;
-                    Cptplay++;
+                        Serial.printf(".");
+                    }   
+                    // Play direct source du destination
+                    if(1)
+                    {
+                        sampleData32.sample[0] = *ptPlay;        
+                        ptPlay++;
+                        Cptplay++;         
+                        *ptPlay = *ptsrc;
+                        sampleData32.sample[1] = *ptPlay;        
+                        ptPlay++;
+                        Cptplay++;
+                    }
+
+
+                   
+
+                    //Serial.printf("pt %08d val %08x pt %08x val %08x\n",pt,*pt,ptdst+0*Gra_OverlapSpl,*(ptdst+0*Gra_OverlapSpl));                                
+
+
+                    /*
+                    if(Cptplay<Gra_SizeAttack)
+                    {
+                        for(uint8_t g=0;g<Gra_Density;g++)
+                        {
+                            pt = ptsrc+str_tabgrain[g].u32_beginpos+Cptplay; /2 ?????
+                            if(pt<ptsrc+GRA_MEMORY_SIZE)
+                                *(ptdst+g*Gra_OverlapSpl)+=(*pt/Gra_Density)>>(16-((Cptplay)/(Gra_SizeAttack/16)));
+                            Serial.printf("pt %08d val %08x pt %08x val %08x\n",pt,*pt,ptdst+g*Gra_OverlapSpl,*(ptdst+g*Gra_OverlapSpl));                                
+                        }
+                        ptdst++;
+                    }
+                    else
+                    {
+                        if(Cptplay<Gra_SizeSustain)
+                        {
+                            for(uint8_t g=0;g<Gra_Density;g++)
+                            {
+                                pt = ptsrc+str_tabgrain[g].u32_beginpos+Cptplay;
+                                if(pt<ptsrc+GRA_MEMORY_SIZE)
+                                *(ptdst+g*Gra_OverlapSpl)+=(*pt/Gra_Density);
+                            }
+                            ptdst++;
+                        }
+                        else
+                        {
+                            if(Cptplay<Gra_Size)
+                            {
+                                for(uint8_t g=0;g<Gra_Density;g++)
+                                {
+                                    pt = ptsrc+str_tabgrain[g].u32_beginpos+Cptplay;
+                                    if(pt<ptsrc+GRA_MEMORY_SIZE)
+                                        *(ptdst+g*Gra_OverlapSpl)+=(*pt/Gra_Density)>>(((Cptplay-Gra_SizeSustain)/(Gra_SizeSustain/16)));
+                                }
+                                ptdst++;
+                            }
+                        }
+                    } 
+                    */
                 }
                 fl_sample = (float)(sampleData32.sample[0])/32768.0f;
                 fr_sample = (float)(sampleData32.sample[1])/32768.0f;
 
-                Reverb_Process( &fl_sample, &fr_sample, SAMPLE_BUFFER_SIZE );       
+                //Reverb_Process( &fl_sample, &fr_sample, SAMPLE_BUFFER_SIZE );       
 
                 
             }

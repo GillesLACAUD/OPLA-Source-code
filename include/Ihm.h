@@ -213,7 +213,7 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
     "FIN",  "GRAIN FINE",     MIDI_CC_DETUNE, TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraBeginFine,   1,    0,      127,1,                    Fct_Ch_GraFine,        
     "SPA",  "GRAIN SPACE",    MIDI_CC_WS1,    TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraSpace,       1,    0,      127,1,                    Fct_Ch_GraSpace,           
     "SIZ",  "GRAIN SIZE",     0xFF,           TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraSize,        1,    0,      127,1,                    Fct_Ch_GraSize,           
-    "DEN",  "GRAIN DENSITY",  MIDI_CC_WS2,    TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraSize,        1,    0,      127,1,                    Fct_Ch_GraDensity,              
+    "DEN",  "GRAIN DENSITY",  MIDI_CC_WS2,    TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraSize,        1,    1,      10 ,1,                    Fct_Ch_GraDensity,              
 
     "ATT",  "GRAIN ATTACK",   MIDI_CC_SUBOSC, TYPE_LIST,  &Wave_SubName[0][0],0,    &WS.GraSizeAttack,  1,    0,      127,1,                    Fct_Ch_GraAttack,       
     "SUS",  "GRAIN SUSTAIN",  MIDI_CC_SUBVOL, TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraSizeSustain, 1,    0,      127,1,                    Fct_Ch_GraSustain,        

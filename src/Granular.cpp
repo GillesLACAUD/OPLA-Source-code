@@ -94,11 +94,36 @@ GRANULAR_EXTRN int16_t*    pt;
             pt += GRA_FS_SAMPLE;                            // inc the pointer in int
         }
         Serial.printf("Load wav file %s read %d bytes\n",name,wr);
+
+        ptdst=ptGraPlayingBuffer;
+        ptsrc=ptGraMemory;
+        
+
+        Gra_Begin=0x10000;
+        //Gra_Space=0;                  // Play the same grain
+        //Gra_Space=GRA_MAX_SIZE;       // All the grains are contigue
+        Gra_Space=GRA_MAX_SIZE/2;
+        Gra_Density=5;
+        Gra_Size            = GRA_MAX_SIZE;        // MAX GRA_MAX_SIZE
+        Gra_OverlapPc        = 100;
+        Gra_SizeAttack      = 1*Gra_Size/10;
+        Gra_SizeSustain     = 9*Gra_Size/10;
+        Gra_OverlapSpl      = (Gra_Size*Gra_OverlapPc)/100;
+        Gra_BufferSize      = Gra_Size+(Gra_Density-1)*Gra_OverlapSpl;
+        memset(ptGraPlayingBuffer,0,Gra_BufferSize*2);
+
+        ptWave=ptGraMemory;
+        ptPlay=ptGraPlayingBuffer;
+        ptGraGrain=ptGraPlayingBuffer;
+        ptGrain=ptGraGrain;
+        CptGrain=0;
+
         return(wr);
     }
     else
     {
         Serial.printf("GRANULAR ERROR File not present %s\n",name);
+        while(1);
         return(0);
     }
 
@@ -131,28 +156,23 @@ void Granular_Dump(void)
 /***************************************************/
 void Granular_Process(void)
 {
-int16_t*    pt;    
-static uint8_t  first=0;
+static uint8_t  first=5;
 
 
     uint32_t s=0;    
-    // Init grains
+    // Init grains positions
     for(uint8_t g=0;g<Gra_Density;g++)
     {
         str_tabgrain[g].u32_beginpos = Gra_Begin+g*Gra_Space;
-        //str_tabgrain[g].u32_size = 441;  // 100ms
+        str_tabgrain[g].u32_size = 441;  // 100ms
         str_tabgrain[g].u8_ident = g; 
     }    
+    Gra_BufferSize=Gra_Size+(Gra_Density-1)*Gra_OverlapSpl;
 
     // Add Grains - fill the playing buffer
-    int16_t* ptdst;
-    int16_t* ptsrc;
-    ptdst=ptGraPlayingBuffer;
-    ptsrc=ptGraMemory;
+
     if(!first)
     {    
-    ptPlay=ptGraPlayingBuffer;
-
     // Copy Memory to play buffer
     /*
     for(uint32_t s=0;s<GRA_BUFFER_SIZE;s++)
@@ -171,12 +191,7 @@ static uint8_t  first=0;
 
 
 
-    Gra_Size            = GRA_MAX_SIZE;        // MAX GRA_MAX_SIZE
-    Gra_OverlapPc        = 100;
-    Gra_SizeAttack      = 1*Gra_Size/10;
-    Gra_SizeSustain     = 9*Gra_Size/10;
-    Gra_OverlapSpl      = (Gra_Size*Gra_OverlapPc)/100;
-    Gra_BufferSize      = Gra_Size+(Gra_Density-1)*Gra_OverlapSpl;
+
 
     // Init the playing buffer
     
