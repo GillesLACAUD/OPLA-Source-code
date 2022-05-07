@@ -154,7 +154,7 @@ void Granular_Dump(void)
 /*                                                 */
 /*                                                 */
 /***************************************************/
-void Granular_Process(void)
+void Granular_UpdateVal(void)
 {
 static uint8_t  first=5;
 
@@ -167,6 +167,7 @@ static uint8_t  first=5;
         str_tabgrain[g].u32_size = 441;  // 100ms
         str_tabgrain[g].u8_ident = g; 
     }    
+    Gra_OverlapSpl      = (Gra_Size*Gra_OverlapPc)/100;
     Gra_BufferSize=Gra_Size+(Gra_Density-1)*Gra_OverlapSpl;
 
     // Add Grains - fill the playing buffer

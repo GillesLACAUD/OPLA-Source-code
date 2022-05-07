@@ -87,6 +87,6 @@ GRANULAR_EXTRN int16_t*   	pt;
 GRANULAR_EXTRN void     Granular_Init(void);
 GRANULAR_EXTRN void     Granular_Reset(void);
 GRANULAR_EXTRN uint32_t Granular_LoadWave(char* name);
-GRANULAR_EXTRN void 	Granular_Process(void);
+GRANULAR_EXTRN void 	Granular_UpdateVal(void);
 GRANULAR_EXTRN void 	Granular_Dump(void);
 

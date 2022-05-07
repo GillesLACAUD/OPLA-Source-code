@@ -531,8 +531,8 @@ char AffVersion[30]="V01 GRA";
     // TEST GRANULAR
     //------------------------------------------------------------------------
     Granular_Init();
-    Gra_Maxplay=Granular_LoadWave("Solo Guit.wav");
-    Granular_Process();
+    Gra_Maxplay=Granular_LoadWave("Voice.wav");
+    Granular_UpdateVal();
     Granular_Dump();
     Gra_Ask_RefreshPlaying=1; // Ask to refresh playing buffer
     ptGrain=ptGraGrain;

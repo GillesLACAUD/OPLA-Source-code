@@ -101,6 +101,21 @@ int Fct_Ch_GraSpace(int val)
 /***************************************************/
 int Fct_Ch_GraSize(int val)
 {
+    if(val<0)
+        val=0;
+
+    if(!Gra_Ask_RefreshPlaying)
+    {
+        Gra_Size = (GRA_MAX_SIZE*val)/100;
+        Granular_UpdateVal();
+        Gra_Ask_RefreshPlaying=1;
+        ptGrain=ptGraGrain;
+        CptGrain=0;
+        if(serialdebug)
+        {
+            Serial.printf("Grain Size: Pourcent %d Sample %d Buffer %08d\n",val,Gra_Size,Gra_BufferSize);
+        }
+    }     
 }
 
 /***************************************************/
@@ -110,17 +125,20 @@ int Fct_Ch_GraSize(int val)
 /***************************************************/
 int Fct_Ch_GraDensity(int val)
 {
+    if(val<0)
+        val=0;
+
     if(!Gra_Ask_RefreshPlaying)
     {
         Gra_Density = val;
+        Granular_UpdateVal();
+        Gra_Ask_RefreshPlaying=1;
+        ptGrain=ptGraGrain;
+        CptGrain=0;
         if(serialdebug)
         {
             Serial.printf("Grain Density: %d\n",Gra_Density);
         }
-        Granular_Process();
-        Gra_Ask_RefreshPlaying=1;
-        ptGrain=ptGraGrain;
-        CptGrain=0;
     } 
 }
 
@@ -149,6 +167,22 @@ int Fct_Ch_GraSustain(int val)
 /***************************************************/
 int Fct_Ch_GraOverlap(int val)
 {
+    if(val<0)
+        val=0;
+
+    if(!Gra_Ask_RefreshPlaying)
+    {
+        Gra_OverlapPc = val;
+        Granular_UpdateVal();
+        Gra_Ask_RefreshPlaying=1;
+        ptGrain=ptGraGrain;
+        CptGrain=0;
+        if(serialdebug)
+        {
+            Serial.printf("Grain Overlap: %d\n",Gra_OverlapPc);
+        }
+    } 
+
 }
 
 
