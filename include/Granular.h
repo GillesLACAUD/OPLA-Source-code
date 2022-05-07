@@ -6,14 +6,15 @@
 #define GRANULAR_EXTRN extern
 #endif
 
-#define GRAIN_MAX			10		    // Max number of grain
+#define GRAIN_MAX			20		    // Max number of grain
 
 #define GRA_NB_SECONDS      10           // Buffer in second
 #define GRA_FS_SAMPLE       44100        // Fs sample
 #define GRA_NB_CHANNELS     2            // Stereo
 #define GRA_NB_BYTES        2            // 16 bits/sample
 
-#define GRA_MAX_SIZE        44100        // Max size of a grain 500ms
+#define GRA_MAX_SIZE        44100        		// Max size of a grain 500ms
+#define GRA_MAX_SPACE		GRA_MAX_SIZE*5		// Max space between the grains
 
 #define GRA_MEMORY_SIZE     GRA_NB_SECONDS*GRA_FS_SAMPLE*GRA_NB_CHANNELS        // in int
 
@@ -54,8 +55,16 @@ GRANULAR_EXTRN uint32_t Gra_Begin;
 GRANULAR_EXTRN uint32_t Gra_Space;
 GRANULAR_EXTRN uint32_t Gra_Size;           // Size of a grain max GRA_MAX_SIZE
 GRANULAR_EXTRN uint8_t  Gra_Density;      	// Number of grain Max GRAIN_MAX 1 Mini
+
+
+#define GRA_EG_ATTACK		0
+#define GRA_EG_SUSTAIN		1
+#define GRA_EG_RELEASE		2
+
 GRANULAR_EXTRN uint32_t Gra_SizeAttack;     // 
 GRANULAR_EXTRN uint32_t Gra_SizeSustain;
+GRANULAR_EXTRN uint8_t  Gra_EGState;  		// 
+
 GRANULAR_EXTRN uint8_t 	Gra_OverlapPc;      // Space between 2 Grains in % of Gra_Size
 GRANULAR_EXTRN uint32_t Gra_OverlapSpl;     // Space between 2 Grains in sample
 

@@ -781,13 +781,57 @@ static uint8_t onetime;
                         ptGrain=ptGraGrain;
                         Serial.printf("R");
                     }   
+                    // Init the samples                   
                     for(uint8_t g=0;g<Gra_Density;g++) 
                     {
                         *(ptGrain+g*Gra_OverlapSpl)=0;
                     }
-                    for(uint8_t g=0;g<Gra_Density;g++) 
+                    // forcement un truc plus mieux a faire
+                    if(CptGrain<Gra_SizeAttack)
                     {
-                        *(ptGrain+g*Gra_OverlapSpl)+=*(ptWave+str_tabgrain[g].u32_beginpos+CptGrain);
+                        Gra_EGState=GRA_EG_ATTACK;
+                    }
+                    else
+                    {
+                        if(CptGrain<Gra_SizeSustain)
+                            Gra_EGState=GRA_EG_SUSTAIN;
+                        else
+                        {
+                            if(CptGrain<Gra_Size)
+                                Gra_EGState=GRA_EG_RELEASE;
+                        }
+                    }
+                    // Attack step
+                    //uint8_t div=Gra_Density;
+                    uint8_t div=2;
+                    switch(Gra_EGState)
+                    {
+                        case GRA_EG_ATTACK:
+                        for(uint8_t g=0;g<Gra_Density;g++) 
+                        {
+                            pt=ptWave+(str_tabgrain[g].u32_beginpos+CptGrain);
+                            if(pt<ptWave+GRA_MEMORY_SIZE)
+                            {
+                                *(ptGrain+g*Gra_OverlapSpl)+=((*pt)>>(16-((CptGrain)/(Gra_SizeAttack/16))))/div;
+                            }
+                        }
+                        break;
+                        case GRA_EG_SUSTAIN:
+                        for(uint8_t g=0;g<Gra_Density;g++) 
+                        {
+                            pt=ptWave+(str_tabgrain[g].u32_beginpos+CptGrain);
+                            if(pt<ptWave+GRA_MEMORY_SIZE)
+                                *(ptGrain+g*Gra_OverlapSpl)+=(*(pt)/div);
+                        }
+                        break;
+                        case GRA_EG_RELEASE:
+                        for(uint8_t g=0;g<Gra_Density;g++) 
+                        {
+                            pt=ptWave+(str_tabgrain[g].u32_beginpos+CptGrain);
+                            if(pt<ptWave+GRA_MEMORY_SIZE)
+                                *(ptGrain+g*Gra_OverlapSpl)+=((*pt)>>(((CptGrain-Gra_SizeSustain)/(Gra_SizeSustain/16))))/div;
+                        }
+                        break;
                     }
                     ptGrain++;
                     CptGrain++;

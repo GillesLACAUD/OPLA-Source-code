@@ -34,12 +34,14 @@ void Granular_Init(void)
         while(1);
     }
 
+    /*
     ptGraWorkingBuffer = (int16_t *)ps_malloc(GRA_BUFFER_SIZE*2);
     if (ptGraWorkingBuffer == NULL)
     {
         Serial.printf("No more heap memory for Gra Buffer working!\n");
         while(1);
     }
+    */
 
     ptGraPlayingBuffer = (int16_t *)ps_malloc(GRA_BUFFER_SIZE*2);
     if (ptGraPlayingBuffer == NULL)
@@ -106,8 +108,8 @@ GRANULAR_EXTRN int16_t*    pt;
         Gra_Density=5;
         Gra_Size            = GRA_MAX_SIZE;        // MAX GRA_MAX_SIZE
         Gra_OverlapPc        = 100;
-        Gra_SizeAttack      = 1*Gra_Size/10;
-        Gra_SizeSustain     = 9*Gra_Size/10;
+        Gra_SizeAttack      = 4*Gra_Size/10;
+        Gra_SizeSustain     = 6*Gra_Size/10;
         Gra_OverlapSpl      = (Gra_Size*Gra_OverlapPc)/100;
         Gra_BufferSize      = Gra_Size+(Gra_Density-1)*Gra_OverlapSpl;
         memset(ptGraPlayingBuffer,0,Gra_BufferSize*2);
