@@ -51,6 +51,7 @@ GRANULAR_EXTRN uint8_t Gra_Ask_RefreshPlaying;	// Ask to refresh playing buffer
 
 GRANULAR_EXTRN uint32_t Gra_Maxplay;		// Size of the wav file load max  GRA_MEMORY_SIZE
 GRANULAR_EXTRN uint32_t Gra_BufferSize;     // Size of the buffer grain max GRA_BUFFER_SIZE
+GRANULAR_EXTRN uint32_t Gra_NewBufferSize;	// Ask to new buffer size
 GRANULAR_EXTRN uint32_t Gra_Begin;
 GRANULAR_EXTRN uint32_t Gra_Space;
 GRANULAR_EXTRN uint32_t Gra_Size;           // Size of a grain max GRA_MAX_SIZE
@@ -64,6 +65,11 @@ GRANULAR_EXTRN uint8_t  Gra_Density;      	// Number of grain Max GRAIN_MAX 1 Mi
 GRANULAR_EXTRN uint32_t Gra_SizeAttack;     // 
 GRANULAR_EXTRN uint32_t Gra_SizeSustain;
 GRANULAR_EXTRN uint8_t  Gra_EGState;  		// 
+
+#define GRA_EG_FULLSCALE	100
+GRANULAR_EXTRN float 	Gra_AttackCoeff;     // 
+GRANULAR_EXTRN float 	Gra_ReleaseCoeff;    // 
+
 
 GRANULAR_EXTRN uint8_t 	Gra_OverlapPc;      // Space between 2 Grains in % of Gra_Size
 GRANULAR_EXTRN uint32_t Gra_OverlapSpl;     // Space between 2 Grains in sample
@@ -85,7 +91,7 @@ GRANULAR_EXTRN int16_t*    	ptGraGrain;			// Memory to the Grain buffer fixe poi
 GRANULAR_EXTRN int16_t*    	ptGrain;			// Memory to the Grain buffer work pointer
 GRANULAR_EXTRN uint32_t     CptGrain;
 
-
+GRANULAR_EXTRN uint8_t    	GraBufferPlay;	// ???
 
 GRANULAR_EXTRN int16_t*    	ptGraWorkingBuffer;	// ???
 GRANULAR_EXTRN int16_t* 	ptdst;

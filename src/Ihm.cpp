@@ -61,11 +61,9 @@ int Fct_Ch_GraBegin(int val)
 {
      if(val<0)
         val=0;
-
-
     if(!Gra_Ask_RefreshPlaying)
     {
-        Gra_Begin = ((Gra_Maxplay-Gra_BufferSize)*val)/100;
+        Gra_Begin = (GRA_MEMORY_SIZE*val)/100;
         Granular_UpdateVal();
         Gra_Ask_RefreshPlaying=1;
         ptGrain=ptGraGrain;
@@ -103,7 +101,7 @@ int Fct_Ch_GraSpace(int val)
 
     if(!Gra_Ask_RefreshPlaying)
     {
-        Gra_Space = (GRA_MAX_SPACE*val)/100;
+        Gra_Space = Gra_Size+(GRA_MAX_SPACE*val)/100;
         Granular_UpdateVal();
         Gra_Ask_RefreshPlaying=1;
         ptGrain=ptGraGrain;
@@ -125,8 +123,8 @@ int Fct_Ch_GraSize(int val)
     if(val<0)
         val=0;
 
-    if(!Gra_Ask_RefreshPlaying)
-    {
+    //if(!Gra_Ask_RefreshPlaying)
+    //{
         Gra_Size = (GRA_MAX_SIZE*val)/100;
         Granular_UpdateVal();
         Gra_Ask_RefreshPlaying=1;
@@ -136,7 +134,7 @@ int Fct_Ch_GraSize(int val)
         {
             Serial.printf("Grain Size: Pourcent %d Sample %d Buffer %08d\n",val,Gra_Size,Gra_BufferSize);
         }
-    }     
+    //}     
 }
 
 /***************************************************/
@@ -149,18 +147,15 @@ int Fct_Ch_GraDensity(int val)
     if(val<0)
         val=0;
 
-    if(!Gra_Ask_RefreshPlaying)
+    Gra_Density = val;
+    Granular_UpdateVal();
+    Gra_Ask_RefreshPlaying=1;
+    ptGrain=ptGraGrain;
+    CptGrain=0;
+    if(serialdebug)
     {
-        Gra_Density = val;
-        Granular_UpdateVal();
-        Gra_Ask_RefreshPlaying=1;
-        ptGrain=ptGraGrain;
-        CptGrain=0;
-        if(serialdebug)
-        {
-            Serial.printf("Grain Density: %d\n",Gra_Density);
-        }
-    } 
+        Serial.printf("Grain Density: %d\n",Gra_Density);
+    }
 }
 
 /***************************************************/
@@ -176,6 +171,9 @@ int Fct_Ch_GraAttack(int val)
     {
         Gra_SizeAttack=(val*Gra_Size)/100;
         Gra_SizeAttack /=2; // Attack max 50% of the Gra Size
+
+        Gra_AttackCoeff = GRA_EG_FULLSCALE/Gra_SizeAttack;
+
         Gra_Ask_RefreshPlaying=1;
         ptGrain=ptGraGrain;
         CptGrain=0;
@@ -198,7 +196,9 @@ int Fct_Ch_GraSustain(int val)
     if(!Gra_Ask_RefreshPlaying)
     {
         Gra_SizeSustain=(val*Gra_Size)/100;
-        Gra_SizeSustain /=2; // Attack max 50% of the Gra Size
+        //Gra_SizeSustain /=2; // Attack max 50% of the Gra Size
+        Gra_ReleaseCoeff = GRA_EG_FULLSCALE/Gra_SizeSustain;
+
         Gra_Ask_RefreshPlaying=1;
         ptGrain=ptGraGrain;
         CptGrain=0;

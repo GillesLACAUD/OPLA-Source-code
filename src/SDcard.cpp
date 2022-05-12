@@ -393,6 +393,7 @@ void SDCard_LoadLastSound()
     wr=file.read((uint8_t*)&snd,1);
     file.close();   
 
+    snd=1;
     SDCard_LoadSound(snd,1);
 }
 

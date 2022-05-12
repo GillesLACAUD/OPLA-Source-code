@@ -33,7 +33,6 @@ void Granular_Init(void)
         Serial.printf("No more heap memory for Gra Memory!\n");
         while(1);
     }
-
     /*
     ptGraWorkingBuffer = (int16_t *)ps_malloc(GRA_BUFFER_SIZE*2);
     if (ptGraWorkingBuffer == NULL)
@@ -101,18 +100,21 @@ GRANULAR_EXTRN int16_t*    pt;
         ptsrc=ptGraMemory;
         
 
-        Gra_Begin=0x10000;
+        Gra_Begin=0x00000;
         //Gra_Space=0;                  // Play the same grain
         //Gra_Space=GRA_MAX_SIZE;       // All the grains are contigue
-        Gra_Space=GRA_MAX_SIZE/2;
-        Gra_Density=5;
+        Gra_Space=GRA_MAX_SIZE;
+        Gra_Density=1;
         Gra_Size            = GRA_MAX_SIZE;        // MAX GRA_MAX_SIZE
         Gra_OverlapPc        = 100;
-        Gra_SizeAttack      = 4*Gra_Size/10;
-        Gra_SizeSustain     = 6*Gra_Size/10;
+        Gra_SizeAttack      = Gra_Size/2;
+        Gra_SizeSustain     = Gra_Size;
         Gra_OverlapSpl      = (Gra_Size*Gra_OverlapPc)/100;
         Gra_BufferSize      = Gra_Size+(Gra_Density-1)*Gra_OverlapSpl;
+        Gra_NewBufferSize   = Gra_BufferSize;
         memset(ptGraPlayingBuffer,0,Gra_BufferSize*2);
+
+        Gra_AttackCoeff = GRA_EG_FULLSCALE/Gra_SizeAttack;
 
         ptWave=ptGraMemory;
         ptPlay=ptGraPlayingBuffer;
@@ -165,12 +167,12 @@ static uint8_t  first=5;
     // Init grains positions
     for(uint8_t g=0;g<Gra_Density;g++)
     {
-        str_tabgrain[g].u32_beginpos = Gra_Begin+g*Gra_Space;
+        str_tabgrain[g].u32_beginpos = Gra_Begin+g*(Gra_Space/*+Gra_Size*/);
         str_tabgrain[g].u32_size = 441;  // 100ms
         str_tabgrain[g].u8_ident = g; 
     }    
     Gra_OverlapSpl      = (Gra_Size*Gra_OverlapPc)/100;
-    Gra_BufferSize=Gra_Size+(Gra_Density-1)*Gra_OverlapSpl;
+    Gra_NewBufferSize=Gra_Size+(Gra_Density-1)*Gra_OverlapSpl;
 
     // Add Grains - fill the playing buffer
 

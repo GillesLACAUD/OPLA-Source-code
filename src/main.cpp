@@ -527,11 +527,13 @@ char AffVersion[30]="V01 GRA";
     SDCard_LoadLastSound();
     SDCard_LoadMidiRx();
 
+
+
     //------------------------------------------------------------------------
     // TEST GRANULAR
     //------------------------------------------------------------------------
     Granular_Init();
-    Gra_Maxplay=Granular_LoadWave("Voice.wav");
+    Gra_Maxplay=Granular_LoadWave("flute.wav");
     Granular_UpdateVal();
     Granular_Dump();
     Gra_Ask_RefreshPlaying=1; // Ask to refresh playing buffer
@@ -577,6 +579,7 @@ char AffVersion[30]="V01 GRA";
     Serial.printf("BackDelay is %d\n",BackDelay);
     Nextion_PrintLabel();
     Nextion_PrintValues();
+
     //Synth_NoteOn(64-12);
 }
 
@@ -609,7 +612,8 @@ void loop()
 {
 static uint16_t cpttimer1;    
 static uint16_t cpttimer2;    
-static uint8_t onetime;    
+static uint8_t onetime;  
+uint8_t shift;  
     // put your main code here, to run repeatedly:
 
     static uint8_t loop_count_u8 = 0;
@@ -755,6 +759,7 @@ static uint8_t onetime;
             if(1)
             {
                 /* Play memory buffer x second of the wav file */
+                /* Only for test                               */
                 if(0)
                 {
                     if(Cptplay==GRA_MEMORY_SIZE)
@@ -771,72 +776,65 @@ static uint8_t onetime;
                     ptWave++;
                     Cptplay++;
                 }
-                /* Refresh playing buffer*/
                 if(Gra_Ask_RefreshPlaying)
                 {
-                    if(CptGrain>Gra_Size)
+                    if(CptGrain>=Gra_Size)
                     {
                         CptGrain=0;
                         Gra_Ask_RefreshPlaying=0;
                         ptGrain=ptGraGrain;
-                        Serial.printf("R");
-                    }   
-                    // Init the samples                   
-                    for(uint8_t g=0;g<Gra_Density;g++) 
-                    {
-                        *(ptGrain+g*Gra_OverlapSpl)=0;
-                    }
-                    // forcement un truc plus mieux a faire
-                    if(CptGrain<Gra_SizeAttack)
-                    {
-                        Gra_EGState=GRA_EG_ATTACK;
+                        Gra_BufferSize=Gra_NewBufferSize;
                     }
                     else
                     {
-                        if(CptGrain<Gra_SizeSustain)
-                            Gra_EGState=GRA_EG_SUSTAIN;
+                        if(CptGrain<=Gra_SizeAttack)
+                        {
+                            Gra_EGState=GRA_EG_ATTACK;
+                            if(Gra_SizeAttack>16)
+                                shift=(16-((CptGrain)/(Gra_SizeAttack/16)));
+                            else
+                                shift=0;
+                        }
                         else
                         {
-                            if(CptGrain<Gra_Size)
-                                Gra_EGState=GRA_EG_RELEASE;
-                        }
-                    }
-                    // Attack step
-                    //uint8_t div=Gra_Density;
-                    uint8_t div=2;
-                    switch(Gra_EGState)
-                    {
-                        case GRA_EG_ATTACK:
-                        for(uint8_t g=0;g<Gra_Density;g++) 
-                        {
-                            pt=ptWave+(str_tabgrain[g].u32_beginpos+CptGrain);
-                            if(pt<ptWave+GRA_MEMORY_SIZE)
+                            if(CptGrain<Gra_SizeSustain)
                             {
-                                *(ptGrain+g*Gra_OverlapSpl)+=((*pt)>>(16-((CptGrain)/(Gra_SizeAttack/16))))/div;
+                                Gra_EGState=GRA_EG_SUSTAIN;
+                                shift=0;
+                            }
+                            else
+                            {
+                                if(CptGrain<Gra_Size)
+                                {
+                                    Gra_EGState=GRA_EG_RELEASE;
+                                    if(Gra_SizeSustain>16)
+                                        shift=(((CptGrain-Gra_SizeSustain)/(Gra_SizeSustain/16)));
+                                    else
+                                        shift=0;
+                                }
                             }
                         }
-                        break;
-                        case GRA_EG_SUSTAIN:
-                        for(uint8_t g=0;g<Gra_Density;g++) 
+                        uint8_t div=2;
+                        //--------------------------------------
+                        // Apply the EG and add only 2 grains
+                        //--------------------------------------
+                        for(uint8_t g1=0;g1<Gra_Density;g1++)
                         {
-                            pt=ptWave+(str_tabgrain[g].u32_beginpos+CptGrain);
-                            if(pt<ptWave+GRA_MEMORY_SIZE)
-                                *(ptGrain+g*Gra_OverlapSpl)+=(*(pt)/div);
+                            pt=ptWave+(str_tabgrain[g1].u32_beginpos+CptGrain);
+                            ptdst = ptGrain+g1*Gra_OverlapSpl;
+                            *ptdst=((*pt)/div)>>shift;
+                            if(g1<Gra_Density && CptGrain>=Gra_OverlapSpl)
+                            {
+                                pt=ptWave+(str_tabgrain[g1+1].u32_beginpos+CptGrain);
+                                *ptdst+=((*pt)/div)>>shift;
+                                *ptdst>>=shift;
+                            }
+                            *ptdst /= div;
                         }
-                        break;
-                        case GRA_EG_RELEASE:
-                        for(uint8_t g=0;g<Gra_Density;g++) 
-                        {
-                            pt=ptWave+(str_tabgrain[g].u32_beginpos+CptGrain);
-                            if(pt<ptWave+GRA_MEMORY_SIZE)
-                                *(ptGrain+g*Gra_OverlapSpl)+=((*pt)>>(((CptGrain-Gra_SizeSustain)/(Gra_SizeSustain/16))))/div;
-                        }
-                        break;
+                        ptGrain++;
+                        CptGrain++;
                     }
-                    ptGrain++;
-                    CptGrain++;
                 }
-
                 /* Play playing buffer*/
                 if(1)
                 {
@@ -955,8 +953,11 @@ static uint8_t onetime;
                 fl_sample = (float)(sampleData32.sample[0])/32768.0f;
                 fr_sample = (float)(sampleData32.sample[1])/32768.0f;
 
-                //Reverb_Process( &fl_sample, &fr_sample, SAMPLE_BUFFER_SIZE );       
+                Delay_Process(&fl_sample, &fr_sample);
+                Reverb_Process( &fl_sample, &fr_sample, SAMPLE_BUFFER_SIZE ); 
 
+                sampleData32.sample[0] = (int16_t)(fl_sample*32768.0f);
+                sampleData32.sample[1] = (int16_t)(fr_sample*32768.0f);
                 
             }
             else
