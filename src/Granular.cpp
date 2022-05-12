@@ -107,14 +107,15 @@ GRANULAR_EXTRN int16_t*    pt;
         Gra_Density=1;
         Gra_Size            = GRA_MAX_SIZE;        // MAX GRA_MAX_SIZE
         Gra_OverlapPc        = 100;
-        Gra_SizeAttack      = Gra_Size/2;
+        Gra_SizeAttack      = 0;
         Gra_SizeSustain     = Gra_Size;
         Gra_OverlapSpl      = (Gra_Size*Gra_OverlapPc)/100;
         Gra_BufferSize      = Gra_Size+(Gra_Density-1)*Gra_OverlapSpl;
         Gra_NewBufferSize   = Gra_BufferSize;
         memset(ptGraPlayingBuffer,0,Gra_BufferSize*2);
 
-        Gra_AttackCoeff = GRA_EG_FULLSCALE/Gra_SizeAttack;
+        Gra_AttackCoeff = GRA_EG_FULLSCALE/(Gra_SizeAttack+1);
+        Gra_ReleaseCoeff = GRA_EG_FULLSCALE/(Gra_Size-1-Gra_SizeSustain);
 
         ptWave=ptGraMemory;
         ptPlay=ptGraPlayingBuffer;

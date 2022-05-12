@@ -18,7 +18,7 @@
 
 #include "ES8388.h"
 
-uint8_t serialdebug=1;
+uint8_t serialdebug=0;
 extern uint8_t Midi_KeyOn;
 
 // value to full scale
@@ -61,8 +61,8 @@ int Fct_Ch_GraBegin(int val)
 {
      if(val<0)
         val=0;
-    if(!Gra_Ask_RefreshPlaying)
-    {
+    //if(!Gra_Ask_RefreshPlaying)
+    //{
         Gra_Begin = (GRA_MEMORY_SIZE*val)/100;
         Granular_UpdateVal();
         Gra_Ask_RefreshPlaying=1;
@@ -72,7 +72,7 @@ int Fct_Ch_GraBegin(int val)
         {
             Serial.printf("Grain Begin: Pourcent %d spl %06X\n",val,Gra_Begin);
         }
-    }
+    //}
 }
 
 /***************************************************/
@@ -99,8 +99,8 @@ int Fct_Ch_GraSpace(int val)
     if(val<0)
         val=0;
 
-    if(!Gra_Ask_RefreshPlaying)
-    {
+    //if(!Gra_Ask_RefreshPlaying)
+    //{
         Gra_Space = Gra_Size+(GRA_MAX_SPACE*val)/100;
         Granular_UpdateVal();
         Gra_Ask_RefreshPlaying=1;
@@ -110,7 +110,7 @@ int Fct_Ch_GraSpace(int val)
         {
             Serial.printf("Grain Space: Pourcent %dn",Gra_Space,Gra_BufferSize);
         }
-    }         
+    //}         
 }
 
 /***************************************************/
@@ -167,21 +167,15 @@ int Fct_Ch_GraAttack(int val)
 {
     if(val<0)
         val=0;
-    if(!Gra_Ask_RefreshPlaying)
-    {
-        Gra_SizeAttack=(val*Gra_Size)/100;
-        Gra_SizeAttack /=2; // Attack max 50% of the Gra Size
-
-        Gra_AttackCoeff = GRA_EG_FULLSCALE/Gra_SizeAttack;
-
+    //if(!Gra_Ask_RefreshPlaying)
+    //{
+        Gra_SizeAttack=(Gra_Size*val)/100;
         Gra_Ask_RefreshPlaying=1;
-        ptGrain=ptGraGrain;
-        CptGrain=0;
         if(serialdebug)
         {
             Serial.printf("Grain Attack: %d\n",Gra_SizeAttack);
         }
-    }         
+    //}         
 }
 
 /***************************************************/
@@ -193,20 +187,15 @@ int Fct_Ch_GraSustain(int val)
 {
     if(val<0)
         val=0;
-    if(!Gra_Ask_RefreshPlaying)
-    {
-        Gra_SizeSustain=(val*Gra_Size)/100;
-        //Gra_SizeSustain /=2; // Attack max 50% of the Gra Size
-        Gra_ReleaseCoeff = GRA_EG_FULLSCALE/Gra_SizeSustain;
-
+    //if(!Gra_Ask_RefreshPlaying)
+    //{
+        Gra_SizeSustain=(Gra_Size*val)/100;
         Gra_Ask_RefreshPlaying=1;
-        ptGrain=ptGraGrain;
-        CptGrain=0;
         if(serialdebug)
         {
             Serial.printf("Grain Release: %d\n",Gra_SizeSustain);
         }
-    }            
+    //}            
 }
 
 /***************************************************/
@@ -219,8 +208,8 @@ int Fct_Ch_GraOverlap(int val)
     if(val<0)
         val=0;
 
-    if(!Gra_Ask_RefreshPlaying)
-    {
+    //if(!Gra_Ask_RefreshPlaying)
+    //{
         Gra_OverlapPc = val;
         Granular_UpdateVal();
         Gra_Ask_RefreshPlaying=1;
@@ -230,7 +219,7 @@ int Fct_Ch_GraOverlap(int val)
         {
             Serial.printf("Grain Overlap: %d\n",Gra_OverlapPc);
         }
-    } 
+    //} 
 }
 
 
