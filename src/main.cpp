@@ -788,7 +788,6 @@ float coeff;
                             val1 *=coeff;
                             *ptdst=(int16_t)val1;
                             // Overlap
-                            /*
                             if(g1<(Gra_Density-1) && CptGrain>=Gra_OverlapSpl)
                             {
                                 pt=ptWave+(str_tabgrain[g1+1].u32_beginpos+CptGrain);
@@ -797,7 +796,6 @@ float coeff;
                                 *ptdst=*ptdst/2 + (int16_t)val1/2;
                                 
                             }
-                            */
                             // Right
                             pt=ptWave+1+(str_tabgrain[g1].u32_beginpos+CptGrain);
                             ptdst++;
@@ -805,7 +803,6 @@ float coeff;
                             val1 *=coeff;
                             *ptdst=(int16_t)val1;
                             // Overlap
-                            /*
                             if(g1<(Gra_Density-1) && CptGrain>=Gra_OverlapSpl)
                             {
                                 pt=ptWave+(str_tabgrain[g1+1].u32_beginpos+CptGrain);
@@ -813,7 +810,6 @@ float coeff;
                                 val1 *=coeff;
                                 *ptdst=*ptdst/2 + (int16_t)val1/2;
                             }
-                            */
                         }
                         ptGrain++;
                         CptGrain++;
