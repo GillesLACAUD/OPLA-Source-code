@@ -49,13 +49,13 @@ typedef struct
 
 GRANULAR_EXTRN uint8_t Gra_Ask_RefreshPlaying;	// Ask to refresh playing buffer
 
-GRANULAR_EXTRN uint32_t Gra_Maxplay;		// Size of the wav file load max  GRA_MEMORY_SIZE
-GRANULAR_EXTRN uint32_t Gra_BufferSize;     // Size of the buffer grain max GRA_BUFFER_SIZE
-GRANULAR_EXTRN uint32_t Gra_NewBufferSize;	// Ask to new buffer size
+GRANULAR_EXTRN uint32_t Gra_Maxplay;			// Size of the wav file load max  GRA_MEMORY_SIZE
+GRANULAR_EXTRN uint32_t Gra_BufferSize;     	// Size of the buffer grain max GRA_BUFFER_SIZE
+GRANULAR_EXTRN uint32_t Gra_NewBufferSize;		// Ask to new buffer size
 GRANULAR_EXTRN uint32_t Gra_Begin;
 GRANULAR_EXTRN uint32_t Gra_Space;
-GRANULAR_EXTRN uint32_t Gra_Size;           // Size of a grain max GRA_MAX_SIZE
-GRANULAR_EXTRN uint8_t  Gra_Density;      	// Number of grain Max GRAIN_MAX 1 Mini
+GRANULAR_EXTRN uint32_t Gra_Size;           	// Size of a grain max GRA_MAX_SIZE
+GRANULAR_EXTRN uint8_t  Gra_Density;      		// Number of grain Max GRAIN_MAX 1 Mini
 
 
 #define GRA_EG_ATTACK		0
@@ -103,5 +103,6 @@ GRANULAR_EXTRN void     Granular_Init(void);
 GRANULAR_EXTRN void     Granular_Reset(void);
 GRANULAR_EXTRN uint32_t Granular_LoadWave(char* name);
 GRANULAR_EXTRN void 	Granular_UpdateVal(void);
+GRANULAR_EXTRN void 	Granular_Process(void);
 GRANULAR_EXTRN void 	Granular_Dump(void);
 

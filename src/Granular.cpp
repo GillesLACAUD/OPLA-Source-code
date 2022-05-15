@@ -107,8 +107,8 @@ GRANULAR_EXTRN int16_t*    pt;
         Gra_Density=1;
         Gra_Size            = GRA_MAX_SIZE;        // MAX GRA_MAX_SIZE
         Gra_OverlapPc        = 100;
-        Gra_SizeAttack      = 0;
-        Gra_SizeSustain     = Gra_Size;
+        Gra_SizeAttack      = (20*Gra_Size)/100;
+        Gra_SizeSustain     = (80*Gra_Size)/100;;
         Gra_OverlapSpl      = (Gra_Size*Gra_OverlapPc)/100;
         Gra_BufferSize      = Gra_Size+(Gra_Density-1)*Gra_OverlapSpl;
         Gra_NewBufferSize   = Gra_BufferSize;
@@ -153,6 +153,114 @@ void Granular_Dump(void)
     Serial.printf("MAX Gra_BufferSize    %06d\r\n",GRA_MAX_SIZE*GRAIN_MAX);
 }
 
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+void Granular_Process(void)
+{
+float val1;
+float coeff;    
+static uint8_t cptstep=0;
+static uint8_t step;
+static uint8_t firstg;
+static uint8_t lastg;
+uint8_t stepnbgrain=3;
+
+    // Can only compute x Grain at one time
+    // 01-06 Fist step
+    // 07-12 Second Step
+    // 12-18 Third Step
+    
+    step=Gra_Density/stepnbgrain;
+    firstg=stepnbgrain*cptstep;
+    lastg=stepnbgrain*(cptstep+1);
+    firstg=stepnbgrain*cptstep;
+    lastg=stepnbgrain*(cptstep+1);
+    if(lastg>Gra_Density)
+        lastg=Gra_Density;
+        
+    //firstg=0;
+    //lastg=Gra_Density;
+
+    /* Refresh playing buffer*/
+    if(Gra_Ask_RefreshPlaying)
+    {
+        if(CptGrain>=Gra_Size)
+        {
+            CptGrain=0;
+            //Gra_Ask_RefreshPlaying=0;
+            ptGrain=ptGraGrain;
+            cptstep++;
+            if(cptstep>step)
+            {
+                Gra_BufferSize=Gra_NewBufferSize;
+                cptstep=0;
+            }
+        }
+        else
+        {
+            if(CptGrain<Gra_SizeAttack)
+            {
+                coeff=(float)CptGrain/(float)(Gra_SizeAttack+1);
+            }
+            else
+            {
+                if(CptGrain<Gra_SizeSustain)
+                {
+                    coeff=1;
+                }
+                else
+                {
+                    if(CptGrain<Gra_Size)
+                    {
+                        coeff=(float)(CptGrain-Gra_SizeSustain)/(float)(Gra_Size-Gra_SizeSustain);
+                        coeff=1-coeff;
+                    }
+                }
+            }
+            uint8_t div=1;
+            //--------------------------------------
+            // Apply the EG and add only 2 grains
+            //--------------------------------------
+            for(uint8_t g1=firstg;g1<lastg;g1++)
+            {
+                // Left
+                pt=ptWave+(str_tabgrain[g1].u32_beginpos+CptGrain);
+                ptdst = ptGrain+g1*Gra_OverlapSpl;
+                val1 = (float)(*pt)/2;
+                val1 *=coeff;
+                *ptdst=(int16_t)val1;
+                // Overlap
+                if(g1<(Gra_Density-1)/* && CptGrain>=Gra_OverlapSpl*/)
+                {
+                    pt=ptWave+(str_tabgrain[g1+1].u32_beginpos+CptGrain);
+                    val1 = (float)(*pt)/2;
+                    val1 *=coeff;
+                    *ptdst=*ptdst/2 + (int16_t)val1/2;
+                    
+                }
+                // Right
+                pt=ptWave+1+(str_tabgrain[g1].u32_beginpos+CptGrain);
+                ptdst++;
+                val1 = (float)(*pt)/2;
+                val1 *=coeff;
+                *ptdst=(int16_t)val1;
+                // Overlap
+                if(g1<(Gra_Density-1)/* && CptGrain>=Gra_OverlapSpl*/)
+                {
+                    pt=ptWave+(str_tabgrain[g1+1].u32_beginpos+CptGrain);
+                    val1 = (float)(*pt)/2;
+                    val1 *=coeff;
+                    *ptdst=*ptdst/2 + (int16_t)val1/2;
+                }
+            }
+            ptGrain++;
+            CptGrain++;
+        }
+    }
+}
 
 /***************************************************/
 /*                                                 */

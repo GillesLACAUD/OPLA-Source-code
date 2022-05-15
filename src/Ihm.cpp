@@ -208,18 +208,13 @@ int Fct_Ch_GraOverlap(int val)
     if(val<0)
         val=0;
 
-    //if(!Gra_Ask_RefreshPlaying)
-    //{
-        Gra_OverlapPc = val;
-        Granular_UpdateVal();
-        Gra_Ask_RefreshPlaying=1;
-        ptGrain=ptGraGrain;
-        CptGrain=0;
-        if(serialdebug)
-        {
-            Serial.printf("Grain Overlap: %d\n",Gra_OverlapPc);
-        }
-    //} 
+    Gra_OverlapPc = val;
+    //Granular_UpdateVal();
+    Gra_Ask_RefreshPlaying=1;
+    if(serialdebug)
+    {
+        Serial.printf("Grain Overlap: %d\n",Gra_OverlapPc);
+    }
 }
 
 

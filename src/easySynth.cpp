@@ -22,6 +22,7 @@
 #include "Reverb.h"
 #include "Nextion.h"
 #include "Modulator.h"
+#include "Granular.h"
 
 #include "esp_attr.h"
 
@@ -665,6 +666,8 @@ uint16_t Triinc,Tridec;
 float finc,fdec;
 uint32_t spread;
 float ftmp;
+static uint32_t cptwave=0;
+int16_t Left_Ch,Right_Ch;
 
 int cmp;
 int indx=0;
@@ -814,49 +817,6 @@ int indx=0;
 
 		}
 	}
-	//-------------------------------------------------
-    // Add Waveshapping2
-	// OUT wavework tab
-    //-------------------------------------------------
-
-    // wave shaping2 on going ---- ????
-    /*
-    tmp = 0.5;
-    trig=WAVEFORM_CNT - (float)WAVEFORM_CNT*tmp;
-    for (i = 0; i < trig; i++)
-    {
-        wavework[i] = wavework[i];
-    }
-    */
-    // To much time ?
-    /*
-    sup = OldWaveShapping2Mod+0.10;
-    inf = OldWaveShapping2Mod-0.10;  
-    trig = WAVEFORM_CNT*(1-WaveShapping2Mod);
-    if(WaveShapping2Mod > sup || WaveShapping2Mod < inf)
-    {
-        OldWaveShapping2Mod = WaveShapping2Mod;
-        for (i = 0; i < trig; i++)
-        {
-            wavework[i] = 0;
-        }
-        for (i = trig; i < WAVEFORM_CNT; i++)
-        {
-        }
-        
-    }
-    */
-
-
-    /*
-    for (i = 0; i < WAVEFORM_CNT; i++)
-    {
-        if(wavework[i]>1.0)
-            wavework[i]=1.0;
-        if(wavework[i]<-1.0)
-           wavework[i]=-1.0;
-    }
-    */ 
 	
 	//-------------------------------------------------
     // Oscillator processing -> mix to voice
@@ -875,14 +835,53 @@ int indx=0;
                 spread = (uint32_t)((float)osc->addVal*(voice->spread));
                 // Apply the pitch modulation and the pitch bend + the pitch EG
                 osc->samplePos += (uint32_t)((float)spread*(1+PitchMod)*pitchMultiplier*(1+voice->p_control_sign*pitchEG));
+                osc->wavePos +=2;
                 switch(o)
                 {
-                    case 0: sig = osc->waveForm[WAVEFORM_I(osc->samplePos)]*MixOsc;break;
-                    case 1: sig = osc->waveForm[WAVEFORM_I(osc->samplePos)]*MixOsc;break;
-                    case 2: sig = osc->waveForm[WAVEFORM_I(osc->samplePos)]*MixSub;break;
+                    //case 0: sig = osc->waveForm[WAVEFORM_I(osc->samplePos)]*MixOsc;break;
+                    //case 1: sig = osc->waveForm[WAVEFORM_I(osc->samplePos)]*MixOsc;break;
+                    //case 2: sig = osc->waveForm[WAVEFORM_I(osc->samplePos)]*MixSub;break;
+                    case 0: sig = osc->waveForm[WAVEFORM_I(osc->samplePos)]*0;break;
+                    case 1: sig = osc->waveForm[WAVEFORM_I(osc->samplePos)]*0;break;
+                    case 2: sig = osc->waveForm[WAVEFORM_I(osc->samplePos)]*0;break;
                 }
                 osc->dest[0] += osc->pan_l * sig;
                 osc->dest[1] += osc->pan_r * sig;
+                if(o==2)
+                {
+                    if(1)
+                    {
+                        if(osc->wavePos>=Gra_BufferSize)
+                        {
+                            osc->wavePos -=Gra_BufferSize;
+                        }  
+                        ptPlay=ptGraPlayingBuffer+osc->wavePos;
+                        Left_Ch = (*(ptPlay));
+                        Left_Ch /=1;
+                        osc->wavePos++;
+                        ptPlay=ptGraPlayingBuffer+osc->wavePos+1;
+                        Right_Ch = (*(ptPlay));
+                        Right_Ch /=1;
+                        osc->wavePos++;
+
+                        osc->dest[0] +=(float)(Left_Ch)/32768.0f;
+                        osc->dest[1] +=(float)(Right_Ch)/32768.0f;
+                    }
+                }
+                // Add here the wave oscillator with a max Gra_BufferSize
+                // if osc->samplepos > Gra_BufferSize
+                // osc->samplepos -= Gra_BufferSize;
+                /*
+                cptwave +=osc->addVal;
+                if(cptwave>Gra_BufferSize)
+                {
+                    cptwave -=Gra_BufferSize;
+                }
+                int16_t tmp;
+                tmp = (float)(*(ptGraPlayingBuffer+osc->addVal));
+                sig =(float)tmp/32768.0f;
+                osc->dest[0] += sig;
+                */
             }
         }
     }

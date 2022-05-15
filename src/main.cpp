@@ -533,7 +533,7 @@ char AffVersion[30]="V01 GRA";
     // TEST GRANULAR
     //------------------------------------------------------------------------
     Granular_Init();
-    Gra_Maxplay=Granular_LoadWave("voice.wav");
+    Gra_Maxplay=Granular_LoadWave("Voice.wav");
     Granular_UpdateVal();
     Granular_Dump();
     Gra_Ask_RefreshPlaying=1; // Ask to refresh playing buffer
@@ -613,8 +613,6 @@ void loop()
 static uint16_t cpttimer1;    
 static uint16_t cpttimer2;    
 static uint8_t onetime;  
-float val1,val2;
-float coeff;
 
     // put your main code here, to run repeatedly:
 
@@ -738,85 +736,15 @@ float coeff;
     sampleData32.sample[0] = (int16_t)(fl_sample*32768.0f);
     sampleData32.sample[1] = (int16_t)(fr_sample*32768.0f);
     */
+    
     if(!StopAudioOut)
     {
         if(i2s_write_sample_16ch2(sampleData32.sample32))
         {
-            if(1)
-            {
-                /* Refresh playing buffer*/
-                if(Gra_Ask_RefreshPlaying)
-                {
-                    if(CptGrain>=Gra_Size)
-                    {
-                        CptGrain=0;
-                        //Gra_Ask_RefreshPlaying=0;
-                        ptGrain=ptGraGrain;
-                        Gra_BufferSize=Gra_NewBufferSize;
-                    }
-                    else
-                    {
-                        if(CptGrain<Gra_SizeAttack)
-                        {
-                            coeff=(float)CptGrain/(float)(Gra_SizeAttack+1);
-                        }
-                        else
-                        {
-                            if(CptGrain<Gra_SizeSustain)
-                            {
-                                coeff=1;
-                            }
-                            else
-                            {
-                                if(CptGrain<Gra_Size)
-                                {
-                                    coeff=(float)(CptGrain-Gra_SizeSustain)/(float)(Gra_Size-Gra_SizeSustain);
-                                    coeff=1-coeff;
-                                }
-                            }
-                        }
-                        uint8_t div=1;
-                        //--------------------------------------
-                        // Apply the EG and add only 2 grains
-                        //--------------------------------------
-                        for(uint8_t g1=0;g1<Gra_Density;g1++)
-                        {
-                            // Left
-                            pt=ptWave+(str_tabgrain[g1].u32_beginpos+CptGrain);
-                            ptdst = ptGrain+g1*Gra_OverlapSpl;
-                            val1 = (float)(*pt);
-                            val1 *=coeff;
-                            *ptdst=(int16_t)val1;
-                            // Overlap
-                            if(g1<(Gra_Density-1) && CptGrain>=Gra_OverlapSpl)
-                            {
-                                pt=ptWave+(str_tabgrain[g1+1].u32_beginpos+CptGrain);
-                                val1 = (float)(*pt);
-                                val1 *=coeff;
-                                *ptdst=*ptdst/2 + (int16_t)val1/2;
-                                
-                            }
-                            // Right
-                            pt=ptWave+1+(str_tabgrain[g1].u32_beginpos+CptGrain);
-                            ptdst++;
-                            val1 = (float)(*pt);
-                            val1 *=coeff;
-                            *ptdst=(int16_t)val1;
-                            // Overlap
-                            if(g1<(Gra_Density-1) && CptGrain>=Gra_OverlapSpl)
-                            {
-                                pt=ptWave+(str_tabgrain[g1+1].u32_beginpos+CptGrain);
-                                val1 = (float)(*pt);
-                                val1 *=coeff;
-                                *ptdst=*ptdst/2 + (int16_t)val1/2;
-                            }
-                        }
-                        ptGrain++;
-                        CptGrain++;
-                    }
-                }
-            }
+            Granular_Process();
+            Synth_Process(&fl_sample, &fr_sample);
             /* Play playing buffer*/
+            /*
             if(1)
             {
                 if(Cptplay>=Gra_BufferSize)
@@ -824,19 +752,20 @@ float coeff;
                     Cptplay=0;
                     ptPlay=ptGraPlayingBuffer;
                 }  
-                sampleData32.sample[0] = (*ptPlay);
-                sampleData32.sample[0] /=10;
+                Left_Ch = (*ptPlay);
+                Left_Ch /=10;
                 ptPlay++;
                 Cptplay++;
-                sampleData32.sample[1] = (*ptPlay);
-                sampleData32.sample[1] /=10;
+                Right_Ch = (*ptPlay);
+                Right_Ch /=10;
                 ptPlay++;
                 Cptplay++;
             }
-            fl_sample = (float)(sampleData32.sample[0])/32768.0f;
-            fr_sample = (float)(sampleData32.sample[1])/32768.0f;
+            */
+            //fl_sample = (float)(Left_Ch)/32768.0f;
+            //fr_sample = (float)(Right_Ch)/32768.0f;
 
-            Delay_Process(&fl_sample, &fr_sample);
+            //Delay_Process(&fl_sample, &fr_sample);
             Reverb_Process( &fl_sample, &fr_sample, SAMPLE_BUFFER_SIZE ); 
 
             sampleData32.sample[0] = (int16_t)(fl_sample*32768.0f);

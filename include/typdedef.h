@@ -179,6 +179,7 @@ struct oscillatorT
     uint32_t addVal;
     float pan_l;
     float pan_r;
+    uint32_t wavePos;
 };
 
 
