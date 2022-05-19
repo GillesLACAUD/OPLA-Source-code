@@ -161,6 +161,12 @@ struct notePlayerT
     float control_sign;
     float out_level;
 
+    double 		d_speed;
+	double 		d_cumulspeed;
+	uint32_t	u32_speed;
+	uint32_t	u32_cumulspeed;
+    uint32_t	u32_cumulWhole;
+
     struct filterCoeffT filterC;
     struct filterProcT filterL;
     struct filterProcT filterR;
@@ -179,7 +185,6 @@ struct oscillatorT
     uint32_t addVal;
     float pan_l;
     float pan_r;
-    uint32_t wavePos;
 };
 
 

@@ -16,6 +16,96 @@
 #define __GRANULAR__
 #include "Granular.h"
 
+
+/**************************************************/
+/* Transpose Pitch shifting                       */
+/*                                                */
+/*                                                */
+/*                                                */
+/**************************************************/
+uint32_t Granular_TransposeStereo(notePlayerT *voice)
+{
+uint32_t u32_whole=0;
+uint32_t u32_rest=0;
+
+    // En entier 1000 = 1.0 -> on pert des decimales
+    voice->u32_cumulspeed +=voice->u32_speed;
+    u32_whole= voice->u32_cumulspeed/1000;
+    u32_rest = voice->u32_cumulspeed - u32_whole*1000;
+    voice->u32_cumulspeed = u32_rest;
+    voice->u32_cumulWhole +=2*u32_whole;
+    if(voice->u32_cumulWhole>Gra_BufferSize)
+    {
+        voice->u32_cumulWhole -=Gra_BufferSize;
+    }
+	return voice->u32_cumulWhole;
+}
+
+/*
+int oldGranular_TransposeStereo(notePlayerT *voice)
+{
+uint16_t srcCount=0;
+uint16_t srcSampleEnd = *ptsrcSamples-0;
+double whole=0;
+double rest=0;
+
+uint32_t u32_whole=0;
+uint32_t u32_rest=0;
+
+    while(srcCount < srcSampleEnd)
+    {
+        dest[0] += src[0];
+        dest[1] += src[1];
+        dest+=2;
+        cptdest++;
+        // En entier 1000 = 1.0 -> on pert des decimales
+        str_Sound_Work.str_VOICE_Tab[voice].u32_cumulspeed +=str_Sound_Work.str_VOICE_Tab[voice].u32_speed;
+        u32_whole = str_Sound_Work.str_VOICE_Tab[voice].u32_cumulspeed/1000;
+        src += 2*u32_whole;
+        u32_rest = str_Sound_Work.str_VOICE_Tab[voice].u32_cumulspeed - u32_whole*1000;
+        str_Sound_Work.str_VOICE_Tab[voice].u32_cumulspeed = u32_rest;
+        srcCount += u32_whole;
+
+        //--------------------------------
+		// The OUTPUT buffer is full
+		//--------------------------------
+		if(cptdest>=sizedest)
+		{
+			cptdest=0;break;
+		}
+    }
+	return cptdest;
+}
+*/
+
+
+
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+double Granular_MidiNoteRatio(int midiNote)
+{
+    int distanceFromCenter = midiNote - 60; // 60 is the central midi note
+
+    if ( distanceFromCenter < 0 )
+    {
+        int diffAmount = -distanceFromCenter;
+        int octaves = diffAmount / 12;
+        int intervals = diffAmount % 12;
+
+        return pow( 0.5, octaves ) / chromaticRatios[intervals];
+    }
+    else
+    {
+        int octaves = distanceFromCenter / 12;
+        int intervals = distanceFromCenter % 12;
+        return pow( 2, octaves ) * chromaticRatios[intervals];
+    }
+}
+
+
 /***************************************************/
 /*                                                 */
 /*                                                 */

@@ -765,7 +765,7 @@ static uint8_t onetime;
             //fl_sample = (float)(Left_Ch)/32768.0f;
             //fr_sample = (float)(Right_Ch)/32768.0f;
 
-            //Delay_Process(&fl_sample, &fr_sample);
+            Delay_Process(&fl_sample, &fr_sample);
             Reverb_Process( &fl_sample, &fr_sample, SAMPLE_BUFFER_SIZE ); 
 
             sampleData32.sample[0] = (int16_t)(fl_sample*32768.0f);

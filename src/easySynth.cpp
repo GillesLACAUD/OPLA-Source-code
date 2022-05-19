@@ -662,8 +662,6 @@ void IRAM_ATTR Synth_Process(float *left, float *right)
 {
 bool voice_off;
 float nz=0;
-uint16_t Triinc,Tridec;
-float finc,fdec;
 uint32_t spread;
 float ftmp;
 static uint32_t cptwave=0;
@@ -702,6 +700,7 @@ int indx=0;
     selectedWaveForm = &wavework[0];
 	sup = OldWaveShapping1Mod+0.02;
 	inf = OldWaveShapping1Mod-0.02;    
+    /*
 	if(WaveShapping1Mod > sup || WaveShapping1Mod < inf)
 	{
 		tmp = WaveShapping1+WaveShapping1Mod;
@@ -817,6 +816,7 @@ int indx=0;
 
 		}
 	}
+    */
 	
 	//-------------------------------------------------
     // Oscillator processing -> mix to voice
@@ -835,7 +835,6 @@ int indx=0;
                 spread = (uint32_t)((float)osc->addVal*(voice->spread));
                 // Apply the pitch modulation and the pitch bend + the pitch EG
                 osc->samplePos += (uint32_t)((float)spread*(1+PitchMod)*pitchMultiplier*(1+voice->p_control_sign*pitchEG));
-                osc->wavePos +=2;
                 switch(o)
                 {
                     //case 0: sig = osc->waveForm[WAVEFORM_I(osc->samplePos)]*MixOsc;break;
@@ -843,51 +842,29 @@ int indx=0;
                     //case 2: sig = osc->waveForm[WAVEFORM_I(osc->samplePos)]*MixSub;break;
                     case 0: sig = osc->waveForm[WAVEFORM_I(osc->samplePos)]*0;break;
                     case 1: sig = osc->waveForm[WAVEFORM_I(osc->samplePos)]*0;break;
-                    case 2: sig = osc->waveForm[WAVEFORM_I(osc->samplePos)]*0;break;
+                    //case 2: sig = osc->waveForm[WAVEFORM_I(osc->samplePos)]*0;break;
                 }
                 osc->dest[0] += osc->pan_l * sig;
                 osc->dest[1] += osc->pan_r * sig;
-                if(o==2)
-                {
-                    if(1)
-                    {
-                        if(osc->wavePos>=Gra_BufferSize)
-                        {
-                            osc->wavePos -=Gra_BufferSize;
-                        }  
-                        ptPlay=ptGraPlayingBuffer+osc->wavePos;
-                        Left_Ch = (*(ptPlay));
-                        Left_Ch /=1;
-                        osc->wavePos++;
-                        ptPlay=ptGraPlayingBuffer+osc->wavePos+1;
-                        Right_Ch = (*(ptPlay));
-                        Right_Ch /=1;
-                        osc->wavePos++;
-
-                        osc->dest[0] +=(float)(Left_Ch)/32768.0f;
-                        osc->dest[1] +=(float)(Right_Ch)/32768.0f;
-                    }
-                }
-                // Add here the wave oscillator with a max Gra_BufferSize
-                // if osc->samplepos > Gra_BufferSize
-                // osc->samplepos -= Gra_BufferSize;
-                /*
-                cptwave +=osc->addVal;
-                if(cptwave>Gra_BufferSize)
-                {
-                    cptwave -=Gra_BufferSize;
-                }
-                int16_t tmp;
-                tmp = (float)(*(ptGraPlayingBuffer+osc->addVal));
-                sig =(float)tmp/32768.0f;
-                osc->dest[0] += sig;
-                */
+            }
+            // Add Granular OSC (fake OSC2)
+            if(1)
+            {
+                oscillatorT *osc = &oscPlayer[2];
+                Granular_TransposeStereo(voice);
+                ptPlay=ptGraPlayingBuffer+voice->u32_cumulWhole;
+                Left_Ch = (*(ptPlay));
+                Left_Ch /=1;
+                ptPlay=ptGraPlayingBuffer+cptwave+1;
+                Right_Ch = (*(ptPlay));
+                Right_Ch /=1;
+                osc->dest[0] +=(float)(Left_Ch)/32768.0f;
+                osc->dest[1] +=(float)(Right_Ch)/32768.0f;
             }
         }
     }
+    //Serial.printf("--- Gra 1 %06d 2 %06d 3 %06d 4 %06d \n",voicePlayer[0].u32_cumulWhole,voicePlayer[1].u32_cumulWhole,voicePlayer[2].u32_cumulWhole,voicePlayer[3].u32_cumulWhole);
     PitchMod = 0;
-
-	
     
     // Apply the filter Modulation
     FiltCutoffMod +=filtCutoff;
@@ -959,7 +936,7 @@ int indx=0;
 			// Filter for each voice
             if(SoundMode==SND_MODE_POLY)
 			{
-                voice->lastSample[0] = KarlsenLPF(voice->lastSample[0],cf, filtReso,i);
+                //voice->lastSample[0] = KarlsenLPF(voice->lastSample[0],cf, filtReso,i);
             }
 			
             // Add some noise to the voice post filter
@@ -980,8 +957,8 @@ int indx=0;
     // Para or mono mode
     if(SoundMode!=SND_MODE_POLY)
     {
-        out_l = KarlsenLPF(out_l,cf+voicePlayer[0].f_control_sign*filterEG, filtReso,0);
-        out_r = KarlsenLPF(out_r,cf+voicePlayer[0].f_control_sign*filterEG, filtReso,1);
+        //out_l = KarlsenLPF(out_l,cf+voicePlayer[0].f_control_sign*filterEG, filtReso,0);
+        //out_r = KarlsenLPF(out_r,cf+voicePlayer[0].f_control_sign*filterEG, filtReso,1);
     }
     
     float multi = (1+AmpMod)*GeneralVolume;
@@ -1150,6 +1127,7 @@ void Synth_NoteOn(uint8_t note,uint8_t vel)
 {
 uint8_t retrig;
 float setvel;
+float pitch;
 
     struct notePlayerT *voice = getFreeVoice(note,&retrig);
     struct oscillatorT *osc = getFreeOsc();
@@ -1164,6 +1142,14 @@ float setvel;
     }
 
     voice->midiNote = note;
+
+    pitch =Granular_MidiNoteRatio(note);
+    voice->d_speed=pitch;
+    voice->u32_speed=pitch*1000;
+    voice->u32_cumulWhole=0;
+    voice->u32_cumulspeed=0;
+    
+    //Serial.printf("----------- Granular pitch %d\n",voice->u32_speed);
 
     
     // PanSpread  000 -> 1

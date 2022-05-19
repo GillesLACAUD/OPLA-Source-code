@@ -98,6 +98,26 @@ GRANULAR_EXTRN int16_t* 	ptdst;
 GRANULAR_EXTRN int16_t* 	ptsrc;
 GRANULAR_EXTRN int16_t*   	pt;    
 
+#ifdef __GRANULAR__
+double chromaticRatios[] = {
+    1,
+    1.0594630943591,
+    1.1224620483089,
+    1.1892071150019,
+    1.2599210498937,
+    1.3348398541685,
+    1.4142135623711,
+    1.4983070768743,
+    1.5874010519653,
+    1.6817928305039,
+    1.7817974362766,
+    1.8877486253586
+};
+#else
+GRANULAR_EXTRN double chromaticRatios[];
+#endif
+
+
 
 GRANULAR_EXTRN void     Granular_Init(void);
 GRANULAR_EXTRN void     Granular_Reset(void);
@@ -105,4 +125,7 @@ GRANULAR_EXTRN uint32_t Granular_LoadWave(char* name);
 GRANULAR_EXTRN void 	Granular_UpdateVal(void);
 GRANULAR_EXTRN void 	Granular_Process(void);
 GRANULAR_EXTRN void 	Granular_Dump(void);
+GRANULAR_EXTRN double 	Granular_MidiNoteRatio(int midiNote);
+GRANULAR_EXTRN uint32_t	Granular_TransposeStereo(notePlayerT *voice);
+
 
