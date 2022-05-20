@@ -41,45 +41,6 @@ uint32_t u32_rest=0;
 	return voice->u32_cumulWhole;
 }
 
-/*
-int oldGranular_TransposeStereo(notePlayerT *voice)
-{
-uint16_t srcCount=0;
-uint16_t srcSampleEnd = *ptsrcSamples-0;
-double whole=0;
-double rest=0;
-
-uint32_t u32_whole=0;
-uint32_t u32_rest=0;
-
-    while(srcCount < srcSampleEnd)
-    {
-        dest[0] += src[0];
-        dest[1] += src[1];
-        dest+=2;
-        cptdest++;
-        // En entier 1000 = 1.0 -> on pert des decimales
-        str_Sound_Work.str_VOICE_Tab[voice].u32_cumulspeed +=str_Sound_Work.str_VOICE_Tab[voice].u32_speed;
-        u32_whole = str_Sound_Work.str_VOICE_Tab[voice].u32_cumulspeed/1000;
-        src += 2*u32_whole;
-        u32_rest = str_Sound_Work.str_VOICE_Tab[voice].u32_cumulspeed - u32_whole*1000;
-        str_Sound_Work.str_VOICE_Tab[voice].u32_cumulspeed = u32_rest;
-        srcCount += u32_whole;
-
-        //--------------------------------
-		// The OUTPUT buffer is full
-		//--------------------------------
-		if(cptdest>=sizedest)
-		{
-			cptdest=0;break;
-		}
-    }
-	return cptdest;
-}
-*/
-
-
-
 /***************************************************/
 /*                                                 */
 /*                                                 */

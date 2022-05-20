@@ -166,6 +166,8 @@ struct notePlayerT
 	uint32_t	u32_speed;
 	uint32_t	u32_cumulspeed;
     uint32_t	u32_cumulWhole;
+    int16_t     i16_Left;
+    int16_t     i16_Right;
 
     struct filterCoeffT filterC;
     struct filterProcT filterL;

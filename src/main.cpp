@@ -741,8 +741,8 @@ static uint8_t onetime;
     {
         if(i2s_write_sample_16ch2(sampleData32.sample32))
         {
-            Granular_Process();
             Synth_Process(&fl_sample, &fr_sample);
+            Granular_Process();
             /* Play playing buffer*/
             /*
             if(1)

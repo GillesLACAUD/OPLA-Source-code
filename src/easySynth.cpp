@@ -661,18 +661,8 @@ extern portMUX_TYPE timer2Mux_xms;
 void IRAM_ATTR Synth_Process(float *left, float *right)
 {
 bool voice_off;
-float nz=0;
-uint32_t spread;
-float ftmp;
 static uint32_t cptwave=0;
 int16_t Left_Ch,Right_Ch;
-
-int cmp;
-int indx=0;
-
-    nz = ((random(1024) / 512.0f) - 1.0f)*NoiseLevel*(1+NoiseMod);
-    if(NoiseType == NOISE_POST)
-        nz /=16;
 
     out_l = 0;
     out_r = 0;
@@ -685,196 +675,31 @@ int indx=0;
      */
     voiceSink[0] = 0;
     voiceSink[1] = 0;
-
-
-    float sup;
-    float inf;
-    float tmp;
-    float slope=0;
-    int trig;
-    
-    //-------------------------------------------------
-    // Rebuilt the wavework tab with WS1 vs waveform1
-	// OUT wavework tab
-    //-------------------------------------------------
-    selectedWaveForm = &wavework[0];
-	sup = OldWaveShapping1Mod+0.02;
-	inf = OldWaveShapping1Mod-0.02;    
-    /*
-	if(WaveShapping1Mod > sup || WaveShapping1Mod < inf)
-	{
-		tmp = WaveShapping1+WaveShapping1Mod;
-		if(tmp>0.99)
-			tmp = 0.99;
-		if(tmp<0)
-			tmp = 0;
-		OldWaveShapping1Mod = WaveShapping1Mod;
-
-		switch(selWaveForm1)
-		{
-
-			case WAVE_SILENCE:
-			for (i = 0; i < WAVEFORM_CNT; i++)
-			{
-				wavework[i] = 0;
-			}
-			break;
-			
-			// PWM
-			case WAVE_SQUARE:
-			cmp = WAVEFORM_Q2-((int)(float)WAVEFORM_Q2*tmp);
-			for (i = 0; i < cmp; i++)
-			{
-				wavework[i] = 1;
-			}
-			for (i = cmp; i < WAVEFORM_CNT; i++)
-			{
-				wavework[i] = -1;
-			}
-			break;
-
-			case WAVE_PULSE:
-			trig=WAVEFORM_Q4 - (int)((float)(WAVEFORM_Q4)*tmp);
-			if(trig!=WAVEFORM_Q4)
-				slope=2/(float)(WAVEFORM_Q4-trig);
-			for (i = 0; i < trig; i++)
-			{
-				wavework[i] = 1;
-			}
-			for (i = trig; i < WAVEFORM_Q4; i++)
-			{
-				wavework[i] = 1-slope*(i-trig);
-			}
-			for (i = WAVEFORM_Q4; i < WAVEFORM_CNT; i++)
-			{
-				wavework[i] = -1;
-			}
-			break;
-
-			case WAVE_TRI:
-			// Tri to Saw
-			for (i = 0; i < WAVEFORM_CNT; i++)
-			{
-				wavework[i] = tri[i]*(1-tmp)+saw[i]*tmp;
-				if(wavework[i]>1.0)
-					wavework[i]=1.0;
-				if(wavework[i]<-1.0)
-					wavework[i]=-1.0;
-			}
-			break;
-
-			case WAVE_NOISE:
-			// Noise to Saw
-			for (i = 0; i < WAVEFORM_CNT; i++)
-			{
-				wavework[i] = noise[i]*(1-tmp)+saw[i]*tmp;      // Morphing
-				if(wavework[i]>1.0)
-					wavework[i]=1.0;
-				if(wavework[i]<-1.0)
-					wavework[i]=-1.0;
-			}
-			break;
-		
-			case WAVE_SINE:
-			// Multiply sine
-			cmp = 1+tmp*12;
-			for (i = 0; i < WAVEFORM_CNT; i++)
-			{
-				wavework[i] = sine[indx];
-				indx+=cmp;
-				if(indx>WAVEFORM_CNT)
-					indx=0;
-			}
-			break;
-
-			case WAVE_SAW:
-			// Saw to Sine
-			for (i = 0; i < WAVEFORM_CNT; i++)
-			{
-				wavework[i] = saw[i]*(1-tmp)+sine[i]*tmp;      // Morphing
-				if(wavework[i]>1.0)
-					wavework[i]=1.0;
-				if(wavework[i]<-1.0)
-					wavework[i]=-1.0;
-			}
-			break;
-
-			case WAVE_AKWF:
-			trig=WAVEFORM_CNT - (float)WAVEFORM_CNT*tmp;
-			for (i = 0; i < trig; i++)
-			{
-				wavework[i] = waveAKWF[i];
-			}
-			int j=0;
-			for (i = trig; i < WAVEFORM_CNT; i++)
-			{
-				//wavework[i] = saw[j];
-				//j++;
-				wavework[i] = 0;
-			}
-			break;
-
-		}
-	}
-    */
 	
 	//-------------------------------------------------
     // Oscillator processing -> mix to voice
 	// OUT dest[0],dest[1] for left right
     //-------------------------------------------------
-    float sig;
     for (int v = 0; v < WS.PolyMax; v++) /* one loop is faster than two loops */
     {
         notePlayerT *voice = &voicePlayer[v];
         if (voice->active)            
         {
-            for (int o = 0; o < OSC_PER_VOICE; o++)
-            {
-                oscillatorT *osc = &oscPlayer[o+v*OSC_PER_VOICE];
-                // Apply the pitch spread
-                spread = (uint32_t)((float)osc->addVal*(voice->spread));
-                // Apply the pitch modulation and the pitch bend + the pitch EG
-                osc->samplePos += (uint32_t)((float)spread*(1+PitchMod)*pitchMultiplier*(1+voice->p_control_sign*pitchEG));
-                switch(o)
-                {
-                    //case 0: sig = osc->waveForm[WAVEFORM_I(osc->samplePos)]*MixOsc;break;
-                    //case 1: sig = osc->waveForm[WAVEFORM_I(osc->samplePos)]*MixOsc;break;
-                    //case 2: sig = osc->waveForm[WAVEFORM_I(osc->samplePos)]*MixSub;break;
-                    case 0: sig = osc->waveForm[WAVEFORM_I(osc->samplePos)]*0;break;
-                    case 1: sig = osc->waveForm[WAVEFORM_I(osc->samplePos)]*0;break;
-                    //case 2: sig = osc->waveForm[WAVEFORM_I(osc->samplePos)]*0;break;
-                }
-                osc->dest[0] += osc->pan_l * sig;
-                osc->dest[1] += osc->pan_r * sig;
-            }
             // Add Granular OSC (fake OSC2)
-            if(1)
-            {
-                oscillatorT *osc = &oscPlayer[2];
-                Granular_TransposeStereo(voice);
-                ptPlay=ptGraPlayingBuffer+voice->u32_cumulWhole;
-                Left_Ch = (*(ptPlay));
-                Left_Ch /=1;
-                ptPlay=ptGraPlayingBuffer+cptwave+1;
-                Right_Ch = (*(ptPlay));
-                Right_Ch /=1;
-                osc->dest[0] +=(float)(Left_Ch)/32768.0f;
-                osc->dest[1] +=(float)(Right_Ch)/32768.0f;
-            }
+            oscillatorT *osc = &oscPlayer[2];
+            Granular_TransposeStereo(voice);
+            ptPlay=ptGraPlayingBuffer+voice->u32_cumulWhole;
+            voice->i16_Left = (*(ptPlay));
+            voice->i16_Left /=1;
+            ptPlay=ptGraPlayingBuffer+cptwave+1;
+            voice->i16_Right = (*(ptPlay));
+            voice->i16_Right /=1;
+            osc->dest[0] +=(float)(voice->i16_Left)/32768.0f;
+            osc->dest[1] +=(float)(voice->i16_Right)/32768.0f;
         }
     }
     //Serial.printf("--- Gra 1 %06d 2 %06d 3 %06d 4 %06d \n",voicePlayer[0].u32_cumulWhole,voicePlayer[1].u32_cumulWhole,voicePlayer[2].u32_cumulWhole,voicePlayer[3].u32_cumulWhole);
-    PitchMod = 0;
-    
-    // Apply the filter Modulation
-    FiltCutoffMod +=filtCutoff;
-    if(FiltCutoffMod>1.0)
-        FiltCutoffMod = 1.0;
-    if(FiltCutoffMod<0.0)
-        FiltCutoffMod = 0.0;
-
-    float cf; // Temp for the filter cut frequency
-    
+   
 	//-------------------------------------------------
     // Voice processing
 	// OUT dest[0],dest[1] for left right
@@ -882,14 +707,8 @@ int indx=0;
     for (int i = 0; i < WS.PolyMax; i++) /* one loop is faster than two loops */
     {
         notePlayerT *voice = &voicePlayer[i];
-        cf = FiltCutoffMod;
         if (voice->active)
         {
-			// Update the EG only 1 time on 4
-			// OUT
-			// voice->control_sign 		for the volume
-			// voice->f_control_sign	for the filter
-			// voice->p_control_sign	for the pitch	
             if (count % 4 == 0)
             {
                 voice_off = ADSR_Process(&adsr_vol, &voice->control_sign, &voice->phase);
@@ -908,31 +727,11 @@ int indx=0;
                     globalrank--;
                     Voice_Off(i);
                 }
-                if(SoundMode==SND_MODE_POLY)
-                {
-                    (void)ADSR_Process(&adsr_fil, &voice->f_control_sign, &voice->f_phase);
-                }
-                else
-                {
-                    if(i==0)
-                        (void)ADSR_Process(&adsr_fil, &voice->f_control_sign, &voice->f_phase);
-                }
-                (void)ADSR_Process(&adsr_pit, &voice->p_control_sign, &voice->p_phase);
+                //ADSR_Process(&adsr_fil, &voice->f_control_sign, &voice->f_phase);
+                //ADSR_Process(&adsr_pit, &voice->p_control_sign, &voice->p_phase);
             }
-			
-            // Add some noise to the voice pre filter
-            if(NoiseType == NOISE_PRE)
-                voice->lastSample[0] += nz*(1+NoiseMod);
-
-            
-            cf += voice->f_control_sign*filterEG;			// Apply EG Filter
-            cf *=1+voice->fvelocity;						// Apply Velocity Filter
-            cf *= 1+(voice->midiNote-64)*filterKBtrack;		// Apply Kbtrack
-
-            // Apply EG Amp
-            //voice->lastSample[0] *= voice->control_sign*voice->avelocity;			
-
-			voice->lastSample[0] /=8.0; 
+			voice->lastSample[0] /=2.0; 
+            voice->lastSample[1] /=2.0; 
 			// Filter for each voice
             if(SoundMode==SND_MODE_POLY)
 			{
@@ -940,34 +739,18 @@ int indx=0;
             }
 			
             // Add some noise to the voice post filter
-            
-            if(NoiseType == NOISE_POST)
-                voice->lastSample[0] += nz*(1+NoiseMod);
-            
 
 			// Apply EG Amp
             voice->lastSample[0] *= voice->control_sign*voice->avelocity;			
+            voice->lastSample[1] *= voice->control_sign*voice->avelocity;			
 			
-            out_l += voice->lastSample[0]*(1-voice->panspread);
-            out_r += voice->lastSample[0]*(voice->panspread);
+            out_l += voice->lastSample[0];
+            out_r += voice->lastSample[1];
 
             voice->lastSample[0] = 0.0f;
+            voice->lastSample[1] = 0.0f;
         }
     }
-    // Para or mono mode
-    if(SoundMode!=SND_MODE_POLY)
-    {
-        //out_l = KarlsenLPF(out_l,cf+voicePlayer[0].f_control_sign*filterEG, filtReso,0);
-        //out_r = KarlsenLPF(out_r,cf+voicePlayer[0].f_control_sign*filterEG, filtReso,1);
-    }
-    
-    float multi = (1+AmpMod)*GeneralVolume;
-    out_l *=multi;
-    out_r *=multi;
-    
-    out_l *= (1+PanMod);
-    out_r *= (1-PanMod);
-   
     /*
      * finally output our samples
      */
@@ -1260,8 +1043,6 @@ float pitch;
 
         osc_act += 1;
     }  
-      
-
     osc = getFreeOsc();
     if (osc != NULL)
     {
@@ -1281,18 +1062,7 @@ float pitch;
         }
     }
     
-    /*
-    for (int i = 0; i < WS.PolyMax; i++)
-    {
-        notePlayerT *voice = &voicePlayer[i];
-        if (voice->active)
-        {
-            Serial.printf("V %d pA %d pF %d A %d\n",i,voice->phase,voice->f_phase,voice->active);
-        }
-    }
-    */
     
-
 
     //Midi_Dump();
 }
