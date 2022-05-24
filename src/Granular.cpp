@@ -29,16 +29,34 @@ uint32_t u32_whole=0;
 uint32_t u32_rest=0;
 
     // En entier 1000 = 1.0 -> on pert des decimales
+    //voice->i8_reverse=1;
     voice->u32_cumulspeed +=voice->u32_speed;
     u32_whole= voice->u32_cumulspeed/1000;
     u32_rest = voice->u32_cumulspeed - u32_whole*1000;
     voice->u32_cumulspeed = u32_rest;
     voice->u32_cumulWhole +=2*u32_whole;
-    if(voice->u32_cumulWhole>Gra_BufferSize)
+    if(voice->u32_cumulWhole>=(Gra_BufferSize))
     {
-        voice->u32_cumulWhole -=Gra_BufferSize;
+        voice->u32_cumulWhole =0;
+        voice->u32_cumulspeed = 0;
+        /*
+        if(voice->i8_reverse==1)
+            voice->i8_reverse =-1;
+        else
+            voice->i8_reverse =1;
+        */
     }
-	return voice->u32_cumulWhole;
+    if(voice->i8_reverse==1)
+    {
+        u32_rest=voice->u32_cumulWhole;
+        //Serial.printf(" 1 Ret %06d\r\n",u32_rest);
+    }
+    else
+    {
+        u32_rest=Gra_BufferSize-voice->u32_cumulWhole;
+        //Serial.printf("-1 Ret %06d\r\n",u32_rest);
+    }
+    return(u32_rest);
 }
 
 /***************************************************/
@@ -151,15 +169,17 @@ GRANULAR_EXTRN int16_t*    pt;
         ptsrc=ptGraMemory;
         
 
-        Gra_Begin=0x00000;
+        Gra_Begin=0x10000;
         //Gra_Space=0;                  // Play the same grain
         //Gra_Space=GRA_MAX_SIZE;       // All the grains are contigue
         Gra_Space=GRA_MAX_SIZE;
         Gra_Density=1;
         Gra_Size            = GRA_MAX_SIZE;        // MAX GRA_MAX_SIZE
         Gra_OverlapPc        = 100;
-        Gra_SizeAttack      = (20*Gra_Size)/100;
-        Gra_SizeSustain     = (80*Gra_Size)/100;;
+        Gra_SizeAttack      = (5*Gra_Size)/100;
+        Gra_SizeSustain     = (98*Gra_Size)/100;
+        //Gra_SizeAttack      = 0;
+        //Gra_SizeSustain     = Gra_Size;;
         Gra_OverlapSpl      = (Gra_Size*Gra_OverlapPc)/100;
         Gra_BufferSize      = Gra_Size+(Gra_Density-1)*Gra_OverlapSpl;
         Gra_NewBufferSize   = Gra_BufferSize;
@@ -211,13 +231,14 @@ void Granular_Dump(void)
 /***************************************************/
 void Granular_Process(void)
 {
+int16_t i16_spl;
 float val1;
 float coeff;    
 static uint8_t cptstep=0;
 static uint8_t step;
 static uint8_t firstg;
 static uint8_t lastg;
-uint8_t stepnbgrain=3;
+uint8_t stepnbgrain=1;
 
     // Can only compute x Grain at one time
     // 01-06 Fist step
@@ -236,8 +257,14 @@ uint8_t stepnbgrain=3;
     //lastg=Gra_Density;
 
     /* Refresh playing buffer*/
+    // Gra_Ask_RefreshPlaying always true for now
+    // CptGrain is increase for each time until its value is > Gra_Size
     if(Gra_Ask_RefreshPlaying)
     {
+        //-------------------------------------------------
+        // At the end of the grain paster we have build
+        // stepnbgrain and we continue with the next one
+        //-------------------------------------------------
         if(CptGrain>=Gra_Size)
         {
             CptGrain=0;
@@ -252,6 +279,9 @@ uint8_t stepnbgrain=3;
         }
         else
         {
+            //-------------------------------------------------
+            // Compute AR Enveloppe
+            //-------------------------------------------------
             if(CptGrain<Gra_SizeAttack)
             {
                 coeff=(float)CptGrain/(float)(Gra_SizeAttack+1);
@@ -272,9 +302,9 @@ uint8_t stepnbgrain=3;
                 }
             }
             uint8_t div=1;
-            //--------------------------------------
+            //-------------------------------------------------
             // Apply the EG and add only 2 grains
-            //--------------------------------------
+            //-------------------------------------------------
             for(uint8_t g1=firstg;g1<lastg;g1++)
             {
                 // Left
@@ -284,14 +314,17 @@ uint8_t stepnbgrain=3;
                 val1 *=coeff;
                 *ptdst=(int16_t)val1;
                 // Overlap
-                if(g1<(Gra_Density-1)/* && CptGrain>=Gra_OverlapSpl*/)
+                if(0)
                 {
-                    pt=ptWave+(str_tabgrain[g1+1].u32_beginpos+CptGrain);
-                    val1 = (float)(*pt)/2;
-                    val1 *=coeff;
-                    *ptdst=*ptdst/2 + (int16_t)val1/2;
-                    
+                    if(g1<(Gra_Density-1)/* && CptGrain>=Gra_OverlapSpl*/)
+                    {
+                        pt=ptWave+(str_tabgrain[g1+1].u32_beginpos+CptGrain);
+                        val1 = (float)(*pt)/2;
+                        val1 *=coeff;
+                        *ptdst=*ptdst/2 + (int16_t)val1/2;
+                    }
                 }
+                
                 // Right
                 pt=ptWave+1+(str_tabgrain[g1].u32_beginpos+CptGrain);
                 ptdst++;
@@ -299,12 +332,15 @@ uint8_t stepnbgrain=3;
                 val1 *=coeff;
                 *ptdst=(int16_t)val1;
                 // Overlap
-                if(g1<(Gra_Density-1)/* && CptGrain>=Gra_OverlapSpl*/)
+                if(0)
                 {
-                    pt=ptWave+(str_tabgrain[g1+1].u32_beginpos+CptGrain);
-                    val1 = (float)(*pt)/2;
-                    val1 *=coeff;
-                    *ptdst=*ptdst/2 + (int16_t)val1/2;
+                    if(g1<(Gra_Density-1)/*&& CptGrain>=Gra_OverlapSpl*/)
+                    {
+                        pt=ptWave+(str_tabgrain[g1+1].u32_beginpos+CptGrain);
+                        val1 = (float)(*pt)/2;
+                        val1 *=coeff;
+                        *ptdst=*ptdst/2 + (int16_t)val1/2;
+                    }
                 }
             }
             ptGrain++;
@@ -328,7 +364,12 @@ static uint8_t  first=5;
     for(uint8_t g=0;g<Gra_Density;g++)
     {
         str_tabgrain[g].u32_beginpos = Gra_Begin+g*(Gra_Space/*+Gra_Size*/);
-        str_tabgrain[g].u32_size = 441;  // 100ms
+        if(str_tabgrain[g].u32_beginpos>GRA_BUFFER_SIZE)
+        {
+            str_tabgrain[g].u32_beginpos -=GRA_BUFFER_SIZE;
+        }
+
+        str_tabgrain[g].u32_size = 441;  // 100ms - do notchange anything for now 24.05.2022
         str_tabgrain[g].u8_ident = g; 
     }    
     Gra_OverlapSpl      = (Gra_Size*Gra_OverlapPc)/100;
