@@ -6,15 +6,19 @@
 #define GRANULAR_EXTRN extern
 #endif
 
-#define GRAIN_MAX			20		    // Max number of grain
+//------------------------------------------------------------------------------------------------
+// The real limitation is the size of the buffer when we read the wave file 10s here
+// After we can have a sound with one grain of 10s
+// Or a sound with 5 Grains of 2s....
+//------------------------------------------------------------------------------------------------
+#define GRA_NB_SECONDS      10                  // Buffer in second Read the first 10s in the wave file
+#define GRAIN_MAX			20		            // Max number of grain 
+#define GRA_MAX_SIZE        44100               // Max size of a grain 500ms
 
-#define GRA_NB_SECONDS      10           // Buffer in second
-#define GRA_FS_SAMPLE       44100        // Fs sample
-#define GRA_NB_CHANNELS     2            // Stereo
-#define GRA_NB_BYTES        2            // 16 bits/sample
-
-#define GRA_MAX_SIZE        44100        		// Max size of a grain 500ms
-#define GRA_MAX_SPACE		GRA_MAX_SIZE*5		// Max space between the grains
+#define GRA_FS_SAMPLE       44100               // Fs sample
+#define GRA_NB_CHANNELS     2                   // Stereo
+#define GRA_NB_BYTES        2                   // 16 bits/sample
+#define GRA_MAX_SPACE		GRA_MAX_SIZE*1		// Max space between the grains
 
 #define GRA_MEMORY_SIZE     GRA_NB_SECONDS*GRA_FS_SAMPLE*GRA_NB_CHANNELS        // in int
 
@@ -22,7 +26,6 @@
 //#define GRA_BUFFER_SIZE     GRA_FS_SAMPLE*2                           // 500ms
 //#define GRA_BUFFER_SIZE     GRA_FS_SAMPLE/5                           // 100ms
 //#define GRA_BUFFER_SIZE     GRA_FS_SAMPLE/25                          // 20ms
-
 
 // For the A-S-R Granular EG
 #define GRAIN_AR_STATE_ATTACK		0
@@ -56,6 +59,7 @@ GRANULAR_EXTRN uint32_t Gra_Begin;
 GRANULAR_EXTRN uint32_t Gra_Space;
 GRANULAR_EXTRN uint32_t Gra_Size;           	// Size of a grain max GRA_MAX_SIZE
 GRANULAR_EXTRN uint8_t  Gra_Density;      		// Number of grain Max GRAIN_MAX 1 Mini
+GRANULAR_EXTRN uint8_t  u8_GraReverse;
 
 
 #define GRA_EG_ATTACK		0

@@ -663,6 +663,7 @@ void IRAM_ATTR Synth_Process(float *left, float *right)
 bool voice_off;
 static uint32_t cptwave=0;
 int16_t Left_Ch,Right_Ch;
+uint32_t u32_offset;
 
     out_l = 0;
     out_r = 0;
@@ -680,22 +681,33 @@ int16_t Left_Ch,Right_Ch;
     // Oscillator processing -> mix to voice
 	// OUT dest[0],dest[1] for left right
     //-------------------------------------------------
+
     for (int v = 0; v < WS.PolyMax; v++) /* one loop is faster than two loops */
     {
         notePlayerT *voice = &voicePlayer[v];
         if (voice->active)            
         {
             // Add Granular OSC (fake OSC2)
-            oscillatorT *osc = &oscPlayer[2];
-            Granular_TransposeStereo(voice);
-            ptPlay=ptGraPlayingBuffer+voice->u32_cumulWhole;
+            u32_offset=Granular_TransposeStereo(voice);
+            ptPlay=ptGraPlayingBuffer+u32_offset;
             voice->i16_Left = (*(ptPlay));
             voice->i16_Left /=1;
-            ptPlay=ptGraPlayingBuffer+cptwave+1;
+            ptPlay=ptGraPlayingBuffer+u32_offset+1;
             voice->i16_Right = (*(ptPlay));
             voice->i16_Right /=1;
-            osc->dest[0] +=(float)(voice->i16_Left)/32768.0f;
-            osc->dest[1] +=(float)(voice->i16_Right)/32768.0f;
+            // - 40 to avoid some clic at the end
+            if(u32_offset< (Gra_BufferSize-10))
+            {
+                voice->lastSample[0] +=(float)(voice->i16_Left)/32768.0f;
+                voice->lastSample[1] +=(float)(voice->i16_Right)/32768.0f;
+            }
+            else
+            {
+                voice->lastSample[0] +=0;
+                voice->lastSample[1] +=0;
+            }
+            //voice->lastSample[0] +=(float)(voice->i16_Left)/32768.0f;
+            //voice->lastSample[1] +=(float)(voice->i16_Right)/32768.0f;
         }
     }
     //Serial.printf("--- Gra 1 %06d 2 %06d 3 %06d 4 %06d \n",voicePlayer[0].u32_cumulWhole,voicePlayer[1].u32_cumulWhole,voicePlayer[2].u32_cumulWhole,voicePlayer[3].u32_cumulWhole);
@@ -730,8 +742,8 @@ int16_t Left_Ch,Right_Ch;
                 //ADSR_Process(&adsr_fil, &voice->f_control_sign, &voice->f_phase);
                 //ADSR_Process(&adsr_pit, &voice->p_control_sign, &voice->p_phase);
             }
-			voice->lastSample[0] /=2.0; 
-            voice->lastSample[1] /=2.0; 
+			voice->lastSample[0] /=3.0; 
+            voice->lastSample[1] /=3.0; 
 			// Filter for each voice
             if(SoundMode==SND_MODE_POLY)
 			{
@@ -931,6 +943,7 @@ float pitch;
     voice->u32_speed=pitch*1000;
     voice->u32_cumulWhole=0;
     voice->u32_cumulspeed=0;
+    voice->i8_reverse=1;
     
     //Serial.printf("----------- Granular pitch %d\n",voice->u32_speed);
 

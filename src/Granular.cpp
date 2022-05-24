@@ -39,12 +39,19 @@ uint32_t u32_rest=0;
     {
         voice->u32_cumulWhole =0;
         voice->u32_cumulspeed = 0;
-        /*
-        if(voice->i8_reverse==1)
-            voice->i8_reverse =-1;
-        else
-            voice->i8_reverse =1;
-        */
+        if(u8_GraReverse)
+        {
+            if(voice->i8_reverse==1)
+            {
+                voice->i8_reverse =-1;
+                //Serial.printf("Reverse\n");
+            }
+            else
+            {
+                voice->i8_reverse =1;
+                //Serial.printf("Normal\n");
+            }
+        }
     }
     if(voice->i8_reverse==1)
     {
@@ -231,9 +238,9 @@ void Granular_Dump(void)
 /***************************************************/
 void Granular_Process(void)
 {
-int16_t i16_spl;
-float val1;
-float coeff;    
+int32_t i32_spl;
+uint16_t ui16_coeff;    
+uint16_t ui16_multi=1000;    
 static uint8_t cptstep=0;
 static uint8_t step;
 static uint8_t firstg;
@@ -246,8 +253,6 @@ uint8_t stepnbgrain=1;
     // 12-18 Third Step
     
     step=Gra_Density/stepnbgrain;
-    firstg=stepnbgrain*cptstep;
-    lastg=stepnbgrain*(cptstep+1);
     firstg=stepnbgrain*cptstep;
     lastg=stepnbgrain*(cptstep+1);
     if(lastg>Gra_Density)
@@ -284,24 +289,23 @@ uint8_t stepnbgrain=1;
             //-------------------------------------------------
             if(CptGrain<Gra_SizeAttack)
             {
-                coeff=(float)CptGrain/(float)(Gra_SizeAttack+1);
+                ui16_coeff=CptGrain*ui16_multi/(Gra_SizeAttack+1);
             }
             else
             {
                 if(CptGrain<Gra_SizeSustain)
                 {
-                    coeff=1;
+                    ui16_coeff=ui16_multi;
                 }
                 else
                 {
                     if(CptGrain<Gra_Size)
                     {
-                        coeff=(float)(CptGrain-Gra_SizeSustain)/(float)(Gra_Size-Gra_SizeSustain);
-                        coeff=1-coeff;
+                        ui16_coeff=(CptGrain-Gra_SizeSustain)*ui16_multi/(Gra_Size-Gra_SizeSustain);
+                        ui16_coeff=ui16_multi-ui16_coeff;
                     }
                 }
             }
-            uint8_t div=1;
             //-------------------------------------------------
             // Apply the EG and add only 2 grains
             //-------------------------------------------------
@@ -310,36 +314,40 @@ uint8_t stepnbgrain=1;
                 // Left
                 pt=ptWave+(str_tabgrain[g1].u32_beginpos+CptGrain);
                 ptdst = ptGrain+g1*Gra_OverlapSpl;
-                val1 = (float)(*pt)/2;
-                val1 *=coeff;
-                *ptdst=(int16_t)val1;
+                i32_spl = (int32_t)(*pt)/2;
+                i32_spl *=ui16_coeff;
+                i32_spl /=ui16_multi;
+                *ptdst=(int16_t)i32_spl;
                 // Overlap
-                if(0)
+                if(1)
                 {
                     if(g1<(Gra_Density-1)/* && CptGrain>=Gra_OverlapSpl*/)
                     {
                         pt=ptWave+(str_tabgrain[g1+1].u32_beginpos+CptGrain);
-                        val1 = (float)(*pt)/2;
-                        val1 *=coeff;
-                        *ptdst=*ptdst/2 + (int16_t)val1/2;
+                        i32_spl = (int32_t)(*pt)/2;
+                        i32_spl *=ui16_coeff;
+                        i32_spl /=ui16_multi;
+                        *ptdst=*ptdst/2 + (int16_t)i32_spl/2;
                     }
                 }
                 
                 // Right
                 pt=ptWave+1+(str_tabgrain[g1].u32_beginpos+CptGrain);
                 ptdst++;
-                val1 = (float)(*pt)/2;
-                val1 *=coeff;
-                *ptdst=(int16_t)val1;
+                i32_spl = (int32_t)(*pt)/2;
+                i32_spl *=ui16_coeff;
+                i32_spl /=ui16_multi;
+                *ptdst=(int16_t)i32_spl;
                 // Overlap
-                if(0)
+                if(1)
                 {
                     if(g1<(Gra_Density-1)/*&& CptGrain>=Gra_OverlapSpl*/)
                     {
                         pt=ptWave+(str_tabgrain[g1+1].u32_beginpos+CptGrain);
-                        val1 = (float)(*pt)/2;
-                        val1 *=coeff;
-                        *ptdst=*ptdst/2 + (int16_t)val1/2;
+                        i32_spl = (int32_t)(*pt)/2;
+                        i32_spl *=ui16_coeff;
+                        i32_spl /=ui16_multi;
+                        *ptdst=*ptdst/2 + (int16_t)i32_spl/2;
                     }
                 }
             }

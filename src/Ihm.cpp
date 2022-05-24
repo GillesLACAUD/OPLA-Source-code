@@ -18,7 +18,7 @@
 
 #include "ES8388.h"
 
-uint8_t serialdebug=0;
+uint8_t serialdebug=1;
 extern uint8_t Midi_KeyOn;
 
 // value to full scale
@@ -209,7 +209,7 @@ int Fct_Ch_GraOverlap(int val)
         val=0;
 
     Gra_OverlapPc = val;
-    //Granular_UpdateVal();
+    Granular_UpdateVal();
     Gra_Ask_RefreshPlaying=1;
     if(serialdebug)
     {
@@ -217,7 +217,26 @@ int Fct_Ch_GraOverlap(int val)
     }
 }
 
-
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+int Fct_Ch_GraReverse(int val)
+{
+    if(val<0)
+        val=0;
+    
+    if(val>64)
+        u8_GraReverse = 1;
+    else
+    {
+        u8_GraReverse= 0;
+    }
+    if(serialdebug)       
+        Serial.printf("Grain Reverse ON OFF: %d\n",u8_GraReverse);
+    return(0);        
+}
 
 
 //--------------------------------------------------

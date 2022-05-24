@@ -199,6 +199,7 @@ int Fct_Ch_GraDensity(int val);
 int Fct_Ch_GraAttack(int val);
 int Fct_Ch_GraSustain(int val);
 int Fct_Ch_GraOverlap(int val);
+int Fct_Ch_GraReverse(int val);
 
 // To change the max for the AKWF selection -> Tab_Encoder[SECTION_BANK_MAX][POT_BANK_MAX]
 #define SECTION_BANK_MAX    1
@@ -217,9 +218,10 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
 
     "ATT",  "GRAIN ATTACK",   MIDI_CC_SUBOSC, TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraSizeAttack,  1,    1,      100,1,                    Fct_Ch_GraAttack,       
     "REL",  "GRAIN RELEASE",  MIDI_CC_SUBVOL, TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraSizeSustain, 1,    1,      100,1,                    Fct_Ch_GraSustain,        
-    "OV",   "GRAIN OVERLAP",  MIDI_CC_SUBDET, TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraOverlap,     1,    1,      100,1,                    Fct_Ch_GraOverlap,     
+    "OV",   "GRAIN OVERLAP",  MIDI_CC_SUBDET, TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraOverlap,     1,    0,      100,1,                    Fct_Ch_GraOverlap,     
+    "REV",  "GRAIN REVERSE",  MIDI_CC_SUBTR,  TYPE_LIST,  &YesNo[0][0],       0,    &WS.GraReverse,     1,    0,      127,2,                    Fct_Ch_GraReverse,   
     "---",  "---",            0xFF,           TYPE_DATA,  &TabListNull[0][0], 0,    &IntNull,           1,    0,      127,1,                    FctNull,              
-    "---",  "---",            0xFF,           TYPE_DATA,  &TabListNull[0][0], 0,    &IntNull,           1,    0,      127,1,                    FctNull,              
+    
     
     "NOIS", "NOISE TYPE",   MIDI_CC_NTYPE,  TYPE_LIST,  &Noise_Name[0][0],  0,      &WS.NoiseType,    1,    0,      127,NOISE_TYPE_COUNT,     Fct_Ch_NoiseType,     
     "MIX",  "NOISE VOLUME", MIDI_CC_NOISE,  TYPE_DATA,  &TabListNull[0][0], 0,      &WS.NoiseLevel,   1,    0,      127,1,                    Fct_Ch_Noise,         

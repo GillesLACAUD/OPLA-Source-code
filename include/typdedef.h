@@ -113,8 +113,9 @@ struct WorkSound
     int16_t GraSizeAttack;          // Attack  
     int16_t GraSizeSustain;         // Sustain
     int16_t GraOverlap;             // Space between 2 EG Grains in % of Gra_Size
+    int16_t GraReverse;             // Read grain in forward and backward
 
-    int16_t Reserved[13];
+    int16_t Reserved[12];
 };
 
 
@@ -168,6 +169,7 @@ struct notePlayerT
     uint32_t	u32_cumulWhole;
     int16_t     i16_Left;
     int16_t     i16_Right;
+    int8_t      i8_reverse;
 
     struct filterCoeffT filterC;
     struct filterProcT filterL;
