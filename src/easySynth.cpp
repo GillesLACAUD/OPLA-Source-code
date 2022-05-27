@@ -661,9 +661,13 @@ extern portMUX_TYPE timer2Mux_xms;
 void IRAM_ATTR Synth_Process(float *left, float *right)
 {
 bool voice_off;
+float nz=0;
 static uint32_t cptwave=0;
 int16_t Left_Ch,Right_Ch;
 uint32_t u32_offset;
+
+    nz = ((random(128) / 512.0f) - 1.0f)*NoiseLevel*(1+NoiseMod);
+    
 
     out_l = 0;
     out_r = 0;
@@ -742,6 +746,9 @@ uint32_t u32_offset;
                 //ADSR_Process(&adsr_fil, &voice->f_control_sign, &voice->f_phase);
                 //ADSR_Process(&adsr_pit, &voice->p_control_sign, &voice->p_phase);
             }
+            voice->lastSample[0] += nz;
+            voice->lastSample[1] += nz;
+
 			voice->lastSample[0] /=3.0; 
             voice->lastSample[1] /=3.0; 
 			// Filter for each voice
