@@ -25,6 +25,9 @@ SDCARD_EXTRN uint8_t *tabname;
 
 SDCARD_EXTRN uint8_t SndName[SDCARD_NAME_SIZE];
 
+#define MAX_WAV_FILES		100
+#define MAX_WAV_FILES_CHAR	20
+SDCARD_EXTRN char Gra_WaveName[MAX_WAV_FILES][MAX_WAV_FILES_CHAR];
 
 typedef struct
 {
@@ -112,7 +115,9 @@ SDCARD_EXTRN    void SDCard_ReadSndName(uint8_t s);                     // Read 
 SDCARD_EXTRN    void SDCard_WriteSndName(uint8_t s);                    // Write in the memory
 SDCARD_EXTRN    void SDCard_SaveSndName();                              // Write all the memory to the file
 SDCARD_EXTRN    void SDCard_Display10SndName();
+SDCARD_EXTRN    void SDCard_Display10GraWave();
 SDCARD_EXTRN    void SDCard_LoadLastSound();
+SDCARD_EXTRN    void SDCard_GraFindWaveName(void);
 
 SDCARD_EXTRN    void SDCard_SaveMidiRx();                              	// Write Midi Rx
 SDCARD_EXTRN    void SDCard_LoadMidiRx();                              	// Read Midi Rx

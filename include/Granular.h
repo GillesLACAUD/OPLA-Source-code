@@ -12,8 +12,8 @@
 // Or a sound with 5 Grains of 2s....
 //------------------------------------------------------------------------------------------------
 #define GRA_NB_SECONDS      10                  // Buffer in second Read the first 10s in the wave file
-#define GRAIN_MAX			20		            // Max number of grain 
-#define GRA_MAX_SIZE        44100               // Max size of a grain 500ms
+#define GRAIN_MAX			10		            // Max number of grain 
+#define GRA_MAX_SIZE        44100*2             // Max size of a grain 500ms
 
 #define GRA_FS_SAMPLE       44100               // Fs sample
 #define GRA_NB_CHANNELS     2                   // Stereo

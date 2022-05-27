@@ -138,6 +138,7 @@ SYNTH_EXTRN int16_t	BackDelay;
 SYNTH_EXTRN WorkSound	WS;
 
 SYNTH_EXTRN uint8_t CurrentSound;
+SYNTH_EXTRN uint8_t CurrentGraWave;
 
 SYNTH_EXTRN uint8_t SoundMode;
 SYNTH_EXTRN uint8_t FilterType;
@@ -162,6 +163,7 @@ SYNTH_EXTRN uint8_t MonoKeepVel[MONO_MAX_KEEP_NOTE];
  */
 #ifdef __SYNTH__
 uint8_t oldCurrentSound=250;
+uint8_t oldCurrentGraWave=250;
 
 char Noise_Name[NOISE_TYPE_COUNT][5] = 
 {"PRE","POS"};
@@ -357,6 +359,7 @@ extern float FilterVel;
 extern float GeneralVolume;
 
 extern uint8_t oldCurrentSound;
+extern uint8_t oldCurrentGraWave;
 
 
 #endif

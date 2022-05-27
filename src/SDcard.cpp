@@ -590,11 +590,33 @@ void SDCard_Display10SndName()
     for(uint8_t i=0;i<10;i++)
     {
         SDCard_ReadSndName(i+SoundNameInc10*10);
+        sprintf(messnex,"page2.b%d.font=1",i);
+        Nextion_Send(messnex);
         sprintf(messnex,"page2.b%d.txt=%c%s%c",i,0x22,SndName,0x22);
         Nextion_Send(messnex);
         Serial.printf("%s\n",SndName);
     }
 }
+
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+void SDCard_Display10GraWave()
+{
+    for(uint8_t i=0;i<10;i++)
+    {
+        sprintf(messnex,"page2.b%d.font=2",i);
+        Nextion_Send(messnex);
+        sprintf(messnex,"page2.b%d.txt=%c%s%c",i,0x22,Gra_WaveName[i+GraWaveInc10*10],0x22);
+        Nextion_Send(messnex);
+        //sprintf(messnex,"page2.b%d.txt=%c%s%c",i,0x22,SndName,0x22);
+        //Nextion_Send(messnex);
+        //Serial.printf("%s\n",SndName);
+    }
+}
+
 
 /***************************************************/
 /* bk bank                                         */
@@ -627,6 +649,62 @@ uint8_t *pt;
     file.close();    
 }
 
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+void SDCard_GraFindWaveName(void)
+{
+    // Find all the wav file name in the folder
+    // Fill the Gra_WaveName Tab
+    // If number file < 100 fill with "No file"
+    //SDCARD_EXTRN Gra_WaveName[MAX_WAV_FILES][MAX_WAV_FILES_CHAR];
+File wavfolder;
+uint8_t cpt=0;
+char F[40];
+char Nom[40];
+char Ext[4];
+char *p;
 
+    Serial.printf("WAVE FILES PARSER\r\n");
+    wavfolder = SD_MMC.open("/wave");
+    while(true)
+    {
+        File entry =   wavfolder.openNextFile();
+        if(!entry)
+        {
+            // No more file break
+            entry.close();
+            break;
+        }
+        strcpy(F, entry.name());
+        Serial.printf("%s\r\n",F);
+        p = strtok(F, ".");
+        strcpy(Nom, p);
+        p = strtok(NULL, ".");
+        strcpy(Ext, p);
+
+        strcpy(Nom,&Nom[6]);    // Delete the /wave/ in the name
+        Serial.printf("%s %s\r\n",Nom,Ext);
+        if(!strcmp(Ext,"wav"))
+        {
+            //Serial.printf("%s\r\n",F);
+            if(strlen(Nom)<MAX_WAV_FILES_CHAR)
+            {
+                strcpy(Gra_WaveName[cpt],Nom);
+                if(1)
+                {
+                    //Serial.printf("Wave %03d Tab %s\r\n",cpt,Gra_WaveName[cpt]);
+                }
+                cpt++;
+            }
+        }
+        entry.close();
+        if(cpt>SDCARD_NAX_NAME-1)
+            break;
+    }
+
+}
 
 

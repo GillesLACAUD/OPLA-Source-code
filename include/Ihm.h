@@ -20,6 +20,7 @@ IHM_EXTRN   uint8_t gui_Param;
 IHM_EXTRN   uint8_t gui_Value;
 
 IHM_EXTRN   int8_t  SoundNameInc10;
+IHM_EXTRN   int8_t  GraWaveInc10;
 
 IHM_EXTRN   char TabListNull[0][0];
 IHM_EXTRN   int16_t IntNull;
@@ -75,8 +76,8 @@ typedef struct
 #ifdef __IHM__
 char Tab_Section_Name[MAX_SECTION][20]=
 {
-    "OSCILLATOR",
-    "NOISE-LOOP-TRIG",
+    "GRANULAR 1",
+    "GRANULAR 2",
     "FILTER",
     "ENV GENERATOR",
     "LFO",
@@ -191,6 +192,7 @@ int Fct_Ch_WDDecimator(int val);
 
 int Fct_Ch_Distortion(int val);
 
+int Fct_Ch_GraWave(int val);
 int Fct_Ch_GraBegin(int val);
 int Fct_Ch_GraFine(int val);
 int Fct_Ch_GraSpace(int val);
@@ -209,19 +211,17 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
 {
     // SECTION OSC
     /* Name                 MIDICC          TYPE        LIST                INDEX   VALUE             SIZE  MIN     MAX                     STEP    CHANGE  */           
-    //"WAV",  "WAVE FILE",      MIDI_CC_WAVE1,  TYPE_LIST,  &TabListNull[0][0], 0,    &IntNull,         1,    0,      127,1,                    Fct_Ch_OscWave,       
+    "WAV",  "WAVE FILE",      MIDI_CC_WAVE1,  TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraIdWave,      1,    0,      127,1,                    Fct_Ch_GraWave,       
     "BEG",  "GRAIN BEGIN",    MIDI_CC_OSCVOL, TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraBegin,       1,    0,      100,1,                    Fct_Ch_GraBegin,        
     "FIN",  "GRAIN FINE",     MIDI_CC_DETUNE, TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraBeginFine,   1,    0,      127,1,                    Fct_Ch_GraFine,        
+    "DEN",  "GRAIN DENSITY",  MIDI_CC_WS2,    TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraSize,        1,    1,      10 ,1,                    Fct_Ch_GraDensity,              
+    "REV",  "GRAIN REVERSE",  MIDI_CC_SUBTR,  TYPE_LIST,  &YesNo[0][0],       0,    &WS.GraReverse,     1,    0,      127,2,                    Fct_Ch_GraReverse,   
+
     "SPA",  "GRAIN SPACE",    MIDI_CC_WS1,    TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraSpace,       1,    1,      100,1,                    Fct_Ch_GraSpace,           
     "SIZ",  "GRAIN SIZE",     MIDI_CC_WAVE1,  TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraSize,        1,    1,      100,1,                    Fct_Ch_GraSize,           
-    "DEN",  "GRAIN DENSITY",  MIDI_CC_WS2,    TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraSize,        1,    1,      20 ,1,                    Fct_Ch_GraDensity,              
-
     "ATT",  "GRAIN ATTACK",   MIDI_CC_SUBOSC, TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraSizeAttack,  1,    1,      100,1,                    Fct_Ch_GraAttack,       
     "REL",  "GRAIN RELEASE",  MIDI_CC_SUBVOL, TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraSizeSustain, 1,    1,      100,1,                    Fct_Ch_GraSustain,        
     "OV",   "GRAIN OVERLAP",  MIDI_CC_SUBDET, TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraOverlap,     1,    0,      100,1,                    Fct_Ch_GraOverlap,     
-    "REV",  "GRAIN REVERSE",  MIDI_CC_SUBTR,  TYPE_LIST,  &YesNo[0][0],       0,    &WS.GraReverse,     1,    0,      127,2,                    Fct_Ch_GraReverse,   
-    "---",  "---",            0xFF,           TYPE_DATA,  &TabListNull[0][0], 0,    &IntNull,           1,    0,      127,1,                    FctNull,              
-    
     
     "NOIS", "NOISE TYPE",   MIDI_CC_NTYPE,  TYPE_LIST,  &Noise_Name[0][0],  0,      &WS.NoiseType,    1,    0,      127,NOISE_TYPE_COUNT,     Fct_Ch_NoiseType,     
     "MIX",  "NOISE VOLUME", MIDI_CC_NOISE,  TYPE_DATA,  &TabListNull[0][0], 0,      &WS.NoiseLevel,   1,    0,      127,1,                    Fct_Ch_Noise,         

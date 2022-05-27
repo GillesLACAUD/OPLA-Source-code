@@ -57,6 +57,41 @@ int16_t fstoval(int16_t val,int8_t min,int8_t max,int16_t fs)
 /*                                                 */
 /*                                                 */
 /***************************************************/
+int Fct_Ch_GraWave(int val)
+{
+    //SDCard_Display10SndName();
+    //sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
+    if(IsLoadSound == 1)
+        return(0);
+
+    if(!IsSelectGraWave)
+    {        
+        SDCard_Display10GraWave();
+
+        /*
+        for(uint8_t i=0;i<10;i++)
+        {
+            sprintf(messnex,"page2.b%d.bco=0",i);
+            Nextion_Send(messnex);
+            sprintf(messnex,"page2.b%d.pco=2024",i);
+            Nextion_Send(messnex);
+        }
+        */
+        sprintf(messnex,"page2.b%d.bco=65535",CurrentGraWave);
+        Nextion_Send(messnex);
+        sprintf(messnex,"page2.b%d.pco=0",CurrentGraWave);
+        Nextion_Send(messnex);
+        sprintf(messnex,"page 3");
+        Nextion_Send(messnex);
+    }
+    IsSelectGraWave=1;        
+}
+
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
 int Fct_Ch_GraBegin(int val)
 {
      if(val<0)
@@ -300,6 +335,7 @@ struct oscillatorT *osc;
 
     return(0);
 }
+
 
 /***************************************************/
 /*                                                 */

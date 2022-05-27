@@ -158,20 +158,24 @@ char path[50];
 uint32_t wr;
 GRANULAR_EXTRN int16_t*    pt;
 
+    strcpy(Tab_Section_Name[0],name);
+    sprintf(messnex,"page0.ts0.txt=%c%s%c",0x22,Tab_Section_Name[0],0x22);
+    Nextion_Send(messnex);
+
     pt=ptGraMemory;
     sprintf(path,"/wave/%s",name);
     File file = SD_MMC.open(path,"rb");
     if(file)
     {
         wr=file.read((uint8_t*)pt,44); 
+        Serial.printf("Load wav file %s read %d bytes\n",name,wr);
         wr = 0;
         for(int i=0;i<GRA_NB_SECONDS*2;i++)
         {
             wr+=file.read((uint8_t*)pt,(GRA_FS_SAMPLE*2));   // read the data in bytes 1 second
             pt += GRA_FS_SAMPLE;                            // inc the pointer in int
         }
-        Serial.printf("Load wav file %s read %d bytes\n",name,wr);
-
+        Serial.printf("End Load wave file\n");
         ptdst=ptGraPlayingBuffer;
         ptsrc=ptGraMemory;
         
@@ -240,6 +244,7 @@ void Granular_Process(void)
 {
 int32_t i32_spl;
 uint16_t ui16_coeff;    
+uint8_t ui8_div;    
 uint16_t ui16_multi=1000;    
 static uint8_t cptstep=0;
 static uint8_t step;
@@ -311,10 +316,12 @@ uint8_t stepnbgrain=1;
             //-------------------------------------------------
             for(uint8_t g1=firstg;g1<lastg;g1++)
             {
+                //ui8_div = g1*g1+2;
+                ui8_div = g1+2;
                 // Left
                 pt=ptWave+(str_tabgrain[g1].u32_beginpos+CptGrain);
                 ptdst = ptGrain+g1*Gra_OverlapSpl;
-                i32_spl = (int32_t)(*pt)/2;
+                i32_spl = (int32_t)(*pt)/ui8_div;
                 i32_spl *=ui16_coeff;
                 i32_spl /=ui16_multi;
                 *ptdst=(int16_t)i32_spl;
@@ -324,17 +331,17 @@ uint8_t stepnbgrain=1;
                     if(g1<(Gra_Density-1)/* && CptGrain>=Gra_OverlapSpl*/)
                     {
                         pt=ptWave+(str_tabgrain[g1+1].u32_beginpos+CptGrain);
-                        i32_spl = (int32_t)(*pt)/2;
+                        i32_spl = (int32_t)(*pt)/ui8_div;
                         i32_spl *=ui16_coeff;
                         i32_spl /=ui16_multi;
-                        *ptdst=*ptdst/2 + (int16_t)i32_spl/2;
+                        *ptdst=*ptdst/ui8_div + (int16_t)i32_spl/ui8_div;
                     }
                 }
                 
                 // Right
                 pt=ptWave+1+(str_tabgrain[g1].u32_beginpos+CptGrain);
                 ptdst++;
-                i32_spl = (int32_t)(*pt)/2;
+                i32_spl = (int32_t)(*pt)/ui8_div;
                 i32_spl *=ui16_coeff;
                 i32_spl /=ui16_multi;
                 *ptdst=(int16_t)i32_spl;
@@ -344,10 +351,10 @@ uint8_t stepnbgrain=1;
                     if(g1<(Gra_Density-1)/*&& CptGrain>=Gra_OverlapSpl*/)
                     {
                         pt=ptWave+(str_tabgrain[g1+1].u32_beginpos+CptGrain);
-                        i32_spl = (int32_t)(*pt)/2;
+                        i32_spl = (int32_t)(*pt)/ui8_div;
                         i32_spl *=ui16_coeff;
                         i32_spl /=ui16_multi;
-                        *ptdst=*ptdst/2 + (int16_t)i32_spl/2;
+                        *ptdst=*ptdst/ui8_div + (int16_t)i32_spl/ui8_div;
                     }
                 }
             }

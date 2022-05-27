@@ -532,10 +532,12 @@ char AffVersion[30]="V01 GRA";
     //------------------------------------------------------------------------
     // TEST GRANULAR
     //------------------------------------------------------------------------
+    SDCard_GraFindWaveName();
     Granular_Init();
-    //Gra_Maxplay=Granular_LoadWave("1.wav"); // Synth
-    //Gra_Maxplay=Granular_LoadWave("2.wav"); // Synth
-    Gra_Maxplay=Granular_LoadWave("1.wav"); // Synth
+    CurrentGraWave=0;
+    GraWaveInc10=0;
+
+    Gra_Maxplay=Granular_LoadWave("047_Shakuhaci.wav"); // Synth
     Granular_UpdateVal();
     Granular_Dump();
     Gra_Ask_RefreshPlaying=1; // Ask to refresh playing buffer

@@ -10,6 +10,7 @@
 #include "easysynth.h"
 #include "Lfo.h"
 #include "SDCard.h"
+#include "Granular.h"
 
 /***************************************************/
 /*                                                 */
@@ -429,6 +430,16 @@ static uint8_t init_snd=0;
         // Select page always in the Nextion IHM
         case 0x41:      
         SDCard_Display10SndName();
+        /*
+        for(uint8_t i=0;i<10;i++)
+        {
+            sprintf(messnex,"page2.b%d.bco=0",i);
+            Nextion_Send(messnex);
+            sprintf(messnex,"page2.b%d.pco=2024",i);
+            Nextion_Send(messnex);
+        }
+        */
+
         sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
         Nextion_Send(messnex);
         sprintf(messnex,"page2.b%d.pco=0",CurrentSound);
@@ -518,41 +529,61 @@ static uint8_t init_snd=0;
 
         // X Select Sound
 		case 0x58:
-        if(!nbclick)
+        if(!IsSelectGraWave)
         {
-            doubleclick=0;
-            nbclick++;
-            init_snd=0;
-        }
-        CurrentSound=Nextion_Mess[2];
-        if(oldCurrentSound!=CurrentSound)
-        {
-            sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
-            Nextion_Send(messnex);
-            sprintf(messnex,"page2.b%d.pco=0",CurrentSound);
-            Nextion_Send(messnex);
+            if(!nbclick)
+            {
+                doubleclick=0;
+                nbclick++;
+                init_snd=0;
+            }
+            CurrentSound=Nextion_Mess[2];
+            if(oldCurrentSound!=CurrentSound)
+            {
+                sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
+                Nextion_Send(messnex);
+                sprintf(messnex,"page2.b%d.pco=0",CurrentSound);
+                Nextion_Send(messnex);
 
-            sprintf(messnex,"page2.b%d.bco=0",oldCurrentSound);
-            Nextion_Send(messnex);
-            sprintf(messnex,"page2.b%d.pco=2024",oldCurrentSound);
-            Nextion_Send(messnex);
-            oldCurrentSound=CurrentSound;
+                sprintf(messnex,"page2.b%d.bco=0",oldCurrentSound);
+                Nextion_Send(messnex);
+                sprintf(messnex,"page2.b%d.pco=2024",oldCurrentSound);
+                Nextion_Send(messnex);
+                oldCurrentSound=CurrentSound;
 
-            //SDCard_LoadSound(CurrentSound+SoundNameInc10*10);
-            //Nextion_PrintValues();
+                //SDCard_LoadSound(CurrentSound+SoundNameInc10*10);
+                //Nextion_PrintValues();
 
+            }
+            else
+            {
+                // double click here
+                if(nbclick==1 && doubleclick < 100)
+                {
+                    sprintf(messnex,"page2.b%d.bco=63584",CurrentSound);
+                    Nextion_Send(messnex);
+                    init_snd=1;
+                }
+                nbclick=0;
+                nbclick=0;
+            }
         }
         else
         {
-            // double click here
-            if(nbclick==1 && doubleclick < 100)
+            CurrentGraWave=Nextion_Mess[2];
+            if(oldCurrentGraWave!=CurrentGraWave)
             {
-                sprintf(messnex,"page2.b%d.bco=63584",CurrentSound);
+                sprintf(messnex,"page2.b%d.bco=65535",CurrentGraWave);
                 Nextion_Send(messnex);
-                init_snd=1;
+                sprintf(messnex,"page2.b%d.pco=0",CurrentGraWave);
+                Nextion_Send(messnex);
+
+                sprintf(messnex,"page2.b%d.bco=0",oldCurrentGraWave);
+                Nextion_Send(messnex);
+                sprintf(messnex,"page2.b%d.pco=2024",oldCurrentGraWave);
+                Nextion_Send(messnex);
+                oldCurrentGraWave=CurrentGraWave;
             }
-            nbclick=0;
-            nbclick=0;
         }
         break;
         
@@ -643,94 +674,157 @@ static uint8_t init_snd=0;
 
         // S Section Sound save load
 		case 0x53:
-        overon = false;
-        overcpt=0;
-        // Load save page
-        if(Nextion_Mess[2]==1)
+        if(!IsSelectGraWave)
         {
-            sprintf(messnex,"pagekeybdA0.b%d.bco=65535",CurrentSound);
-            Nextion_Send(messnex);
-            sprintf(messnex,"pagekeybdA0.b%d.pco=0",CurrentSound);
-            Nextion_Send(messnex);
-            // Change page
-            sprintf(messnex,"pagekeybdA0");
-            Nextion_Send(messnex);
-
-        }
-        // Escape
-        if(Nextion_Mess[2]==4)
-        {
-            // Change page already done in the Nextion screen
-            //sprintf(messnex,"page 1");
-            //Nextion_Send(messnex);
-            Nextion_PrintValues();
-        }
-        // Save
-        if(Nextion_Mess[2]==2)
-        {
-            sprintf(messnex,"page2.b%d.bco=32000",CurrentSound);
-            Nextion_Send(messnex);
-            delay(250);
-            SDCard_SaveSound(CurrentSound+SoundNameInc10*10);
-            sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
-            Nextion_Send(messnex);
-        }
-        // Load
-        if(Nextion_Mess[2]==3)
-        {
-            if(init_snd)
+            overon = false;
+            overcpt=0;
+            // Load save page
+            if(Nextion_Mess[2]==1)
             {
-                sprintf(messnex,"page2.b%d.txt=%cINIT%c",CurrentSound,0x22,0x22);
+                sprintf(messnex,"pagekeybdA0.b%d.bco=65535",CurrentSound);
                 Nextion_Send(messnex);
-                // Save name sound
-                strcpy((char*)SndName,"INIT");
-                uint8_t sn,ten;
-                sn=CurrentSound;
-                ten=SoundNameInc10;
-                SDCard_WriteSndName(CurrentSound+SoundNameInc10*10);
-                SDCard_SaveSndName();
-                // Load init Sound -> it is the sound number 200
-                SDCard_LoadSound(200,0);
-                CurrentSound=sn;
-                oldCurrentSound=sn;
-                SoundNameInc10=ten;
-                // Save init Sound to Current sound
-                SDCard_SaveSound(CurrentSound+SoundNameInc10*10);
-                SDCard_LoadSound(CurrentSound+SoundNameInc10*10,0);
-                init_snd = 0;
+                sprintf(messnex,"pagekeybdA0.b%d.pco=0",CurrentSound);
+                Nextion_Send(messnex);
+                // Change page
+                sprintf(messnex,"pagekeybdA0");
+                Nextion_Send(messnex);
+
             }
-            else
+            // Escape
+            if(Nextion_Mess[2]==4)
+            {
+                // Change page already done in the Nextion screen
+                //sprintf(messnex,"page 1");
+                //Nextion_Send(messnex);
+                Nextion_PrintValues();
+            }
+            // Save
+            if(Nextion_Mess[2]==2)
             {
                 sprintf(messnex,"page2.b%d.bco=32000",CurrentSound);
                 Nextion_Send(messnex);
                 delay(250);
-                Nextion_Send(messnex);
-                SDCard_LoadSound(CurrentSound+SoundNameInc10*10,0);
+                SDCard_SaveSound(CurrentSound+SoundNameInc10*10);
                 sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
                 Nextion_Send(messnex);
-                Nextion_PrintValues();
+            }
+            // Load
+            if(Nextion_Mess[2]==3)
+            {
+                if(init_snd)
+                {
+                    sprintf(messnex,"page2.b%d.txt=%cINIT%c",CurrentSound,0x22,0x22);
+                    Nextion_Send(messnex);
+                    // Save name sound
+                    strcpy((char*)SndName,"INIT");
+                    uint8_t sn,ten;
+                    sn=CurrentSound;
+                    ten=SoundNameInc10;
+                    SDCard_WriteSndName(CurrentSound+SoundNameInc10*10);
+                    SDCard_SaveSndName();
+                    // Load init Sound -> it is the sound number 200
+                    SDCard_LoadSound(200,0);
+                    CurrentSound=sn;
+                    oldCurrentSound=sn;
+                    SoundNameInc10=ten;
+                    // Save init Sound to Current sound
+                    SDCard_SaveSound(CurrentSound+SoundNameInc10*10);
+                    SDCard_LoadSound(CurrentSound+SoundNameInc10*10,0);
+                    init_snd = 0;
+                }
+                else
+                {
+                    sprintf(messnex,"page2.b%d.bco=32000",CurrentSound);
+                    Nextion_Send(messnex);
+                    delay(250);
+                    Nextion_Send(messnex);
+                    SDCard_LoadSound(CurrentSound+SoundNameInc10*10,0);
+                    sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
+                    Nextion_Send(messnex);
+                    Nextion_PrintValues();
+                }
+            }
+            // 10 previous
+            if(Nextion_Mess[2]==5)
+            {
+                sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
+                Nextion_Send(messnex);
+                SoundNameInc10--;
+                if(SoundNameInc10<0)
+                    SoundNameInc10=9;
+                SDCard_Display10SndName();
+            }
+            // 10 next
+            if(Nextion_Mess[2]==6)
+            {
+                sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
+                Nextion_Send(messnex);
+                SoundNameInc10++;
+                if(SoundNameInc10==10)
+                    SoundNameInc10=0;
+                SDCard_Display10SndName();
             }
         }
-        // 10 previous
-        if(Nextion_Mess[2]==5)
+        else
         {
-            sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
-            Nextion_Send(messnex);
-            SoundNameInc10--;
-            if(SoundNameInc10<0)
-                SoundNameInc10=9;
-            SDCard_Display10SndName();
-        }
-        // 10 next
-        if(Nextion_Mess[2]==6)
-        {
-            sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
-            Nextion_Send(messnex);
-            SoundNameInc10++;
-            if(SoundNameInc10==10)
-                SoundNameInc10=0;
-            SDCard_Display10SndName();
-        }
+            overon = false;
+            overcpt=0;
+            // Load save page
+            if(Nextion_Mess[2]==1)
+            {
+                sprintf(messnex,"pagekeybdA0.b%d.bco=65535",CurrentSound);
+                Nextion_Send(messnex);
+                sprintf(messnex,"pagekeybdA0.b%d.pco=0",CurrentSound);
+                Nextion_Send(messnex);
+                // Change page
+                sprintf(messnex,"pagekeybdA0");
+                Nextion_Send(messnex);
+
+            }
+            // Escape
+            if(Nextion_Mess[2]==4)
+            {
+                // Change page already done in the Nextion screen
+                //sprintf(messnex,"page 1");
+                //Nextion_Send(messnex);
+                Nextion_PrintValues();
+                IsSelectGraWave=0;
+            }
+            // Save
+            if(Nextion_Mess[2]==2)
+            {
+            }
+            // Load
+            if(Nextion_Mess[2]==3)
+            {
+                char grawave[40];
+                strcpy(grawave,Gra_WaveName[CurrentGraWave+GraWaveInc10*10]);
+                strcat(grawave,".wav");
+                Gra_Maxplay=Granular_LoadWave(grawave); // Synth
+                Granular_UpdateVal();
+                //Granular_Dump();
+            }
+            // 10 previous
+            if(Nextion_Mess[2]==5)
+            {
+                sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
+                Nextion_Send(messnex);
+                GraWaveInc10--;
+                if(GraWaveInc10<0)
+                    GraWaveInc10=9;
+                SDCard_Display10GraWave();
+            }
+            // 10 next
+            if(Nextion_Mess[2]==6)
+            {
+                sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
+                Nextion_Send(messnex);
+                GraWaveInc10++;
+                if(GraWaveInc10==10)
+                    GraWaveInc10=0;
+                SDCard_Display10GraWave();
+            }
+        }        
         break;
 
         // V Section inc or dec
