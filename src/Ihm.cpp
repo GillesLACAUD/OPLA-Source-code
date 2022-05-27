@@ -66,23 +66,23 @@ int Fct_Ch_GraWave(int val)
 
     if(!IsSelectGraWave)
     {        
+        Serial.printf("CLEAR ALL SELECTION\n");
         SDCard_Display10GraWave();
-
-        /*
         for(uint8_t i=0;i<10;i++)
         {
             sprintf(messnex,"page2.b%d.bco=0",i);
             Nextion_Send(messnex);
-            sprintf(messnex,"page2.b%d.pco=2024",i);
+            sprintf(messnex,"page2.b%d.pco=34800",i);
             Nextion_Send(messnex);
         }
-        */
         sprintf(messnex,"page2.b%d.bco=65535",CurrentGraWave);
         Nextion_Send(messnex);
         sprintf(messnex,"page2.b%d.pco=0",CurrentGraWave);
         Nextion_Send(messnex);
         sprintf(messnex,"page 3");
         Nextion_Send(messnex);
+        //sprintf(messnex,"page2.b%d.pco=0",CurrentGraWave);
+        //Nextion_Send(messnex);
     }
     IsSelectGraWave=1;        
 }

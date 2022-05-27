@@ -678,6 +678,7 @@ static uint8_t onetime;
        // Change page
        sprintf(messnex,"page 1");
        Nextion_Send(messnex);
+       IsSelectGraWave=0;        
     }
 
     if (Lfo_cnt1 >= 1024)

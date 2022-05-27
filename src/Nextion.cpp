@@ -430,7 +430,6 @@ static uint8_t init_snd=0;
         // Select page always in the Nextion IHM
         case 0x41:      
         SDCard_Display10SndName();
-        /*
         for(uint8_t i=0;i<10;i++)
         {
             sprintf(messnex,"page2.b%d.bco=0",i);
@@ -438,7 +437,6 @@ static uint8_t init_snd=0;
             sprintf(messnex,"page2.b%d.pco=2024",i);
             Nextion_Send(messnex);
         }
-        */
 
         sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
         Nextion_Send(messnex);
@@ -573,16 +571,22 @@ static uint8_t init_snd=0;
             CurrentGraWave=Nextion_Mess[2];
             if(oldCurrentGraWave!=CurrentGraWave)
             {
-                sprintf(messnex,"page2.b%d.bco=65535",CurrentGraWave);
+                sprintf(messnex,"page2.b%d.pco=0",CurrentGraWave);          // Black
                 Nextion_Send(messnex);
-                sprintf(messnex,"page2.b%d.pco=0",CurrentGraWave);
+                sprintf(messnex,"page2.b%d.bco=65535",CurrentGraWave);      // White
                 Nextion_Send(messnex);
 
-                sprintf(messnex,"page2.b%d.bco=0",oldCurrentGraWave);
+                sprintf(messnex,"page2.b%d.bco=0",oldCurrentGraWave);       // Black
                 Nextion_Send(messnex);
-                sprintf(messnex,"page2.b%d.pco=2024",oldCurrentGraWave);
+                sprintf(messnex,"page2.b%d.pco=34800",oldCurrentGraWave);   // Green
                 Nextion_Send(messnex);
                 oldCurrentGraWave=CurrentGraWave;
+
+                // Need one more time
+                sprintf(messnex,"page2.b%d.pco=0",CurrentGraWave);          // Black
+                Nextion_Send(messnex);
+
+
             }
         }
         break;
@@ -798,7 +802,8 @@ static uint8_t init_snd=0;
             if(Nextion_Mess[2]==3)
             {
                 char grawave[40];
-                strcpy(grawave,Gra_WaveName[CurrentGraWave+GraWaveInc10*10]);
+                WS.GraIdWave=CurrentGraWave+GraWaveInc10*10;
+                strcpy(grawave,Gra_WaveName[WS.GraIdWave]);
                 strcat(grawave,".wav");
                 Gra_Maxplay=Granular_LoadWave(grawave); // Synth
                 Granular_UpdateVal();
@@ -807,8 +812,8 @@ static uint8_t init_snd=0;
             // 10 previous
             if(Nextion_Mess[2]==5)
             {
-                sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
-                Nextion_Send(messnex);
+                //sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
+                //Nextion_Send(messnex);
                 GraWaveInc10--;
                 if(GraWaveInc10<0)
                     GraWaveInc10=9;
@@ -817,8 +822,8 @@ static uint8_t init_snd=0;
             // 10 next
             if(Nextion_Mess[2]==6)
             {
-                sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
-                Nextion_Send(messnex);
+                //sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
+                //Nextion_Send(messnex);
                 GraWaveInc10++;
                 if(GraWaveInc10==10)
                     GraWaveInc10=0;

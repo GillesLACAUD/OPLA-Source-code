@@ -13,6 +13,7 @@
 #include "simple_delay.h"
 
 #include "Nextion.h"
+#include "SDCard.h"
 #define __GRANULAR__
 #include "Granular.h"
 
@@ -157,6 +158,7 @@ uint32_t Granular_LoadWave(char* name)
 char path[50];
 uint32_t wr;
 GRANULAR_EXTRN int16_t*    pt;
+char mess[50];
 
     strcpy(Tab_Section_Name[0],name);
     sprintf(messnex,"page0.ts0.txt=%c%s%c",0x22,Tab_Section_Name[0],0x22);
@@ -167,6 +169,17 @@ GRANULAR_EXTRN int16_t*    pt;
     File file = SD_MMC.open(path,"rb");
     if(file)
     {
+
+        //sprintf(messnex,"page2.setup_name.font=2");
+        //Nextion_Send(messnex);
+
+        sprintf(mess,"Load...Wait...");
+        sprintf(messnex,"page2.Setup_Name.txt=%c%s%c",0x22,mess,0x22);
+        Serial1.print(messnex);
+        Serial1.write(0xff);
+        Serial1.write(0xff);
+        Serial1.write(0xff);
+
         wr=file.read((uint8_t*)pt,44); 
         Serial.printf("Load wav file %s read %d bytes\n",name,wr);
         wr = 0;
@@ -174,6 +187,15 @@ GRANULAR_EXTRN int16_t*    pt;
         {
             wr+=file.read((uint8_t*)pt,(GRA_FS_SAMPLE*2));   // read the data in bytes 1 second
             pt += GRA_FS_SAMPLE;                            // inc the pointer in int
+
+            /*
+            strcat(mess,".");
+            sprintf(messnex,"page2.Setup_Name.txt=%c%s%c",0x22,mess,0x22);
+            Serial1.print(messnex);
+            Serial1.write(0xff);
+            Serial1.write(0xff);
+            Serial1.write(0xff);
+            */
         }
         Serial.printf("End Load wave file\n");
         ptdst=ptGraPlayingBuffer;
@@ -204,6 +226,12 @@ GRANULAR_EXTRN int16_t*    pt;
         ptGraGrain=ptGraPlayingBuffer;
         ptGrain=ptGraGrain;
         CptGrain=0;
+
+        // Restore the name
+        sprintf(messnex,"page2.setup_name.font=1");
+        Nextion_Send(messnex);
+        sprintf(messnex,"page2.Setup_Name.txt=%c%s%c",0x22,SndName,0x22);
+        Nextion_Send(messnex);
 
         return(wr);
     }

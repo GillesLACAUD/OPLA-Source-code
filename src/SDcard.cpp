@@ -667,7 +667,7 @@ char Nom[40];
 char Ext[4];
 char *p;
 
-    Serial.printf("WAVE FILES PARSER\r\n");
+    //Serial.printf("WAVE FILES PARSER\r\n");
     wavfolder = SD_MMC.open("/wave");
     while(true)
     {
@@ -679,14 +679,14 @@ char *p;
             break;
         }
         strcpy(F, entry.name());
-        Serial.printf("%s\r\n",F);
+        //Serial.printf("%s\r\n",F);
         p = strtok(F, ".");
         strcpy(Nom, p);
         p = strtok(NULL, ".");
         strcpy(Ext, p);
 
         strcpy(Nom,&Nom[6]);    // Delete the /wave/ in the name
-        Serial.printf("%s %s\r\n",Nom,Ext);
+        //Serial.printf("%s %s\r\n",Nom,Ext);
         if(!strcmp(Ext,"wav"))
         {
             //Serial.printf("%s\r\n",F);
@@ -695,7 +695,7 @@ char *p;
                 strcpy(Gra_WaveName[cpt],Nom);
                 if(1)
                 {
-                    //Serial.printf("Wave %03d Tab %s\r\n",cpt,Gra_WaveName[cpt]);
+                    Serial.printf("Wave %03d Tab %s\r\n",cpt,Gra_WaveName[cpt]);
                 }
                 cpt++;
             }
@@ -704,7 +704,6 @@ char *p;
         if(cpt>SDCARD_NAX_NAME-1)
             break;
     }
-
 }
 
 
