@@ -13,19 +13,15 @@
 //------------------------------------------------------------------------------------------------
 #define GRA_NB_SECONDS      10                  // Buffer in second Read the first 10s in the wave file
 #define GRAIN_MAX			10		            // Max number of grain 
-#define GRA_MAX_SIZE        44100*2             // Max size of a grain 500ms
-
 #define GRA_FS_SAMPLE       44100               // Fs sample
 #define GRA_NB_CHANNELS     2                   // Stereo
 #define GRA_NB_BYTES        2                   // 16 bits/sample
-#define GRA_MAX_SPACE		GRA_MAX_SIZE*1		// Max space between the grains
 
-#define GRA_MEMORY_SIZE     GRA_NB_SECONDS*GRA_FS_SAMPLE*GRA_NB_CHANNELS        // in int
-
-#define GRA_BUFFER_SIZE     GRA_MAX_SIZE*GRAIN_MAX         				// 10000ms     
-//#define GRA_BUFFER_SIZE     GRA_FS_SAMPLE*2                           // 500ms
-//#define GRA_BUFFER_SIZE     GRA_FS_SAMPLE/5                           // 100ms
-//#define GRA_BUFFER_SIZE     GRA_FS_SAMPLE/25                          // 20ms
+// All size in Int (2 bytes)
+#define GRA_MAX_SIZE        44100*2                                         // Max size of a grain 1s stereo
+#define GRA_MAX_SPACE		GRA_MAX_SIZE*1		                            // Max space between the grains 1s stereo  
+#define GRA_MEMORY_SIZE     GRA_NB_SECONDS*GRA_FS_SAMPLE*GRA_NB_CHANNELS    // In int 10s stereo
+#define GRA_BUFFER_SIZE     GRA_MAX_SIZE*GRAIN_MAX         				    // 10s stereo     
 
 // For the A-S-R Granular EG
 #define GRAIN_AR_STATE_ATTACK		0
@@ -87,7 +83,7 @@ GRANULAR_EXTRN int16_t*    	ptGraMemory;		// Memory with x s of the wav file fix
 GRANULAR_EXTRN int16_t*		ptWave;				// Memory with x s of the wav file work pointer
 
 GRANULAR_EXTRN int16_t*    	ptGraPlayingBuffer;	// Memory to the playing buffer fixe pointer
-GRANULAR_EXTRN int16_t*    	ptPlay;				// Memory to the playing buffer work pointer
+GRANULAR_EXTRN int16_t*    	ptPlay;				// Memory to the playing buffer work pointer see transpose
 GRANULAR_EXTRN uint32_t     Cptplay;
 
 

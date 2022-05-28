@@ -99,6 +99,7 @@ int Fct_Ch_GraBegin(int val)
     //if(!Gra_Ask_RefreshPlaying)
     //{
         Gra_Begin = (GRA_MEMORY_SIZE*val)/100;
+        Gra_Begin /=2;
         Granular_UpdateVal();
         Gra_Ask_RefreshPlaying=1;
         ptGrain=ptGraGrain;
@@ -365,6 +366,7 @@ float value;
 
     value = val * NORM127MUL;
     NoiseLevel = value*0.5;
+    
     if(serialdebug)
         Serial.printf("Noise Level: %f\n", NoiseLevel);
 

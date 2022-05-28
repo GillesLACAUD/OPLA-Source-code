@@ -283,20 +283,20 @@ inline float KarlsenLPF(float signal, float freq, float res, uint8_t m)
 	while (b_oversample < 1)
 	{	
 		//2x oversampling
-		float prevfp;
-		prevfp = b_fp[m];
-		if (prevfp > 1.0f) {prevfp = 1.0f;}	// Q-limiter
+		//float prevfp;
+		//prevfp = b_fp[m];
+		//if (prevfp > 1.0f) {prevfp = 1.0f;}	// Q-limiter
 
-		b_fp[m] = (b_fp[m] * 0.418f) + ((b_q[m] * pole4[m]) * 0.582f);	// dynamic feedback
-		float intfp;
-		intfp = (b_fp[m] * 0.36f) + (prevfp * 0.64f);	// feedback phase
-		b_in[m] =	b_inSH[m] - intfp;	                // inverted feedback	
+		//b_fp[m] = (b_fp[m] * 0.418f) + ((b_q[m] * pole4[m]) * 0.582f);	// dynamic feedback
+		//float intfp;
+		//intfp = (b_fp[m] * 0.36f) + (prevfp * 0.64f);	// feedback phase
+		b_in[m] =	b_inSH[m]/* - intfp*/;	                // inverted feedback	
 
 		pole1[m] = (b_in[m] * b_f[m]) + (pole1[m] * (1.0f - b_f[m]));	// pole 1
 		//if (pole1[m] > 1.0f) {pole1[m] = 1.0f;} else if (pole1[m] < -1.0f) {pole1[m] = -1.0f;} // pole 1 clipping
-		pole2[m] = (pole1[m] * b_f[m]) + (pole2[m] * (1 - b_f[m]));	// pole 2
-		pole3[m] = (pole2[m] * b_f[m]) + (pole3[m] * (1 - b_f[m]));	// pole 3
-		pole4[m] = (pole3[m] * b_f[m]) + (pole4[m] * (1 - b_f[m]));	// pole 4
+		//pole2[m] = (pole1[m] * b_f[m]) + (pole2[m] * (1 - b_f[m]));	// pole 2
+		//pole3[m] = (pole2[m] * b_f[m]) + (pole3[m] * (1 - b_f[m]));	// pole 3
+		//pole4[m] = (pole3[m] * b_f[m]) + (pole4[m] * (1 - b_f[m]));	// pole 4
 
 		b_oversample++;
 	}
@@ -306,6 +306,8 @@ inline float KarlsenLPF(float signal, float freq, float res, uint8_t m)
     NPF:=I-fPole[1];
     HPF:=I-fPole[4]-fPole[1];
     */
+
+   return pole1[m];
 
     switch(FilterType)
     {
@@ -666,8 +668,7 @@ static uint32_t cptwave=0;
 int16_t Left_Ch,Right_Ch;
 uint32_t u32_offset;
 
-    nz = ((random(128) / 512.0f) - 1.0f)*NoiseLevel*(1+NoiseMod);
-    
+    //nz = ((random(512) / 512.0f) - 1.0f)*(NoiseLevel/10)*(1+NoiseMod);
 
     out_l = 0;
     out_r = 0;
@@ -693,14 +694,15 @@ uint32_t u32_offset;
         {
             // Add Granular OSC (fake OSC2)
             u32_offset=Granular_TransposeStereo(voice);
-            ptPlay=ptGraPlayingBuffer+u32_offset;
+            ptPlay=ptGraPlayingBuffer+voice->u32_cumulWhole;
             voice->i16_Left = (*(ptPlay));
             voice->i16_Left /=1;
-            ptPlay=ptGraPlayingBuffer+u32_offset+1;
+            ptPlay=ptGraPlayingBuffer+voice->u32_cumulWhole+1;
             voice->i16_Right = (*(ptPlay));
             voice->i16_Right /=1;
             // - 40 to avoid some clic at the end
-            if(u32_offset< (Gra_BufferSize-10))
+            /*
+            if(u32_offset<=(Gra_BufferSize))
             {
                 voice->lastSample[0] +=(float)(voice->i16_Left)/32768.0f;
                 voice->lastSample[1] +=(float)(voice->i16_Right)/32768.0f;
@@ -710,7 +712,8 @@ uint32_t u32_offset;
                 voice->lastSample[0] +=0;
                 voice->lastSample[1] +=0;
             }
-            //voice->lastSample[0] +=(float)(voice->i16_Left)/32768.0f;
+            */
+           //voice->lastSample[0] +=(float)(voice->i16_Left)/32768.0f;
             //voice->lastSample[1] +=(float)(voice->i16_Right)/32768.0f;
         }
     }
@@ -743,26 +746,20 @@ uint32_t u32_offset;
                     globalrank--;
                     Voice_Off(i);
                 }
-                //ADSR_Process(&adsr_fil, &voice->f_control_sign, &voice->f_phase);
-                //ADSR_Process(&adsr_pit, &voice->p_control_sign, &voice->p_phase);
             }
-            voice->lastSample[0] += nz;
-            voice->lastSample[1] += nz;
-
-			voice->lastSample[0] /=3.0; 
-            voice->lastSample[1] /=3.0; 
-			// Filter for each voice
-            if(SoundMode==SND_MODE_POLY)
-			{
-                //voice->lastSample[0] = KarlsenLPF(voice->lastSample[0],cf, filtReso,i);
-            }
+            voice->i16_Left /=3;
+            voice->i16_Right/=3;
+            voice->lastSample[0] +=(float)(voice->i16_Left)/32768.0f;
+            voice->lastSample[1] +=(float)(voice->i16_Right)/32768.0f;
 			
             // Add some noise to the voice post filter
+            //voice->lastSample[0] += nz/10;
+            //voice->lastSample[1] += nz/10;
 
 			// Apply EG Amp
             voice->lastSample[0] *= voice->control_sign*voice->avelocity;			
             voice->lastSample[1] *= voice->control_sign*voice->avelocity;			
-			
+
             out_l += voice->lastSample[0];
             out_r += voice->lastSample[1];
 
@@ -770,6 +767,15 @@ uint32_t u32_offset;
             voice->lastSample[1] = 0.0f;
         }
     }
+    FiltCutoffMod +=filtCutoff;
+    if(FiltCutoffMod>1.0)
+        FiltCutoffMod = 1.0;
+    if(FiltCutoffMod<0.0)
+        FiltCutoffMod = 0.0;
+
+    out_l = KarlsenLPF(out_l,FiltCutoffMod, filtReso,0);
+    out_r = KarlsenLPF(out_r,FiltCutoffMod, filtReso,1);
+    
     /*
      * finally output our samples
      */

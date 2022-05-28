@@ -537,7 +537,7 @@ char AffVersion[30]="V01 GRA";
     CurrentGraWave=0;
     GraWaveInc10=0;
 
-    Gra_Maxplay=Granular_LoadWave("047_Shakuhaci.wav"); // Synth
+    Gra_Maxplay=Granular_LoadWave("035_CrumarCello.wav"); // Synth
     Granular_UpdateVal();
     Granular_Dump();
     Gra_Ask_RefreshPlaying=1; // Ask to refresh playing buffer
