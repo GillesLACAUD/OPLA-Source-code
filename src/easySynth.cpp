@@ -668,7 +668,8 @@ static uint32_t cptwave=0;
 int16_t Left_Ch,Right_Ch;
 uint32_t u32_offset;
 
-    //nz = ((random(512) / 512.0f) - 1.0f)*(NoiseLevel/10)*(1+NoiseMod);
+    nz = ((random(512) / 512.0f) - 1.0f)*(NoiseLevel/10)*(1+NoiseMod);
+    
 
     out_l = 0;
     out_r = 0;
@@ -753,8 +754,8 @@ uint32_t u32_offset;
             voice->lastSample[1] +=(float)(voice->i16_Right)/32768.0f;
 			
             // Add some noise to the voice post filter
-            //voice->lastSample[0] += nz/10;
-            //voice->lastSample[1] += nz/10;
+            voice->lastSample[0] += nz;
+            voice->lastSample[1] += nz;
 
 			// Apply EG Amp
             voice->lastSample[0] *= voice->control_sign*voice->avelocity;			
