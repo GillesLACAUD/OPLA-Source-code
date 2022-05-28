@@ -98,6 +98,9 @@ GRANULAR_EXTRN int16_t* 	ptdst;
 GRANULAR_EXTRN int16_t* 	ptsrc;
 GRANULAR_EXTRN int16_t*   	pt;    
 
+GRANULAR_EXTRN int16_t*    	ptGraAddMemory;
+
+
 #ifdef __GRANULAR__
 double chromaticRatios[] = {
     1,
@@ -122,6 +125,7 @@ GRANULAR_EXTRN double chromaticRatios[];
 GRANULAR_EXTRN void     Granular_Init(void);
 GRANULAR_EXTRN void     Granular_Reset(void);
 GRANULAR_EXTRN uint32_t Granular_LoadWave(char* name);
+GRANULAR_EXTRN uint32_t Granular_AddWave(char* name);
 GRANULAR_EXTRN void 	Granular_UpdateVal(void);
 GRANULAR_EXTRN void 	Granular_Process(void);
 GRANULAR_EXTRN void 	Granular_Dump(void);

@@ -797,6 +797,11 @@ static uint8_t init_snd=0;
             // Save
             if(Nextion_Mess[2]==2)
             {
+                char grawave[40];
+                WS.GraIdWave=CurrentGraWave+GraWaveInc10*10;
+                strcpy(grawave,Gra_WaveName[WS.GraIdWave]);
+                strcat(grawave,".wav");
+                Granular_AddWave(grawave);
             }
             // Load
             if(Nextion_Mess[2]==3)

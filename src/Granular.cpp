@@ -125,6 +125,13 @@ void Granular_Init(void)
         while(1);
     }
 
+    ptGraAddMemory = (int16_t *)ps_malloc(GRA_FS_SAMPLE);   // 0.5s Stereo 44100
+    if (ptGraAddMemory == NULL)
+    {
+        Serial.printf("No more heap memory for Gra Buffer Add!\n");
+        while(1);
+    }
+
     Serial.printf("---- AFTER GRANULAR MALLOC ----\n");
     Serial.printf("Total PSRAM: %d\n", ESP.getPsramSize());
     Serial.printf("Free PSRAM: %d\n", ESP.getFreePsram());
@@ -241,6 +248,76 @@ char mess[50];
     }
 
 }
+
+/***************************************************/
+/* Add another wave file to the memory             */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+uint32_t Granular_AddWave(char* name)
+{
+char path[50];
+uint32_t wr;
+int16_t*    pt;
+int16_t*    ptadd;
+int16_t*    savpt;
+int16_t*    savptadd;
+
+char mess[50];
+uint32_t nbbytesread;
+
+    pt=ptGraMemory;
+    ptadd = ptGraAddMemory;
+    sprintf(path,"/wave/%s",name);
+    File file = SD_MMC.open(path,"rb");
+
+    savpt=pt;
+    savptadd=ptadd;
+
+    if(file)
+    {
+        sprintf(mess,"Add...Wait...");
+        sprintf(messnex,"page2.Setup_Name.txt=%c%s%c",0x22,mess,0x22);
+        Serial1.print(messnex);
+        Serial1.write(0xff);
+        Serial1.write(0xff);
+        Serial1.write(0xff);
+
+        wr=file.read((uint8_t*)ptadd,44); 
+        Serial.printf("Load wav file %s read %d bytes\n",name,wr);
+        wr = 0;
+        for(int i=0;i<GRA_NB_SECONDS*2;i++)
+        {
+            wr+=file.read((uint8_t*)ptadd,(GRA_FS_SAMPLE));   // read the data in bytes 1 second 2 Channels
+            // Add the two buffer
+            for(uint32_t s=0;s<GRA_FS_SAMPLE/2;s++)
+            {
+                *pt = *pt/2 + *ptadd/2;   
+                pt++;
+                ptadd++;
+            }
+            ptadd = ptGraAddMemory;
+        }
+        Serial.printf("End Load wave file read %d Mem %d Add %d\n",wr,pt-savpt,ptadd-savptadd);
+
+
+        // Restore the name
+        sprintf(messnex,"page2.setup_name.font=1");
+        Nextion_Send(messnex);
+        sprintf(messnex,"page2.Setup_Name.txt=%c%s%c",0x22,SndName,0x22);
+        Nextion_Send(messnex);
+        return(wr);
+    }
+    else
+    {
+        Serial.printf("GRANULAR ERROR File not present %s\n",name);
+        while(1);
+        return(0);
+    }
+
+}
+
+
 
 /***************************************************/
 /* Only for debug                                  */
