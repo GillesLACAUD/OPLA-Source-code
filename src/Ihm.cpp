@@ -161,7 +161,7 @@ int Fct_Ch_GraSize(int val)
 
     //if(!Gra_Ask_RefreshPlaying)
     //{
-        Gra_Size = (GRA_MAX_SIZE*val)/100;
+        Gra_Size = 2000+(GRA_MAX_SIZE*val)/100;
         Granular_UpdateVal();
         Gra_Ask_RefreshPlaying=1;
         ptGrain=ptGraGrain;

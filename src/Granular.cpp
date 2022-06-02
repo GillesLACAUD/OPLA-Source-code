@@ -212,7 +212,7 @@ char mess[50];
         //Gra_Space=GRA_MAX_SIZE;       // All the grains are contigue
         Gra_Space=0;
         Gra_Density=1;
-        Gra_Size            = GRA_MAX_SIZE*4;        // MAX GRA_MAX_SIZE
+        Gra_Size            = GRA_MAX_SIZE;        // MAX GRA_MAX_SIZE
         Gra_OverlapPc        = 100;
         Gra_SizeAttack      = (5*Gra_Size)/100;
         Gra_SizeSustain     = (98*Gra_Size)/100;
@@ -386,9 +386,10 @@ uint8_t stepnbgrain=1;
             cptstep++;
             if(cptstep>=step)
             {
-                //Gra_BufferSize=Gra_NewBufferSize;
+                Gra_BufferSize=Gra_NewBufferSize;
                 cptstep=0;
             }
+            Granular_UpdateVal();
             //Serial.printf("*");
         }
         else
@@ -481,9 +482,20 @@ static uint8_t  first=5;
 
     uint32_t s=0;    
     // Init grains positions
+    int32_t ModBegin = Gra_Begin+Gra_ModBegin;
+    int32_t ModSize = Gra_Size+Gra_ModSize;
+    if(ModBegin<0)
+        ModBegin=0;
+    if(ModSize<2000)
+        ModSize=2000;
+    if(ModSize>GRA_MAX_SIZE)
+        ModSize=GRA_MAX_SIZE;
+
+    Serial.printf("ModBegin %d\n",ModBegin);
+
     for(uint8_t g=0;g<Gra_Density;g++)
     {
-        str_tabgrain[g].u32_beginpos = Gra_Begin+g*(Gra_Space/*+Gra_Size*/);
+        str_tabgrain[g].u32_beginpos = ModBegin+g*(Gra_Space/*+Gra_Size*/);
         if(str_tabgrain[g].u32_beginpos>GRA_BUFFER_SIZE)
         {
             str_tabgrain[g].u32_beginpos -=GRA_BUFFER_SIZE;
@@ -492,8 +504,8 @@ static uint8_t  first=5;
         str_tabgrain[g].u32_size = 441;  // 100ms - do notchange anything for now 24.05.2022
         str_tabgrain[g].u8_ident = g; 
     }    
-    Gra_OverlapSpl      = (Gra_Size*Gra_OverlapPc)/100;
-    Gra_NewBufferSize=Gra_Size+(Gra_Density-1)*Gra_OverlapSpl;
+    Gra_OverlapSpl      = (ModSize*Gra_OverlapPc)/100;
+    Gra_NewBufferSize=ModSize+(Gra_Density-1)*Gra_OverlapSpl;
 
     // Add Grains - fill the playing buffer
 

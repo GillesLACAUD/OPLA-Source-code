@@ -717,6 +717,11 @@ static uint8_t onetime;
         
         RevAmtMod=0;
         DelayAmtMod=0;
+
+        Gra_ModBegin=0;
+        Gra_ModSpace=0;
+        Gra_ModSize=0;           	
+        Gra_ModDensity=0;      		
     
 
         ModWheel_Process();
@@ -770,6 +775,7 @@ static uint8_t onetime;
             //fl_sample = (float)(Left_Ch)/32768.0f;
             //fr_sample = (float)(Right_Ch)/32768.0f;
 
+            Distortion(&fl_sample, &fr_sample);
             Delay_Process(&fl_sample, &fr_sample);
             Reverb_Process( &fl_sample, &fr_sample, SAMPLE_BUFFER_SIZE ); 
 

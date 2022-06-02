@@ -6,6 +6,7 @@
 #include "easysynth.h"
 #include "reverb.h"
 #include "simple_delay.h"
+#include "Granular.h"
 
 
 /***************************************************/
@@ -92,16 +93,26 @@ static uint16_t sl1,sl2;
         case LFO_PITCH:
         PitchMod += prlfo->f_modlfo/8;
         break;
+        // ADD FOR GRANULAR
+        case LFO_GRABEGIN:
+        Gra_ModBegin+=prlfo->f_modlfo*GRA_FS_SAMPLE*5;
+        break;
+        case LFO_GRASIZE:
+        Gra_ModSize+=prlfo->f_modlfo*GRA_MAX_SIZE/2;
+        break;
+        case LFO_GRASPACE:
+        //Gra_ModSpace+=prlfo->f_modlfo;
+        break;
+        case LFO_GRADENSITY:
+        //Gra_ModDensity+=prlfo->f_modlfo;
+        break;
+
         case LFO_NOISE:
         NoiseMod += prlfo->f_modlfo;            // +/- 1 max
         break;
         case LFO_A_PAN:
         PanMod += prlfo->f_modlfo/2;              // +/- 1 max
         break;
-        case LFO_WS1:
-        WaveShapping1Mod += prlfo->f_modlfo;
-        break;
-
         case LFOx_SPEED:
         if(prlfo == &Lfo1)
             Lfo2SpeedMod=prlfo->f_modlfo;

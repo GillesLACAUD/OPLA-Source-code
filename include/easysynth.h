@@ -14,7 +14,7 @@ SYNTH_EXTRN uint32_t midi_note_to_add[MIDI_NOTE_CNT]; /* lookup to playback wave
  * set the correct count of available waveforms
  */
 #define MAX_LABEL           5
-#define DEST_TYPE_COUNT	    12
+#define DEST_TYPE_COUNT	    15
 #define MIDI_MODE_MAX	    4
 
 //----------------------------------------------------------
@@ -209,7 +209,7 @@ char Wave_SubName[WAVEFORM_SUB_COUNT][MAX_LABEL] =
 {"SIN","SAW","SQU","PUL","TRI","NOI","NOT"};
 
 char Dest_Name[DEST_TYPE_COUNT][MAX_LABEL] = 
-{"AMP","CUT","PIT","NOI","PAN","WS1","LxS","LxA","RPA","DPA","RAM","DAM"};
+{"AMP","CUT","PIT","BEG","SIZ","SPA","DEN,","NOI","PAN","LxS","LxA","RPA","DPA","RAM","DAM"};
 
 char Midi_Mode[MIDI_MODE_MAX][MAX_LABEL] =
 {"ABS","NRP","RL1","OFF"};

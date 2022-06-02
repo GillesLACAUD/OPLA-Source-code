@@ -200,7 +200,21 @@ typedef enum
 
 typedef enum
 {
-    LFO_AMP,LFO_CUTOFF,LFO_PITCH,LFO_NOISE,LFO_A_PAN,LFO_WS1,LFOx_SPEED,LFOx_AMT,LFO_REVPAN,LFO_DELAYPAN,LFO_REVAMT,LFO_DELAYAMT
+    LFO_AMP,
+    LFO_CUTOFF,
+    LFO_PITCH,
+    LFO_GRABEGIN,           // add for granular
+    LFO_GRASIZE,            // add for granular
+    LFO_GRASPACE,           // add for granular
+    LFO_GRADENSITY,         // add for granular
+    LFO_NOISE,
+    LFO_A_PAN,
+    LFOx_SPEED,
+    LFOx_AMT,
+    LFO_REVPAN,
+    LFO_DELAYPAN,
+    LFO_REVAMT,
+    LFO_DELAYAMT
 } lfo_dest;
 
 
