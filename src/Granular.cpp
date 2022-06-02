@@ -166,9 +166,9 @@ uint32_t wr;
 GRANULAR_EXTRN int16_t*    pt;
 char mess[50];
 
-    strcpy(Tab_Section_Name[0],name);
-    sprintf(messnex,"page0.ts0.txt=%c%s%c",0x22,Tab_Section_Name[0],0x22);
-    Nextion_Send(messnex);
+    //strcpy(Tab_Section_Name[0],name);
+    //sprintf(messnex,"page0.ts0.txt=%c%s%c",0x22,Tab_Section_Name[0],0x22);
+    //Nextion_Send(messnex);
 
     pt=ptGraMemory;
     sprintf(path,"/wave/%s",name);
@@ -205,6 +205,9 @@ char mess[50];
         Serial.printf("End Load wave file\n");
         ptdst=ptGraPlayingBuffer;
         ptsrc=ptGraMemory;
+        oldCurrentGraWave=CurrentGraWave;
+
+        // FAKE INIT
         
 
         Gra_Begin=0x00;
@@ -212,7 +215,7 @@ char mess[50];
         //Gra_Space=GRA_MAX_SIZE;       // All the grains are contigue
         Gra_Space=0;
         Gra_Density=1;
-        Gra_Size            = GRA_MAX_SIZE;        // MAX GRA_MAX_SIZE
+        Gra_Size            = GRA_MAX_SIZE*4;        // MAX GRA_MAX_SIZE
         Gra_OverlapPc        = 100;
         Gra_SizeAttack      = (5*Gra_Size)/100;
         Gra_SizeSustain     = (98*Gra_Size)/100;
@@ -225,6 +228,8 @@ char mess[50];
 
         Gra_AttackCoeff = GRA_EG_FULLSCALE/(Gra_SizeAttack+1);
         Gra_ReleaseCoeff = GRA_EG_FULLSCALE/(Gra_Size-1-Gra_SizeSustain);
+
+        // END FAKE INIT
 
         ptWave=ptGraMemory;
         ptPlay=ptGraPlayingBuffer;

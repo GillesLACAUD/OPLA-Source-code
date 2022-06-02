@@ -525,7 +525,7 @@ static uint8_t init_snd=0;
         Nextion_Send(messnex);        
         break;
 
-        // X Select Sound
+        // X Select Sound or Select Wave
 		case 0x58:
         if(!IsSelectGraWave)
         {
