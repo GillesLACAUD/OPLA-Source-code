@@ -79,10 +79,12 @@ int Fct_Ch_GraWave(int val)
         Nextion_Send(messnex);
         sprintf(messnex,"page2.b%d.pco=0",CurrentGraWave);
         Nextion_Send(messnex);
+        
         sprintf(messnex,"page 3");
         Nextion_Send(messnex);
         //sprintf(messnex,"page2.b%d.pco=0",CurrentGraWave);
         //Nextion_Send(messnex);
+
     }
     IsSelectGraWave=1;        
 }
