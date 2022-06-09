@@ -219,7 +219,7 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
 
     "SPA",  "GRAIN SPACE",    MIDI_CC_SUBOSC, TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraSpace,       1,    1,      100,1,                    Fct_Ch_GraSpace,           
     "SIZ",  "GRAIN SIZE",     MIDI_CC_SUBVOL,  TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraSize,        1,    1,      100,1,                    Fct_Ch_GraSize,           
-    "ATT",  "GRAIN ATTACK",   MIDI_CC_SUBDET, TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraSizeAttack,  1,    1,      100,1,                    Fct_Ch_GraAttack,       
+    "ATT",  "GRAIN ATTACK",   MIDI_CC_SUBDET, TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraSizeAttack,  1,    0,      100,1,                    Fct_Ch_GraAttack,       
     "REL",  "GRAIN RELEASE",  MIDI_CC_SUBTR, TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraSizeSustain, 1,    1,      100,1,                    Fct_Ch_GraSustain,        
     "OV",   "GRAIN OVERLAP",  MIDI_CC_PANSPR, TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraOverlap,     1,    0,      100,1,                    Fct_Ch_GraOverlap,     
     

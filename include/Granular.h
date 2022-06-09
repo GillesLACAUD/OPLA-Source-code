@@ -18,7 +18,7 @@
 #define GRA_NB_BYTES        2                   // 16 bits/sample
 
 // All size in Int (2 bytes)
-#define GRA_MAX_SIZE        44100*2*4                                       // Max size of a grain 1s stereo
+#define GRA_MAX_SIZE        44100*2*5                                       // Max size of a grain x seconds stereo
 #define GRA_MAX_SPACE		GRA_MAX_SIZE*1		                            // Max space between the grains 1s stereo  
 #define GRA_MEMORY_SIZE     GRA_NB_SECONDS*GRA_FS_SAMPLE*GRA_NB_CHANNELS    // In int 10s stereo
 #define GRA_BUFFER_SIZE     GRA_MEMORY_SIZE              				    // 10s stereo     

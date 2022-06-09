@@ -215,7 +215,7 @@ char mess[50];
         //Gra_Space=GRA_MAX_SIZE;       // All the grains are contigue
         Gra_Space=0;
         Gra_Density=1;
-        Gra_Size            = GRA_MAX_SIZE*4;        // MAX GRA_MAX_SIZE
+        Gra_Size            = GRA_MAX_SIZE;        // MAX GRA_MAX_SIZE
         Gra_OverlapPc        = 100;
         Gra_SizeAttack      = (5*Gra_Size)/100;
         Gra_SizeSustain     = (98*Gra_Size)/100;
@@ -359,6 +359,7 @@ static uint8_t step;
 static uint8_t firstg;
 static uint8_t lastg;
 uint8_t stepnbgrain=1;
+static uint16_t cptloop=0;
 
     // Can only compute x Grain at one time
     // 01-06 Fist step
@@ -377,12 +378,14 @@ uint8_t stepnbgrain=1;
     /* Refresh playing buffer*/
     // Gra_Ask_RefreshPlaying always true for now
     // CptGrain is increase for each time until its value is > Gra_Size
-    if(Gra_Ask_RefreshPlaying)
+    if(1)
+    //if(Gra_Ask_RefreshPlaying)
     {
         //-------------------------------------------------
         // At the end of the grain paster we have build
         // stepnbgrain and we continue with the next one
         //-------------------------------------------------
+        //Serial.printf("Cpt %d size %d\r\n",CptGrain,Gra_Size);
         if(CptGrain>=Gra_Size)
         {
             CptGrain=0;
@@ -395,7 +398,8 @@ uint8_t stepnbgrain=1;
                 cptstep=0;
             }
             Granular_UpdateVal();
-            //Serial.printf("*");
+            Serial.printf("-END-%03d-%d-----\r\n",cptloop,Gra_Size);
+            cptloop++;
         }
         else
         {
