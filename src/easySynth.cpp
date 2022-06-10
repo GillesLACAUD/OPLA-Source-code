@@ -283,20 +283,20 @@ inline float KarlsenLPF(float signal, float freq, float res, uint8_t m)
 	while (b_oversample < 1)
 	{	
 		//2x oversampling
-		//float prevfp;
-		//prevfp = b_fp[m];
-		//if (prevfp > 1.0f) {prevfp = 1.0f;}	// Q-limiter
+		float prevfp;
+		prevfp = b_fp[m];
+		if (prevfp > 1.0f) {prevfp = 1.0f;}	// Q-limiter
 
-		//b_fp[m] = (b_fp[m] * 0.418f) + ((b_q[m] * pole4[m]) * 0.582f);	// dynamic feedback
-		//float intfp;
-		//intfp = (b_fp[m] * 0.36f) + (prevfp * 0.64f);	// feedback phase
-		b_in[m] =	b_inSH[m]/* - intfp*/;	                // inverted feedback	
+		b_fp[m] = (b_fp[m] * 0.418f) + ((b_q[m] * pole4[m]) * 0.582f);	// dynamic feedback
+		float intfp;
+		intfp = (b_fp[m] * 0.36f) + (prevfp * 0.64f);	// feedback phase
+		b_in[m] =	b_inSH[m] - intfp;	                // inverted feedback	
 
 		pole1[m] = (b_in[m] * b_f[m]) + (pole1[m] * (1.0f - b_f[m]));	// pole 1
 		//if (pole1[m] > 1.0f) {pole1[m] = 1.0f;} else if (pole1[m] < -1.0f) {pole1[m] = -1.0f;} // pole 1 clipping
-		//pole2[m] = (pole1[m] * b_f[m]) + (pole2[m] * (1 - b_f[m]));	// pole 2
-		//pole3[m] = (pole2[m] * b_f[m]) + (pole3[m] * (1 - b_f[m]));	// pole 3
-		//pole4[m] = (pole3[m] * b_f[m]) + (pole4[m] * (1 - b_f[m]));	// pole 4
+		pole2[m] = (pole1[m] * b_f[m]) + (pole2[m] * (1 - b_f[m]));	// pole 2
+		pole3[m] = (pole2[m] * b_f[m]) + (pole3[m] * (1 - b_f[m]));	// pole 3
+		pole4[m] = (pole3[m] * b_f[m]) + (pole4[m] * (1 - b_f[m]));	// pole 4
 
 		b_oversample++;
 	}
@@ -306,8 +306,6 @@ inline float KarlsenLPF(float signal, float freq, float res, uint8_t m)
     NPF:=I-fPole[1];
     HPF:=I-fPole[4]-fPole[1];
     */
-
-   return pole1[m];
 
     switch(FilterType)
     {
@@ -720,6 +718,7 @@ uint32_t u32_offset;
     }
     //Serial.printf("--- Gra 1 %06d 2 %06d 3 %06d 4 %06d \n",voicePlayer[0].u32_cumulWhole,voicePlayer[1].u32_cumulWhole,voicePlayer[2].u32_cumulWhole,voicePlayer[3].u32_cumulWhole);
    
+    float cf; // Temp for the filter cut frequency
 	//-------------------------------------------------
     // Voice processing
 	// OUT dest[0],dest[1] for left right
@@ -732,6 +731,13 @@ uint32_t u32_offset;
             if (count % 4 == 0)
             {
                 voice_off = ADSR_Process(&adsr_vol, &voice->control_sign, &voice->phase);
+                if(i==0)
+                {
+                    (void)ADSR_Process(&adsr_fil, &voice->f_control_sign, &voice->f_phase);
+                    cf += voice->f_control_sign*filterEG;			// Apply EG Filter
+                    cf *=1+voice->fvelocity;						// Apply Velocity Filter
+                    cf *= 1+(voice->midiNote-64)*filterKBtrack;		// Apply Kbtrack
+                }
                 if (!voice_off && voice->active)
                 {
                     for (int j = 0; j < WS.PolyMax ; j++)
@@ -774,6 +780,7 @@ uint32_t u32_offset;
     if(FiltCutoffMod<0.0)
         FiltCutoffMod = 0.0;
 
+    
     out_l = KarlsenLPF(out_l,FiltCutoffMod, filtReso,0);
     out_r = KarlsenLPF(out_r,FiltCutoffMod, filtReso,1);
     
