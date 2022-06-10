@@ -491,7 +491,7 @@ static uint8_t  first=5;
 
     uint32_t s=0;    
     // Init grains positions
-    int32_t ModBegin = Gra_Begin+Gra_ModBegin;
+    int32_t ModBegin = Gra_Begin+Gra_Fine+Gra_ModBegin;
     int32_t ModSize = Gra_Size+Gra_ModSize;
     if(ModBegin<0)
         ModBegin=0;

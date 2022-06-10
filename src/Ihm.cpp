@@ -120,11 +120,16 @@ int Fct_Ch_GraBegin(int val)
 /***************************************************/
 int Fct_Ch_GraFine(int val)
 {
-float value;
-
-    value = val * NORM127MUL;
+    Gra_Fine = (GRA_MEMORY_SIZE*val)/1000;
+    Gra_Fine /=2;
+    Granular_UpdateVal();
+    Gra_Ask_RefreshPlaying=1;
+    ptGrain=ptGraGrain;
+    CptGrain=0;
     if(serialdebug)
-        Serial.printf("Grain xxx: %d\n",val);
+    {
+        Serial.printf("Grain Fine: Pourcent %d spl %06X\n",val,Gra_Fine);
+    }
 }
 
 /***************************************************/
@@ -146,7 +151,7 @@ int Fct_Ch_GraSpace(int val)
         CptGrain=0;
         if(serialdebug)
         {
-            Serial.printf("Grain Space: Pourcent %dn",Gra_Space,Gra_BufferSize);
+            Serial.printf("Grain Space: Pourcent %dn",Gra_Space);
         }
     //}         
 }
@@ -168,6 +173,7 @@ int Fct_Ch_GraSize(int val)
         Gra_Ask_RefreshPlaying=1;
         ptGrain=ptGraGrain;
         CptGrain=0;
+        CptGrain=Gra_Size+10;
         if(serialdebug)
         {
             Serial.printf("Grain Size: Pourcent %d Sample %d Buffer %08d\n",val,Gra_Size,Gra_BufferSize);
