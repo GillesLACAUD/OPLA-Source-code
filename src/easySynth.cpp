@@ -718,7 +718,14 @@ uint32_t u32_offset;
     }
     //Serial.printf("--- Gra 1 %06d 2 %06d 3 %06d 4 %06d \n",voicePlayer[0].u32_cumulWhole,voicePlayer[1].u32_cumulWhole,voicePlayer[2].u32_cumulWhole,voicePlayer[3].u32_cumulWhole);
    
+    FiltCutoffMod +=filtCutoff;
+    if(FiltCutoffMod>1.0)
+        FiltCutoffMod = 1.0;
+    if(FiltCutoffMod<0.0)
+        FiltCutoffMod = 0.0;
+        
     float cf; // Temp for the filter cut frequency
+    cf = FiltCutoffMod;
 	//-------------------------------------------------
     // Voice processing
 	// OUT dest[0],dest[1] for left right
@@ -774,15 +781,12 @@ uint32_t u32_offset;
             voice->lastSample[1] = 0.0f;
         }
     }
-    FiltCutoffMod +=filtCutoff;
-    if(FiltCutoffMod>1.0)
-        FiltCutoffMod = 1.0;
-    if(FiltCutoffMod<0.0)
-        FiltCutoffMod = 0.0;
+   
+    out_l = KarlsenLPF(out_l,cf+voicePlayer[0].f_control_sign*filterEG, filtReso,0);
+    out_r = KarlsenLPF(out_r,cf+voicePlayer[0].f_control_sign*filterEG, filtReso,1);
 
-    
-    out_l = KarlsenLPF(out_l,FiltCutoffMod, filtReso,0);
-    out_r = KarlsenLPF(out_r,FiltCutoffMod, filtReso,1);
+    //out_l = KarlsenLPF(out_l,FiltCutoffMod, filtReso,0);
+    //out_r = KarlsenLPF(out_r,FiltCutoffMod, filtReso,1);
     
     /*
      * finally output our samples
