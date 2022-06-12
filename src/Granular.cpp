@@ -77,6 +77,8 @@ uint32_t u32_rest=0;
 /***************************************************/
 double Granular_MidiNoteRatio(int midiNote)
 {
+
+    midiNote +=GraTranspose;
     int distanceFromCenter = midiNote - 60; // 60 is the central midi note
 
     if ( distanceFromCenter < 0 )

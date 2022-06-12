@@ -104,8 +104,8 @@ struct WorkSound
     int16_t Distortion;
 
     // Add 05.05.22
-    char    GraWave[20];            // Name of the wav file to load
-    int16_t GraIdWave;              // Number of the wav file to load
+    int16_t Reserved1[10];
+    int16_t GraIdWave;
     int16_t GraBegin;               // Begin of the first grain in the file in  %
     int16_t GraBeginFine;           // Begin of the first fine tune
     int16_t GraSpace;               // Space between the grains
@@ -116,7 +116,11 @@ struct WorkSound
     int16_t GraOverlap;             // Space between 2 EG Grains in % of Gra_Size
     int16_t GraReverse;             // Read grain in forward and backward
 
-    int16_t Reserved[11];
+    int16_t GraTranspose;           // Transpose the wav file
+    int16_t GraFineTune;            // Fine tune for the wav file
+    int16_t GraA440;                // A440 Generator for the tune
+
+    int16_t Reserved2[8];
 };
 
 

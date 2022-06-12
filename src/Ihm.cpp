@@ -287,6 +287,53 @@ int Fct_Ch_GraReverse(int val)
     return(0);        
 }
 
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+int Fct_Ch_GraTranspose(int val)
+{
+uint8_t note;
+float pitch;
+
+    GraTranspose = fstoval(WS.GraTranspose,-24,24,127);
+
+    for (int i = 0; i < WS.PolyMax; i++)
+    {
+        if (voicePlayer[i].active)
+        {
+            note = voicePlayer[i].midiNote+GlobalTranspose;
+            pitch =Granular_MidiNoteRatio(note);
+            voicePlayer[i].d_speed=pitch;
+            voicePlayer[i].u32_speed=pitch*1000;
+        }
+    }      
+
+    if(serialdebug)       
+        Serial.printf("Gra Transpose: %d\n",GraTranspose);    
+
+    return(0);    
+
+}
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+int Fct_Ch_GraFineTune(int val)
+{
+
+}
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+int Fct_Ch_GraA440(int val)
+{
+
+}
 
 //--------------------------------------------------
 // OSC

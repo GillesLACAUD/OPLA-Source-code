@@ -58,6 +58,8 @@ GRANULAR_EXTRN uint32_t Gra_Size;           	// Size of a grain max GRA_MAX_SIZE
 GRANULAR_EXTRN uint8_t  Gra_Density;      		// Number of grain Max GRAIN_MAX 1 Mini
 GRANULAR_EXTRN uint8_t  u8_GraReverse;
 
+GRANULAR_EXTRN int8_t   GraTranspose;
+
 // For the Modulation
 GRANULAR_EXTRN int32_t Gra_ModBegin;
 GRANULAR_EXTRN int32_t Gra_ModSpace;

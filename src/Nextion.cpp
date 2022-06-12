@@ -220,25 +220,6 @@ void Nextion_PrintLabel()
         break;
 
         case SECTION_NOISE:
-        // Loop
-        sprintf(messnex,"page0.la2.pco=%d",ORANGE);
-        Nextion_Send(messnex);
-        sprintf(messnex,"page0.la3.pco=%d",ORANGE);
-        Nextion_Send(messnex);
-        sprintf(messnex,"page0.la4.pco=%d",ORANGE);
-        Nextion_Send(messnex);
-
-        sprintf(messnex,"page0.la7.pco=%d",ORANGE);
-        Nextion_Send(messnex);
-        sprintf(messnex,"page0.la8.pco=%d",ORANGE);
-        Nextion_Send(messnex);
-        sprintf(messnex,"page0.la9.pco=%d",ORANGE);
-        Nextion_Send(messnex);
-
-        sprintf(messnex,"page0.la5.pco=%d",BLUE);
-        Nextion_Send(messnex);
-        sprintf(messnex,"page0.la6.pco=%d",BLUE);
-        Nextion_Send(messnex);
         break;
 
         default:

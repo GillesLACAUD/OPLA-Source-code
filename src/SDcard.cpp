@@ -338,7 +338,7 @@ char mess[50];
     // Set the page
     SDCard_Display10SndName();
 
-    sprintf(mess,  ...Wait...");
+    sprintf(mess,"Load...Wait...");
     sprintf(messnex,"page2.Setup_Name.txt=%c%s%c",0x22,mess,0x22);
     Serial1.print(messnex);
     Serial1.write(0xff);
