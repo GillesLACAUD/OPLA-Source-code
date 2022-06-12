@@ -30,7 +30,11 @@ uint32_t u32_whole=0;
 uint32_t u32_rest=0;
 
     // En entier 1000 = 1.0 -> on pert des decimales
-    voice->u32_cumulspeed +=voice->u32_speed;
+    uint32_t add;
+    add= (uint32_t)((float)voice->u32_speed*(1+PitchMod/10000));
+    add =voice->u32_speed;
+
+    voice->u32_cumulspeed +=add;
     u32_whole= voice->u32_cumulspeed/1000;
     u32_rest = voice->u32_cumulspeed - u32_whole*1000;
     voice->u32_cumulspeed = u32_rest;

@@ -686,6 +686,8 @@ uint32_t u32_offset;
 	// OUT dest[0],dest[1] for left right
     //-------------------------------------------------
 
+    uint32_t addspl;
+
     for (int v = 0; v < WS.PolyMax; v++) /* one loop is faster than two loops */
     {
         notePlayerT *voice = &voicePlayer[v];
@@ -693,10 +695,11 @@ uint32_t u32_offset;
         {
             // Add Granular OSC (fake OSC2)
             u32_offset=Granular_TransposeStereo(voice);
-            ptPlay=ptGraPlayingBuffer+voice->u32_cumulWhole;
+            addspl = voice->u32_cumulWhole;
+            ptPlay=ptGraPlayingBuffer+addspl;
             voice->i16_Left = (*(ptPlay));
             voice->i16_Left /=1;
-            ptPlay=ptGraPlayingBuffer+voice->u32_cumulWhole+1;
+            ptPlay=ptGraPlayingBuffer+addspl+1;
             voice->i16_Right = (*(ptPlay));
             voice->i16_Right /=1;
             // - 40 to avoid some clic at the end

@@ -1,0 +1,12 @@
+---- 12.06.2022 ----
+
+Lfo to pitch
+Transpose sound
+Fine tune Sound
+Add A440 Generator
+Add Pan mode 
+Test again reverse mode for sample
+Test again overlap for sample
+Suppress Bank wav screen Granular2 
+Supress EG for PITCH
+Supress ARP Module
