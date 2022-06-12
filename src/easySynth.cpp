@@ -787,6 +787,13 @@ uint32_t u32_offset;
 
     //out_l = KarlsenLPF(out_l,FiltCutoffMod, filtReso,0);
     //out_r = KarlsenLPF(out_r,FiltCutoffMod, filtReso,1);
+
+    float multi = (1+AmpMod)*GeneralVolume;
+    out_l *=multi;
+    out_r *=multi;
+    
+    out_l *= (1+PanMod);
+    out_r *= (1-PanMod);
     
     /*
      * finally output our samples
