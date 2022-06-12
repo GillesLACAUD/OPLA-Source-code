@@ -18,7 +18,8 @@
 
 #include "ES8388.h"
 
-uint8_t serialdebug=1;
+uint8_t serialdebug=0;
+uint8_t serialgra=1;
 extern uint8_t Midi_KeyOn;
 
 // value to full scale
@@ -100,13 +101,13 @@ int Fct_Ch_GraBegin(int val)
         val=0;
     //if(!Gra_Ask_RefreshPlaying)
     //{
-        Gra_Begin = (GRA_MEMORY_SIZE*val)/100;
+        Gra_Begin = (GRA_MEMORY_SIZE*val)/127;
         Gra_Begin /=2;
         Granular_UpdateVal();
         Gra_Ask_RefreshPlaying=1;
         ptGrain=ptGraGrain;
         CptGrain=0;
-        if(serialdebug)
+        if(serialgra)
         {
             Serial.printf("Grain Begin: Pourcent %d spl %06X\n",val,Gra_Begin);
         }
@@ -120,13 +121,13 @@ int Fct_Ch_GraBegin(int val)
 /***************************************************/
 int Fct_Ch_GraFine(int val)
 {
-    Gra_Fine = (GRA_MEMORY_SIZE*val)/1000;
+    Gra_Fine = (GRA_MEMORY_SIZE*val)/1270;
     Gra_Fine /=2;
     Granular_UpdateVal();
     Gra_Ask_RefreshPlaying=1;
     ptGrain=ptGraGrain;
     CptGrain=0;
-    if(serialdebug)
+    if(serialgra)
     {
         Serial.printf("Grain Fine: Pourcent %d spl %06X\n",val,Gra_Fine);
     }
@@ -144,14 +145,14 @@ int Fct_Ch_GraSpace(int val)
 
     //if(!Gra_Ask_RefreshPlaying)
     //{
-        Gra_Space = Gra_Size+(GRA_MAX_SPACE*val)/100;
+        Gra_Space = Gra_Size+(GRA_MAX_SPACE*val)/127;
         Granular_UpdateVal();
         Gra_Ask_RefreshPlaying=1;
         ptGrain=ptGraGrain;
         CptGrain=0;
-        if(serialdebug)
+        if(serialgra)
         {
-            Serial.printf("Grain Space: Pourcent %dn",Gra_Space);
+            Serial.printf("Grain Space: Pourcent %d\n",Gra_Space);
         }
     //}         
 }
@@ -168,13 +169,13 @@ int Fct_Ch_GraSize(int val)
 
     //if(!Gra_Ask_RefreshPlaying)
     //{
-        Gra_Size = 2000+(GRA_MAX_SIZE*val)/100;
+        Gra_Size = 2000+(GRA_MAX_SIZE*val)/127;
         Granular_UpdateVal();
         Gra_Ask_RefreshPlaying=1;
         ptGrain=ptGraGrain;
         CptGrain=0;
         CptGrain=Gra_Size+10;
-        if(serialdebug)
+        if(serialgra)
         {
             Serial.printf("Grain Size: Pourcent %d Sample %d Buffer %08d\n",val,Gra_Size,Gra_BufferSize);
         }
@@ -189,14 +190,18 @@ int Fct_Ch_GraSize(int val)
 int Fct_Ch_GraDensity(int val)
 {
     if(val<0)
+    {
+        printf("ERROR Grain Density\r\n");
         val=0;
+    }
 
     Gra_Density = val;
+    Serial.printf("Grain Density: %d\n",Gra_Density);
     Granular_UpdateVal();
     Gra_Ask_RefreshPlaying=1;
     ptGrain=ptGraGrain;
     CptGrain=0;
-    if(serialdebug)
+    if(serialgra)
     {
         Serial.printf("Grain Density: %d\n",Gra_Density);
     }
@@ -213,9 +218,9 @@ int Fct_Ch_GraAttack(int val)
         val=0;
     //if(!Gra_Ask_RefreshPlaying)
     //{
-        Gra_SizeAttack=(Gra_Size*val)/100;
+        Gra_SizeAttack=(Gra_Size*val)/127;
         Gra_Ask_RefreshPlaying=1;
-        if(serialdebug)
+        if(serialgra)
         {
             Serial.printf("Grain Attack: %d\n",Gra_SizeAttack);
         }
@@ -233,9 +238,9 @@ int Fct_Ch_GraSustain(int val)
         val=0;
     //if(!Gra_Ask_RefreshPlaying)
     //{
-        Gra_SizeSustain=(Gra_Size*val)/100;
+        Gra_SizeSustain=(Gra_Size*val)/127;
         Gra_Ask_RefreshPlaying=1;
-        if(serialdebug)
+        if(serialgra)
         {
             Serial.printf("Grain Release: %d\n",Gra_SizeSustain);
         }
@@ -255,7 +260,7 @@ int Fct_Ch_GraOverlap(int val)
     Gra_OverlapPc = val;
     Granular_UpdateVal();
     Gra_Ask_RefreshPlaying=1;
-    if(serialdebug)
+    if(serialgra)
     {
         Serial.printf("Grain Overlap: %d\n",Gra_OverlapPc);
     }
@@ -277,7 +282,7 @@ int Fct_Ch_GraReverse(int val)
     {
         u8_GraReverse= 0;
     }
-    if(serialdebug)       
+    if(serialgra)       
         Serial.printf("Grain Reverse ON OFF: %d\n",u8_GraReverse);
     return(0);        
 }

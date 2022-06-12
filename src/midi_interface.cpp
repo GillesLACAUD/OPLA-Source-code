@@ -15,6 +15,7 @@
 #include "SDCard.h"
 #include "Ihm.h"
 #include "ArpSeq.h"
+#include "Granular.h"
 
 /* constant to normalize midi value to 0.0 - 1.0f */
 #define NORM127MUL	0.007874f7

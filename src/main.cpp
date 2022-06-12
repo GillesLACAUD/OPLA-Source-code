@@ -524,11 +524,6 @@ char AffVersion[30]="V01 GRA";
         SDCard_Display10SndName();
     }
 
-    SDCard_LoadLastSound();
-    SDCard_LoadMidiRx();
-
-
-
     //------------------------------------------------------------------------
     // TEST GRANULAR
     //------------------------------------------------------------------------
@@ -537,9 +532,10 @@ char AffVersion[30]="V01 GRA";
     CurrentGraWave=0;
     GraWaveInc10=0;
 
-    Gra_Maxplay=Granular_LoadWave("035_CrumarCello.wav"); // Synth
+
+    //Gra_Maxplay=Granular_LoadWave("086_Word.wav"); // Synth
     Granular_UpdateVal();
-    Granular_Dump();
+    //Granular_Dump();
     Gra_Ask_RefreshPlaying=1; // Ask to refresh playing buffer
     ptGrain=ptGraGrain;
     CptGrain=0;
@@ -548,7 +544,8 @@ char AffVersion[30]="V01 GRA";
     // END TEST GRANULAR
     //------------------------------------------------------------------------
 
-
+    SDCard_LoadLastSound();
+    SDCard_LoadMidiRx();
 
 
     // Patch to init the ARP
@@ -569,13 +566,15 @@ char AffVersion[30]="V01 GRA";
     if(IntAudioIn>64)
         ES8388_WriteReg(ES8388_DACCONTROL16,0x09);
 
-
+    // Debug Midi part
+    /*
     Serial.printf("Midi Rx is      %d\n",MidiRx);
     Serial.printf("Midi Mode is    %d\n",MidiMode);
     Serial.printf("Midi Rel CC is  %d\n",MidiRelCC);
     Serial.printf("Midi Rel Min is %d\n",MidiRelMin);
     Serial.printf("Midi Rel Max is %d\n",MidiRelMax);
     Serial.printf("Audio In is     %d\n",IntAudioIn);
+    */
 
 
 
@@ -752,8 +751,8 @@ static uint8_t onetime;
         if(i2s_write_sample_16ch2(sampleData32.sample32))
         {
             Synth_Process(&fl_sample, &fr_sample);
-            Granular_Process(); // One time
-            Granular_Process(); // One more time
+            Granular_Process(0); // One time
+            Granular_Process(0); // One more time
             
             /* Play playing buffer*/
             /*

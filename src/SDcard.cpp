@@ -8,6 +8,7 @@
 #include "simple_delay.h"
 
 #include "Nextion.h"
+#include "Granular.h"
 
 #define __SDCARD__
 #include "SDCard.h"
@@ -219,13 +220,15 @@ uint8_t cardType = SD_MMC.cardType();
     uint64_t cardSize = SD_MMC.cardSize() / (1024 * 1024);
     Serial.printf("SD_MMC Card Size: %lluMB\n", cardSize);
 
-    createDir(SD_MMC, "/sound");
+    /*
+    createDir(SD_MMC, "/grasound");
     createDir(SD_MMC, "/AKWF");
     createDir(SD_MMC, "/System");
 
-    writeFile(SD_MMC, "/sound/hello.txt", "Hello ");
-    appendFile(SD_MMC, "/sound/hello.txt", "World!\n");
-    readFile(SD_MMC, "/sound/hello.txt");
+    writeFile(SD_MMC, "/grasound/hello.txt", "Hello ");
+    appendFile(SD_MMC, "/grasound/hello.txt", "World!\n");
+    readFile(SD_MMC, "/grasound/hello.txt");
+    */
 
     Serial.printf("Total space: %lluMB\n", SD_MMC.totalBytes() / (1024 * 1024));
     Serial.printf("Used space: %lluMB\n", SD_MMC.usedBytes() / (1024 * 1024));
@@ -253,6 +256,9 @@ void SDCard_SaveSound(uint8_t snd)
 char path[30];
 uint16_t wr;
 unsigned int sz=sizeof(WorkSound);
+char mess[50];
+
+    Serial.printf("Before save name %s\n",SndName);
 
     for(uint8_t s=0;s<MAX_SECTION;s++)
     {
@@ -265,10 +271,20 @@ unsigned int sz=sizeof(WorkSound);
         }
     }
 
+    sprintf(mess,"Save...Wait...");
+    sprintf(messnex,"page2.Setup_Name.txt=%c%s%c",0x22,mess,0x22);
+    Serial1.print(messnex);
+    Serial1.write(0xff);
+    Serial1.write(0xff);
+    Serial1.write(0xff);
 
-    sprintf(path,"/sound/%d.snd",snd);
+    sprintf(path,"/grasound/%d.snd",snd);
     File file = SD_MMC.open(path,"wb");
     wr=file.write((uint8_t*)&WS,sz);
+
+    // Save the wav buffer
+    wr=file.write((uint8_t*)ptGraMemory,GRA_MEMORY_SIZE);
+
     file.close();
     Serial.printf("Save sound %d\n",snd);
 
@@ -282,6 +298,11 @@ unsigned int sz=sizeof(WorkSound);
             }
         }
     }
+
+    // Restore the name
+    SDCard_ReadSndName(snd);
+    sprintf(messnex,"page2.Setup_Name.txt=%c%s%c",0x22,SndName,0x22);
+    Nextion_Send(messnex);
 
 }
 
@@ -297,6 +318,7 @@ char path[30];
 unsigned int sz=sizeof(WorkSound);
 int val;   
 int valrd;
+char mess[50];
 
     Delay_Reset();
 
@@ -314,11 +336,23 @@ int valrd;
     oldCurrentSound = CurrentSound; 
 
     // Set the page
-    //SDCard_Display10SndName();
+    SDCard_Display10SndName();
 
-    sprintf(path,"/sound/%d.snd",snd);
+    sprintf(mess,"Load...Wait...");
+    sprintf(messnex,"page2.Setup_Name.txt=%c%s%c",0x22,mess,0x22);
+    Serial1.print(messnex);
+    Serial1.write(0xff);
+    Serial1.write(0xff);
+    Serial1.write(0xff);
+
+
+
+    sprintf(path,"/grasound/%d.snd",snd);
     File file = SD_MMC.open(path,"rb");
     wr=file.read((uint8_t*)&WS,sz);
+    // Load the wav buffer
+    wr=file.read((uint8_t*)ptGraMemory,GRA_MEMORY_SIZE);
+    Serial.printf("Load wav file %d",wr);
     file.close();    
     Serial.printf("Load sound %d\n",snd);
 
@@ -342,6 +376,7 @@ int valrd;
             }
         }
     }
+
     IsLoadSound = 0;
     // To overwrite the max poly if delay =0
     Fct_Ch_DlAmount(WS.DelayAmount);
@@ -367,11 +402,18 @@ int valrd;
     }
 
     // Write the sound number in a file
-    sprintf(path,"/sound/last.lst");
+    sprintf(path,"/grasound/last.lst");
     file = SD_MMC.open(path,"wb");
     wr=file.write((uint8_t*)&snd,1);
     file.close();    
-   
+
+    // Restore the name
+    sprintf(messnex,"page2.Setup_Name.txt=%c%s%c",0x22,SndName,0x22);
+    Nextion_Send(messnex);
+
+    Serial.printf("After Load name %s\n",SndName);
+
+ 
        
 }
 
@@ -388,12 +430,10 @@ void SDCard_LoadLastSound()
     uint8_t snd;
 
     // Read the sound number in a file
-    sprintf(path,"/sound/last.lst");
+    sprintf(path,"/grasound/last.lst");
     File file = SD_MMC.open(path,"rb");
     wr=file.read((uint8_t*)&snd,1);
     file.close();   
-
-    snd=1;
     SDCard_LoadSound(snd,1);
 }
 
@@ -538,7 +578,7 @@ uint16_t rd;
     // 38 37 36 35 34 33 32 31 0D 0A -> 87654321 + CR + LF
     // seek from the beginning of the file
 
-    sprintf(path,"/sound/Names.txt");
+    sprintf(path,"/grasound/Names.txt");
     File file = SD_MMC.open(path,"rb");
 
     // read all the names and store them in the memory
@@ -547,7 +587,7 @@ uint16_t rd;
     for(uint8_t n=0;n<20;n++)
     {
         SDCard_ReadSndName(n);
-        Serial.printf("File Name %03d %s\n",n,SndName);        
+        //Serial.printf("File Name %03d %s\n",n,SndName);        
 
     }
     
@@ -569,7 +609,7 @@ uint8_t* pt;
     // 38 37 36 35 34 33 32 31 0D 0A -> 87654321 + CR + LF
     // seek from the beginning of the file
     
-    sprintf(path,"/sound/Names.txt");
+    sprintf(path,"/grasound/Names.txt");
     File file = SD_MMC.open(path,"wb");
     pt=tabname;
     for(uint16_t j=0;j<SDCARD_TAB_NAME;j++)
@@ -594,7 +634,7 @@ void SDCard_Display10SndName()
         Nextion_Send(messnex);
         sprintf(messnex,"page2.b%d.txt=%c%s%c",i,0x22,SndName,0x22);
         Nextion_Send(messnex);
-        Serial.printf("%s\n",SndName);
+        //Serial.printf("%s\n",SndName);
     }
 }
 
@@ -693,7 +733,7 @@ char *p;
             if(strlen(Nom)<MAX_WAV_FILES_CHAR)
             {
                 strcpy(Gra_WaveName[cpt],Nom);
-                if(1)
+                if(0)
                 {
                     Serial.printf("Wave %03d Tab %s\r\n",cpt,Gra_WaveName[cpt]);
                 }

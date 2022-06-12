@@ -137,7 +137,26 @@ void Granular_Init(void)
     Serial.printf("Free PSRAM: %d\n", ESP.getFreePsram());
 
     //Granular_Reset();
+
+    ptdst=ptGraPlayingBuffer;
+    ptsrc=ptGraMemory;
+    oldCurrentGraWave=CurrentGraWave;
+
+    Gra_BufferSize      = Gra_Size/*+(Gra_Density-1)*Gra_OverlapSpl/2*/;
+    Gra_NewBufferSize   = Gra_BufferSize;
+    memset(ptGraPlayingBuffer,0,Gra_BufferSize*2);
+
+    Gra_AttackCoeff = GRA_EG_FULLSCALE/(Gra_SizeAttack+1);
+    Gra_ReleaseCoeff = GRA_EG_FULLSCALE/(Gra_Size-1-Gra_SizeSustain);
+
+    ptWave=ptGraMemory;
+    ptPlay=ptGraPlayingBuffer;
+    ptGraGrain=ptGraPlayingBuffer;
+    ptGrain=ptGraGrain;
+    CptGrain=0;
+
     Serial.printf("Granular Init Done\n");
+
 }
 
 /***************************************************/
@@ -163,7 +182,7 @@ uint32_t Granular_LoadWave(char* name)
 {
 char path[50];
 uint32_t wr;
-GRANULAR_EXTRN int16_t*    pt;
+int16_t*    pt;
 char mess[50];
 
     //strcpy(Tab_Section_Name[0],name);
@@ -208,20 +227,19 @@ char mess[50];
         oldCurrentGraWave=CurrentGraWave;
 
         // FAKE INIT
-        
-
-        Gra_Begin=0x00;
+        //Gra_Begin=0x00;
         //Gra_Space=0;                  // Play the same grain
         //Gra_Space=GRA_MAX_SIZE;       // All the grains are contigue
-        Gra_Space=0;
-        Gra_Density=1;
-        Gra_Size            = GRA_MAX_SIZE;        // MAX GRA_MAX_SIZE
-        Gra_OverlapPc        = 100;
-        Gra_SizeAttack      = (5*Gra_Size)/100;
-        Gra_SizeSustain     = (98*Gra_Size)/100;
+        //Gra_Space=0;
+        //Gra_Density=1;
+        //Gra_Size            = GRA_MAX_SIZE;        // MAX GRA_MAX_SIZE
+        //Gra_OverlapPc        = 100;
+        //Gra_SizeAttack      = (5*Gra_Size)/100;
+        //Gra_SizeSustain     = (98*Gra_Size)/100;
         //Gra_SizeAttack      = 0;
         //Gra_SizeSustain     = Gra_Size;;
-        Gra_OverlapSpl      = (Gra_Size*Gra_OverlapPc)/100;
+        //Gra_OverlapSpl      = (Gra_Size*Gra_OverlapPc)/100;
+
         Gra_BufferSize      = Gra_Size/*+(Gra_Density-1)*Gra_OverlapSpl/2*/;
         Gra_NewBufferSize   = Gra_BufferSize;
         memset(ptGraPlayingBuffer,0,Gra_BufferSize*2);
@@ -343,12 +361,13 @@ void Granular_Dump(void)
     Serial.printf("MAX Gra_BufferSize    %06d\r\n",GRA_MAX_SIZE*GRAIN_MAX);
 }
 
+
 /***************************************************/
 /*                                                 */
 /*                                                 */
 /*                                                 */
 /***************************************************/
-void Granular_Process(void)
+void Granular_Process(uint8_t set)
 {
 int32_t i32_spl;
 uint16_t ui16_coeff;    
@@ -360,11 +379,26 @@ static uint8_t firstg;
 static uint8_t lastg;
 uint8_t stepnbgrain=1;
 static uint16_t cptloop=0;
+static uint16_t cptkey=0;
 
     // Can only compute x Grain at one time
     // 01-06 Fist step
     // 07-12 Second Step
     // 12-18 Third Step
+
+    /* bof pas bon
+    if(set==1)
+    {
+        cptstep=step+1;
+        CptGrain=0;
+        ptGrain=ptGraGrain;
+        Gra_BufferSize=Gra_NewBufferSize;
+        Granular_UpdateVal();
+
+        cptkey++;
+        printf("%03d KEY\n",cptkey);
+    }
+    */
     
     step=Gra_Density/stepnbgrain;
     firstg=stepnbgrain*cptstep;
@@ -372,8 +406,8 @@ static uint16_t cptloop=0;
     if(lastg>Gra_Density)
         lastg=Gra_Density;
 
-    firstg=0;
-    lastg=1;
+    //firstg=0;
+    //lastg=1;
 
     /* Refresh playing buffer*/
     // Gra_Ask_RefreshPlaying always true for now
@@ -396,9 +430,9 @@ static uint16_t cptloop=0;
             {
                 Gra_BufferSize=Gra_NewBufferSize;
                 cptstep=0;
+                //Serial.printf("-END-%03d-%d-----\r\n",cptloop,Gra_Size);
             }
             Granular_UpdateVal();
-            Serial.printf("-END-%03d-%d-----\r\n",cptloop,Gra_Size);
             cptloop++;
         }
         else
@@ -500,7 +534,7 @@ static uint8_t  first=5;
     if(ModSize>GRA_MAX_SIZE)
         ModSize=GRA_MAX_SIZE;
 
-    Serial.printf("ModBegin %d\n",ModBegin);
+    //Serial.printf("ModBegin %d\n",ModBegin);
 
     for(uint8_t g=0;g<Gra_Density;g++)
     {
