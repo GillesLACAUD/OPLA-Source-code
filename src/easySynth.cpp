@@ -974,6 +974,7 @@ float pitch;
     voice->midiNote = note;
 
     pitch =Granular_MidiNoteRatio(note);
+    pitch *=(1+fGraFineTune);
     voice->d_speed=pitch;
     voice->u32_speed=pitch*1000;
     voice->u32_cumulWhole=0;

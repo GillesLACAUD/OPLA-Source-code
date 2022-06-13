@@ -1,12 +1,14 @@
 ---- 12.06.2022 ----
 
-Lfo to pitch
 Transpose sound                         -> OK done 12.06.22
-Fine tune Sound
-Add A440 Generator
+Fine tune Sound                         -> OK done 12.06.22
+Add A440 Generator                      -> OK done 12.06.22
+Lfo to pitch                            -> OK done 13.06.22
 Add Pan mode 
 Test again reverse mode for sample
 Test again overlap for sample
 Suppress Bank wav screen Granular2 
 Supress EG for PITCH
 Supress ARP Module
+Change name label to ADD wav
+Init too long whe compute teh grain at the beginning

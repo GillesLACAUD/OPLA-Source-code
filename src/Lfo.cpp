@@ -91,7 +91,8 @@ static uint16_t sl1,sl2;
         FiltCutoffMod += prlfo->f_modlfo/2;
         break;
         case LFO_PITCH:
-        PitchMod += prlfo->f_modlfo/8;
+        PitchMod = prlfo->f_modlfo/8;
+        PitchMod *=1.5;
         break;
         // ADD FOR GRANULAR
         case LFO_GRABEGIN:

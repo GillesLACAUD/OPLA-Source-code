@@ -746,6 +746,7 @@ static uint8_t onetime;
     sampleData32.sample[1] = (int16_t)(fr_sample*32768.0f);
     */
     
+    
     if(!StopAudioOut)
     {
         if(i2s_write_sample_16ch2(sampleData32.sample32))
@@ -782,6 +783,19 @@ static uint8_t onetime;
 
             sampleData32.sample[0] = (int16_t)(fl_sample*32768.0f);
             sampleData32.sample[1] = (int16_t)(fr_sample*32768.0f);
+
+            if(GraGene400)
+            {
+                int16_t val=(int16_t)sine440[cpt440] + ((int16_t)sine440[cpt440+1]<<8);
+                sampleData32.sample[0] +=val>>6;
+                sampleData32.sample[1] +=val>>6;
+                cpt440+=2;
+                if(cpt440==200)
+                {
+                    cpt440=0;
+                }
+            }
+
         }
         else
         {

@@ -29,10 +29,11 @@ uint32_t Granular_TransposeStereo(notePlayerT *voice)
 uint32_t u32_whole=0;
 uint32_t u32_rest=0;
 
+    
     // En entier 1000 = 1.0 -> on pert des decimales
-    uint32_t add;
-    add= (uint32_t)((float)voice->u32_speed*(1+PitchMod/10000));
+    int32_t add;
     add =voice->u32_speed;
+    add += (int32_t)(((float)voice->u32_speed)*PitchMod);
 
     voice->u32_cumulspeed +=add;
     u32_whole= voice->u32_cumulspeed/1000;

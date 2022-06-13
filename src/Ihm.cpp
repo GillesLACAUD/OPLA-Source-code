@@ -305,6 +305,7 @@ float pitch;
         {
             note = voicePlayer[i].midiNote+GlobalTranspose;
             pitch =Granular_MidiNoteRatio(note);
+            pitch *=(1+fGraFineTune);
             voicePlayer[i].d_speed=pitch;
             voicePlayer[i].u32_speed=pitch*1000;
         }
@@ -323,7 +324,25 @@ float pitch;
 /***************************************************/
 int Fct_Ch_GraFineTune(int val)
 {
+uint8_t note;
+float pitch;
 
+    // Bztween each note
+    // 1,057251908396947
+    GraFineTune=val-64;                          // -64 to 64
+    fGraFineTune = (float)GraFineTune/1120;      // fine +/- 0.2 320 = 3 semitone
+
+    for (int i = 0; i < WS.PolyMax; i++)
+    {
+        if (voicePlayer[i].active)
+        {
+            note = voicePlayer[i].midiNote+GlobalTranspose;
+            pitch =Granular_MidiNoteRatio(note);
+            pitch *=(1+fGraFineTune);
+            voicePlayer[i].d_speed=pitch;
+            voicePlayer[i].u32_speed=pitch*1000;
+        }
+    }      
 }
 /***************************************************/
 /*                                                 */
@@ -332,7 +351,11 @@ int Fct_Ch_GraFineTune(int val)
 /***************************************************/
 int Fct_Ch_GraA440(int val)
 {
-
+    if(val>64)
+        GraGene400=1;
+    else
+        GraGene400=0;
+    return(0);
 }
 
 //--------------------------------------------------
