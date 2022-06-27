@@ -695,7 +695,7 @@ uint32_t u32_offset;
         {
             // Add Granular OSC (fake OSC2)
             u32_offset=Granular_TransposeStereo(voice);
-            addspl = voice->u32_cumulWhole;
+            addspl = voice->i32_cumulWhole;
             ptPlay=ptGraPlayingBuffer+addspl;
             voice->i16_Left = (*(ptPlay));
             voice->i16_Left /=1;
@@ -977,7 +977,7 @@ float pitch;
     pitch *=(1+fGraFineTune);
     voice->d_speed=pitch;
     voice->u32_speed=pitch*1000;
-    voice->u32_cumulWhole=0;
+    voice->i32_cumulWhole=0;
     voice->u32_cumulspeed=0;
     voice->i8_reverse=1;
     

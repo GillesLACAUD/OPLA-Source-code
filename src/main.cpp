@@ -499,10 +499,17 @@ char AffVersion[30]="V01 GRA";
 
     xTaskCreatePinnedToCore(CoreTask0, "terminalTask", 8000, NULL,0, &Core0TaskHnd, 0);
 
+    //------------------------------------------------------------------------
+    // TEST GRANULAR
+    //------------------------------------------------------------------------
+    SDCard_GraFindWaveName();
+    Granular_Init();
+    CurrentGraWave=0;
+    GraWaveInc10=0;
+
     Nextion_Init();
 
-    delay(1000);
-
+    //delay(1000);
         
     // SHOW SD CARD AND FIRMWARE VERSION
     sprintf(messnex,"page0.b2.txt_maxl=80");
@@ -524,13 +531,9 @@ char AffVersion[30]="V01 GRA";
         SDCard_Display10SndName();
     }
 
-    //------------------------------------------------------------------------
-    // TEST GRANULAR
-    //------------------------------------------------------------------------
-    SDCard_GraFindWaveName();
-    Granular_Init();
-    CurrentGraWave=0;
-    GraWaveInc10=0;
+    // Only for test
+    //SDCard_UpdateNextion();
+    //while(1);
 
 
     //Gra_Maxplay=Granular_LoadWave("086_Word.wav"); // Synth

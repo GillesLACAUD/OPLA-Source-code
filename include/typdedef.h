@@ -171,7 +171,7 @@ struct notePlayerT
 	double 		d_cumulspeed;
 	uint32_t	u32_speed;
 	uint32_t	u32_cumulspeed;
-    uint32_t	u32_cumulWhole;
+    int32_t	    i32_cumulWhole;
     int16_t     i16_Left;
     int16_t     i16_Right;
     int8_t      i8_reverse;

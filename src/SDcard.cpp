@@ -689,6 +689,105 @@ uint8_t *pt;
     file.close();    
 }
 
+#define SIZE_BLOCK							4096
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+void SDCard_UpdateNextion()
+{
+char path[30];
+uint16_t rd;
+uint32_t filesize;
+unsigned char	readbuffer[SIZE_BLOCK];
+uint16_t c;
+uint8_t ret[10];
+
+
+    //https://unofficialnextion.com/t/nextion-upload-protocol-v1-2-the-fast-one/1044
+
+    // Open the file and get the size
+    sprintf(path,"/MisterM_V3.0.tft");
+    File flnextion = SD_MMC.open(path,"rb");
+    filesize=flnextion.size();
+
+    Serial.printf("File size %d\n",filesize);
+
+    // Nextion in update mode
+    Serial.printf("Nextion in update mode\n");
+    delay(100);
+
+    int nb_block = filesize/4096 + 1;
+	int last_block = filesize % 4096;
+	Serial.printf("Block 4096 bytes %d\n", nb_block);
+	Serial.printf("Last bytes %d\n", last_block);
+
+    sprintf(messnex,"rest");
+    Serial1.printf(messnex);
+    Serial1.write(0xff);
+    Serial1.write(0xff);
+    Serial1.write(0xff);
+
+    sprintf(messnex,"rest");
+    Serial1.printf(messnex);
+    Serial1.write(0xff);
+    Serial1.write(0xff);
+    Serial1.write(0xff);
+
+     delay(500);
+
+/*
+    sprintf(messnex,"runmod=2");
+    Serial1.printf(messnex);
+    Serial1.write(0xff);
+    Serial1.write(0xff);
+    Serial1.write(0xff);
+    */
+
+    sprintf(messnex,"whmi-wri %d,115200,0",filesize);
+    //sprintf(messnex,"whmi-wris %d,115200,1",filesize);
+    Serial1.printf(messnex);
+    Serial1.write(0xff);
+    Serial1.write(0xff);
+    Serial1.write(0xff);
+
+    while(!Serial1.available());
+    Serial1.readBytes(ret,1);
+    Serial.printf("Update rd %02X\n",ret[0]);
+
+    while (nb_block)
+    {
+        c = flnextion.read(&readbuffer[0],SIZE_BLOCK);
+        if (c != SIZE_BLOCK)
+        {
+            //delay(500);
+        }
+        char *pt;
+        pt = (char*)&readbuffer[0];
+        Serial1.write(pt,c);
+        delay(500);
+        --nb_block;
+        
+        //while(!Serial1.available());
+        /*
+        Serial1.readBytes(ret,1);
+        if(ret[0]==0x08)
+        {
+            Serial1.readBytes(&ret[1],4);
+            Serial.printf("rd %02X %02X %02X %02X %02X",ret[0],ret[1],ret[2],ret[3],ret[4]);
+        }
+        else
+            Serial.printf("rd %02X",ret[0]);
+        */
+        Serial.printf("---");
+        Serial.printf("Block rest %d\n",nb_block);
+    }
+    Serial.printf("Update done - Please reboot\n");
+}
+
+
+
 /***************************************************/
 /*                                                 */
 /*                                                 */
@@ -741,7 +840,7 @@ char *p;
             }
         }
         entry.close();
-        if(cpt>SDCARD_NAX_NAME-1)
+        if(cpt>MAX_WAV_FILES-1)
             break;
     }
 }

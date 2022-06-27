@@ -25,7 +25,7 @@ SDCARD_EXTRN uint8_t *tabname;
 
 SDCARD_EXTRN uint8_t SndName[SDCARD_NAME_SIZE];
 
-#define MAX_WAV_FILES		100
+#define MAX_WAV_FILES		500
 #define MAX_WAV_FILES_CHAR	20
 SDCARD_EXTRN char Gra_WaveName[MAX_WAV_FILES][MAX_WAV_FILES_CHAR];
 
@@ -124,6 +124,8 @@ SDCARD_EXTRN    void SDCard_LoadMidiRx();                              	// Read 
 SDCARD_EXTRN    void SDCard_LoadBackDelay();							// Load back Delay
 
 SDCARD_EXTRN    void SDCard_LoadWave(uint8_t bk,uint8_t wa);
+
+SDCARD_EXTRN    void SDCard_UpdateNextion();
 
 
 

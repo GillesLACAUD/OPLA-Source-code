@@ -276,11 +276,13 @@ int Fct_Ch_GraReverse(int val)
     if(val<0)
         val=0;
     
-    if(val>64)
-        u8_GraReverse = 1;
+    u8_GraReverse = 0;
+    if(val>42*2)
+        u8_GraReverse = 2;
     else
     {
-        u8_GraReverse= 0;
+        if(val>42)
+            u8_GraReverse= 1;
     }
     if(serialgra)       
         Serial.printf("Grain Reverse ON OFF: %d\n",u8_GraReverse);

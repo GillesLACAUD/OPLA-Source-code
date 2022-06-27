@@ -353,7 +353,6 @@ void Nextion_UpdateBank()
 
 }
 
-
 /***************************************************/
 /*                                                 */
 /*                                                 */
@@ -802,7 +801,7 @@ static uint8_t init_snd=0;
                 //Nextion_Send(messnex);
                 GraWaveInc10--;
                 if(GraWaveInc10<0)
-                    GraWaveInc10=9;
+                    GraWaveInc10=49;
                 SDCard_Display10GraWave();
             }
             // 10 next
@@ -811,7 +810,7 @@ static uint8_t init_snd=0;
                 //sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
                 //Nextion_Send(messnex);
                 GraWaveInc10++;
-                if(GraWaveInc10==10)
+                if(GraWaveInc10==50)
                     GraWaveInc10=0;
                 SDCard_Display10GraWave();
             }

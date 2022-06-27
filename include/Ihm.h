@@ -218,7 +218,7 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
     "BEG",  "GRAIN BEGIN",    MIDI_CC_OSCVOL, TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraBegin,       1,    0,      127,1,                    Fct_Ch_GraBegin,        
     "FIN",  "GRAIN FINE",     MIDI_CC_DETUNE, TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraBeginFine,   1,    0,      127,1,                    Fct_Ch_GraFine,        
     "DEN",  "GRAIN DENSITY",  MIDI_CC_WS1,    TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraDensity,     1,    1,      10 ,1,                    Fct_Ch_GraDensity,              
-    "REV",  "GRAIN REVERSE",  MIDI_CC_WS2,    TYPE_LIST,  &YesNo[0][0],       0,    &WS.GraReverse,     1,    0,      127,2,                    Fct_Ch_GraReverse,   
+    "REV",  "GRAIN REVERSE",  MIDI_CC_WS2,    TYPE_LIST,  &PlMode[0][0],       0,   &WS.GraReverse,     1,    0,      127,3,                    Fct_Ch_GraReverse,   
     // it is important to set the size before the space
     "SIZ",  "GRAIN SIZE",     MIDI_CC_SUBVOL, TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraSize,        1,    1,      127,1,                    Fct_Ch_GraSize,           
     "SPA",  "GRAIN SPACE",    MIDI_CC_SUBOSC, TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraSpace,       1,    0,      127,1,                    Fct_Ch_GraSpace,           
@@ -235,7 +235,8 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
     "MIX",  "NOISE VOLUME",   MIDI_CC_NOISE,  TYPE_DATA,  &TabListNull[0][0], 0,    &WS.NoiseLevel,     1,    0,      127,1,                    Fct_Ch_Noise,         
     "---",  "---",            0xFF,           TYPE_DATA,  &TabListNull[0][0], 0,    &IntNull,           1,    0,      127,1,                    FctNull,              
     "---",  "---",            0xFF,           TYPE_DATA,  &TabListNull[0][0], 0,    &IntNull,           1,    0,      127,1,                    FctNull,              
-    "---",  "---",            0xFF,           TYPE_DATA,  &TabListNull[0][0], 0,    &IntNull,           1,    0,      127,1,                    FctNull,              
+    "---",  "---",            0xFF,           TYPE_DATA,  &TabListNull[0][0], 0,    &IntNull,           1,    0,      127,1,                    FctNull,    
+              
     
     /*
     "NOIS", "NOISE TYPE",   MIDI_CC_NTYPE,  TYPE_LIST,  &Noise_Name[0][0],  0,      &WS.NoiseType,    1,    0,      127,NOISE_TYPE_COUNT,     Fct_Ch_NoiseType,     
@@ -264,7 +265,7 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
     "DEC",  "FL DECAY",     MIDI_CC_FLT_D,  TYPE_DATA,  &TabListNull[0][0], 0,      &WS.FEgDecay,     1,    0,      127,1,                    Fct_Ch_FlDecay,       
     "REL",  "FL RELEASE",   MIDI_CC_FLT_R,  TYPE_DATA,  &TabListNull[0][0], 0,      &WS.FEgRelease,   1,    0,      127,1,                    Fct_Ch_FlRelease,     
     "AMT",  "FL AMOUNT",    MIDI_CC_FLT_Q,  TYPE_DATA,  &TabListNull[0][0], 0,      &WS.FEgAmount,    1,    0,      127,1,                    Fct_Ch_FlAmount,      
-    "---",  "---",          0xFF,           TYPE_DATA,  &TabListNull[0][0], 0,      &IntNull,         1,    0,      127,1,                    FctNull,              
+    "FTR",  "FILTER TRIG",  MIDI_CC_87,     TYPE_LIST,  &YesNo[0][0],       0,      &WS.FilterTrig,   1,    0,      127,2,                    Fct_Ch_FilterTrig,    
 
     // SECTION EG 
     /* Name                 MIDICC          TYPE        LIST                INDEX   VALUE             SIZE  MIN     MAX                     STEP    CHANGE     */       

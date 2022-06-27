@@ -39,35 +39,52 @@ uint32_t u32_rest=0;
     u32_whole= voice->u32_cumulspeed/1000;
     u32_rest = voice->u32_cumulspeed - u32_whole*1000;
     voice->u32_cumulspeed = u32_rest;
-    voice->u32_cumulWhole +=2*u32_whole;
-    if(voice->u32_cumulWhole>=(Gra_BufferSize))
+
+    switch(u8_GraReverse)
     {
-        voice->u32_cumulWhole =0;
-        voice->u32_cumulspeed = 0;
-        if(u8_GraReverse)
+        case 0:
+        voice->i32_cumulWhole +=2*u32_whole;        
+        if(voice->i32_cumulWhole>=(Gra_BufferSize-4))
         {
-            if(voice->i8_reverse==1)
+            voice->u32_cumulspeed = 0;
+            voice->i32_cumulWhole =0;
+            return(u32_rest);
+        }        
+        break;
+        case 1:
+        voice->i32_cumulWhole -=2*u32_whole;        
+        if(voice->i32_cumulWhole<=4)
+        {
+            voice->u32_cumulspeed = 0;
+            voice->i32_cumulWhole =Gra_BufferSize;
+            return(u32_rest);
+        }        
+        break;
+        case 2:
+        if(!voice->i8_reverse)
+        {
+            voice->i32_cumulWhole +=2*u32_whole;        
+            if(voice->i32_cumulWhole>=(Gra_BufferSize-4))
             {
-                voice->i8_reverse =-1;
-                //Serial.printf("Reverse\n");
-            }
-            else
-            {
-                voice->i8_reverse =1;
-                //Serial.printf("Normal\n");
+                voice->u32_cumulspeed = 0;
+                voice->i8_reverse=1;
+                return(u32_rest);
             }
         }
+        else
+        {
+            voice->i32_cumulWhole -=2*u32_whole;        
+            if(voice->i32_cumulWhole<=4)
+            {
+                voice->u32_cumulspeed = 0;
+                voice->i32_cumulWhole =0;
+                voice->i8_reverse =0;
+                return(u32_rest);
+            }
+        }        
+        break;
     }
-    if(voice->i8_reverse==1)
-    {
-        u32_rest=voice->u32_cumulWhole;
-        //Serial.printf(" 1 Ret %06d\r\n",u32_rest);
-    }
-    else
-    {
-        u32_rest=Gra_BufferSize-voice->u32_cumulWhole;
-        //Serial.printf("-1 Ret %06d\r\n",u32_rest);
-    }
+    u32_rest=voice->i32_cumulWhole;
     return(u32_rest);
 }
 
