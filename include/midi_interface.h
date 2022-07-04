@@ -67,9 +67,9 @@
 #define MIDI_CC_83              83
 #define MIDI_CC_84              84
 
-#define MIDI_CC_BK              85
-#define MIDI_CC_WA              86
-#define MIDI_CC_87              87
+#define MIDI_CC_TRANSPOSE       85
+#define MIDI_CC_FINETUNE        86
+#define MIDI_CC_A440            87
 #define MIDI_CC_88              88
 #define MIDI_CC_89              89
 
@@ -84,6 +84,7 @@
 #define MIDI_CC_FLT_D           26
 #define MIDI_CC_FLT_R           27
 #define MIDI_CC_FLT_Q           28
+#define MIDI_CC_FLT_TRIG        29
 
 #define MIDI_CC_AMP_A           30
 #define MIDI_CC_AMP_D           31
@@ -153,6 +154,9 @@
 
 #define MIDI_CC_CAL             204
 #define MIDI_CC_AIN             205
+
+#define MIDI_CC_BK              210
+#define MIDI_CC_WA              211
 
 // Relativ 1 MINILAB Arturia
 // Inc 0xBn 0xcc 0x64 + 0xBn 0xcc 0x65

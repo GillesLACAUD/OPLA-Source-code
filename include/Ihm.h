@@ -226,16 +226,16 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
     "REL",  "GRAIN RELEASE",  MIDI_CC_SUBTR,  TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraSizeSustain, 1,    1,      127,1,                    Fct_Ch_GraSustain,        
     "OV",   "GRAIN OVERLAP",  MIDI_CC_PANSPR, TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraOverlap,     1,    0,      127,1,                    Fct_Ch_GraOverlap,     
 
-    "TRA",  "TRANSPOSE",      MIDI_CC_82,     TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraTranspose,   1,  -12,       12,1,                    Fct_Ch_GraTranspose,              
-    "FIN",  "FINE TUNE",      MIDI_CC_83,     TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraFineTune,    1,    0,      127,1,                    Fct_Ch_GraFineTune,              
-    "A44",  "A440",           MIDI_CC_84,     TYPE_LIST,  &YesNo[0][0],       0,    &WS.GraA440,        1,    0,      127,2,                    Fct_Ch_GraA440,            
-    "---",  "---",            0xFF,           TYPE_DATA,  &TabListNull[0][0], 0,    &IntNull,           1,    0,      127,1,                    FctNull,              
-    "---",  "---",            0xFF,           TYPE_DATA,  &TabListNull[0][0], 0,    &IntNull,           1,    0,      127,1,                    FctNull,              
-    "NOIS", "NOISE TYPE",     MIDI_CC_NTYPE,  TYPE_LIST,  &Noise_Name[0][0],  0,    &WS.NoiseType,      1,    0,      127,NOISE_TYPE_COUNT,     Fct_Ch_NoiseType,     
-    "MIX",  "NOISE VOLUME",   MIDI_CC_NOISE,  TYPE_DATA,  &TabListNull[0][0], 0,    &WS.NoiseLevel,     1,    0,      127,1,                    Fct_Ch_Noise,         
-    "---",  "---",            0xFF,           TYPE_DATA,  &TabListNull[0][0], 0,    &IntNull,           1,    0,      127,1,                    FctNull,              
-    "---",  "---",            0xFF,           TYPE_DATA,  &TabListNull[0][0], 0,    &IntNull,           1,    0,      127,1,                    FctNull,              
-    "---",  "---",            0xFF,           TYPE_DATA,  &TabListNull[0][0], 0,    &IntNull,           1,    0,      127,1,                    FctNull,    
+    "NOIS", "NOISE TYPE",     MIDI_CC_NTYPE,    TYPE_LIST,  &Noise_Name[0][0],  0,    &WS.NoiseType,      1,    0,      127,NOISE_TYPE_COUNT,     Fct_Ch_NoiseType,     
+    "MIX",  "NOISE VOLUME",   MIDI_CC_NOISE,    TYPE_DATA,  &TabListNull[0][0], 0,    &WS.NoiseLevel,     1,    0,      127,1,                    Fct_Ch_Noise,         
+    "---",  "---",            0xFF,             TYPE_DATA,  &TabListNull[0][0], 0,    &IntNull,           1,    0,      127,1,                    FctNull,              
+    "---",  "---",            0xFF,             TYPE_DATA,  &TabListNull[0][0], 0,    &IntNull,           1,    0,      127,1,                    FctNull,              
+    "---",  "---",            0xFF,             TYPE_DATA,  &TabListNull[0][0], 0,    &IntNull,           1,    0,      127,1,                    FctNull,    
+    "TRA",  "TRANSPOSE",      MIDI_CC_TRANSPOSE,TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraTranspose,   1,  -12,       12,1,                    Fct_Ch_GraTranspose,              
+    "FIN",  "FINE TUNE",      MIDI_CC_FINETUNE, TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraFineTune,    1,    0,      127,1,                    Fct_Ch_GraFineTune,              
+    "A44",  "A440",           MIDI_CC_A440,     TYPE_LIST,  &YesNo[0][0],       0,    &WS.GraA440,        1,    0,      127,2,                    Fct_Ch_GraA440,            
+    "---",  "---",            0xFF,             TYPE_DATA,  &TabListNull[0][0], 0,    &IntNull,           1,    0,      127,1,                    FctNull,              
+    "---",  "---",            0xFF,             TYPE_DATA,  &TabListNull[0][0], 0,    &IntNull,           1,    0,      127,1,                    FctNull,              
               
     
     /*
@@ -265,7 +265,7 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
     "DEC",  "FL DECAY",     MIDI_CC_FLT_D,  TYPE_DATA,  &TabListNull[0][0], 0,      &WS.FEgDecay,     1,    0,      127,1,                    Fct_Ch_FlDecay,       
     "REL",  "FL RELEASE",   MIDI_CC_FLT_R,  TYPE_DATA,  &TabListNull[0][0], 0,      &WS.FEgRelease,   1,    0,      127,1,                    Fct_Ch_FlRelease,     
     "AMT",  "FL AMOUNT",    MIDI_CC_FLT_Q,  TYPE_DATA,  &TabListNull[0][0], 0,      &WS.FEgAmount,    1,    0,      127,1,                    Fct_Ch_FlAmount,      
-    "FTR",  "FILTER TRIG",  MIDI_CC_87,     TYPE_LIST,  &YesNo[0][0],       0,      &WS.FilterTrig,   1,    0,      127,2,                    Fct_Ch_FilterTrig,    
+    "FTR",  "FILTER TRIG",  MIDI_CC_FLT_TRIG,     TYPE_LIST,  &YesNo[0][0],       0,      &WS.FilterTrig,   1,    0,      127,2,                    Fct_Ch_FilterTrig,    
 
     // SECTION EG 
     /* Name                 MIDICC          TYPE        LIST                INDEX   VALUE             SIZE  MIN     MAX                     STEP    CHANGE     */       
