@@ -214,18 +214,18 @@ int Fct_Ch_GraA440(int val);
 Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
 {
     // SECTION OSC
-    /* Name                 MIDICC          TYPE        LIST                INDEX   VALUE             SIZE  MIN     MAX                     STEP    CHANGE  */           
-    "WAV",  "WAVE FILE",      MIDI_CC_WAVE1,  TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraIdBank,      1,    0,      49,1,                     Fct_Ch_GraBank,       
-    "BEG",  "GRAIN BEGIN",    MIDI_CC_OSCVOL, TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraBegin,       1,    0,      127,1,                    Fct_Ch_GraBegin,        
-    "FIN",  "GRAIN FINE",     MIDI_CC_DETUNE, TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraBeginFine,   1,    0,      127,1,                    Fct_Ch_GraFine,        
-    "DEN",  "GRAIN DENSITY",  MIDI_CC_WS1,    TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraDensity,     1,    1,      10 ,1,                    Fct_Ch_GraDensity,              
-    "REV",  "GRAIN REVERSE",  MIDI_CC_WS2,    TYPE_LIST,  &PlMode[0][0],       0,   &WS.GraReverse,     1,    0,      127,3,                    Fct_Ch_GraReverse,   
+    /* Name                 MIDICC              TYPE        LIST                INDEX   VALUE             SIZE  MIN     MAX                     STEP    CHANGE  */           
+    "WAV",  "WAVE FILE",      MIDI_CC_10,       TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraIdBank,      1,    0,      49,1,                     Fct_Ch_GraBank,       
+    "BEG",  "GRAIN BEGIN",    MIDI_CC_11,       TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraBegin,       1,    0,      127,1,                    Fct_Ch_GraBegin,        
+    "FIN",  "GRAIN FINE",     MIDI_CC_12,       TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraBeginFine,   1,    0,      127,1,                    Fct_Ch_GraFine,        
+    "DEN",  "GRAIN DENSITY",  MIDI_CC_13,       TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraDensity,     1,    1,      10 ,1,                    Fct_Ch_GraDensity,              
+    "REV",  "GRAIN REVERSE",  MIDI_CC_14,       TYPE_LIST,  &PlMode[0][0],       0,   &WS.GraReverse,     1,    0,      127,3,                    Fct_Ch_GraReverse,   
     // it is important to set the size before the space
-    "SIZ",  "GRAIN SIZE",     MIDI_CC_SUBVOL, TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraSize,        1,    1,      127,1,                    Fct_Ch_GraSize,           
-    "SPA",  "GRAIN SPACE",    MIDI_CC_SUBOSC, TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraSpace,       1,    0,      127,1,                    Fct_Ch_GraSpace,           
-    "ATT",  "GRAIN ATTACK",   MIDI_CC_SUBDET, TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraSizeAttack,  1,    0,      127,1,                    Fct_Ch_GraAttack,       
-    "REL",  "GRAIN RELEASE",  MIDI_CC_SUBTR,  TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraSizeSustain, 1,    1,      127,1,                    Fct_Ch_GraSustain,        
-    "OV",   "GRAIN OVERLAP",  MIDI_CC_PANSPR, TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraOverlap,     1,    0,      127,1,                    Fct_Ch_GraOverlap,     
+    "SIZ",  "GRAIN SIZE",     MIDI_CC_15,       TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraSize,        1,    1,      127,1,                    Fct_Ch_GraSize,           
+    "SPA",  "GRAIN SPACE",    MIDI_CC_16,       TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraSpace,       1,    0,      127,1,                    Fct_Ch_GraSpace,           
+    "ATT",  "GRAIN ATTACK",   MIDI_CC_17,       TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraSizeAttack,  1,    0,      127,1,                    Fct_Ch_GraAttack,       
+    "REL",  "GRAIN RELEASE",  MIDI_CC_18,       TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraSizeSustain, 1,    1,      127,1,                    Fct_Ch_GraSustain,        
+    "OV",   "GRAIN OVERLAP",  MIDI_CC_19,       TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraOverlap,     1,    0,      127,1,                    Fct_Ch_GraOverlap,     
 
     "NOIS", "NOISE TYPE",     MIDI_CC_NTYPE,    TYPE_LIST,  &Noise_Name[0][0],  0,    &WS.NoiseType,      1,    0,      127,NOISE_TYPE_COUNT,     Fct_Ch_NoiseType,     
     "MIX",  "NOISE VOLUME",   MIDI_CC_NOISE,    TYPE_DATA,  &TabListNull[0][0], 0,    &WS.NoiseLevel,     1,    0,      127,1,                    Fct_Ch_Noise,         
