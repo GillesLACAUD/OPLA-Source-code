@@ -60,15 +60,14 @@ int16_t fstoval(int16_t val,int8_t min,int8_t max,int16_t fs)
 /***************************************************/
 int Fct_Ch_GraWave(int val)
 {
-    //SDCard_Display10SndName();
-    //sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
     if(IsLoadSound == 1)
         return(0);
 
+    GraWaveInc10 = val;
+    SDCard_Display10GraWave();
     if(!IsSelectGraWave)
-    {        
-        Serial.printf("CLEAR ALL SELECTION\n");
-        SDCard_Display10GraWave();
+    {
+        /*
         for(uint8_t i=0;i<10;i++)
         {
             sprintf(messnex,"page2.b%d.bco=0",i);
@@ -76,18 +75,17 @@ int Fct_Ch_GraWave(int val)
             sprintf(messnex,"page2.b%d.pco=34800",i);
             Nextion_Send(messnex);
         }
+        */
+        /*
         sprintf(messnex,"page2.b%d.bco=65535",CurrentGraWave);
         Nextion_Send(messnex);
         sprintf(messnex,"page2.b%d.pco=0",CurrentGraWave);
         Nextion_Send(messnex);
-        
+        */
         sprintf(messnex,"page 3");
         Nextion_Send(messnex);
-        //sprintf(messnex,"page2.b%d.pco=0",CurrentGraWave);
-        //Nextion_Send(messnex);
-
+        IsSelectGraWave=1;        
     }
-    IsSelectGraWave=1;        
 }
 
 /***************************************************/

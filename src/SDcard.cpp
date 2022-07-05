@@ -651,9 +651,6 @@ void SDCard_Display10GraWave()
         Nextion_Send(messnex);
         sprintf(messnex,"page2.b%d.txt=%c%s%c",i,0x22,Gra_WaveName[i+GraWaveInc10*10],0x22);
         Nextion_Send(messnex);
-        //sprintf(messnex,"page2.b%d.txt=%c%s%c",i,0x22,SndName,0x22);
-        //Nextion_Send(messnex);
-        //Serial.printf("%s\n",SndName);
     }
 }
 
