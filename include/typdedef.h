@@ -104,7 +104,8 @@ struct WorkSound
     int16_t Distortion;
 
     // Add 05.05.22
-    int16_t Reserved1[10];
+    int16_t Reserved1[9];
+    int16_t GraIdWave;
     int16_t GraIdBank;
     int16_t GraBegin;               // Begin of the first grain in the file in  %
     int16_t GraBeginFine;           // Begin of the first fine tune
