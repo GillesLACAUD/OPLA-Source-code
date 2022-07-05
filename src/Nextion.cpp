@@ -778,8 +778,8 @@ static uint8_t init_snd=0;
             if(Nextion_Mess[2]==2)
             {
                 char grawave[40];
-                WS.GraIdWave=CurrentGraWave+GraWaveInc10*10;
-                strcpy(grawave,Gra_WaveName[WS.GraIdWave]);
+                WS.GraIdBank=CurrentGraWave+GraWaveInc10*10;
+                strcpy(grawave,Gra_WaveName[WS.GraIdBank]);
                 strcat(grawave,".wav");
                 Granular_AddWave(grawave);
             }
@@ -787,8 +787,8 @@ static uint8_t init_snd=0;
             if(Nextion_Mess[2]==3)
             {
                 char grawave[40];
-                WS.GraIdWave=CurrentGraWave+GraWaveInc10*10;
-                strcpy(grawave,Gra_WaveName[WS.GraIdWave]);
+                WS.GraIdBank=CurrentGraWave+GraWaveInc10*10;
+                strcpy(grawave,Gra_WaveName[WS.GraIdBank]);
                 strcat(grawave,".wav");
                 Gra_Maxplay=Granular_LoadWave(grawave); // Synth
                 Granular_UpdateVal();

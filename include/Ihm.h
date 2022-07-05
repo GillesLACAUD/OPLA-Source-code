@@ -192,6 +192,7 @@ int Fct_Ch_WDDecimator(int val);
 
 int Fct_Ch_Distortion(int val);
 
+int Fct_Ch_GraBank(int val);
 int Fct_Ch_GraWave(int val);
 int Fct_Ch_GraBegin(int val);
 int Fct_Ch_GraFine(int val);
@@ -214,7 +215,7 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
 {
     // SECTION OSC
     /* Name                 MIDICC          TYPE        LIST                INDEX   VALUE             SIZE  MIN     MAX                     STEP    CHANGE  */           
-    "WAV",  "WAVE FILE",      MIDI_CC_WAVE1,  TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraIdWave,      1,    0,      49,1,                     Fct_Ch_GraWave,       
+    "WAV",  "WAVE FILE",      MIDI_CC_WAVE1,  TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraIdBank,      1,    0,      49,1,                     Fct_Ch_GraBank,       
     "BEG",  "GRAIN BEGIN",    MIDI_CC_OSCVOL, TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraBegin,       1,    0,      127,1,                    Fct_Ch_GraBegin,        
     "FIN",  "GRAIN FINE",     MIDI_CC_DETUNE, TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraBeginFine,   1,    0,      127,1,                    Fct_Ch_GraFine,        
     "DEN",  "GRAIN DENSITY",  MIDI_CC_WS1,    TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraDensity,     1,    1,      10 ,1,                    Fct_Ch_GraDensity,              

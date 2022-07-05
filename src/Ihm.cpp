@@ -58,7 +58,7 @@ int16_t fstoval(int16_t val,int8_t min,int8_t max,int16_t fs)
 /*                                                 */
 /*                                                 */
 /***************************************************/
-int Fct_Ch_GraWave(int val)
+int Fct_Ch_GraBank(int val)
 {
     if(IsLoadSound == 1)
         return(0);
@@ -87,6 +87,16 @@ int Fct_Ch_GraWave(int val)
         IsSelectGraWave=1;        
     }
 }
+
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+int Fct_Ch_GraWave(int val)
+{
+}
+
 
 /***************************************************/
 /*                                                 */
