@@ -21,33 +21,27 @@ unsigned char Nextion_Send(char *ptmess)
 {
 uint8_t m=0;
     
-    if(1)
+    for(uint8_t m=0;m<MAX_MESS_TASK0;m++)
     {
-        for(uint8_t m=0;m<MAX_MESS_TASK0;m++)
+        if(messnexfree[m]==0)
         {
-            if(messnexfree[m]==0)
-            {
-                sprintf(messnextask[m],ptmess);    
-                messnexfree[m]=1;
-                //Serial.printf("MESS %d %s\n",m,messnextask[m]);
-                m=88;
-            }
-        }
-        if(m>=MAX_MESS_TASK0)
-        {
-            while(1)
-                Serial.printf("MESS TASK OVER`\n");
+            sprintf(messnextask[m],ptmess);    
+            messnexfree[m]=1;
+            //Serial.printf("MESS %d %s\n",m,messnextask[m]);
+            m=88;
         }
     }
-    else
+    if(m>=MAX_MESS_TASK0)
     {
-        /*
-        Serial1.print(ptmess);
-        Serial1.write(0xff);
-        Serial1.write(0xff);
-        Serial1.write(0xff);
-        */
+        while(1)
+            Serial.printf("MESS TASK OVER`\n");
     }
+    /*
+    Serial1.print(ptmess);
+    Serial1.write(0xff);
+    Serial1.write(0xff);
+    Serial1.write(0xff);
+    */
     return(0);
 }
 

@@ -191,18 +191,22 @@ int Fct_Ch_Distortion(int val);
 
 int Fct_Ch_GraBank(int val);
 int Fct_Ch_GraWave(int val);
+int Fct_Ch_GraLoad(int val);
+int Fct_Ch_GraAdd(int val);
+int Fct_Ch_GraMix(int val);
 int Fct_Ch_GraBegin(int val);
 int Fct_Ch_GraFine(int val);
-int Fct_Ch_GraSpace(int val);
 int Fct_Ch_GraSize(int val);
-int Fct_Ch_GraDensity(int val);
 int Fct_Ch_GraAttack(int val);
 int Fct_Ch_GraSustain(int val);
-int Fct_Ch_GraOverlap(int val);
 int Fct_Ch_GraReverse(int val);
 int Fct_Ch_GraTranspose(int val);
 int Fct_Ch_GraFineTune(int val);
 int Fct_Ch_GraA440(int val);
+
+int Fct_Ch_GraDensity(int val);
+int Fct_Ch_GraSpace(int val);
+int Fct_Ch_GraOverlap(int val);
 
 // To change the max for the AKWF selection -> Tab_Encoder[SECTION_BANK_MAX][POT_BANK_MAX]
 #define SECTION_BANK_MAX    1
@@ -214,17 +218,17 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
 {
     // SECTION OSC
     /* Name                 MIDICC              TYPE        LIST                INDEX   VALUE             SIZE  MIN     MAX                     STEP    CHANGE  */           
-    "BANK",   "WAVE BANK",      MIDI_CC_10,       TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraIdBank,      1,    0,      49,1,                     Fct_Ch_GraBank,       
-    "WAVE",   "---",            0xFF,             TYPE_DATA,  &TabListNull[0][0], 0,    &IntNull,           1,    0,      127,1,                    FctNull,              
-    "LOAD",   "---",            0xFF,             TYPE_DATA,  &TabListNull[0][0], 0,    &IntNull,           1,    0,      127,1,                    FctNull,                  
-    "ADD",    "---",            0xFF,             TYPE_DATA,  &TabListNull[0][0], 0,    &IntNull,           1,    0,      127,1,                    FctNull,                  
-    "MIX",    " ---",           0xFF,             TYPE_DATA,  &TabListNull[0][0], 0,    &IntNull,           1,    0,      127,1,                    FctNull,                  
-    "BEG",    "GRAIN BEGIN",    MIDI_CC_11,       TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraBegin,       1,    0,      127,1,                    Fct_Ch_GraBegin,        
-    "FINE",   "GRAIN FINE",     MIDI_CC_12,       TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraBeginFine,   1,    0,      127,1,                    Fct_Ch_GraFine,        
+    "BANK",   "WAVE BANK",    MIDI_CC_10,       TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraIdBank,      1,    0,      49,1,                     Fct_Ch_GraBank,       
+    "WAVE",   "WAVE SELECT",  MIDI_CC_11,       TYPE_DATA,  &TabListNull[0][0], 0,    &IntNull,           1,    0,      9,1,                      Fct_Ch_GraWave,              
+    "LOAD",   "LOAD WAVE",    MIDI_CC_12,       TYPE_LIST,  &Go[0][0], 0,             &IntNull,           1,    0,      127,1,                    Fct_Ch_GraLoad,                  
+    "ADD",    "ADD WAVE",     MIDI_CC_13,       TYPE_LIST,  &Go[0][0], 0,             &IntNull,           1,    0,      127,1,                    Fct_Ch_GraAdd,                  
+    "MIX",    "MIX LEVEL",    MIDI_CC_14,       TYPE_DATA,  &TabListNull[0][0], 0,    &IntNull,           1,    0,      127,1,                    Fct_Ch_GraMix,                  
+    "BEG",    "GRAIN BEGIN",  MIDI_CC_15,       TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraBegin,       1,    0,      127,1,                    Fct_Ch_GraBegin,        
+    "FINE",   "GRAIN FINE",   MIDI_CC_16,       TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraBeginFine,   1,    0,      127,1,                    Fct_Ch_GraFine,        
     // it is important to set the size before the space
-    "SIZE",   "GRAIN SIZE",     MIDI_CC_15,       TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraSize,        1,    1,      127,1,                    Fct_Ch_GraSize,       
-    "ATT",    "GRAIN ATTACK",   MIDI_CC_17,       TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraSizeAttack,  1,    0,      127,1,                    Fct_Ch_GraAttack,       
-    "REL",    "GRAIN RELEASE",  MIDI_CC_18,       TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraSizeSustain, 1,    1,      127,1,                    Fct_Ch_GraSustain,        
+    "SIZE",   "GRAIN SIZE",   MIDI_CC_17,       TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraSize,        1,    1,      127,1,                    Fct_Ch_GraSize,       
+    "ATT",    "GRAIN ATTACK", MIDI_CC_18,       TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraSizeAttack,  1,    0,      127,1,                    Fct_Ch_GraAttack,       
+    "REL",    "GRAIN RELEASE",MIDI_CC_19,       TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraSizeSustain, 1,    1,      127,1,                    Fct_Ch_GraSustain,        
     
     //"DEN",  "GRAIN DENSITY",  MIDI_CC_13,       TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraDensity,     1,    1,      10 ,1,                    Fct_Ch_GraDensity,              
     //"SPA",  "GRAIN SPACE",    MIDI_CC_16,       TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraSpace,       1,    0,      127,1,                    Fct_Ch_GraSpace,           

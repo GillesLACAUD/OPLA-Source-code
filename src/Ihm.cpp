@@ -1,5 +1,6 @@
 #include "Arduino.h"
 #include "typdedef.h"
+#include <stdio.h>
 
 #include "easysynth.h"
 
@@ -88,6 +89,7 @@ int Fct_Ch_GraBank(int val)
         Nextion_Send(messnex);
         IsSelectGraWave=1;        
     }
+    return(0);
 }
 
 /***************************************************/
@@ -97,8 +99,39 @@ int Fct_Ch_GraBank(int val)
 /***************************************************/
 int Fct_Ch_GraWave(int val)
 {
+    CurrentGraWave = val;
+    return(0);
 }
 
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+int Fct_Ch_GraLoad(int val)
+{
+    return(0);
+}
+
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+int Fct_Ch_GraAdd(int val)
+{
+    return(0);
+}
+
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+int Fct_Ch_GraMix(int val)
+{
+    return(0);
+}
 
 /***************************************************/
 /*                                                 */
@@ -122,6 +155,7 @@ int Fct_Ch_GraBegin(int val)
             Serial.printf("Grain Begin: Pourcent %d spl %06X\n",val,Gra_Begin);
         }
     //}
+    return(0);
 }
 
 /***************************************************/
@@ -141,6 +175,7 @@ int Fct_Ch_GraFine(int val)
     {
         Serial.printf("Grain Fine: Pourcent %d spl %06X\n",val,Gra_Fine);
     }
+    return(0);
 }
 
 /***************************************************/
@@ -164,7 +199,8 @@ int Fct_Ch_GraSpace(int val)
         {
             Serial.printf("Grain Space: Pourcent %d\n",Gra_Space);
         }
-    //}         
+    //}   
+    return(0);      
 }
 
 /***************************************************/
@@ -189,7 +225,8 @@ int Fct_Ch_GraSize(int val)
         {
             Serial.printf("Grain Size: Pourcent %d Sample %d Buffer %08d\n",val,Gra_Size,Gra_BufferSize);
         }
-    //}     
+    //}  
+    return(0);   
 }
 
 /***************************************************/
@@ -215,6 +252,7 @@ int Fct_Ch_GraDensity(int val)
     {
         Serial.printf("Grain Density: %d\n",Gra_Density);
     }
+    return(0);
 }
 
 /***************************************************/
@@ -234,7 +272,8 @@ int Fct_Ch_GraAttack(int val)
         {
             Serial.printf("Grain Attack: %d\n",Gra_SizeAttack);
         }
-    //}         
+    //}     
+    return(0);    
 }
 
 /***************************************************/
@@ -254,7 +293,8 @@ int Fct_Ch_GraSustain(int val)
         {
             Serial.printf("Grain Release: %d\n",Gra_SizeSustain);
         }
-    //}            
+    //}     
+    return(0);      
 }
 
 /***************************************************/
@@ -274,6 +314,7 @@ int Fct_Ch_GraOverlap(int val)
     {
         Serial.printf("Grain Overlap: %d\n",Gra_OverlapPc);
     }
+    return(0);
 }
 
 /***************************************************/
