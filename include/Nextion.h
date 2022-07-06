@@ -15,6 +15,9 @@
 //#define RXD_NEX 21 /* Nextion ES8388 V1 */
 //#define TXD_NEX 19 /* Nextion ES8388 V1 */
 
+#define NEXTION_UNSEL_COLOR 34800
+#define NEXTION_SEL_COLOR   63488
+
 #define NEXTION_MAX_LABEL 10
 #define NEXTION_MAX_POT 10
 

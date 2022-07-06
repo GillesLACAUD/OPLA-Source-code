@@ -70,24 +70,14 @@ int Fct_Ch_GraBank(int val)
     SDCard_Display10GraWave();
     if(!IsSelectGraWave)
     {
-        /*
-        for(uint8_t i=0;i<10;i++)
-        {
-            sprintf(messnex,"page2.b%d.bco=0",i);
-            Nextion_Send(messnex);
-            sprintf(messnex,"page2.b%d.pco=34800",i);
-            Nextion_Send(messnex);
-        }
-        */
-        /*
-        sprintf(messnex,"page2.b%d.bco=65535",CurrentGraWave);
-        Nextion_Send(messnex);
-        sprintf(messnex,"page2.b%d.pco=0",CurrentGraWave);
-        Nextion_Send(messnex);
-        */
         sprintf(messnex,"page 3");
         Nextion_Send(messnex);
         IsSelectGraWave=1;        
+        //sprintf(messnex,"page2.b%d.pco=34800",CurrentSound);
+        //Nextion_Send(messnex);
+        //sprintf(messnex,"page2.b%d.bco=0",CurrentSound);
+        //Nextion_Send(messnex);
+        
     }
     return(0);
 }
@@ -99,7 +89,27 @@ int Fct_Ch_GraBank(int val)
 /***************************************************/
 int Fct_Ch_GraWave(int val)
 {
-    CurrentGraWave = val;
+static uint8_t keepcurrent;    
+    if(IsLoadSound == 1)
+        return(0);
+
+    if(!IsSelectGraWave)
+    {
+        SDCard_Display10GraWave();
+        sprintf(messnex,"page 3");
+        Nextion_Send(messnex);
+        IsSelectGraWave=1;        
+    }
+    // Keepcurrent to avoid blink on the max and min
+    if(keepcurrent != val)
+    {
+        sprintf(messnex,"page2.b%d.pco=%d",CurrentGraWave,NEXTION_UNSEL_COLOR);
+        Nextion_Send(messnex);
+        CurrentGraWave = val;
+        sprintf(messnex,"page2.b%d.pco=%d",CurrentGraWave,NEXTION_SEL_COLOR);
+        Nextion_Send(messnex);
+        keepcurrent = CurrentGraWave;
+    }
     return(0);
 }
 
@@ -110,6 +120,7 @@ int Fct_Ch_GraWave(int val)
 /***************************************************/
 int Fct_Ch_GraLoad(int val)
 {
+    sprintf(messnex,"page2.b%d.bco=65535",CurrentGraWave);
     return(0);
 }
 
@@ -120,6 +131,7 @@ int Fct_Ch_GraLoad(int val)
 /***************************************************/
 int Fct_Ch_GraAdd(int val)
 {
+    sprintf(messnex,"page2.b%d.bco=65535",CurrentGraWave);
     return(0);
 }
 
@@ -130,6 +142,7 @@ int Fct_Ch_GraAdd(int val)
 /***************************************************/
 int Fct_Ch_GraMix(int val)
 {
+    sprintf(messnex,"page2.b%d.bco=65535",CurrentGraWave);
     return(0);
 }
 
@@ -183,31 +196,6 @@ int Fct_Ch_GraFine(int val)
 /*                                                 */
 /*                                                 */
 /***************************************************/
-int Fct_Ch_GraSpace(int val)
-{
-    if(val<0)
-        val=0;
-
-    //if(!Gra_Ask_RefreshPlaying)
-    //{
-        Gra_Space = Gra_Size+(GRA_MAX_SPACE*val)/127;
-        Granular_UpdateVal();
-        Gra_Ask_RefreshPlaying=1;
-        ptGrain=ptGraGrain;
-        CptGrain=0;
-        if(serialgra)
-        {
-            Serial.printf("Grain Space: Pourcent %d\n",Gra_Space);
-        }
-    //}   
-    return(0);      
-}
-
-/***************************************************/
-/*                                                 */
-/*                                                 */
-/*                                                 */
-/***************************************************/
 int Fct_Ch_GraSize(int val)
 {
     if(val<0)
@@ -229,31 +217,6 @@ int Fct_Ch_GraSize(int val)
     return(0);   
 }
 
-/***************************************************/
-/*                                                 */
-/*                                                 */
-/*                                                 */
-/***************************************************/
-int Fct_Ch_GraDensity(int val)
-{
-    if(val<0)
-    {
-        printf("ERROR Grain Density\r\n");
-        val=0;
-    }
-
-    Gra_Density = val;
-    Serial.printf("Grain Density: %d\n",Gra_Density);
-    Granular_UpdateVal();
-    Gra_Ask_RefreshPlaying=1;
-    ptGrain=ptGraGrain;
-    CptGrain=0;
-    if(serialgra)
-    {
-        Serial.printf("Grain Density: %d\n",Gra_Density);
-    }
-    return(0);
-}
 
 /***************************************************/
 /*                                                 */
@@ -295,26 +258,6 @@ int Fct_Ch_GraSustain(int val)
         }
     //}     
     return(0);      
-}
-
-/***************************************************/
-/*                                                 */
-/*                                                 */
-/*                                                 */
-/***************************************************/
-int Fct_Ch_GraOverlap(int val)
-{
-    if(val<0)
-        val=0;
-
-    Gra_OverlapPc = val;
-    Granular_UpdateVal();
-    Gra_Ask_RefreshPlaying=1;
-    if(serialgra)
-    {
-        Serial.printf("Grain Overlap: %d\n",Gra_OverlapPc);
-    }
-    return(0);
 }
 
 /***************************************************/
@@ -411,67 +354,6 @@ int Fct_Ch_GraA440(int val)
     return(0);
 }
 
-//--------------------------------------------------
-// OSC
-//--------------------------------------------------
-
-/***************************************************/
-/*                                                 */
-/*                                                 */
-/*                                                 */
-/***************************************************/
-int Fct_Ch_OscWave(int val)
-{
-float value;
-struct oscillatorT *osc;
-static uint8_t keepwav=0;
-
-    value = val * NORM127MUL;
-    selWaveForm1 = (value) * (WAVEFORM_TYPE_COUNT);
-
-    for(uint8_t o=0;o<=osc_act;o+=3)
-    {
-        osc = &oscPlayer[o+0];
-        osc->waveForm = selectedWaveForm;
-
-        osc = &oscPlayer[o+1];
-        osc->waveForm = selectedWaveForm;
-    }
-    if(selWaveForm1==WAVE_AKWF && keepwav !=WAVE_AKWF)
-    {
-        trigloadwave=1;
-    }
-    keepwav=selWaveForm1;
-
-    // Force update
-    OldWaveShapping1Mod += 0.03;
-    if(serialdebug)
-        Serial.printf("selWaveForm1: %d\n", selWaveForm1);      
-    return(0);
-}
-/***************************************************/
-/*                                                 */
-/*                                                 */
-/*                                                 */
-/***************************************************/
-int Fct_Ch_SubWave(int val)
-{
-float value;    
-struct oscillatorT *osc;
-
-    value = val * NORM127MUL;
-    selWaveForm2 = (value) * (WAVEFORM_SUB_COUNT);
-    selectedWaveForm2 = waveFormLookUp[selWaveForm2];
-    for(uint8_t o=0;o<=osc_act;o+=3)
-    {
-        osc = &oscPlayer[o+2];
-        osc->waveForm = selectedWaveForm2;
-    } 
-    if(serialdebug)
-        Serial.printf("selWaveForm2: val %d value %5.2f wave %d\n",val,value,selWaveForm2);
-
-    return(0);
-}
 
 
 /***************************************************/
@@ -508,258 +390,6 @@ float value;
 
     return(0);
 }
-
-/***************************************************/
-/*                                                 */
-/*                                                 */
-/*                                                 */
-/***************************************************/
-int Fct_Ch_Bank(int val) 
-{
-    gui_WaveBank = val;
-    if(selWaveForm1!=WAVE_AKWF)
-        return(0);
-  
-    if(!trigloadwave)
-    {
-        trigloadwave=1;
-        if(!IsLoadSound)
-        {
-            sprintf(messnex,"page 4");
-            Nextion_Send(messnex);
-        }
-    }
-    Cptloadwave=0;
-    // No plot screen when load sound
-    if(!IsLoadSound)
-    {
-        sprintf(messnex,"page3.BK.txt=%c%03d%c",0x22,gui_WaveBank,0x22);
-        Nextion_Send(messnex);
-    }
-   
-    sprintf(messnex,"page3.BKNAME.txt=%c%s%c",0x22,SampleDIR[gui_WaveBank].name,0x22);
-    Nextion_Send(messnex);      
-    Tab_Encoder[SECTION_BANK_MAX][POT_BANK_MAX].MaxData=SampleDIR[gui_WaveBank].nbr-1;  // Chg the max for the MIDI CC  
-
-    sprintf(messnex,"page3.WAPOT.maxval=%d",SampleDIR[gui_WaveBank].nbr-1);
-    Nextion_Send(messnex);
-
-    if(!IsLoadSound)
-    {
-        WS.AKWFWave=0;
-        gui_WaveNumber=0;
-    }
-
-    sprintf(messnex,"page3.WAPOT.val=%d",gui_WaveNumber);
-    Nextion_Send(messnex);
-    sprintf(messnex,"page3.WA.txt=%c%03d%c",0x22,gui_WaveNumber,0x22);
-    Nextion_Send(messnex);
-
-    sprintf(messnex,"page3.BKPOT.val=%d",gui_WaveBank);
-    Nextion_Send(messnex);
-
-    if(serialdebug)
-        Serial.printf("BANK: %d Max %d MIDI CC %d\n", gui_WaveBank,Tab_Encoder[2][6].MaxData,Tab_Encoder[2][6].MidiCC);
-
-    return(0);
-}
-
-/***************************************************/
-/*                                                 */
-/*                                                 */
-/*                                                 */
-/***************************************************/
-int Fct_Ch_Wave(int val) 
-{
-    gui_WaveNumber=val;
-    if(selWaveForm1!=WAVE_AKWF)
-        return(0);
-    if(!trigloadwave)
-    {
-        trigloadwave=1;
-        if(!IsLoadSound)
-        {
-            sprintf(messnex,"page 4");
-            Nextion_Send(messnex);
-        }
-    }
-
-    Cptloadwave=0;
-    // No plot screen when load sound
-    //if(!IsLoadSound)
-    //{
-        
-    //}
-    if(serialdebug)
-        Serial.printf("WAVE: %d\n",gui_WaveNumber);
-
-    sprintf(messnex,"page3.WAPOT.val=%d",gui_WaveNumber);
-    Nextion_Send(messnex);
-    sprintf(messnex,"page3.WA.txt=%c%03d%c",0x22,gui_WaveNumber,0x22);
-    Nextion_Send(messnex);
-
-    return(0);
-}
-
-
-
-/***************************************************/
-/*                                                 */
-/*                                                 */
-/*                                                 */
-/***************************************************/
-int Fct_Ch_Detune(int val)
-{
-float value;    
-
-    value = val * NORM127MUL;
-    if(val==0)
-    {
-        oscdetune = 0;
-    }
-    else
-    {
-        oscdetune =(0.0001*pow(500,value)); 
-    }
-    Update_Tune(TUNE_OSC);
-
-    if(serialdebug)
-        Serial.printf("Osc Detune: %f\n", oscdetune);
-
-    return(0);
-}
-/***************************************************/
-/*                                                 */
-/*                                                 */
-/*                                                 */
-/***************************************************/
-int Fct_Ch_WS1(int val)   
-{
-float value;    
-struct oscillatorT *osc;
-
-    value = val * NORM127MUL;
-    WaveShapping1=value;
-    WaveShapping1Mod = 0; 
-    OldWaveShapping1Mod=0;  // Force update waveform
-    OldWaveShapping1Mod = WaveShapping1Mod+0.5;
-    if(serialdebug)
-        Serial.printf("WS1: %f\n",WaveShapping1);
-
-    selectedWaveForm = &wavework[0];
-    for(uint8_t o=0;o<=osc_act;o+=3)
-    {
-        osc = &oscPlayer[o+0];
-        osc->waveForm = selectedWaveForm;
-
-        osc = &oscPlayer[o+1];
-        osc->waveForm = selectedWaveForm;
-    }
-    return(0);
-}
-
-
-/***************************************************/
-/*                                                 */
-/*                                                 */
-/*                                                 */
-/***************************************************/
-int Fct_Ch_WS2(int val)   
-{
-float value;    
-
-    value = val * NORM127MUL;
-    WaveShapping2=value;
-    WaveShapping2Mod = 0; 
-    OldWaveShapping2Mod=0;  // Force update waveform
-    OldWaveShapping2Mod = WaveShapping2Mod+0.5;
-    if(serialdebug)
-        Serial.printf("WS2: %f\n",WaveShapping2);
-    return(0);
-}
-
-/***************************************************/
-/*                                                 */
-/*                                                 */
-/*                                                 */
-/***************************************************/
-int Fct_Ch_OscMix(int val)
-{
-float value;    
-
-    value = val * NORM127MUL;
-    MixOsc = value*0.7;
-    if(serialdebug)
-        Serial.printf("Osc vol: %f\n",MixOsc);
-    return(0);
-}
-/***************************************************/
-/*                                                 */
-/*                                                 */
-/*                                                 */
-/***************************************************/
-int Fct_Ch_SubMix(int val)
-{
-float value;    
-
-    value = val * NORM127MUL;
-    MixSub = value*0.7;
-    if(serialdebug)
-        Serial.printf("Sub vol: %f\n",MixSub);
-    return(0);
-}
-
-/***************************************************/
-/*                                                 */
-/*                                                 */
-/*                                                 */
-/***************************************************/
-int Fct_Ch_SubDetune(int val)
-{
-float value;    
-
-    value = val * NORM127MUL;
-    if(val==0)
-    {
-        subdetune = 0;
-    }
-    else
-    {
-        subdetune =(0.0001*pow(500,value)); 
-    }
-    Update_Tune(TUNE_SUB);
-
-    if(serialdebug)
-        Serial.printf("Sub Detune: %f\n", subdetune);
-
-    return(0);
-
-}
-
-
-/***************************************************/
-/*                                                 */
-/*                                                 */
-/*                                                 */
-/***************************************************/
-int Fct_Ch_SubOct(int val)
-{
-    SubTranspose = (float)val;
-    Update_Tune(TUNE_SUB);
-
-    return(0);
-}
-
-/***************************************************/
-/*                                                 */
-/*                                                 */
-/*                                                 */
-/***************************************************/
-int Fct_Ch_PanSpread(int val)
-{
-    return(0);
-}
-
 
 
 

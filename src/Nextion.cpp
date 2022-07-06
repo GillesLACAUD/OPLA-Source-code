@@ -633,7 +633,6 @@ static uint8_t init_snd=0;
         }
         SDCard_LoadWave(gui_WaveBank+1,gui_WaveNumber+1);
         Nextion_Plot();
-        Fct_Ch_WS1(WS.WaveShapping1);
         // Write again to fix a bug
         sprintf(messnex,"page3.BKNAME.txt=%c%s%c",0x22,SampleDIR[gui_WaveBank].name,0x22);
         Nextion_Send(messnex);

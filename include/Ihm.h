@@ -87,21 +87,8 @@ char Tab_Section_Name[MAX_SECTION][20]=
     "MIDI-MISC",
 };
 
-int Fct_Ch_OscWave(int val);
-int Fct_Ch_OscMix(int val);
-int Fct_Ch_Detune(int val);
-int Fct_Ch_WS1(int val);   
-int Fct_Ch_WS2(int val);   
-
-int Fct_Ch_SubWave(int val);
-int Fct_Ch_SubMix(int val);
-int Fct_Ch_SubOct(int val);
-int Fct_Ch_SubDetune(int val);
-
 int Fct_Ch_NoiseType(int val);
 int Fct_Ch_Noise(int val); 
-int Fct_Ch_Bank(int val); 
-int Fct_Ch_Wave(int val); 
 
 int Fct_Ch_Cutoff(int val);  
 int Fct_Ch_Resonance(int val);
@@ -203,10 +190,6 @@ int Fct_Ch_GraReverse(int val);
 int Fct_Ch_GraTranspose(int val);
 int Fct_Ch_GraFineTune(int val);
 int Fct_Ch_GraA440(int val);
-
-int Fct_Ch_GraDensity(int val);
-int Fct_Ch_GraSpace(int val);
-int Fct_Ch_GraOverlap(int val);
 
 // To change the max for the AKWF selection -> Tab_Encoder[SECTION_BANK_MAX][POT_BANK_MAX]
 #define SECTION_BANK_MAX    1
@@ -368,14 +351,7 @@ IHM_EXTRN Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER];
 IHM_EXTRN int16_t valtofs(int16_t val,int8_t min,int8_t max,int16_t fs);
 IHM_EXTRN int16_t fstoval(int16_t val,int8_t min,int8_t max,int16_t fs);
 
-IHM_EXTRN int Fct_Ch_OscWave(int val);
-IHM_EXTRN int Fct_Ch_SubWave(int val);
 IHM_EXTRN int Fct_Ch_Noise(int val); 
-IHM_EXTRN int Fct_Ch_Detune(int val);
-IHM_EXTRN int Fct_Ch_WS1(int val);   
-IHM_EXTRN int Fct_Ch_OscMix(int val);
-IHM_EXTRN int Fct_Ch_SubMix(int val);
-IHM_EXTRN int Fct_Ch_SubOct(int val);
 
 IHM_EXTRN int Fct_Ch_Cutoff(int val);  
 IHM_EXTRN int Fct_Ch_Resonance(int val);

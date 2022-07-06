@@ -822,7 +822,6 @@ static uint8_t onetime;
             trigloadwave=false;
             SDCard_LoadWave(gui_WaveBank+1,gui_WaveNumber+1);
             Nextion_Plot();
-            Fct_Ch_WS1(WS.WaveShapping1);
         }
         //Nextion_Process(); // in the task0
     }
