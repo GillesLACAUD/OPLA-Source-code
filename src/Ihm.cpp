@@ -60,6 +60,8 @@ int16_t fstoval(int16_t val,int8_t min,int8_t max,int16_t fs)
 /***************************************************/
 int Fct_Ch_GraBank(int val)
 {
+    Gra_Density=1;
+
     if(IsLoadSound == 1)
         return(0);
 
