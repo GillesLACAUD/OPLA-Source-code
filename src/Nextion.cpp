@@ -406,15 +406,15 @@ static uint8_t init_snd=0;
         SDCard_Display10SndName();
         for(uint8_t i=0;i<10;i++)
         {
-            sprintf(messnex,"page2.b%d.bco=0",i);
-            Nextion_Send(messnex);
-            sprintf(messnex,"page2.b%d.pco=2024",i);
+            //sprintf(messnex,"page2.b%d.bco=0",i);
+            //Nextion_Send(messnex);
+            sprintf(messnex,"page2.b%d.pco=%d",i,NEXTION_UNSEL_COLOR);
             Nextion_Send(messnex);
         }
 
-        sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
-        Nextion_Send(messnex);
-        sprintf(messnex,"page2.b%d.pco=0",CurrentSound);
+        //sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
+        //Nextion_Send(messnex);
+        sprintf(messnex,"page2.b%d.pco=%d",CurrentSound,NEXTION_SEL_COLOR);
         Nextion_Send(messnex);
         sprintf(messnex,"page 3");
         Nextion_Send(messnex);
