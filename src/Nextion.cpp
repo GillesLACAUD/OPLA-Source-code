@@ -522,6 +522,7 @@ static uint8_t init_snd=0;
                 sprintf(messnex,"page2.b%d.pco=%d",oldCurrentSound,NEXTION_UNSEL_COLOR);
                 Nextion_Send(messnex);
                 oldCurrentSound=CurrentSound;
+                oldCurrentGraWave=CurrentSound;
 
                 //SDCard_LoadSound(CurrentSound+SoundNameInc10*10);
                 //Nextion_PrintValues();

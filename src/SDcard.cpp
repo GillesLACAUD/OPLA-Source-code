@@ -334,6 +334,7 @@ char mess[50];
     SoundNameInc10 =   LastSoundNumber/10;
     CurrentSound = snd-SoundNameInc10*10;
     oldCurrentSound = CurrentSound; 
+    oldCurrentGraWave=CurrentSound;
 
     // Set the page
     SDCard_Display10SndName();
