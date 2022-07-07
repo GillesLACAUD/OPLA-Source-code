@@ -512,14 +512,14 @@ static uint8_t init_snd=0;
             CurrentSound=Nextion_Mess[2];
             if(oldCurrentSound!=CurrentSound)
             {
-                sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
-                Nextion_Send(messnex);
-                sprintf(messnex,"page2.b%d.pco=0",CurrentSound);
+                //sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
+                //Nextion_Send(messnex);
+                sprintf(messnex,"page2.b%d.pco=%d",CurrentSound,NEXTION_SEL_COLOR);
                 Nextion_Send(messnex);
 
-                sprintf(messnex,"page2.b%d.bco=0",oldCurrentSound);
-                Nextion_Send(messnex);
-                sprintf(messnex,"page2.b%d.pco=2024",oldCurrentSound);
+                //sprintf(messnex,"page2.b%d.bco=0",oldCurrentSound);
+                //Nextion_Send(messnex);
+                sprintf(messnex,"page2.b%d.pco=%d",oldCurrentSound,NEXTION_UNSEL_COLOR);
                 Nextion_Send(messnex);
                 oldCurrentSound=CurrentSound;
 
@@ -545,19 +545,19 @@ static uint8_t init_snd=0;
             CurrentGraWave=Nextion_Mess[2];
             if(oldCurrentGraWave!=CurrentGraWave)
             {
-                sprintf(messnex,"page2.b%d.pco=0",CurrentGraWave);          // Black
+                sprintf(messnex,"page2.b%d.pco=%d",CurrentGraWave,NEXTION_SEL_COLOR);          // Black
                 Nextion_Send(messnex);
-                sprintf(messnex,"page2.b%d.bco=65535",CurrentGraWave);      // White
-                Nextion_Send(messnex);
+                //sprintf(messnex,"page2.b%d.bco=65535",CurrentGraWave);      // White
+                //Nextion_Send(messnex);
 
-                sprintf(messnex,"page2.b%d.bco=0",oldCurrentGraWave);       // Black
-                Nextion_Send(messnex);
-                sprintf(messnex,"page2.b%d.pco=34800",oldCurrentGraWave);   // Green
+                //sprintf(messnex,"page2.b%d.bco=0",oldCurrentGraWave);       // Black
+                //Nextion_Send(messnex);
+                sprintf(messnex,"page2.b%d.pco=%d",oldCurrentGraWave,NEXTION_UNSEL_COLOR);   // Green
                 Nextion_Send(messnex);
                 oldCurrentGraWave=CurrentGraWave;
 
                 // Need one more time
-                sprintf(messnex,"page2.b%d.pco=0",CurrentGraWave);          // Black
+                sprintf(messnex,"page2.b%d.pco=%d",CurrentGraWave,NEXTION_SEL_COLOR);          // Black
                 Nextion_Send(messnex);
 
 
