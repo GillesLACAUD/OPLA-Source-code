@@ -42,6 +42,8 @@ NEXTION_EXTRN unsigned char Nextion_Cmd_Receive;
 
 NEXTION_EXTRN uint8_t IsSelectGraWave;
 
+NEXTION_EXTRN uint8_t Nextion_Commande;
+
 
 NEXTION_EXTRN unsigned char Nextion_Send(char *ptmess);
 NEXTION_EXTRN void Nextion_Init();

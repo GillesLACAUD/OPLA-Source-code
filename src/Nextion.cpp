@@ -860,6 +860,7 @@ static uint8_t init_snd=0;
 
         // L Select a parameter
 		case 0x4C:
+        Nextion_Commande = 1;
         if(!overon)
         {
             overon = true;
@@ -878,6 +879,7 @@ static uint8_t init_snd=0;
             Nextion_Send(messnex);
             //delay(2);
         }
+        Nextion_Commande = 0;
         break;
 
         // N Name sound

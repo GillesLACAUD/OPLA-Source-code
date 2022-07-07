@@ -326,7 +326,7 @@ char mess[50];
     {
         //sprintf(messnex,"page2.b%d.bco=0",oldCurrentSound);
         //Nextion_Send(messnex);
-        sprintf(messnex,"page2.b%d.pco=2024",oldCurrentSound);
+        sprintf(messnex,"page2.b%d.pco=%d",oldCurrentSound,NEXTION_UNSEL_COLOR);
         Nextion_Send(messnex);
     }
 
@@ -398,7 +398,7 @@ char mess[50];
     {
         //sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
         //Nextion_Send(messnex);
-        sprintf(messnex,"page2.b%d.pco=0",CurrentSound);
+        sprintf(messnex,"page2.b%d.pco=%d",CurrentSound,NEXTION_SEL_COLOR);
         Nextion_Send(messnex);
     }
 

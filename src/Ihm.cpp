@@ -66,15 +66,14 @@ int Fct_Ch_GraBank(int val)
     if(IsLoadSound == 1)
         return(0);
 
-    GraWaveInc10 = val;
+    if(!Nextion_Commande)
+        GraWaveInc10 = val;
     SDCard_Display10GraWave();
     if(!IsSelectGraWave)
     {
         sprintf(messnex,"page 3");
         Nextion_Send(messnex);
         IsSelectGraWave=1;        
-        //sprintf(messnex,"page2.b%d.pco=34800",CurrentSound);
-        //Nextion_Send(messnex);
         //sprintf(messnex,"page2.b%d.bco=0",CurrentSound);
         //Nextion_Send(messnex);
         
@@ -89,7 +88,7 @@ int Fct_Ch_GraBank(int val)
 /***************************************************/
 int Fct_Ch_GraWave(int val)
 {
-static uint8_t keepcurrent;    
+//static uint8_t keepcurrent;    
     if(IsLoadSound == 1)
         return(0);
 
@@ -101,14 +100,15 @@ static uint8_t keepcurrent;
         IsSelectGraWave=1;        
     }
     // Keepcurrent to avoid blink on the max and min
-    if(keepcurrent != val)
+    if(oldCurrentGraWave != val)
     {
         sprintf(messnex,"page2.b%d.pco=%d",CurrentGraWave,NEXTION_UNSEL_COLOR);
         Nextion_Send(messnex);
         CurrentGraWave = val;
         sprintf(messnex,"page2.b%d.pco=%d",CurrentGraWave,NEXTION_SEL_COLOR);
         Nextion_Send(messnex);
-        keepcurrent = CurrentGraWave;
+        //keepcurrent = CurrentGraWave;
+        oldCurrentGraWave=CurrentGraWave;
     }
     return(0);
 }
