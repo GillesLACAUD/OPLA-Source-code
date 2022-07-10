@@ -155,8 +155,6 @@ GRANULAR_EXTRN unsigned char sine440[200];
 GRANULAR_EXTRN uint8_t cpt440;
 #endif
 
-
-
 GRANULAR_EXTRN void     Granular_Init(void);
 GRANULAR_EXTRN void     Granular_Reset(void);
 GRANULAR_EXTRN uint32_t Granular_LoadWave(char* name);
@@ -166,5 +164,3 @@ GRANULAR_EXTRN void     Granular_Process(uint8_t set);
 GRANULAR_EXTRN void 	Granular_Dump(void);
 GRANULAR_EXTRN double 	Granular_MidiNoteRatio(int midiNote);
 GRANULAR_EXTRN uint32_t	Granular_TransposeStereo(notePlayerT *voice);
-
-

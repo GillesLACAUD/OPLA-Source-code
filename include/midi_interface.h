@@ -191,6 +191,7 @@
 #define MAXPOT	    127
 #define NORM127MUL	0.0078740157f
 
+#define PAGE_MAINSCR    1
 #define PAGE_MIDICC     2
 #define PAGE_GRANULAR   3
 

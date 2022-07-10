@@ -66,17 +66,23 @@ int Fct_Ch_GraBank(int val)
     if(IsLoadSound == 1)
         return(0);
 
-    if(!IsSelectGraWave)
+    if(Page_Active != PAGE_GRANULAR)
     {
         for(uint8_t i=0;i<10;i++)
         {
             sprintf(messnex,"page2.b%d.font=2",i);
             Nextion_Send(messnex);
         }
+        sprintf(messnex,"page2.b%d.pco=%d",CurrentSound,NEXTION_UNSEL_COLOR);
+        Nextion_Send(messnex);
+        sprintf(messnex,"page2.b%d.pco=%d",CurrentGraWave,NEXTION_SEL_COLOR);
+        Nextion_Send(messnex);
+
         sprintf(messnex,"page 3");
         Nextion_Send(messnex);
-        IsSelectGraWave=1;        
         Page_Active = PAGE_GRANULAR;
+        overon = true;
+        IsSelectGraWave=1;
     }
     SDCard_Display10GraWave();
     
@@ -102,10 +108,15 @@ int Fct_Ch_GraWave(int val)
             Nextion_Send(messnex);
         }
         SDCard_Display10GraWave();
+        sprintf(messnex,"page2.b%d.pco=%d",CurrentSound,NEXTION_UNSEL_COLOR);
+        Nextion_Send(messnex);
+        sprintf(messnex,"page2.b%d.pco=%d",CurrentGraWave,NEXTION_SEL_COLOR);
+        Nextion_Send(messnex);
         sprintf(messnex,"page 3");
         Nextion_Send(messnex);
         Page_Active = PAGE_GRANULAR;
         IsSelectGraWave=1;        
+        overon = true;
     }
     // Keepcurrent to avoid blink on the max and min
     if(oldCurrentGraWave != val)
@@ -118,6 +129,7 @@ int Fct_Ch_GraWave(int val)
         //keepcurrent = CurrentGraWave;
         oldCurrentGraWave=CurrentGraWave;
     }
+    Serial.printf("Change Wave\n");
     return(0);
 }
 
@@ -128,7 +140,20 @@ int Fct_Ch_GraWave(int val)
 /***************************************************/
 int Fct_Ch_GraLoad(int val)
 {
-    sprintf(messnex,"page2.b%d.bco=65535",CurrentGraWave);
+static int keep;
+    if(IsLoadSound == 1)
+        return(0);
+
+    char grawave[40];
+    WS.GraIdBank=CurrentGraWave+GraWaveInc10*10;
+    if(keep !=WS.GraIdBank)
+    {
+        keep=WS.GraIdBank;
+        strcpy(grawave,Gra_WaveName[WS.GraIdBank]);
+        strcat(grawave,".wav");
+        Gra_Maxplay=Granular_LoadWave(grawave); // Synth
+        Granular_UpdateVal();
+    }
     return(0);
 }
 
@@ -139,8 +164,23 @@ int Fct_Ch_GraLoad(int val)
 /***************************************************/
 int Fct_Ch_GraAdd(int val)
 {
-    sprintf(messnex,"page2.b%d.bco=65535",CurrentGraWave);
-    return(0);
+static int keep;
+/*
+    if(IsLoadSound == 1)
+        return(0);
+
+    char grawave[40];
+    WS.GraIdBank=CurrentGraWave+GraWaveInc10*10;
+    if(keep !=WS.GraIdBank)
+    {
+        keep=WS.GraIdBank;
+        strcpy(grawave,Gra_WaveName[WS.GraIdBank]);
+        strcat(grawave,".wav");
+        Gra_Maxplay=Granular_LoadWave(grawave); // Synth
+        Granular_UpdateVal();
+    }
+    */
+    return(0);    
 }
 
 /***************************************************/

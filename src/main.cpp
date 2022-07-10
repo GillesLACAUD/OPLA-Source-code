@@ -579,8 +579,6 @@ char AffVersion[30]="V01 GRA";
     Serial.printf("Audio In is     %d\n",IntAudioIn);
     */
 
-
-
     SDCard_LoadBackDelay();
     Serial.printf("BackDelay is %d\n",BackDelay);
     Nextion_PrintLabel();
@@ -594,7 +592,7 @@ char AffVersion[30]="V01 GRA";
     Granular_Process(0); // One time
     Granular_Process(0); // One time
     Granular_Process(0); // One time
-    
+
     GraWaveInc10=0;
 
     //Synth_NoteOn(64-12);
@@ -691,6 +689,7 @@ static uint8_t onetime;
        // Change page
        sprintf(messnex,"page 1");
        Nextion_Send(messnex);
+       Page_Active = PAGE_MAINSCR;
        IsSelectGraWave=0;        
     }
 
@@ -767,8 +766,8 @@ static uint8_t onetime;
         {
             Synth_Process(&fl_sample, &fr_sample);
             Granular_Process(0); // One time
-            //Granular_Process(0); // One more time
-            
+            Granular_Process(0); // One more time
+           
             /* Play playing buffer*/
             /*
             if(1)

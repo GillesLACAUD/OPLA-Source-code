@@ -59,6 +59,7 @@ void Nextion_Init()
 
     sprintf(messnex,"page 1");
     Nextion_Send(messnex);
+    Page_Active = PAGE_MAINSCR;
 
     Nextion_PrintLabel();
 }
@@ -543,7 +544,20 @@ static uint8_t init_snd=0;
         }
         else
         {
-            CurrentGraWave=Nextion_Mess[2];
+            uint8_t w;
+            w=Nextion_Mess[2];
+            if(oldCurrentGraWave != w)
+            {
+                sprintf(messnex,"page2.b%d.pco=%d",CurrentGraWave,NEXTION_UNSEL_COLOR);
+                Nextion_Send(messnex);
+                CurrentGraWave = w;
+                sprintf(messnex,"page2.b%d.pco=%d",CurrentGraWave,NEXTION_SEL_COLOR);
+                Nextion_Send(messnex);
+                //keepcurrent = CurrentGraWave;
+                oldCurrentGraWave=CurrentGraWave;
+            }
+            //Fct_Ch_GraWave(w);
+            /*
             if(oldCurrentGraWave!=CurrentGraWave)
             {
                 sprintf(messnex,"page2.b%d.pco=%d",CurrentGraWave,NEXTION_SEL_COLOR);          // Black
@@ -563,6 +577,7 @@ static uint8_t init_snd=0;
 
 
             }
+            */
         }
         break;
         
@@ -659,10 +674,10 @@ static uint8_t init_snd=0;
             // Load save page
             if(Nextion_Mess[2]==1)
             {
-                sprintf(messnex,"pagekeybdA0.b%d.bco=65535",CurrentSound);
-                Nextion_Send(messnex);
-                sprintf(messnex,"pagekeybdA0.b%d.pco=0",CurrentSound);
-                Nextion_Send(messnex);
+                //sprintf(messnex,"pagekeybdA0.b%d.bco=65535",CurrentSound);
+                //Nextion_Send(messnex);
+                //sprintf(messnex,"pagekeybdA0.b%d.pco=0",CurrentSound);
+                //Nextion_Send(messnex);
                 // Change page
                 sprintf(messnex,"pagekeybdA0");
                 Nextion_Send(messnex);
@@ -675,16 +690,17 @@ static uint8_t init_snd=0;
                 //sprintf(messnex,"page 1");
                 //Nextion_Send(messnex);
                 Nextion_PrintValues();
+                Page_Active = PAGE_MAINSCR;
             }
             // Save
             if(Nextion_Mess[2]==2)
             {
-                sprintf(messnex,"page2.b%d.bco=32000",CurrentSound);
-                Nextion_Send(messnex);
+                //sprintf(messnex,"page2.b%d.bco=32000",CurrentSound);
+                //Nextion_Send(messnex);
                 delay(250);
                 SDCard_SaveSound(CurrentSound+SoundNameInc10*10);
-                sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
-                Nextion_Send(messnex);
+                //sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
+                //Nextion_Send(messnex);
             }
             // Load
             if(Nextion_Mess[2]==3)
@@ -712,21 +728,21 @@ static uint8_t init_snd=0;
                 }
                 else
                 {
-                    sprintf(messnex,"page2.b%d.bco=32000",CurrentSound);
-                    Nextion_Send(messnex);
+                    //sprintf(messnex,"page2.b%d.bco=32000",CurrentSound);
+                    //Nextion_Send(messnex);
                     delay(250);
                     Nextion_Send(messnex);
                     SDCard_LoadSound(CurrentSound+SoundNameInc10*10,0);
-                    sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
-                    Nextion_Send(messnex);
+                    //sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
+                    //Nextion_Send(messnex);
                     Nextion_PrintValues();
                 }
             }
             // 10 previous
             if(Nextion_Mess[2]==5)
             {
-                sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
-                Nextion_Send(messnex);
+                //sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
+                //Nextion_Send(messnex);
                 SoundNameInc10--;
                 if(SoundNameInc10<0)
                     SoundNameInc10=9;
@@ -735,8 +751,8 @@ static uint8_t init_snd=0;
             // 10 next
             if(Nextion_Mess[2]==6)
             {
-                sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
-                Nextion_Send(messnex);
+                //sprintf(messnex,"page2.b%d.bco=65535",CurrentSound);
+                //Nextion_Send(messnex);
                 SoundNameInc10++;
                 if(SoundNameInc10==10)
                     SoundNameInc10=0;
@@ -750,9 +766,9 @@ static uint8_t init_snd=0;
             // Load save page
             if(Nextion_Mess[2]==1)
             {
-                sprintf(messnex,"pagekeybdA0.b%d.bco=65535",CurrentSound);
-                Nextion_Send(messnex);
-                sprintf(messnex,"pagekeybdA0.b%d.pco=0",CurrentSound);
+                //sprintf(messnex,"pagekeybdA0.b%d.bco=65535",CurrentSound);
+                //Nextion_Send(messnex);
+                sprintf(messnex,"pagekeybdA0.b%d.pco=%d",CurrentSound,NEXTION_SEL_COLOR);
                 Nextion_Send(messnex);
                 // Change page
                 sprintf(messnex,"pagekeybdA0");
@@ -767,6 +783,7 @@ static uint8_t init_snd=0;
                 //Nextion_Send(messnex);
                 Nextion_PrintValues();
                 IsSelectGraWave=0;
+                Page_Active = PAGE_MAINSCR;
             }
             // Save
             if(Nextion_Mess[2]==2)
@@ -854,6 +871,7 @@ static uint8_t init_snd=0;
         // Change page
         sprintf(messnex,"page 1");
         Nextion_Send(messnex);
+        Page_Active = PAGE_MAINSCR;
         overon = false;
         overcpt=0;
         break;
@@ -875,7 +893,10 @@ static uint8_t init_snd=0;
             ret=Synth_SetRotary(cc,*Tab_Encoder[gui_Section][gui_Param].Data);
             Nextion_PotValue(*Tab_Encoder[gui_Section][gui_Param].Data);
             Nextion_PrintCC(cc,ret,1);
-            sprintf(messnex,"page 2");
+            if(cc>=MIDI_CC_10 && cc<=MIDI_CC_13)
+                sprintf(messnex,"page 3");
+            else
+                sprintf(messnex,"page 2");
             Nextion_Send(messnex);
             //delay(2);
         }

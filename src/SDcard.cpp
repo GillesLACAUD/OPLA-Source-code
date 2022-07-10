@@ -377,7 +377,6 @@ char mess[50];
             }
         }
     }
-
     IsLoadSound = 0;
     // To overwrite the max poly if delay =0
     Fct_Ch_DlAmount(WS.DelayAmount);

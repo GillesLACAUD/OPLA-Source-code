@@ -405,6 +405,20 @@ IHM_EXTRN int Fct_Ch_AmpLoop(int val);
 IHM_EXTRN int Fct_Ch_PitchLoop(int val);
 
 IHM_EXTRN int Fct_Ch_AudioIn(int val);
+IHM_EXTRN int Fct_Ch_GraBank(int val);
+IHM_EXTRN int Fct_Ch_GraWave(int val);
+IHM_EXTRN int Fct_Ch_GraLoad(int val);
+IHM_EXTRN int Fct_Ch_GraAdd(int val);
+IHM_EXTRN int Fct_Ch_GraMix(int val);
+IHM_EXTRN int Fct_Ch_GraBegin(int val);
+IHM_EXTRN int Fct_Ch_GraFine(int val);
+IHM_EXTRN int Fct_Ch_GraSize(int val);
+IHM_EXTRN int Fct_Ch_GraAttack(int val);
+IHM_EXTRN int Fct_Ch_GraSustain(int val);
+IHM_EXTRN int Fct_Ch_GraReverse(int val);
+IHM_EXTRN int Fct_Ch_GraTranspose(int val);
+IHM_EXTRN int Fct_Ch_GraFineTune(int val);
+IHM_EXTRN int Fct_Ch_GraA440(int val);
 
 
 #endif
