@@ -139,6 +139,7 @@ SYNTH_EXTRN WorkSound	WS;
 
 SYNTH_EXTRN uint8_t CurrentSound;
 SYNTH_EXTRN uint8_t CurrentGraWave;
+SYNTH_EXTRN uint8_t ChangeGraWave;
 
 SYNTH_EXTRN uint8_t SoundMode;
 SYNTH_EXTRN uint8_t FilterType;

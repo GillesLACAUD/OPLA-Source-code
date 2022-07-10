@@ -593,6 +593,7 @@ char AffVersion[30]="V01 GRA";
     Granular_Process(0); // One time
     Granular_Process(0); // One time
 
+
     GraWaveInc10=0;
 
     //Synth_NoteOn(64-12);

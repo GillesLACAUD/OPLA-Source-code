@@ -47,7 +47,7 @@ extern int FctNull(int val);
 typedef struct
 {
   char 		    Name[5];
-  char 		    LgName[20];
+  char 		    LgName[15];
   uint8_t	    MidiCC;
   uint8_t		  Type;
   char	      *ptTabList;	    // pt to the list
@@ -74,7 +74,7 @@ typedef struct
 #define SECTION_MIDI    8
 
 #ifdef __IHM__
-char Tab_Section_Name[MAX_SECTION][20]=
+char Tab_Section_Name[MAX_SECTION][15]=
 {
     "GENERATOR 1",
     "GENERATOR 2",
@@ -203,8 +203,8 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
     /* Name                 MIDICC              TYPE        LIST                INDEX   VALUE             SIZE  MIN     MAX                     STEP    CHANGE  */           
     "BANK",   "WAVE BANK",    MIDI_CC_10,       TYPE_DATA,  &TabListNull[0][0], 0,    &GraWaveInc10,      1,    0,      49,1,                     Fct_Ch_GraBank,       
     "WAVE",   "WAVE SELECT",  MIDI_CC_11,       TYPE_DATA,  &TabListNull[0][0], 0,    &IntNull,           1,    0,      9,1,                      Fct_Ch_GraWave,              
-    "LOAD",   "LOAD WAVE",    MIDI_CC_12,       TYPE_LIST,  &Go[0][0], 0,             &IntNull,           1,    0,      127,1,                    Fct_Ch_GraLoad,                  
-    "ADD",    "ADD WAVE",     MIDI_CC_13,       TYPE_LIST,  &Go[0][0], 0,             &IntNull,           1,    0,      127,1,                    Fct_Ch_GraAdd,                  
+    "LOAD",   "LOAD WAV",     MIDI_CC_12,       TYPE_LIST,  &Go[0][0], 0,             &IntNull,           1,    0,      127,1,                    Fct_Ch_GraLoad,                  
+    "ADD",    "ADD WAV",      MIDI_CC_13,       TYPE_LIST,  &Go[0][0], 0,             &IntNull,           1,    0,      127,1,                    Fct_Ch_GraAdd,                  
     "MIX",    "MIX LEVEL",    MIDI_CC_14,       TYPE_DATA,  &TabListNull[0][0], 0,    &IntNull,           1,    0,      127,1,                    Fct_Ch_GraMix,                  
     "BEG",    "GRAIN BEGIN",  MIDI_CC_15,       TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraBegin,       1,    0,      127,1,                    Fct_Ch_GraBegin,        
     "FINE",   "GRAIN FINE",   MIDI_CC_16,       TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraBeginFine,   1,    0,      127,1,                    Fct_Ch_GraFine,        
@@ -256,7 +256,7 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
     "DEC",  "FL DECAY",     MIDI_CC_FLT_D,  TYPE_DATA,  &TabListNull[0][0], 0,      &WS.FEgDecay,     1,    0,      127,1,                    Fct_Ch_FlDecay,       
     "REL",  "FL RELEASE",   MIDI_CC_FLT_R,  TYPE_DATA,  &TabListNull[0][0], 0,      &WS.FEgRelease,   1,    0,      127,1,                    Fct_Ch_FlRelease,     
     "AMT",  "FL AMOUNT",    MIDI_CC_FLT_Q,  TYPE_DATA,  &TabListNull[0][0], 0,      &WS.FEgAmount,    1,    0,      127,1,                    Fct_Ch_FlAmount,      
-    "FTR",  "FILTER TRIG",  MIDI_CC_FLT_TRIG,     TYPE_LIST,  &YesNo[0][0],       0,      &WS.FilterTrig,   1,    0,      127,2,                    Fct_Ch_FilterTrig,    
+    "FTR",  "FILTER TRIG",  MIDI_CC_FLT_TRIG,     TYPE_LIST,  &YesNo[0][0], 0,&WS.FilterTrig,         1,    0,      127,2,                    Fct_Ch_FilterTrig,    
 
     // SECTION EG 
     /* Name                 MIDICC          TYPE        LIST                INDEX   VALUE             SIZE  MIN     MAX                     STEP    CHANGE     */       

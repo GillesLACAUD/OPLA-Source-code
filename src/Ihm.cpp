@@ -128,11 +128,12 @@ int Fct_Ch_GraWave(int val)
         Nextion_Send(messnex);
         //keepcurrent = CurrentGraWave;
         oldCurrentGraWave=CurrentGraWave;
+        ChangeGraWave=1;
     }
     Serial.printf("Change Wave\n");
     return(0);
 }
-
+char grawave[40];
 /***************************************************/
 /*                                                 */
 /*                                                 */
@@ -140,19 +141,17 @@ int Fct_Ch_GraWave(int val)
 /***************************************************/
 int Fct_Ch_GraLoad(int val)
 {
-static int keep;
     if(IsLoadSound == 1)
         return(0);
 
-    char grawave[40];
     WS.GraIdBank=CurrentGraWave+GraWaveInc10*10;
-    if(keep !=WS.GraIdBank)
+    if(ChangeGraWave)
     {
-        keep=WS.GraIdBank;
         strcpy(grawave,Gra_WaveName[WS.GraIdBank]);
         strcat(grawave,".wav");
         Gra_Maxplay=Granular_LoadWave(grawave); // Synth
         Granular_UpdateVal();
+        ChangeGraWave=0;
     }
     return(0);
 }
@@ -164,22 +163,16 @@ static int keep;
 /***************************************************/
 int Fct_Ch_GraAdd(int val)
 {
-static int keep;
-/*
     if(IsLoadSound == 1)
         return(0);
-
-    char grawave[40];
     WS.GraIdBank=CurrentGraWave+GraWaveInc10*10;
-    if(keep !=WS.GraIdBank)
+    if(ChangeGraWave)
     {
-        keep=WS.GraIdBank;
         strcpy(grawave,Gra_WaveName[WS.GraIdBank]);
         strcat(grawave,".wav");
-        Gra_Maxplay=Granular_LoadWave(grawave); // Synth
-        Granular_UpdateVal();
+        Granular_AddWave(grawave);
+        ChangeGraWave=0;
     }
-    */
     return(0);    
 }
 
