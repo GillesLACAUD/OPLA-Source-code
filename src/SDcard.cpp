@@ -648,8 +648,8 @@ void SDCard_Display10GraWave()
 {
     for(uint8_t i=0;i<10;i++)
     {
-        sprintf(messnex,"page2.b%d.font=2",i);
-        Nextion_Send(messnex);
+        //sprintf(messnex,"page2.b%d.font=2",i);
+        //Nextion_Send(messnex);
         sprintf(messnex,"page2.b%d.txt=%c%s%c",i,0x22,Gra_WaveName[i+GraWaveInc10*10],0x22);
         Nextion_Send(messnex);
     }

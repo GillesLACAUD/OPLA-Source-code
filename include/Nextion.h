@@ -31,7 +31,9 @@ NEXTION_EXTRN  char     messnexfree[MAX_MESS_TASK0];	    	    // 1 Buffer not fr
 NEXTION_EXTRN  bool     overon;
 NEXTION_EXTRN  uint32_t overcpt;
 NEXTION_EXTRN  uint16_t doubleclick; 
-NEXTION_EXTRN  uint8_t  nbclick; 
+NEXTION_EXTRN  uint8_t  nbclick;
+
+NEXTION_EXTRN uint8_t Page_Active;
 
 NEXTION_EXTRN char recept;
 NEXTION_EXTRN char messnex[60];		    // Buffer transmit

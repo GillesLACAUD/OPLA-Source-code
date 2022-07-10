@@ -20,7 +20,7 @@ IHM_EXTRN   uint8_t gui_Param;
 IHM_EXTRN   uint8_t gui_Value;
 
 IHM_EXTRN   int8_t  SoundNameInc10;
-IHM_EXTRN   int8_t  GraWaveInc10;
+IHM_EXTRN   int16_t GraWaveInc10;
 
 IHM_EXTRN   char TabListNull[0][0];
 IHM_EXTRN   int16_t IntNull;
@@ -201,7 +201,7 @@ Encoder_Data    Tab_Encoder[MAX_SECTION][MAX_ENCODER]=
 {
     // SECTION OSC
     /* Name                 MIDICC              TYPE        LIST                INDEX   VALUE             SIZE  MIN     MAX                     STEP    CHANGE  */           
-    "BANK",   "WAVE BANK",    MIDI_CC_10,       TYPE_DATA,  &TabListNull[0][0], 0,    &WS.GraIdBank,      1,    0,      49,1,                     Fct_Ch_GraBank,       
+    "BANK",   "WAVE BANK",    MIDI_CC_10,       TYPE_DATA,  &TabListNull[0][0], 0,    &GraWaveInc10,      1,    0,      49,1,                     Fct_Ch_GraBank,       
     "WAVE",   "WAVE SELECT",  MIDI_CC_11,       TYPE_DATA,  &TabListNull[0][0], 0,    &IntNull,           1,    0,      9,1,                      Fct_Ch_GraWave,              
     "LOAD",   "LOAD WAVE",    MIDI_CC_12,       TYPE_LIST,  &Go[0][0], 0,             &IntNull,           1,    0,      127,1,                    Fct_Ch_GraLoad,                  
     "ADD",    "ADD WAVE",     MIDI_CC_13,       TYPE_LIST,  &Go[0][0], 0,             &IntNull,           1,    0,      127,1,                    Fct_Ch_GraAdd,                  

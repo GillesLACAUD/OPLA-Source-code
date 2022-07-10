@@ -1,12 +1,10 @@
 #include <Arduino.h>
 
-#ifdef __MIDI__
+#ifdef __MIDIINTER__
 #define MIDI_EXTRN
 #else
 #define MIDI_EXTRN  extern 
 #endif
-
-
 /*
  * look for midi interface using 1N136
  * to convert the MIDI din signal to
@@ -193,8 +191,20 @@
 #define MAXPOT	    127
 #define NORM127MUL	0.0078740157f
 
+#define PAGE_MIDICC     2
+#define PAGE_GRANULAR   3
+
+#ifdef __MIDIINTER__
+uint8_t  u8overon;
+uint8_t test;
+#else
+extern uint8_t  u8overon;
+extern uint8_t test;
+#endif
+
 MIDI_EXTRN void IRAM_ATTR ChangePot(uint8_t cc,int16_t va);
 MIDI_EXTRN void ChangePage(uint8_t cc);
+MIDI_EXTRN uint8_t Midi_GetPage(uint8_t cc);
 MIDI_EXTRN void Midi_Dump();
 MIDI_EXTRN inline void Midi_NoteOn(uint8_t note,uint8_t vel);
 MIDI_EXTRN inline void Midi_NoteOff(uint8_t note,uint8_t vel);

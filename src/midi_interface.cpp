@@ -7,8 +7,10 @@
 #include <Arduino.h>
 #include "typdedef.h"
 
-#define __MIDI__
+#define __MIDIINTER__
 #include "midi_interface.h"
+#undef __MIDIINTER__
+
 #include "easysynth.h"
 #include "Nextion.h"
 #include "Modulator.h"
@@ -310,10 +312,20 @@ int16_t bend;
 
 void ChangePage(uint8_t cc)
 {
-    if(cc==MIDI_CC_BK || cc==MIDI_CC_WA)
-        sprintf(messnex,"page 4");
-    else
+    switch(cc)
+    {
+        case MIDI_CC_10: 
+        case MIDI_CC_11: 
+        case MIDI_CC_12: 
+        case MIDI_CC_13: 
+        sprintf(messnex,"page 3");
+        Page_Active = PAGE_GRANULAR;
+        break;
+        default: 
         sprintf(messnex,"page 2");
+        Page_Active = PAGE_MIDICC;
+        break;
+    }
     Nextion_Send(messnex);            
 }
 
@@ -340,6 +352,25 @@ int16_t tmp;
         sprintf(messnex,"page1.CCVal.txt=%c---%c",0x22,0x22);
         Nextion_Send(messnex);
     }
+}
+
+/***************************************************/
+/*                                                 */
+/*                                                 */
+/*                                                 */
+/***************************************************/
+uint8_t Midi_GetPage(uint8_t cc)
+{
+uint8_t Page_New=2;
+    if(cc>=MIDI_CC_10 && cc<=MIDI_CC_13)
+    {
+        Page_New = 3;    
+    }
+    if(Page_Active != Page_New)
+    {
+        return(0);
+    }
+    return(1);
 }
 
 /***************************************************/
@@ -378,14 +409,16 @@ static uint8_t incdecval=0;
     //----------------------------------------------
     if(RealMidiMode==MIDI_MODE_ABS)
     {
+        // Get the next page and change it if the page change
+        //Serial.print("---------------- MIDI CC RECEIVE\n");
+        RelCC=data1;
+        overon = Midi_GetPage(RelCC);
         if(!overon)
         {
             overon = true;
-            RelCC=data1;
             Nextion_PrintCC(data1,data2,0);
             ChangePage(RelCC);
         }
-        RelCC=data1;
         ret =Synth_SetRotary(data1,data2);
         ChangePot(RelCC,ret);
         return;    
@@ -398,6 +431,7 @@ static uint8_t incdecval=0;
         if(data1==0x62)                          // CC LSB
         {
             RelCC=data2;
+            overon = Midi_GetPage(RelCC);
         }
         if(data1==0x26)                          // Value LSB
         {
@@ -438,6 +472,7 @@ static uint8_t incdecval=0;
             if(data2==MidiRelCC)
             {
                 RelCC=data1;
+                overon = Midi_GetPage(RelCC);
                 RelPhase=1;
             }
             break;
