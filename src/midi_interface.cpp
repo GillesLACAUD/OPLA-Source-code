@@ -624,6 +624,7 @@ void Midi_Process()
     {
         uint8_t incomingByte = Serial2.read();
 
+        
         #ifdef DUMP_SERIAL2_TO_SERIAL 
         if(incomingByte != 0xFE)
             Serial.printf("%02x\n", incomingByte);
@@ -638,6 +639,10 @@ void Midi_Process()
             HandleRealTimeMsg(incomingByte);
             return;
         }
+
+        BacklightDelay=0;
+        if(BacklightState==BACKLIGHT_OFF)
+            BacklightAskStateOn=1;
         
         if(incomingByte & 0x80)
         {

@@ -135,6 +135,17 @@ SYNTH_EXTRN uint8_t RealMidiMode;
 
 SYNTH_EXTRN int16_t	BackDelay;
 
+#define BACKLIGHT_TIME_MAX	60000		// 1 minute
+//#define BACKLIGHT_TIME_MAX	10000		// 10 secondes for test
+#define BACKLIGHT_OFF		0				
+#define BACKLIGHT_ON		1				
+#define BACKLIGHT_VAL_MIN	5				
+#define BACKLIGHT_VAL_MAX	100				
+SYNTH_EXTRN int32_t	BacklightDelay;
+SYNTH_EXTRN int8_t	BacklightState;
+SYNTH_EXTRN int8_t	BacklightAskStateOn;
+
+
 SYNTH_EXTRN WorkSound	WS;
 
 SYNTH_EXTRN uint8_t CurrentSound;
