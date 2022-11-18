@@ -78,6 +78,10 @@ void Nextion_Process()
    
     if (Serial1.available())
 	{
+        BacklightDelay=0;
+        if(BacklightState==BACKLIGHT_OFF)
+            BacklightAskStateOn=1;
+
     	if(!Nextion_Cmd_Receive)
     	{
 			Nextion_Mess[cptm]=Serial1.read();

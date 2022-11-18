@@ -193,6 +193,7 @@ void IRAM_ATTR onTimer1ms()
 {
     //portENTER_CRITICAL_ISR(&timerMux_1ms);
     Timer1ms_cnt++;
+    BacklightDelay++;
     //portEXIT_CRITICAL_ISR(&timerMux_1ms);    
     if(!u8_ArpTrig)
     {
@@ -552,6 +553,10 @@ char AffVersion[30]="V16 060422";
     Serial.printf("BackDelay is %d\n",BackDelay);
     Nextion_PrintLabel();
     Nextion_PrintValues();
+
+    BacklightDelay=0;
+    BacklightState=BACKLIGHT_ON;
+
     //Synth_NoteOn(64-12);
 }
 
@@ -592,6 +597,21 @@ static uint8_t onetime;
     overcpt++;
     doubleclick++;
     Cptloadwave++;
+
+
+    if(BacklightDelay>BACKLIGHT_TIME_MAX && BacklightState==BACKLIGHT_ON)
+    {
+        BacklightState=BACKLIGHT_OFF;
+        sprintf(messnex,"dim=%d",BACKLIGHT_VAL_MIN);
+        Nextion_Send(messnex);
+    }
+    if(BacklightAskStateOn)
+    {
+        BacklightAskStateOn=0;
+        BacklightState=BACKLIGHT_ON;
+        sprintf(messnex,"dim=%d",BACKLIGHT_VAL_MAX);
+        Nextion_Send(messnex);
+    }
 
     // ARP Wait xms to all key on 
     if(u8_ArpCptHitKey>MAX_ARP_DELAY_HITKEYS && !u8_ArpTrig && u8_ArpNbKeyOn)
